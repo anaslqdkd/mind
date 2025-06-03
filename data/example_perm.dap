@@ -1,0 +1,5 @@
+set mem_type_set := SDGHNHFGDF
+param nb_gas := 
+param Permeability := 
+param thickness := 
+param mem_product := 

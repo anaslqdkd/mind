@@ -1,0 +1,13 @@
+param pressure_in := 456
+set components := 
+param ub_perc_waste := 
+param lb_perc_prod := 
+param normalized_product_qt := 
+param final_product := 
+param FEED := 
+param XIN := 
+param molarmass := 
+param ub_press_down := 
+param ib_press_down := 
+param ib_press_up := 
+param ub_press_up := 
