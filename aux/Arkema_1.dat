@@ -1,0 +1,41 @@
+#This file is an example of format for input
+data;
+
+param pressure_in := 2;#bar
+#param pressure_prod := 10;
+
+
+#set of components of each mixture gaseous
+set components := "H2" "236ea";
+
+#param ub_perc_waste:=
+#"N2" 0.001 #0.01,0.005,0.001
+#;
+
+param lb_perc_prod:=
+"236ea" 0.995
+;
+
+param normalized_product_qt := 0.95; #0.90,0.95,0.99
+
+param final_product:= "236ea";
+
+param FEED := 0.02;#1.483; #mol/s
+
+
+param XIN:=
+	"H2"  0.829 #0.015
+	"236ea" 0.171 #0.985
+
+;
+
+param molarmass:=
+        "H2"    2
+	"236ea"	152.04
+;
+
+
+param ub_press_down := 1;
+param lb_press_down := 0.01;
+param lb_press_up := 1;
+param ub_press_up := 2;
