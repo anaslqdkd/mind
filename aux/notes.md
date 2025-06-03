@@ -75,3 +75,5 @@ Arkema_1.data
 - Option flags (booleans)
 - (Optionally) a fixing/mask file
 
+
+voir pour parallaliser l'algo
