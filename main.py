@@ -140,6 +140,9 @@ class ParameterPage(QWidget):
         data_form_layout = QFormLayout()
         perm_form_layout = QFormLayout()
         config_form_layout = QFormLayout()
+        # TODO: finish with boolean parameters
+        # TODO: sanitize the input
+        # TODO: add measure unity
 
         for key in PARAMETERS_ECO.keys():
             parameter_type = PARAMETERS_ECO[key]
@@ -177,6 +180,9 @@ class ParameterPage(QWidget):
             config_form_layout.addRow(key.capitalize() + ":", parameter_edit)
             self.config_tuning[key] = parameter_edit
 
+        self.parameters_data_input["set components"].textChanged.connect(
+            self.update_molarmass_fields
+        )
         self.stack = stack
         layout = QVBoxLayout()
         form_layout = QHBoxLayout()
@@ -230,6 +236,10 @@ class ParameterPage(QWidget):
 
     def on_button_next_window(self):
         self.stack.setCurrentIndex(PAGE_START)
+
+    def update_molarmass_fields(self):
+        # TODO: change the number of fields for all other options
+        print("in update molarmass fields")
 
 
 class MainPage(QWidget):
@@ -302,3 +312,8 @@ if __name__ == "__main__":
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
+
+# TODO: output, les fichiers de output comment l'exploiter
+# TODO: preparer le pg pour utiliser le metamodel
+# TODO: threads
+# TODO: voir pour le fichier log

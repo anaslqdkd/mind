@@ -1,0 +1,41 @@
+@startuml
+title Diagramme d'activité 
+
+start
+
+:parse CLI arguments;
+
+if (verbose ?) then (yes)
+  :set logging to INFO;
+endif
+
+if (config requested ?) then (yes)
+  :generate config.ini;
+endif
+
+:start timer;
+:create solver;
+
+if (exec mode?) then (yes)
+    :load config.ini;
+else (no)
+    :load instance data;
+endif
+
+:build Configuration object;
+:build Model;
+:create GlobalOptimisation object;
+:set algorithm;
+:run optimisation;
+
+if (solution found?) then (yes)
+    :post-process results;
+endif
+
+:print stats and timing;
+
+if (visualization requested?) then (yes)
+    :show visualization;
+endif
+stop
+@enduml

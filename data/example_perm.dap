@@ -1,4 +1,4 @@
-set mem_type_set := SDGHNHFGDF
+set mem_type_set := 
 param nb_gas := 
 param Permeability := 
 param thickness := 
