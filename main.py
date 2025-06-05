@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import (
     QFormLayout,
     QHBoxLayout,
     QLineEdit,
+    QListWidget,
     QMainWindow,
     QLabel,
     QPushButton,
@@ -135,6 +136,7 @@ class ParameterPage(QWidget):
         self.parameters_perm_input = {}
         self.config_tuning = {}
         self.config_instance = {}
+        self.stack = stack
 
         eco_form_layout = QFormLayout()
         data_form_layout = QFormLayout()
@@ -143,6 +145,27 @@ class ParameterPage(QWidget):
         # TODO: finish with boolean parameters
         # TODO: sanitize the input
         # TODO: add measure unity
+
+        # menu bar
+        # FIXME: put this in the main_window
+        menubar = main_window.menuBar()
+        file_menu = menubar.addMenu("File")
+        help_menu = menubar.addMenu("Help")
+        # quit_menu = menubar.addMenu("Quit")
+
+        # Example actions, pour ajouter des menu intermediaires
+        help_action = help_menu.addAction("About")
+        # quit_action = quit_menu.addAction("Window 1")
+        quit_action = menubar.addAction("Quit")
+        quit_action.triggered.connect(self.quit_program)
+
+        # Sidebar
+        sidebar = QListWidget()
+        sidebar.setFixedWidth(280)
+        sidebar.addItem("Main Page")
+        sidebar.addItem("Start Page")
+        sidebar.addItem("Parameter Page")
+        sidebar.currentRowChanged.connect(self.stack.setCurrentIndex)
 
         for key in PARAMETERS_ECO.keys():
             parameter_type = PARAMETERS_ECO[key]
@@ -184,7 +207,7 @@ class ParameterPage(QWidget):
             self.update_molarmass_fields
         )
         self.stack = stack
-        layout = QVBoxLayout()
+        layout = QHBoxLayout()
         form_layout = QHBoxLayout()
         form_widget = QWidget()
         form_widget.setLayout(form_layout)
@@ -217,6 +240,7 @@ class ParameterPage(QWidget):
             config_form_widget,
             alignment=Qt.AlignmentFlag.AlignHCenter,
         )
+        layout.addWidget(sidebar)
         layout.addWidget(form_widget)
 
         button_generate = QPushButton("generate files")
@@ -227,6 +251,11 @@ class ParameterPage(QWidget):
         button_next_window.clicked.connect(self.on_button_next_window)
         layout.addWidget(button_next_window, alignment=Qt.AlignmentFlag.AlignHCenter)
         self.setLayout(layout)
+
+    def quit_program(self):
+        app = QApplication.instance()
+        if app is not None:
+            app.quit()
 
     def on_button_generate(self):
         self.main_window.generate_file(self.parameters_eco_input, "example_eco.dap")
@@ -317,3 +346,4 @@ if __name__ == "__main__":
 # TODO: preparer le pg pour utiliser le metamodel
 # TODO: threads
 # TODO: voir pour le fichier log
+# TODO: refactor for a model/view etc architecture
