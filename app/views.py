@@ -35,6 +35,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("App")
+        # self.resize(300, 200)
 
         # pages
         self.page1 = PageParametersGlobal(self)
@@ -88,6 +89,19 @@ class MainWindow(QMainWindow):
         # sidebar
         self.sidebar = QListWidget()
         self.sidebar.setFixedSize(300, 600)
+        self.sidebar.setStyleSheet(
+            """
+            QListWidget::item {
+                border: 1px solid #aaa;
+                border-radius: 4px;
+                padding: 8px;
+                margin: 4px;
+            }
+            QListWidget::item:selected {
+                background-color: #cceeff;
+            }
+"""
+        )
         self.sidebar.addItems(
             [
                 "Global Parameters",
@@ -142,21 +156,21 @@ global_params = {
     "pressure_out": ["bar", "Pa", "kPa"],
     "f2ed": ["mol/s"],
     "f3ed": ["mol/s"],
-    # "f4ed": ["mol/s"],
-    # "f5ed": ["m1l/s"],
-    # "f6ed": ["m2l/s"],
-    # "f7ed": ["m3l/s"],
-    # "f2ed": ["m4l/s"],
-    # "f1ed": ["m4l/s"],
-    # "f1ed": ["m4l/s"],
-    # "f1ed": ["m4l/s"],
-    # "f1ed": ["m4l/s"],
-    # "f11d": ["m4l/s"],
-    # "f12d": ["m4l/s"],
-    # "f15d": ["m4l/s"],
-    # "f17d": ["m4l/s"],
-    # "f18d": ["m4l/s"],
-    # "f18d": ["m4l/s"],
+    "f4ed": ["mol/s"],
+    "f5ed": ["m1l/s"],
+    "f6ed": ["m2l/s"],
+    "f7ed": ["m3l/s"],
+    "f2ed": ["m4l/s"],
+    "f1ed": ["m4l/s"],
+    "f1ed": ["m4l/s"],
+    "f1ed": ["m4l/s"],
+    "f1ed": ["m4l/s"],
+    "f11d": ["m4l/s"],
+    "f12d": ["m4l/s"],
+    "f15d": ["m4l/s"],
+    "f17d": ["m4l/s"],
+    "f18d": ["m4l/s"],
+    "f18d": ["m4l/s"],
     # "118d": ["m4l/s"],
     # "218d": ["m4l/s"],
     # "518d": ["m4l/s"],
@@ -187,7 +201,12 @@ class PageParametersGlobal(QWidget):
         content_layout = QVBoxLayout()
         content_widget = QWidget()
         content_widget.setLayout(content_layout)
+        content_layout.setSpacing(50)
         # content_layout.setSpacing(10)
+
+        # scroll area
+        scroll_area = QScrollArea()
+        # scroll_area.setWidget(content_widget)
 
         form_layout = QFormLayout()
         # parameters
@@ -221,13 +240,14 @@ class PageParametersGlobal(QWidget):
 
             input_layout.addWidget(question_label)
 
-            # FIXME: replace with line_layout
+            answer_widget.setFixedWidth(650)
             input_layout.addWidget(answer_widget)
 
             # input_layout.addWidget(line_edit)
             # input_layout.addWidget(combo_box)
 
             row_layout.addWidget(number_label)
+            row_layout.addStretch()
             # row_layout.addWidget(combo_box)
             row_layout.addLayout(input_layout)
 
@@ -238,7 +258,14 @@ class PageParametersGlobal(QWidget):
             content_layout.addWidget(row_widget)
 
         main_layout.addWidget(header2)
-        main_layout.addWidget(content_widget)
+        content_widget.setFixedWidth(800)
+        # scroll_area.setFixedWidth(700)
+        scroll_area.setWidget(content_widget)
+        main_layout.addWidget(scroll_area)
+
+        end_label = QLabel("Buuu")
+        end_label.setFixedHeight(80)
+        main_layout.addWidget(end_label)
         form_widget = QWidget()
         # form_widget.setFixedWidth()
         # form_widget.setLayout(form_layout)
