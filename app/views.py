@@ -6,6 +6,7 @@ from PyQt6.QtWidgets import (
     QLabel,
     QLineEdit,
     QListWidget,
+    QListWidgetItem,
     QMainWindow,
     QMenuBar,
     QPushButton,
@@ -86,7 +87,7 @@ class MainWindow(QMainWindow):
 
         # sidebar
         self.sidebar = QListWidget()
-        self.sidebar.setFixedWidth(280)
+        self.sidebar.setFixedSize(300, 600)
         self.sidebar.addItems(
             [
                 "Global Parameters",
@@ -97,13 +98,30 @@ class MainWindow(QMainWindow):
             ]
         )
 
+        # button_item = QListWidgetItem()
+        # self.sidebar.addItem(button_item)
+        button_widget = QPushButton("Button")
+        # self.sidebar.setItemWidget(button_item, button_widget)
+        # button_item.setSizeHint(button_widget.sizeHint())
+
+        # ----------------------------------------------------
+        sidebar_layout = QVBoxLayout()
+        self.sidebar.setFixedWidth(310)
+        sidebar_layout.addWidget(self.sidebar)
+        sidebar_layout.addWidget(button_widget)
+        sidebar_layout.addStretch()
+        sidebar_widget = QWidget()
+        sidebar_widget.setLayout(sidebar_layout)
+        sidebar_widget.setFixedWidth(330)
+
         layout = QVBoxLayout()
         layout.addWidget(header)
         layout.addWidget(nav_bar)
         layout.addWidget(self.main_area)
-        main_area_layout.addWidget(self.sidebar)
+        # main_area_layout.addWidget(self.sidebar)
+        main_area_layout.addWidget(sidebar_widget)
         main_area_layout.addWidget(self.page1)
-        self.page1.setFixedWidth(1300)
+        self.page1.setFixedWidth(1000)
         main_area_layout.addStretch()
         # layout.addLayout(nav_bar_layout)
         # layout.addWidget(self.main_area)
@@ -127,21 +145,21 @@ global_params = {
     "f4ed": ["mol/s"],
     "f5ed": ["m1l/s"],
     "f6ed": ["m2l/s"],
-    "f7ed": ["m3l/s"],
-    "f2ed": ["m4l/s"],
-    "f1ed": ["m4l/s"],
-    "f1ed": ["m4l/s"],
-    "f1ed": ["m4l/s"],
-    "f1ed": ["m4l/s"],
-    "f11d": ["m4l/s"],
-    "f12d": ["m4l/s"],
-    "f15d": ["m4l/s"],
-    "f17d": ["m4l/s"],
-    "f18d": ["m4l/s"],
-    "f18d": ["m4l/s"],
-    "118d": ["m4l/s"],
-    "218d": ["m4l/s"],
-    "518d": ["m4l/s"],
+    # "f7ed": ["m3l/s"],
+    # "f2ed": ["m4l/s"],
+    # "f1ed": ["m4l/s"],
+    # "f1ed": ["m4l/s"],
+    # "f1ed": ["m4l/s"],
+    # "f1ed": ["m4l/s"],
+    # "f11d": ["m4l/s"],
+    # "f12d": ["m4l/s"],
+    # "f15d": ["m4l/s"],
+    # "f17d": ["m4l/s"],
+    # "f18d": ["m4l/s"],
+    # "f18d": ["m4l/s"],
+    # "118d": ["m4l/s"],
+    # "218d": ["m4l/s"],
+    # "518d": ["m4l/s"],
 }
 
 
@@ -166,41 +184,50 @@ class PageParametersGlobal(QWidget):
 
         # wrapper_form_layout = QHBoxLayout()
 
+        content_layout = QVBoxLayout()
+        content_widget = QWidget()
+        content_widget.setLayout(content_layout)
+
         form_layout = QFormLayout()
         # parameters
+
         for i, (key, value) in enumerate(global_params.items(), start=1):
-            self.parameters[key] = [QLineEdit(), QComboBox()]
-            self.parameters[key][1].addItems(value)
+            # Horizontal row: number + input area
+            row_layout = QHBoxLayout()
+            row_layout.setSpacing(50)
 
-            # Create widget for number + key
-            label_widget = QWidget()
-            label_layout = QHBoxLayout(label_widget)
-            label_layout.setContentsMargins(0, 0, 0, 0)
-            label_layout.setSpacing(5)
+            # Number
             number_label = QLabel(f"{i}.")
-            key_label = QLabel(key)
-            label_layout.addWidget(number_label)
-            label_layout.addWidget(key_label)
+            number_label.setFixedSize(50, 50)
+            number_label.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-            # Create the row widget holding input + combo
+            # Vertical input area
+            input_layout = QVBoxLayout()
+            input_layout.setSpacing(5)
+
+            question_label = QLabel(key)
+            line_edit = QLineEdit()
+            combo_box = QComboBox()
+            combo_box.addItems(value)
+
+            input_layout.addWidget(question_label)
+            input_layout.addWidget(line_edit)
+            # input_layout.addWidget(combo_box)
+
+            row_layout.addWidget(number_label)
+            # row_layout.addWidget(combo_box)
+            row_layout.addLayout(input_layout)
+
+            # Wrap in widget and add to content
             row_widget = QWidget()
-            row_layout = QHBoxLayout(row_widget)
-            row_layout.setContentsMargins(0, 0, 0, 0)
-            row_layout.setSpacing(5)
-            row_widget.setFixedWidth(200)
-            row_widget.setSizePolicy(
-                QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred
-            )
-            row_layout.addWidget(self.parameters[key][0])
-            row_layout.addWidget(self.parameters[key][1])
-
-            # Add row: label widget + row widget
-            form_layout.addRow(label_widget, row_widget)
+            row_widget.setLayout(row_layout)
+            content_layout.addWidget(row_widget)
 
         main_layout.addWidget(header2)
+        main_layout.addWidget(content_widget)
         form_widget = QWidget()
         # form_widget.setFixedWidth()
-        form_widget.setLayout(form_layout)
+        # form_widget.setLayout(form_layout)
 
         # scroll
         scroll = QScrollArea()
@@ -223,7 +250,7 @@ class PageParametersGlobal(QWidget):
         # wrapper_form_widget = QWidget()
         # wrapper_form_widget.setLayout(wrapper_form_layout)
         # main_layout.addWidget(wrapper_form_widget)
-        main_layout.addWidget(scroll)
+        # main_layout.addWidget(scroll)
 
         self.setLayout(main_layout)
 
