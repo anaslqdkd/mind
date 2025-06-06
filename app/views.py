@@ -142,9 +142,9 @@ global_params = {
     "pressure_out": ["bar", "Pa", "kPa"],
     "f2ed": ["mol/s"],
     "f3ed": ["mol/s"],
-    "f4ed": ["mol/s"],
-    "f5ed": ["m1l/s"],
-    "f6ed": ["m2l/s"],
+    # "f4ed": ["mol/s"],
+    # "f5ed": ["m1l/s"],
+    # "f6ed": ["m2l/s"],
     # "f7ed": ["m3l/s"],
     # "f2ed": ["m4l/s"],
     # "f1ed": ["m4l/s"],
@@ -187,6 +187,7 @@ class PageParametersGlobal(QWidget):
         content_layout = QVBoxLayout()
         content_widget = QWidget()
         content_widget.setLayout(content_layout)
+        # content_layout.setSpacing(10)
 
         form_layout = QFormLayout()
         # parameters
@@ -194,7 +195,7 @@ class PageParametersGlobal(QWidget):
         for i, (key, value) in enumerate(global_params.items(), start=1):
             # Horizontal row: number + input area
             row_layout = QHBoxLayout()
-            row_layout.setSpacing(50)
+            # row_layout.setSpacing(50)
 
             # Number
             number_label = QLabel(f"{i}.")
@@ -203,15 +204,27 @@ class PageParametersGlobal(QWidget):
 
             # Vertical input area
             input_layout = QVBoxLayout()
-            input_layout.setSpacing(5)
+            # input_layout.setSpacing(5)
 
             question_label = QLabel(key)
+            question_label.setFixedHeight(25)
             line_edit = QLineEdit()
             combo_box = QComboBox()
             combo_box.addItems(value)
 
+            answer_widget = QWidget()
+            answer_layout = QHBoxLayout(answer_widget)
+            answer_widget.setFixedHeight(45)
+
+            answer_layout.addWidget(line_edit)
+            answer_layout.addWidget(combo_box)
+
             input_layout.addWidget(question_label)
-            input_layout.addWidget(line_edit)
+
+            # FIXME: replace with line_layout
+            input_layout.addWidget(answer_widget)
+
+            # input_layout.addWidget(line_edit)
             # input_layout.addWidget(combo_box)
 
             row_layout.addWidget(number_label)
@@ -220,6 +233,7 @@ class PageParametersGlobal(QWidget):
 
             # Wrap in widget and add to content
             row_widget = QWidget()
+            row_widget.setFixedHeight(130)
             row_widget.setLayout(row_layout)
             content_layout.addWidget(row_widget)
 
