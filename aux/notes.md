@@ -190,3 +190,18 @@ tar czvf myapp.tar.gz main
 
 private git repository
 <!-- TODO: update the doc with the info on deployement -->
+
+
+
+MainWindow (QMainWindow)
+ └── CentralWidget (QWidget)
+      └── QHBoxLayout (mainHorizontalLayout)
+           ├── Sidebar (QWidget)
+           │     └── QVBoxLayout
+           │           ├── QLabel (Logo or Title)
+           │           ├── QListWidget or QTreeWidget (Navigation or Progress)
+           │           └── Stretch (optional)
+           └── MainArea (QWidget)
+                 └── QVBoxLayout
+                       ├── QStackedWidget (Form Pages)
+                       └── Navigation Buttons (QWidget + QHBoxLayout)
