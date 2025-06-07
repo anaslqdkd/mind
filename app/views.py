@@ -1,8 +1,10 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
+    QCheckBox,
     QComboBox,
     QFormLayout,
     QGridLayout,
+    QGroupBox,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -160,11 +162,20 @@ class PageParametersGlobal(QWidget):
         # scroll area
         scroll_area = QScrollArea()
         # scroll_area.setWidget(content_widget)
+
+        category_widget = QWidget()
+        category_layout = QVBoxLayout(category_widget)
+        category_label = QLabel("Smaller category")
+        category_label.setSizePolicy(
+            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed
+        )
+        category_layout.addWidget(category_label)
+
         container_widget = QWidget()
         grid_layout = QGridLayout(container_widget)
-        grid_layout.setHorizontalSpacing(10)
-        grid_layout.setVerticalSpacing(8)
-        grid_layout.setContentsMargins(0, 0, 0, 0)
+        # grid_layout.setHorizontalSpacing(10)
+        # grid_layout.setVerticalSpacing(8)
+        # grid_layout.setContentsMargins(0, 0, 0, 0)
 
         form_layout = QFormLayout()
         # parameters
@@ -175,19 +186,52 @@ class PageParametersGlobal(QWidget):
             combo_box = QComboBox()
             combo_box.addItems(value)
 
-            # Optionally, set fixed/minimum widths for inputs to align better
-            line_edit.setMinimumWidth(150)
-            combo_box.setMinimumWidth(120)
-
-            # Add widgets to grid layout: label in col 0, line_edit in col 1, combo_box in col 2
             grid_layout.addWidget(question_label, i, 0)
             grid_layout.addWidget(line_edit, i, 1)
             grid_layout.addWidget(combo_box, i, 2)
 
-        content_layout.addWidget(container_widget)
-        main_layout.addWidget(content_widget)
+        combo_box = QComboBox()
+        combo_box.addItems(["ls", "ldkf", "ldk"])
+        grid_layout.addWidget(QLabel("flksdj:"))
+        grid_layout.addWidget(combo_box, i + 1, 1, 1, 2)
+
+        check_box = QCheckBox()
+        grid_layout.addWidget(check_box)
+        grid_layout.addWidget(QLabel("label for the checkbox"))
+
+        category_layout.addWidget(container_widget)
+        category_layout.addWidget(QLabel("Activate verification"))
+
+        # group_box = QGroupBox("Category 1")
+        # group_box.setLayout(grid_layout)
+        # main_layout.addWidget(group_box)
+
+        check_widget = QWidget()
+        check_grid = QGridLayout(check_widget)
+        check_box = QCheckBox()
+        # check_grid.addWidget(check_box)
+        check_grid_label = QLabel("Activate verification:")
+        # category_label.setSizePolicy(
+        #     QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed
+        # )
+        # check_grid.addWidget(check_grid_label)
+        # check_grid.addWidget(check_box, 0, 1, 1, 2)
+
+        check_grid.addWidget(check_box, 0, 0)  # Checkbox in column 0
+        check_grid.addWidget(check_grid_label, 0, 1)
+        check_grid.setAlignment(Qt.AlignmentFlag.AlignLeft)
+
+        category_layout.addWidget(check_widget)
+
+        # NOTE: à remettre si jamais
+        # group_box = QGroupBox("Global Settings")
+        # group_box.setLayout(category_layout)
+        # main_layout.addWidget(group_box)
+
+        main_layout.addWidget(category_widget)
 
         form_widget = QWidget()
+        category_layout.addStretch()
 
         # scroll
         scroll = QScrollArea()
