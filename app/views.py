@@ -1,3 +1,5 @@
+import enum
+from typing import Optional
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QCheckBox,
@@ -21,6 +23,88 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
+# TODO: same but for actual input types
+
+
+class ParamType(enum.Enum):
+    INPUT = enum.auto()  # seulement de l'input
+    INPUT_WITH_UNITY = enum.auto()  # parametre avec unité dans un menu deroulant
+    BOOLEAN = enum.auto()  # checkbox
+    SELECT = enum.auto()  # menu deroulable
+    BOOLEAN_WITH_VALUE = enum.auto()  # pour maxtime, maxiteration
+
+
+class Param:
+    def __init__(
+        self, name: str, type: ParamType, values: Optional[list[str]] = None
+    ) -> None:
+        self.name = name
+        self.type = type
+        self.values = values or []
+
+
+class ParamCategory(QWidget):
+    def __init__(self, name: str, param: dict["str", Param]) -> None:
+        super().__init__()
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+        self.param = param
+
+        self.grid_widget = QWidget()
+        self.grid_layout = QGridLayout(self.grid_widget)
+        self.grid_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.label = QLabel(f"{name}")
+        layout.addWidget(self.label)
+        layout.addWidget(self.grid_widget)
+        self.build_param()
+
+    def build_param(self) -> QWidget:
+        for row, (label, param_obj) in enumerate(self.param.items()):
+            match param_obj.type:
+                case ParamType.INPUT:
+                    self.add_param_input(row, label, param_obj)
+                case ParamType.INPUT_WITH_UNITY:
+                    self.add_param_input_with_unity(row, label, param_obj)
+                    pass
+                case ParamType.BOOLEAN:
+                    self.add_param_boolean(row, label, param_obj)
+                case ParamType.SELECT:
+                    self.add_param_select(row, label, param_obj)
+                    # pass
+                case ParamType.BOOLEAN_WITH_VALUE:
+                    pass
+        return self
+
+    def add_param_input(self, row: int, label: str, param_obj: Param):
+        question_label = QLabel(label)
+        line_edit = QLineEdit()
+        self.grid_layout.addWidget(question_label, row, 0)
+        self.grid_layout.addWidget(line_edit, row, 1)
+
+    def add_param_input_with_unity(self, row: int, label: str, param_obj: Param):
+        question_label = QLabel(label)
+        line_edit = QLineEdit()
+        combo_box = QComboBox()
+        combo_box.addItems(param_obj.values)
+        self.grid_layout.addWidget(question_label, row, 0)
+        self.grid_layout.addWidget(line_edit, row, 1)
+        self.grid_layout.addWidget(combo_box, row, 2)
+
+    def add_param_boolean(self, row: int, label: str, param_obj: Param):
+        question_label = QLabel(label)
+        check_box = QCheckBox()
+        self.grid_layout.addWidget(question_label, row, 1)
+        self.grid_layout.addWidget(check_box, row, 0)
+
+    def add_param_select(self, row: int, label: str, param_obj: Param):
+        question_label = QLabel(label)
+        combo_box = QComboBox()
+        combo_box.addItems(param_obj.values)
+        self.grid_layout.addWidget(combo_box, row, 1, 1, 2)
+        self.grid_layout.addWidget(question_label, row, 0)
+
+        # TODO: for each element in dict, a switch case to build the appropriate param type and add it to the grid
 
 
 class MenuBar(QMenuBar):
@@ -138,6 +222,18 @@ global_params = {
     # "518d": ["m4l/s"],
 }
 
+params = {
+    "Alpha": Param(
+        name="Alpha", type=ParamType.INPUT_WITH_UNITY, values=["bar", "kPa", "Pa"]
+    ),
+    "Duration": Param(name="Duration", type=ParamType.INPUT),
+    "Enable Feature": Param(name="Enable Feature", type=ParamType.BOOLEAN),
+    "Mode": Param(
+        name="Mode", type=ParamType.SELECT, values=["select 1", "select 2", "select 3"]
+    ),
+    "Max Iterations": Param(name="Max Iterations", type=ParamType.INPUT),
+}
+
 
 class Parameter:
     # TODO:
@@ -152,16 +248,11 @@ class PageParametersGlobal(QWidget):
         self.main_window = main_window
         self.parameters = {}
 
-        header2 = QLabel("Main Area Header")
         main_layout = QVBoxLayout()
 
         content_layout = QVBoxLayout()
         content_widget = QWidget()
         content_widget.setLayout(content_layout)
-
-        # scroll area
-        scroll_area = QScrollArea()
-        # scroll_area.setWidget(content_widget)
 
         category_widget = QWidget()
         category_layout = QVBoxLayout(category_widget)
@@ -173,56 +264,43 @@ class PageParametersGlobal(QWidget):
 
         container_widget = QWidget()
         grid_layout = QGridLayout(container_widget)
-        # grid_layout.setHorizontalSpacing(10)
-        # grid_layout.setVerticalSpacing(8)
-        # grid_layout.setContentsMargins(0, 0, 0, 0)
 
-        form_layout = QFormLayout()
-        # parameters
+        ex_params = ParamCategory("First category", params)
+        main_layout.addWidget(ex_params)
 
-        for i, (key, value) in enumerate(global_params.items(), start=0):
-            question_label = QLabel(key)
-            line_edit = QLineEdit()
-            combo_box = QComboBox()
-            combo_box.addItems(value)
-
-            grid_layout.addWidget(question_label, i, 0)
-            grid_layout.addWidget(line_edit, i, 1)
-            grid_layout.addWidget(combo_box, i, 2)
-
-        combo_box = QComboBox()
-        combo_box.addItems(["ls", "ldkf", "ldk"])
-        grid_layout.addWidget(QLabel("flksdj:"))
-        grid_layout.addWidget(combo_box, i + 1, 1, 1, 2)
-
-        check_box = QCheckBox()
-        grid_layout.addWidget(check_box)
-        grid_layout.addWidget(QLabel("label for the checkbox"))
-
-        category_layout.addWidget(container_widget)
-        category_layout.addWidget(QLabel("Activate verification"))
-
-        # group_box = QGroupBox("Category 1")
-        # group_box.setLayout(grid_layout)
-        # main_layout.addWidget(group_box)
-
-        check_widget = QWidget()
-        check_grid = QGridLayout(check_widget)
-        check_box = QCheckBox()
-        # check_grid.addWidget(check_box)
-        check_grid_label = QLabel("Activate verification:")
-        # category_label.setSizePolicy(
-        #     QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed
-        # )
-        # check_grid.addWidget(check_grid_label)
-        # check_grid.addWidget(check_box, 0, 1, 1, 2)
-
-        check_grid.addWidget(check_box, 0, 0)  # Checkbox in column 0
-        check_grid.addWidget(check_grid_label, 0, 1)
-        check_grid.setAlignment(Qt.AlignmentFlag.AlignLeft)
-
-        category_layout.addWidget(check_widget)
-
+        # for i, (key, value) in enumerate(global_params.items(), start=0):
+        #     question_label = QLabel(key)
+        #     line_edit = QLineEdit()
+        #     combo_box = QComboBox()
+        #     combo_box.addItems(value)
+        #
+        #     grid_layout.addWidget(question_label, i, 0)
+        #     grid_layout.addWidget(line_edit, i, 1)
+        #     grid_layout.addWidget(combo_box, i, 2)
+        #
+        # combo_box = QComboBox()
+        # combo_box.addItems(["ls", "ldkf", "ldk"])
+        # grid_layout.addWidget(QLabel("flksdj:"))
+        # grid_layout.addWidget(combo_box, i + 1, 1, 1, 2)
+        # #
+        # check_box = QCheckBox()
+        # grid_layout.addWidget(check_box)
+        # grid_layout.addWidget(QLabel("label for the checkbox"))
+        #
+        # category_layout.addWidget(container_widget)
+        # category_layout.addWidget(QLabel("Activate verification"))
+        #
+        # check_widget = QWidget()
+        # check_grid = QGridLayout(check_widget)
+        # check_box = QCheckBox()
+        # check_grid_label = QLabel("Activate verification:")
+        #
+        # check_grid.addWidget(check_box, 0, 0)  # Checkbox in column 0
+        # check_grid.addWidget(check_grid_label, 0, 1)
+        # check_grid.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        #
+        # category_layout.addWidget(check_widget)
+        #
         # NOTE: à remettre si jamais
         # group_box = QGroupBox("Global Settings")
         # group_box.setLayout(category_layout)
