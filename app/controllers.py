@@ -6,7 +6,7 @@ class MainController:
         self.view = view
         # self.view.menubar.quit_action.triggered.connect(self.test)
         self.view.sidebar.currentRowChanged.connect(self.view.stack.setCurrentIndex)
-        view.button.clicked.connect(self.view.page1.get_parameters)
+        # view.button.clicked.connect(self.view.page1.get_parameters)
 
     def test(self):
         print("T")

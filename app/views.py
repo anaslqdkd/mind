@@ -38,17 +38,8 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("App")
         self.resize(800, 600)
 
-        # test button
-        self.button = QPushButton()
-
-        # menubar
-        # self.menubar = MenuBar()
-        # self.setMenuBar(self.menubar)
-
         # stack
         self.stack = QStackedWidget()
-        # self.stack.addWidget(self.page1)
-        # self.stack.addWidget(self.page_components)
 
         # tabs
         self.tabs = QTabWidget()
@@ -70,39 +61,9 @@ class MainWindow(QMainWindow):
         self.main_area = QWidget()
         main_area_layout = QHBoxLayout(self.main_area)
         header = QLabel("Main Area Header")
-        style = "border: 1px solid gray; padding: 4px;"
-        # header.setStyleSheet(style)
-        # header.setFixedHeight(50)
-        # self.main_area.setStyleSheet(style)
-
-        # nav bar
-        nav_bar_layout = QHBoxLayout()
-        nav_bar = QWidget()
-        # nav_bar.setFixedHeight(50)
-        nav_bar.setLayout(nav_bar_layout)
-        home_button = QPushButton("Home")
-        form_button = QPushButton("Form")
-        nav_bar_layout.addWidget(home_button)
-        nav_bar_layout.addWidget(form_button)
-        nav_bar_layout.addStretch()
-        # nav_bar.setStyleSheet(style)
 
         # sidebar
         self.sidebar = QListWidget()
-        # self.sidebar.setFixedSize(100, 500)
-        #         self.sidebar.setStyleSheet(
-        #             """
-        #             QListWidget::item {
-        #                 border: 1px solid #aaa;
-        #                 border-radius: 4px;
-        #                 padding: 8px;
-        #                 margin: 4px;
-        #             }
-        #             QListWidget::item:selected {
-        #                 background-color: #cceeff;
-        #             }
-        # """
-        #         )
         self.sidebar.addItems(
             [
                 "Global Parameters",
@@ -112,22 +73,11 @@ class MainWindow(QMainWindow):
                 "Fixed variables",
             ]
         )
-
-        # button_item = QListWidgetItem()
-        # self.sidebar.addItem(button_item)
-        # button_widget = QPushButton("Button")
-        # self.sidebar.setItemWidget(button_item, button_widget)
-        # button_item.setSizeHint(button_widget.sizeHint())
-
-        # ----------------------------------------------------
         sidebar_layout = QVBoxLayout()
-        # self.sidebar.setFixedWidth(310)
         sidebar_layout.addWidget(self.sidebar)
-        # sidebar_layout.addWidget(button_widget)
         sidebar_layout.addStretch()
         sidebar_widget = QWidget()
         sidebar_widget.setLayout(sidebar_layout)
-        # sidebar_widget.setFixedWidth(330)
 
         layout = QVBoxLayout()
         layout.addWidget(header)
@@ -149,23 +99,11 @@ class MainWindow(QMainWindow):
         end_buttons_layout.addWidget(apply_button)
 
         layout.addWidget(end_buttons)
-        # main_area_layout.addWidget(self.tabs)
-        # layout.addWidget(self.main_area)
-        # main_area_layout.addWidget(self.sidebar)
         main_area_layout.addWidget(self.sidebar)
         main_area_layout.addWidget(self.page1)
-        # self.page1.setFixedWidth(1000)
         main_area_layout.addStretch()
 
         self.tab1.setLayout(main_area_layout)
-        # layout.addLayout(nav_bar_layout)
-        # layout.addWidget(self.main_area)
-        # layout.addWidget(self.sidebar)
-        # layout.addWidget(self.tabs)
-        # main_area_layout.addWidget(self.sidebar)
-        # layout.addWidget(self.stack)
-        # layout.addWidget(self.button)
-
         central_widget = QWidget()
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
@@ -175,23 +113,23 @@ global_params = {
     # TODO: add the general algo params
     "pressure_in": ["bar", "Pa", "kPa"],
     "pressure_out": ["bar", "Pa", "kPa"],
-    "f2ed": ["mol/s"],
-    "f3ed": ["mol/s"],
-    "f4ed": ["mol/s"],
-    "f5ed": ["m1l/s"],
-    "f6ed": ["m2l/s"],
-    "f7ed": ["m3l/s"],
-    "f2ed": ["m4l/s"],
-    "f1ed": ["m4l/s"],
-    "f1ed": ["m4l/s"],
-    "f1ed": ["m4l/s"],
-    "f1ed": ["m4l/s"],
-    "f11d": ["m4l/s"],
-    "f12d": ["m4l/s"],
-    "f15d": ["m4l/s"],
-    "f17d": ["m4l/s"],
-    "f18d": ["m4l/s"],
-    "f18d": ["m4l/s"],
+    "f2ed a fost odata ": ["mol/s"],
+    "f3ed do not": ["mol/s"],
+    # "f4ed": ["mol/s"],
+    # "f5ed": ["m1l/s"],
+    # "f6ed": ["m2l/s"],
+    # "f7ed": ["m3l/s"],
+    # "f2ed": ["m4l/s"],
+    # "f1ed": ["m4l/s"],
+    # "f1ed": ["m4l/s"],
+    # "f1ed": ["m4l/s"],
+    # "f1ed": ["m4l/s"],
+    # "f11d": ["m4l/s"],
+    # "f12d": ["m4l/s"],
+    # "f15d": ["m4l/s"],
+    # "f17d": ["m4l/s"],
+    # "f18d": ["m4l/s"],
+    # "f18d": ["m4l/s"],
     # "118d": ["m4l/s"],
     # "218d": ["m4l/s"],
     # "518d": ["m4l/s"],
@@ -212,19 +150,11 @@ class PageParametersGlobal(QWidget):
         self.parameters = {}
 
         header2 = QLabel("Main Area Header")
-        # style = "border: 1px solid gray; padding: 4px;"
-        # header2.setStyleSheet(style)
-        # header2.setFixedHeight(50)
         main_layout = QVBoxLayout()
-
-        # wrapper_form_layout = QHBoxLayout()
 
         content_layout = QVBoxLayout()
         content_widget = QWidget()
         content_widget.setLayout(content_layout)
-        content_layout.setSpacing(50)
-        # content_layout.setSpacing(10)
-        # content_layout.addWidget(self.main_window.tabs)
 
         # scroll area
         scroll_area = QScrollArea()
@@ -234,64 +164,35 @@ class PageParametersGlobal(QWidget):
         # parameters
 
         for i, (key, value) in enumerate(global_params.items(), start=1):
-            # Horizontal row: number + input area
             row_layout = QHBoxLayout()
-            # row_layout.setSpacing(50)
-
-            # Number
-            number_label = QLabel(f"{i}.")
-            # number_label.setFixedSize(50, 50)
-            number_label.setAlignment(Qt.AlignmentFlag.AlignTop)
 
             # Vertical input area
             input_layout = QVBoxLayout()
-            # input_layout.setSpacing(5)
 
             question_label = QLabel(key)
-            # question_label.setFixedHeight(25)
             line_edit = QLineEdit()
             combo_box = QComboBox()
             combo_box.addItems(value)
 
             answer_widget = QWidget()
             answer_layout = QHBoxLayout(answer_widget)
-            # answer_widget.setFixedHeight(45)
 
+            answer_layout.addWidget(question_label)
             answer_layout.addWidget(line_edit)
             answer_layout.addWidget(combo_box)
 
-            input_layout.addWidget(question_label)
-
-            # answer_widget.setFixedWidth(650)
             input_layout.addWidget(answer_widget)
 
-            # input_layout.addWidget(line_edit)
-            # input_layout.addWidget(combo_box)
-
-            row_layout.addWidget(number_label)
-            row_layout.addStretch()
-            # row_layout.addWidget(combo_box)
+            # row_layout.addStretch()
             row_layout.addLayout(input_layout)
 
-            # Wrap in widget and add to content
             row_widget = QWidget()
-            # row_widget.setFixedHeight(130)
             row_widget.setLayout(row_layout)
             content_layout.addWidget(row_widget)
 
-        # main_layout.addWidget(self.main_window.tabs)
-        main_layout.addWidget(header2)
-        # content_widget.setFixedWidth(800)
-        # scroll_area.setFixedWidth(700)
-        scroll_area.setWidget(content_widget)
-        main_layout.addWidget(scroll_area)
+        main_layout.addWidget(content_widget)
 
-        # end_label = QLabel("Buuu")
-        # end_label.setFixedHeight(80)
-        # main_layout.addWidget(end_label)
         form_widget = QWidget()
-        # form_widget.setFixedWidth()
-        # form_widget.setLayout(form_layout)
 
         # scroll
         scroll = QScrollArea()
