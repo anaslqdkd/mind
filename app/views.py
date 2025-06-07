@@ -2,6 +2,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QComboBox,
     QFormLayout,
+    QGridLayout,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -159,37 +160,31 @@ class PageParametersGlobal(QWidget):
         # scroll area
         scroll_area = QScrollArea()
         # scroll_area.setWidget(content_widget)
+        container_widget = QWidget()
+        grid_layout = QGridLayout(container_widget)
+        grid_layout.setHorizontalSpacing(10)
+        grid_layout.setVerticalSpacing(8)
+        grid_layout.setContentsMargins(0, 0, 0, 0)
 
         form_layout = QFormLayout()
         # parameters
 
-        for i, (key, value) in enumerate(global_params.items(), start=1):
-            row_layout = QHBoxLayout()
-
-            # Vertical input area
-            input_layout = QVBoxLayout()
-
+        for i, (key, value) in enumerate(global_params.items(), start=0):
             question_label = QLabel(key)
             line_edit = QLineEdit()
             combo_box = QComboBox()
             combo_box.addItems(value)
 
-            answer_widget = QWidget()
-            answer_layout = QHBoxLayout(answer_widget)
+            # Optionally, set fixed/minimum widths for inputs to align better
+            line_edit.setMinimumWidth(150)
+            combo_box.setMinimumWidth(120)
 
-            answer_layout.addWidget(question_label)
-            answer_layout.addWidget(line_edit)
-            answer_layout.addWidget(combo_box)
+            # Add widgets to grid layout: label in col 0, line_edit in col 1, combo_box in col 2
+            grid_layout.addWidget(question_label, i, 0)
+            grid_layout.addWidget(line_edit, i, 1)
+            grid_layout.addWidget(combo_box, i, 2)
 
-            input_layout.addWidget(answer_widget)
-
-            # row_layout.addStretch()
-            row_layout.addLayout(input_layout)
-
-            row_widget = QWidget()
-            row_widget.setLayout(row_layout)
-            content_layout.addWidget(row_widget)
-
+        content_layout.addWidget(container_widget)
         main_layout.addWidget(content_widget)
 
         form_widget = QWidget()
