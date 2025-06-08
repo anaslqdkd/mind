@@ -255,7 +255,7 @@ class MainWindow(QMainWindow):
         self.page_components = PageParametersComponent(self)
 
         self.main_area = QWidget()
-        main_area_layout = QHBoxLayout(self.main_area)
+        tab1_layout = QHBoxLayout(self.main_area)
         header = QLabel("Main Area Header")
 
         # sidebar
@@ -295,11 +295,16 @@ class MainWindow(QMainWindow):
         end_buttons_layout.addWidget(apply_button)
 
         layout.addWidget(end_buttons)
-        main_area_layout.addWidget(self.sidebar)
-        main_area_layout.addWidget(self.page1)
-        main_area_layout.addStretch()
+        tab1_layout.addWidget(self.sidebar)
+        tab1_layout.addWidget(self.page1)
+        tab1_layout.addWidget(self.stack)
+        tab1_layout.addStretch()
 
-        self.tab1.setLayout(main_area_layout)
+        self.stack.addWidget(self.page1)
+        self.stack.addWidget(self.page_components)
+        self.sidebar.currentRowChanged.connect(self.stack.setCurrentIndex)
+
+        self.tab1.setLayout(tab1_layout)
         central_widget = QWidget()
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
