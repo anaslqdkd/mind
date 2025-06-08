@@ -32,7 +32,8 @@ class ParamType(enum.Enum):
     INPUT_WITH_UNITY = enum.auto()  # parametre avec unité dans un menu deroulant
     BOOLEAN = enum.auto()  # checkbox
     SELECT = enum.auto()  # menu deroulable
-    BOOLEAN_WITH_VALUE = enum.auto()  # pour maxtime, maxiteration
+    BOOLEAN_WITH_INPUT = enum.auto()  # maxiteration
+    BOOLEAN_WITH_INPUT_WITH_UNITY = enum.auto()  # pour maxtime
 
 
 class Param:
@@ -53,58 +54,166 @@ class ParamCategory(QWidget):
 
         self.grid_widget = QWidget()
         self.grid_layout = QGridLayout(self.grid_widget)
+        self.grid_layout.setContentsMargins(0, 0, 0, 0)
         self.grid_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.label = QLabel(f"{name}")
+        self.label.setStyleSheet(
+            """
+            font-weight: bold;
+            font-size: 14px;
+            color: #000;
+"""
+        )
         layout.addWidget(self.label)
         layout.addWidget(self.grid_widget)
         self.build_param()
 
     def build_param(self) -> QWidget:
-        for row, (label, param_obj) in enumerate(self.param.items()):
+        row = 0
+        for label, param_obj in self.param.items():
             match param_obj.type:
                 case ParamType.INPUT:
                     self.add_param_input(row, label, param_obj)
+                    row += 1
                 case ParamType.INPUT_WITH_UNITY:
                     self.add_param_input_with_unity(row, label, param_obj)
+                    row += 1
                     pass
                 case ParamType.BOOLEAN:
                     self.add_param_boolean(row, label, param_obj)
+                    row += 1
                 case ParamType.SELECT:
                     self.add_param_select(row, label, param_obj)
+                    row += 1
                     # pass
-                case ParamType.BOOLEAN_WITH_VALUE:
+                case ParamType.BOOLEAN_WITH_INPUT:
+                    self.add_param_boolean_with_input(row, label, param_obj)
+                    row += 2
                     pass
+                case ParamType.BOOLEAN_WITH_INPUT_WITH_UNITY:
+                    self.add_param_boolean_with_input_with_unity(row, label, param_obj)
+                    row += 2
+
         return self
 
     def add_param_input(self, row: int, label: str, param_obj: Param):
         question_label = QLabel(label)
         line_edit = QLineEdit()
         self.grid_layout.addWidget(question_label, row, 0)
-        self.grid_layout.addWidget(line_edit, row, 1)
+        self.grid_layout.addItem(
+            QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum),
+            row,
+            1,
+        )
+        self.grid_layout.addWidget(line_edit, row, 2)
 
     def add_param_input_with_unity(self, row: int, label: str, param_obj: Param):
         question_label = QLabel(label)
         line_edit = QLineEdit()
         combo_box = QComboBox()
         combo_box.addItems(param_obj.values)
+        # self.grid_layout.addWidget(question_label, row, 0)
+        # self.grid_layout.addWidget(line_edit, row, 1)
+        # self.grid_layout.addWidget(combo_box, row, 2)
         self.grid_layout.addWidget(question_label, row, 0)
-        self.grid_layout.addWidget(line_edit, row, 1)
-        self.grid_layout.addWidget(combo_box, row, 2)
+        self.grid_layout.addItem(
+            QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum),
+            row,
+            1,
+        )
+        self.grid_layout.addWidget(line_edit, row, 2)
+        self.grid_layout.addWidget(combo_box, row, 3)
 
     def add_param_boolean(self, row: int, label: str, param_obj: Param):
-        question_label = QLabel(label)
+        container = QWidget()
+        h_layout = QHBoxLayout(container)
+        h_layout.setContentsMargins(0, 0, 0, 0)  # remove margins for tighter layout
+        # h_layout.setSpacing(5)  # optional: tweak spacing between checkbox and label
+
         check_box = QCheckBox()
-        self.grid_layout.addWidget(question_label, row, 1)
-        self.grid_layout.addWidget(check_box, row, 0)
+        question_label = QLabel(label)
+
+        h_layout.addWidget(check_box)
+        h_layout.addWidget(question_label)
+        h_layout.addStretch()
+
+        self.grid_layout.addWidget(container, row, 0, 1, 2)  # span 2 columns if needed
+
+    def add_param_boolean_with_input(self, row: int, label: str, param_obj: Param):
+        checkbox_container = QWidget()
+        checkbox_layout = QHBoxLayout(checkbox_container)
+        checkbox_layout.setContentsMargins(0, 0, 0, 0)
+        checkbox_layout.setSpacing(5)
+
+        check_box = QCheckBox()
+        question_label = QLabel(label)
+
+        checkbox_layout.addWidget(check_box)
+        checkbox_layout.addWidget(question_label)
+        checkbox_layout.addStretch()
+
+        self.grid_layout.addWidget(checkbox_container, row, 0, 1, 2)
+
+        # Second row: Label + input field
+        t_label = QLabel(label)
+        line_edit = QLineEdit()
+        line_edit.setEnabled(False)
+        check_box.toggled.connect(line_edit.setEnabled)
+
+        self.grid_layout.addWidget(t_label, row + 1, 0)
+        spacer = QWidget()
+        self.grid_layout.addWidget(spacer, row + 1, 1)
+        self.grid_layout.addWidget(line_edit, row + 1, 2)
+
+    def add_param_boolean_with_input_with_unity(
+        self, row: int, label: str, param_obj: Param
+    ):
+        checkbox_container = QWidget()
+        checkbox_layout = QHBoxLayout(checkbox_container)
+        checkbox_layout.setContentsMargins(0, 0, 0, 0)
+        checkbox_layout.setSpacing(5)
+
+        check_box = QCheckBox()
+        question_label = QLabel(label)
+
+        combo_box = QComboBox()
+        combo_box.addItems(param_obj.values)
+
+        checkbox_layout.addWidget(check_box)
+        checkbox_layout.addWidget(question_label)
+        checkbox_layout.addStretch()
+
+        self.grid_layout.addWidget(checkbox_container, row, 0, 1, 2)
+
+        # Second row: Label + input field
+        t_label = QLabel(label)
+        line_edit = QLineEdit()
+        line_edit.setEnabled(False)
+        check_box.toggled.connect(line_edit.setEnabled)
+
+        self.grid_layout.addWidget(t_label, row + 1, 0)
+        spacer = QWidget()
+        self.grid_layout.addWidget(spacer, row + 1, 1)
+        self.grid_layout.addWidget(line_edit, row + 1, 2)
+        self.grid_layout.addWidget(combo_box)
 
     def add_param_select(self, row: int, label: str, param_obj: Param):
         question_label = QLabel(label)
         combo_box = QComboBox()
         combo_box.addItems(param_obj.values)
-        self.grid_layout.addWidget(combo_box, row, 1, 1, 2)
+        combo_box.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+
         self.grid_layout.addWidget(question_label, row, 0)
 
-        # TODO: for each element in dict, a switch case to build the appropriate param type and add it to the grid
+        # Spacer to push the combo box to the right
+        spacer = QSpacerItem(
+            0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
+        )
+        self.grid_layout.addItem(spacer, row, 1)
+
+        # self.grid_layout.addWidget(combo_box, row, 2)
+        # TODO: same for the other menus
+        self.grid_layout.addWidget(combo_box, row, 2, 1, 2)
 
 
 class MenuBar(QMenuBar):
@@ -196,47 +305,40 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central_widget)
 
 
-global_params = {
-    # TODO: add the general algo params
-    "pressure_in": ["bar", "Pa", "kPa"],
-    "pressure_out": ["bar", "Pa", "kPa"],
-    "f2ed a fost odata ": ["mol/s"],
-    "f3ed do not": ["mol/s"],
-    # "f4ed": ["mol/s"],
-    # "f5ed": ["m1l/s"],
-    # "f6ed": ["m2l/s"],
-    # "f7ed": ["m3l/s"],
-    # "f2ed": ["m4l/s"],
-    # "f1ed": ["m4l/s"],
-    # "f1ed": ["m4l/s"],
-    # "f1ed": ["m4l/s"],
-    # "f1ed": ["m4l/s"],
-    # "f11d": ["m4l/s"],
-    # "f12d": ["m4l/s"],
-    # "f15d": ["m4l/s"],
-    # "f17d": ["m4l/s"],
-    # "f18d": ["m4l/s"],
-    # "f18d": ["m4l/s"],
-    # "118d": ["m4l/s"],
-    # "218d": ["m4l/s"],
-    # "518d": ["m4l/s"],
+params = {
+    "Generate starting point": Param(name="starting_point", type=ParamType.BOOLEAN),
+    "Pressure": Param(
+        name="pressure_in", type=ParamType.INPUT_WITH_UNITY, values=["bar", "kPa", "Pa"]
+    ),
+    "Use simplified model": Param(name="simplified_model", type=ParamType.BOOLEAN),
+    "Algorithm": Param(
+        name="Algorithm",
+        type=ParamType.SELECT,
+        values=["multistart", "mbh", "global", "genetic", "population"],
+    ),
+    "Set max time": Param(
+        name="max_time",
+        type=ParamType.BOOLEAN_WITH_INPUT_WITH_UNITY,
+        values=["s", "h", "ms", "days"],
+    ),
+    "Set max iterations": Param(
+        name="max_iterations", type=ParamType.BOOLEAN_WITH_INPUT
+    ),
+    "Pressure ratio": Param(
+        name="pressure_ratio",
+        type=ParamType.INPUT,
+        # values=["s", "h", "ms", "days"],
+    ),
 }
 
-params = {
+param = {
     "Alpha": Param(
-        name="Alpha", type=ParamType.INPUT_WITH_UNITY, values=["bar", "kPa", "Pa"]
-    ),
-    "Duration": Param(name="Duration", type=ParamType.INPUT),
-    "Enable Feature": Param(name="Enable Feature", type=ParamType.BOOLEAN),
-    "Mode": Param(
-        name="Mode", type=ParamType.SELECT, values=["select 1", "select 2", "select 3"]
-    ),
-    "Max Iterations": Param(name="Max Iterations", type=ParamType.INPUT),
+        name="Alpha", type=ParamType.BOOLEAN_WITH_INPUT, values=["bar", "kPa", "Pa"]
+    )
 }
 
 
 class Parameter:
-    # TODO:
     def __init__(self, name: str, measure: list[str]) -> None:
         self.name = name
         self.measure = measure
@@ -262,77 +364,19 @@ class PageParametersGlobal(QWidget):
         )
         category_layout.addWidget(category_label)
 
-        container_widget = QWidget()
-        grid_layout = QGridLayout(container_widget)
-
-        ex_params = ParamCategory("First category", params)
+        ex_params = ParamCategory("Algorithm parameters", params)
         main_layout.addWidget(ex_params)
 
-        # for i, (key, value) in enumerate(global_params.items(), start=0):
-        #     question_label = QLabel(key)
-        #     line_edit = QLineEdit()
-        #     combo_box = QComboBox()
-        #     combo_box.addItems(value)
-        #
-        #     grid_layout.addWidget(question_label, i, 0)
-        #     grid_layout.addWidget(line_edit, i, 1)
-        #     grid_layout.addWidget(combo_box, i, 2)
-        #
-        # combo_box = QComboBox()
-        # combo_box.addItems(["ls", "ldkf", "ldk"])
-        # grid_layout.addWidget(QLabel("flksdj:"))
-        # grid_layout.addWidget(combo_box, i + 1, 1, 1, 2)
-        # #
-        # check_box = QCheckBox()
-        # grid_layout.addWidget(check_box)
-        # grid_layout.addWidget(QLabel("label for the checkbox"))
-        #
-        # category_layout.addWidget(container_widget)
-        # category_layout.addWidget(QLabel("Activate verification"))
-        #
-        # check_widget = QWidget()
-        # check_grid = QGridLayout(check_widget)
-        # check_box = QCheckBox()
-        # check_grid_label = QLabel("Activate verification:")
-        #
-        # check_grid.addWidget(check_box, 0, 0)  # Checkbox in column 0
-        # check_grid.addWidget(check_grid_label, 0, 1)
-        # check_grid.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        #
-        # category_layout.addWidget(check_widget)
-        #
+        ex_params1 = ParamCategory("Second category", param)
+        main_layout.addWidget(ex_params1)
+
         # NOTE: à remettre si jamais
         # group_box = QGroupBox("Global Settings")
         # group_box.setLayout(category_layout)
         # main_layout.addWidget(group_box)
 
         main_layout.addWidget(category_widget)
-
-        form_widget = QWidget()
         category_layout.addStretch()
-
-        # scroll
-        scroll = QScrollArea()
-        scroll.setWidgetResizable(True)
-        scroll.setWidget(form_widget)
-        scroll.setStyleSheet(
-            """
-    QScrollBar:vertical {
-        width: 16px;
-        background: #eee;
-    }
-    QScrollBar::handle:vertical {
-        background: #999;
-        border-radius: 6px;
-    }
-"""
-        )
-
-        # wrapper_form_layout.addWidget(scroll)
-        # wrapper_form_widget = QWidget()
-        # wrapper_form_widget.setLayout(wrapper_form_layout)
-        # main_layout.addWidget(wrapper_form_widget)
-        # main_layout.addWidget(scroll)
 
         self.setLayout(main_layout)
 
@@ -346,7 +390,6 @@ class PageParametersGlobal(QWidget):
 
 
 class PageParametersComponent(QWidget):
-    # TODO:
     def __init__(self, main_window):
         super().__init__()
         self.main_window = main_window
