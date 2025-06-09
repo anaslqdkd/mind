@@ -34,6 +34,7 @@ class ParamType(enum.Enum):
     SELECT = enum.auto()  # menu deroulable
     BOOLEAN_WITH_INPUT = enum.auto()  # maxiteration
     BOOLEAN_WITH_INPUT_WITH_UNITY = enum.auto()  # pour maxtime
+    COMPONENT = enum.auto()  # set components
 
 
 class Param:
@@ -58,6 +59,8 @@ class ParamCategory(QWidget):
         self.grid_layout.setContentsMargins(0, 0, 0, 0)
         self.grid_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.label = QLabel(f"{name}")
+
+        # self.combo_boxes = []
         self.label.setStyleSheet(
             """
             font-weight: bold;
@@ -93,6 +96,9 @@ class ParamCategory(QWidget):
                     pass
                 case ParamType.BOOLEAN_WITH_INPUT_WITH_UNITY:
                     self.add_param_boolean_with_input_with_unity(row, label, param_obj)
+                    row += 2
+                case ParamType.COMPONENT:
+                    self.add_param_component(row, label, param_obj)
                     row += 2
 
         return self
@@ -216,6 +222,51 @@ class ParamCategory(QWidget):
         # TODO: same for the other menus
         self.grid_layout.addWidget(combo_box, row, 2, 1, 2)
 
+    def add_param_component(self, row: int, label: str, param_obj: Param):
+        layout = QHBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+
+        self.label = QLabel(label)
+        self.line_edit = QComboBox()
+        # self.combo_box.addItems(options)
+        # self.combo_box.currentIndexChanged.connect(on_change)
+        self.line_edit.setPlaceholderText("Select a component")
+        self.line_edit.addItems(["item 1", "item 2", "item 3"])
+        # self.line_edit.setCurrentIndex(0)
+
+        self.line_edit.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed
+        )
+
+        remove_button = QPushButton("✕")
+        remove_button.setFixedWidth(30)
+        # remove_button.clicked.connect(lambda: on_remove(self))
+
+        # Add widgets to layout
+        self.grid_layout.addWidget(self.label, row, 0)
+        layout.addItem(
+            QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        )
+        self.grid_layout.addWidget(self.line_edit, row, 1)
+        self.grid_layout.addWidget(remove_button, row, 2)
+
+        # Placeholder for the box that will appear
+        self.extra_box = QComboBox()
+        self.extra_box.setPlaceholderText("Extra input")
+        self.extra_box.hide()  # Start hidden
+
+        self.line_edit.currentIndexChanged.connect(
+            self.add_component(row, label, param_obj)
+        )
+
+        # self.add_component_box = QComboBox()
+        # self.add_component_box.setPlaceholderText("Add component")
+        self.grid_layout.addWidget(self.extra_box, row + 1, 1)
+
+    def add_component(self, row: int, label: str, param_obj: Param):
+        # self.add_param_component(row + 1, label, param_obj)
+        self.extra_box.show()
+
 
 class MenuBar(QMenuBar):
     def __init__(self, parent=None) -> None:
@@ -338,9 +389,10 @@ params = {
 }
 
 param = {
-    "Alpha": Param(
-        name="Alpha", type=ParamType.BOOLEAN_WITH_INPUT, values=["bar", "kPa", "Pa"]
-    )
+    # "Alpha": Param(
+    #     name="Alpha", type=ParamType.BOOLEAN_WITH_INPUT, values=["bar", "kPa", "Pa"]
+    # ),
+    "Alpha": Param(name="BY", type=ParamType.COMPONENT, values=["bar", "kPa", "Pa"]),
 }
 
 param_page1 = {"Algorithm parameters": params, "Other parameters": param}
