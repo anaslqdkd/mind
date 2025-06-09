@@ -1,7 +1,9 @@
 import enum
+import re
 from typing import Optional
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import QEvent, Qt
 from PyQt6.QtWidgets import (
+    QApplication,
     QCheckBox,
     QComboBox,
     QFormLayout,
@@ -35,6 +37,7 @@ class ParamType(enum.Enum):
     BOOLEAN_WITH_INPUT = enum.auto()  # maxiteration
     BOOLEAN_WITH_INPUT_WITH_UNITY = enum.auto()  # pour maxtime
     COMPONENT = enum.auto()  # set components
+    # TODO: add a param type for components attributes
 
 
 class Param:
@@ -105,17 +108,19 @@ class ParamCategory(QWidget):
                     )
                     self.row += 2
                 case ParamType.COMPONENT:
-                    # self.add_param_component(self.row, label, param_obj)
                     # self.row += 2
                     print("the row is", self.row)
-                    self.build_components(self.row)
+                    self.build_components(self.row, label)
                     self.row += self.extra_rows + 1
                     # self.row += self.extra_rows
 
         return self
 
-    def build_components(self, row: int):
-        for i in range(self.extra_rows):
+    def build_components(self, row: int, label: "str"):
+        print("the label is", label)
+        question_label = QLabel(label)
+        self.grid_layout.addWidget(question_label, row, 0)
+        for i in range(len(self.components_index)):
             combo = QComboBox()
             combo.setPlaceholderText("Extra input")
             combo.addItems(["Item 1", "Item 2", "Item 3"])
@@ -124,21 +129,28 @@ class ParamCategory(QWidget):
             combo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
             remove_button = QPushButton("✕")
             remove_button.setFixedWidth(30)
+            remove_button.clicked.connect(lambda: self.remove_component(i))
             self.grid_layout.addWidget(combo, row, 2)
             self.grid_layout.addWidget(remove_button, row, 3)
             row += 1
-        extra_combo = QComboBox()
-        extra_combo.setPlaceholderText("Extra input")
-        extra_combo.addItems(["Item 1", "Item 2", "Item 3"])
-        self.grid_layout.addWidget(extra_combo, row, 2)
+        self.extra_combo = QComboBox()
+        self.extra_combo.setPlaceholderText("Extra input")
+        self.extra_combo.addItems(["Item 1", "Item 2", "Item 3"])
+        self.grid_layout.addWidget(self.extra_combo, row, 2)
         remove_button = QPushButton("✕")
         remove_button.setFixedWidth(30)
-        extra_combo.currentIndexChanged.connect(
-            lambda idx, combo=extra_combo: self.store_value(combo)
+        self.extra_combo.currentIndexChanged.connect(
+            lambda idx, combo=self.extra_combo: self.store_value(combo)
         )
-        extra_combo.currentIndexChanged.connect(self.add_component_row)
+        self.extra_combo.currentIndexChanged.connect(self.add_component_row)
         self.grid_layout.addWidget(remove_button, row, 3)
         pass
+
+    def remove_component(self, index: int):
+        # print(self.components_index)
+        self.components_index.pop(index)
+        self.clear_grid_layout()
+        self.build_param()
 
     def add_param_input(self, row: int, label: str, param_obj: Param):
         question_label = QLabel(label)
@@ -239,7 +251,7 @@ class ParamCategory(QWidget):
         spacer = QWidget()
         self.grid_layout.addWidget(spacer, row + 1, 1)
         self.grid_layout.addWidget(line_edit, row + 1, 2)
-        self.grid_layout.addWidget(combo_box)
+        self.grid_layout.addWidget(combo_box, row + 1, 3)
 
     def add_param_select(self, row: int, label: str, param_obj: Param):
         question_label = QLabel(label)
@@ -256,7 +268,6 @@ class ParamCategory(QWidget):
         self.grid_layout.addItem(spacer, row, 1)
 
         # self.grid_layout.addWidget(combo_box, row, 2)
-        # TODO: same for the other menus
         self.grid_layout.addWidget(combo_box, row, 2, 1, 2)
 
     def add_param_component(self, row: int, label: str, param_obj: Param):
@@ -453,18 +464,24 @@ params = {
         type=ParamType.INPUT,
         # values=["s", "h", "ms", "days"],
     ),
+    "Pressure ratio": Param(
+        name="pressure_ratio",
+        type=ParamType.INPUT,
+        # values=["s", "h", "ms", "days"],
+    ),
+    "Alpha": Param(name="BY", type=ParamType.COMPONENT, values=["bar", "kPa", "Pa"]),
 }
 
 param = {
     # "Alpha": Param(
     #     name="Alpha", type=ParamType.BOOLEAN_WITH_INPUT, values=["bar", "kPa", "Pa"]
     # ),
-    "Alpha": Param(name="BY", type=ParamType.COMPONENT, values=["bar", "kPa", "Pa"]),
     "Pressure ratio": Param(
         name="pressure_ratio",
         type=ParamType.INPUT,
         # values=["s", "h", "ms", "days"],
     ),
+    "Alpha": Param(name="BY", type=ParamType.COMPONENT, values=["bar", "kPa", "Pa"]),
 }
 
 param_page1 = {"Algorithm parameters": params, "Other parameters": param}
@@ -483,6 +500,7 @@ class PageParametersGlobal(QWidget):
     ) -> None:
         super().__init__()
         self.main_window = main_window
+        self.param_category = param_category
         # self.param_category = param_category
 
         main_layout = QVBoxLayout()
