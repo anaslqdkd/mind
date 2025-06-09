@@ -15,7 +15,7 @@ class MainController:
 class ComponentsController:
     def __init__(self, view) -> None:
         self.view = view
-        self.view.add_component_button.clicked.connect(self.view.add_component)
+        # self.view.add_component_button.clicked.connect(self.view.add_component)
 
     def add_components(self):
         print("in add components")

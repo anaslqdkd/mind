@@ -49,6 +49,7 @@ class ParamCategory(QWidget):
     def __init__(self, name: str, param: dict["str", Param]) -> None:
         super().__init__()
         layout = QVBoxLayout()
+        self.name = name
         self.setLayout(layout)
         self.param = param
 
@@ -251,8 +252,8 @@ class MainWindow(QMainWindow):
         self.tabs.addTab(self.tab2, "Tab 2")
 
         # pages
-        self.page1 = PageParametersGlobal(self)
-        self.page_components = PageParametersComponent(self)
+        self.page1 = PageParametersGlobal(self, params)
+        self.page_components = PageParametersGlobal(self, param)
 
         self.main_area = QWidget()
         tab1_layout = QHBoxLayout(self.main_area)
@@ -336,6 +337,8 @@ params = {
     ),
 }
 
+param_page1 = {"Algorithm parameters": ParamCategory("Algorithm parameters", params)}
+
 param = {
     "Alpha": Param(
         name="Alpha", type=ParamType.BOOLEAN_WITH_INPUT, values=["bar", "kPa", "Pa"]
@@ -350,10 +353,9 @@ class Parameter:
 
 
 class PageParametersGlobal(QWidget):
-    def __init__(self, main_window):
+    def __init__(self, main_window, param: dict["str", Param]) -> None:
         super().__init__()
         self.main_window = main_window
-        self.parameters = {}
 
         main_layout = QVBoxLayout()
 
@@ -361,37 +363,11 @@ class PageParametersGlobal(QWidget):
         content_widget = QWidget()
         content_widget.setLayout(content_layout)
 
-        category_widget = QWidget()
-        category_layout = QVBoxLayout(category_widget)
-        category_label = QLabel("Smaller category")
-        category_label.setSizePolicy(
-            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed
-        )
-        category_layout.addWidget(category_label)
-
-        ex_params = ParamCategory("Algorithm parameters", params)
+        ex_params = ParamCategory("Algorithm parameters", param)
         main_layout.addWidget(ex_params)
-
-        ex_params1 = ParamCategory("Second category", param)
-        main_layout.addWidget(ex_params1)
-
-        # NOTE: à remettre si jamais
-        # group_box = QGroupBox("Global Settings")
-        # group_box.setLayout(category_layout)
-        # main_layout.addWidget(group_box)
-
-        main_layout.addWidget(category_widget)
-        category_layout.addStretch()
+        main_layout.addStretch()
 
         self.setLayout(main_layout)
-
-    def get_parameters(self):
-        # test fonction to get parameters
-        results = {}
-        for key, (line_edit, combo_box) in self.parameters.items():
-            results[key] = {"value": line_edit.text(), "unit": combo_box.currentText()}
-        print(results)
-        return results
 
 
 class PageParametersComponent(QWidget):
