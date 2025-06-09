@@ -120,7 +120,6 @@ class ParamCategory(QWidget):
             combo.setPlaceholderText("Extra input")
             combo.addItems(["Item 1", "Item 2", "Item 3"])
             combo.setCurrentIndex(self.components_index[i])
-            combo.currentIndexChanged.connect(self.add_component_row)
             print("self.components_index", self.components_index)
             combo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
             remove_button = QPushButton("✕")
