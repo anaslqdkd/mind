@@ -252,8 +252,8 @@ class MainWindow(QMainWindow):
         self.tabs.addTab(self.tab2, "Tab 2")
 
         # pages
-        self.page1 = PageParametersGlobal(self, params)
-        self.page_components = PageParametersGlobal(self, param)
+        self.page1 = PageParametersGlobal(self, param_page1)
+        self.page_components = PageParametersGlobal(self, param_page2)
 
         self.main_area = QWidget()
         tab1_layout = QHBoxLayout(self.main_area)
@@ -337,13 +337,14 @@ params = {
     ),
 }
 
-param_page1 = {"Algorithm parameters": ParamCategory("Algorithm parameters", params)}
-
 param = {
     "Alpha": Param(
         name="Alpha", type=ParamType.BOOLEAN_WITH_INPUT, values=["bar", "kPa", "Pa"]
     )
 }
+
+param_page1 = {"Algorithm parameters": params, "Other parameters": param}
+param_page2 = {"Algorithm parameters": params}
 
 
 class Parameter:
@@ -353,9 +354,12 @@ class Parameter:
 
 
 class PageParametersGlobal(QWidget):
-    def __init__(self, main_window, param: dict["str", Param]) -> None:
+    def __init__(
+        self, main_window, param_category: dict["str", dict[str, Param]]
+    ) -> None:
         super().__init__()
         self.main_window = main_window
+        # self.param_category = param_category
 
         main_layout = QVBoxLayout()
 
@@ -363,8 +367,12 @@ class PageParametersGlobal(QWidget):
         content_widget = QWidget()
         content_widget.setLayout(content_layout)
 
-        ex_params = ParamCategory("Algorithm parameters", param)
-        main_layout.addWidget(ex_params)
+        for key, value in param_category.items():
+            ex_params = ParamCategory(key, value)
+            main_layout.addWidget(ex_params)
+
+        # ex_params = ParamCategory("Algorithm parameters", param)
+        # main_layout.addWidget(ex_params)
         main_layout.addStretch()
 
         self.setLayout(main_layout)
