@@ -1,6 +1,6 @@
 import enum
 import re
-from typing import Optional
+from typing import Optional, Union
 from PyQt6.QtCore import QEvent, Qt
 from PyQt6.QtWidgets import (
     QApplication,
@@ -37,16 +37,58 @@ class ParamType(enum.Enum):
     BOOLEAN_WITH_INPUT = enum.auto()  # maxiteration
     BOOLEAN_WITH_INPUT_WITH_UNITY = enum.auto()  # pour maxtime
     COMPONENT = enum.auto()  # set components
+    COMPONENT_WITH_VALUE = enum.auto()  # components xin
+    COMPONENT_WITH_VALUE_WITH_UNITY = enum.auto()  # components xin
     # TODO: add a param type for components attributes
+
+
+class FILE(enum.Enum):
+    CONFIG = enum.auto()
+    DATA = enum.auto()
+    PERM = enum.auto()
+    ECO = enum.auto()
+    COMMAND = enum.auto()
+
+
+class ParamInput:
+    def __init__(self, name: str) -> None:
+        self.name = name
+        self.question_label = QLabel()
+        self.line_edit = QLineEdit()
+        self.last_line_edit: str = ""
+        pass
+
+
+class ParamSelect:
+    def __init__(self, name: str, label: str) -> None:
+        self.name = name
+        self.question_label = QLabel(label)
+        self.line_edit = QLineEdit()
+        pass
 
 
 class Param:
     def __init__(
-        self, name: str, type: ParamType, values: Optional[list[str]] = None
+        self,
+        name: str,
+        type: Union[ParamInput, ParamSelect],
+        # file: FILE,
+        values: Optional[list[str]] = None,
     ) -> None:
-        self.name = name
-        self.type = type
-        self.values = values or []
+        self.name = name  # the exact name in the data files
+        self.type = type  # the type as an Enum in ParamType
+        self.values = values or []  # values taken if it is a select param
+        # self.file = file
+        self.widgets: dict[str, dict["str", Union[QLineEdit, QComboBox, QCheckBox]]] = (
+            {}
+        )
+        # TODO: add widget dictionnary builder according to param type
+        # TODO: add optional attribute
+
+
+# TODO: advanced button to unlock more "unusual" settings
+# TODO: see for alpha parameter, lower bounds etc, to set them maybe with a cursor instead of having 3 possible fields?
+# TODO: store the input
 
 
 class ParamCategory(QWidget):
@@ -82,6 +124,12 @@ class ParamCategory(QWidget):
     def build_param(self) -> QWidget:
         self.row = 0
         for label, param_obj in self.param.items():
+            print("+++++ the type is", param_obj.type)
+            if isinstance(param_obj.type, ParamInput):
+                print("55555")
+                print(param_obj.name)
+                self.add_param_input(self.row, label, param_obj)
+                self.row += 1
             match param_obj.type:
                 case ParamType.INPUT:
                     print("the row in input is", self.row)
@@ -113,8 +161,12 @@ class ParamCategory(QWidget):
                     self.build_components(self.row, label)
                     self.row += self.extra_rows + 1
                     # self.row += self.extra_rows
+        self.build_param_values()
+        # TODO: add method to rebuild the inserted values
 
         return self
+
+    # TODO: a update method, clear_grid -> rebuild with the values
 
     def build_components(self, row: int, label: "str"):
         print("the label is", label)
@@ -152,9 +204,13 @@ class ParamCategory(QWidget):
         self.clear_grid_layout()
         self.build_param()
 
+    # TODO: refactor this into classes, class param_input etc instead of an enum, to have a unique reference to all atributes
     def add_param_input(self, row: int, label: str, param_obj: Param):
+        # TODO: do the same for other components
         question_label = QLabel(label)
         line_edit = QLineEdit()
+        if param_obj.type.last_line_edit != "":
+            line_edit.setText(param_obj.type.last_line_edit)
         self.grid_layout.addWidget(question_label, row, 0)
         self.grid_layout.addItem(
             QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum),
@@ -162,6 +218,10 @@ class ParamCategory(QWidget):
             1,
         )
         self.grid_layout.addWidget(line_edit, row, 2)
+        param_obj.widgets[param_obj.name] = {"line_edit": line_edit}
+        param_obj.type.question_label = question_label
+        param_obj.type.line_edit = line_edit
+        # print("dic param_obj widgets", param_obj.widgets)
 
     def add_param_input_with_unity(self, row: int, label: str, param_obj: Param):
         question_label = QLabel(label)
@@ -179,6 +239,8 @@ class ParamCategory(QWidget):
         )
         self.grid_layout.addWidget(line_edit, row, 2)
         self.grid_layout.addWidget(combo_box, row, 3)
+        param_obj.widgets[param_obj.name] = {"line_edit": line_edit}
+        param_obj.widgets[param_obj.name] = {"combo_box": combo_box}
 
     def add_param_boolean(self, row: int, label: str, param_obj: Param):
         container = QWidget()
@@ -220,6 +282,8 @@ class ParamCategory(QWidget):
         spacer = QWidget()
         self.grid_layout.addWidget(spacer, row + 1, 1)
         self.grid_layout.addWidget(line_edit, row + 1, 2)
+        param_obj.widgets[param_obj.name] = {"line_edit": line_edit}
+        param_obj.widgets[param_obj.name] = {"checkbox": check_box}
 
     def add_param_boolean_with_input_with_unity(
         self, row: int, label: str, param_obj: Param
@@ -252,6 +316,9 @@ class ParamCategory(QWidget):
         self.grid_layout.addWidget(spacer, row + 1, 1)
         self.grid_layout.addWidget(line_edit, row + 1, 2)
         self.grid_layout.addWidget(combo_box, row + 1, 3)
+        param_obj.widgets[param_obj.name] = {"line_edit": line_edit}
+        param_obj.widgets[param_obj.name] = {"checkbox": check_box}
+        param_obj.widgets[param_obj.name] = {"combo_box": combo_box}
 
     def add_param_select(self, row: int, label: str, param_obj: Param):
         question_label = QLabel(label)
@@ -269,6 +336,7 @@ class ParamCategory(QWidget):
 
         # self.grid_layout.addWidget(combo_box, row, 2)
         self.grid_layout.addWidget(combo_box, row, 2, 1, 2)
+        param_obj.widgets[param_obj.name] = {"combo_box": combo_box}
 
     def add_param_component(self, row: int, label: str, param_obj: Param):
         self.row = row
@@ -297,6 +365,7 @@ class ParamCategory(QWidget):
         self.components_index.append(selected_index)
         print("Selected:", selected_index)
         self.selected_value = selected_index
+        # TODO: store it in the param dictionnary
 
     def add_component(self):
         self.extra_box = QComboBox()
@@ -331,8 +400,22 @@ class ParamCategory(QWidget):
         self.component_widgets.append((combo, remove_button))
 
         combo.currentIndexChanged.connect(self.add_component_row)
+        # TODO: replace with update method (for the current category), the update method is supposed to store values of each input, same in the remove function
+        # self.clear_grid_layout()
+        # self.build_param()
+        self.update_category()
+
+    def update_category(self):
+        self.store_values()
         self.clear_grid_layout()
         self.build_param()
+        # TODO: change the build param to build from the stored values
+
+    def store_values(self):
+        for label, param_obj in self.param.items():
+            if isinstance(param_obj.type, ParamInput):
+                param_obj.type.last_line_edit = param_obj.type.line_edit.text()
+                print("------", param_obj.type.last_line_edit)
 
     def clear_grid_layout(self):
         while self.grid_layout.count():
@@ -344,6 +427,30 @@ class ParamCategory(QWidget):
             elif item.layout():
                 self.clear_grid_layout(item.layout())
                 item.layout().deleteLater()
+
+    # TODO: restore all input if the grid is regenerated
+    def build_param_values(self):
+        values = {}
+        for label, param_obj in self.param.items():
+            # dict = param_obj.widgets
+            for key, dict in param_obj.widgets.items():
+                for el, widget in dict.items():
+                    # if el == "line_edit":
+                    if isinstance(widget, QLineEdit):
+                        print(el)
+                        print(widget)
+                        print("HERE")
+                        print(widget.text())
+                        values[label] = widget.text()
+                    # elif el == "combo_box":
+                    elif isinstance(widget, QComboBox):
+                        values[label] = widget.currentText()
+                        # elif el == "check_box":
+                    elif isinstance(widget, QCheckBox):
+                        values[label] = widget.isChecked()
+        print("THE VALUES ARE", values)
+
+        pass
 
 
 class MenuBar(QMenuBar):
@@ -372,17 +479,18 @@ class MainWindow(QMainWindow):
         self.tab1 = QWidget()
         self.tab2 = QWidget()
         tab1_layout = QVBoxLayout()
-        tab1_layout.addWidget(QLabel("Tab 1"))
+        tab1_layout.addWidget(QLabel("Parameters"))
         tab2_layout = QVBoxLayout()
-        tab2_layout.addWidget(QLabel("Tab 2"))
+        tab2_layout.addWidget(QLabel("Versions"))
         self.tab2.setLayout(tab2_layout)
 
-        self.tabs.addTab(self.tab1, "Tab 1")
-        self.tabs.addTab(self.tab2, "Tab 2")
+        self.tabs.addTab(self.tab1, "Parameters")
+        self.tabs.addTab(self.tab2, "Versions")
 
         # pages
+        param_page1 = self.set_param()
+        self.page_components = PageParametersGlobal(self, param_page1)
         self.page1 = PageParametersGlobal(self, param_page1)
-        self.page_components = PageParametersGlobal(self, param_page2)
 
         self.main_area = QWidget()
         tab1_layout = QHBoxLayout(self.main_area)
@@ -439,53 +547,165 @@ class MainWindow(QMainWindow):
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
 
+    def set_param(self):
+        algo_params = {
+            "Algorithm": Param(
+                name="algorithm",
+                type=ParamInput(name="algorithm"),
+                # values=["multistart", "mbh", "global", "population", "genetic"],
+            ),
+            "Set max time": Param(
+                name="max_time",
+                type=ParamType.BOOLEAN_WITH_INPUT_WITH_UNITY,
+                values=["s", "h", "ms", "m"],
+            ),
+            "Set max iterations": Param(
+                name="max_iterations",
+                type=ParamType.BOOLEAN_WITH_INPUT,
+            ),
+            "Alpha": Param(
+                name="BY", type=ParamType.COMPONENT, values=["bar", "kPa", "Pa"]
+            ),
+            "Enable verbose": Param(name="verbose", type=ParamType.BOOLEAN),
+            "Enable debug mode": Param(name="debug", type=ParamType.BOOLEAN),
+            "No starting point": Param(
+                name="no_starting_point", type=ParamType.BOOLEAN
+            ),
+            "No simplified model": Param(
+                name="no_simplified_model", type=ParamType.BOOLEAN
+            ),
+        }
+        param = {
+            # "Alpha": Param(
+            #     name="Alpha", type=ParamType.BOOLEAN_WITH_INPUT, values=["bar", "kPa", "Pa"]
+            # ),
+            # "Pressure ratio": Param(
+            #     name="pressure_ratio",
+            #     type=ParamType.INPUT,
+            #     # values=["s", "h", "ms", "days"],
+            # ),
+            "Alpha": Param(
+                name="BY", type=ParamType.COMPONENT, values=["bar", "kPa", "Pa"]
+            ),
+        }
+        param_page1 = {"Algorithm parameters": algo_params, "Other parameters": param}
+        return param_page1
 
-params = {
-    "Generate starting point": Param(name="starting_point", type=ParamType.BOOLEAN),
-    "Pressure": Param(
-        name="pressure_in", type=ParamType.INPUT_WITH_UNITY, values=["bar", "kPa", "Pa"]
-    ),
-    "Use simplified model": Param(name="simplified_model", type=ParamType.BOOLEAN),
-    "Algorithm": Param(
-        name="Algorithm",
-        type=ParamType.SELECT,
-        values=["multistart", "mbh", "global", "genetic", "population"],
-    ),
-    "Set max time": Param(
-        name="max_time",
-        type=ParamType.BOOLEAN_WITH_INPUT_WITH_UNITY,
-        values=["s", "h", "ms", "days"],
-    ),
-    "Set max iterations": Param(
-        name="max_iterations", type=ParamType.BOOLEAN_WITH_INPUT
-    ),
-    "Pressure ratio": Param(
-        name="pressure_ratio",
-        type=ParamType.INPUT,
-        # values=["s", "h", "ms", "days"],
-    ),
-    "Pressure ratio": Param(
-        name="pressure_ratio",
-        type=ParamType.INPUT,
-        # values=["s", "h", "ms", "days"],
-    ),
-    "Alpha": Param(name="BY", type=ParamType.COMPONENT, values=["bar", "kPa", "Pa"]),
-}
 
-param = {
-    # "Alpha": Param(
-    #     name="Alpha", type=ParamType.BOOLEAN_WITH_INPUT, values=["bar", "kPa", "Pa"]
-    # ),
-    "Pressure ratio": Param(
-        name="pressure_ratio",
-        type=ParamType.INPUT,
-        # values=["s", "h", "ms", "days"],
-    ),
-    "Alpha": Param(name="BY", type=ParamType.COMPONENT, values=["bar", "kPa", "Pa"]),
-}
-
-param_page1 = {"Algorithm parameters": params, "Other parameters": param}
-param_page2 = {"Algorithm parameters": params}
+# params = {
+#     "Generate starting point": Param(name="starting_point", type=ParamType.BOOLEAN),
+#     "Pressure": Param(
+#         name="pressure_in", type=ParamType.INPUT_WITH_UNITY, values=["bar", "kPa", "Pa"]
+#     ),
+#     "Use simplified model": Param(name="simplified_model", type=ParamType.BOOLEAN),
+#     "Algorithm": Param(
+#         name="Algorithm",
+#         type=ParamType.SELECT,
+#         values=["multistart", "mbh", "global", "genetic", "population"],
+#     ),
+#     "Set max time": Param(
+#         name="max_time",
+#         type=ParamType.BOOLEAN_WITH_INPUT_WITH_UNITY,
+#         values=["s", "h", "ms", "days"],
+#     ),
+#     "Set max iterations": Param(
+#         name="max_iterations", type=ParamType.BOOLEAN_WITH_INPUT
+#     ),
+#     "Pressure ratio": Param(
+#         name="pressure_ratio",
+#         type=ParamType.INPUT,
+#         # values=["s", "h", "ms", "days"],
+#     ),
+#     "Pressure ratio": Param(
+#         name="pressure_ratio",
+#         type=ParamType.INPUT,
+#         # values=["s", "h", "ms", "days"],
+#     ),
+#     "Alpha": Param(name="BY", type=ParamType.COMPONENT, values=["bar", "kPa", "Pa"]),
+# }
+#
+# param = {
+#     # "Alpha": Param(
+#     #     name="Alpha", type=ParamType.BOOLEAN_WITH_INPUT, values=["bar", "kPa", "Pa"]
+#     # ),
+#     "Pressure ratio": Param(
+#         name="pressure_ratio",
+#         type=ParamType.INPUT,
+#         # values=["s", "h", "ms", "days"],
+#     ),
+#     "Alpha": Param(name="BY", type=ParamType.COMPONENT, values=["bar", "kPa", "Pa"]),
+# }
+#
+# param_page2 = {"Algorithm parameters": params}
+#
+#
+# algo_params = {
+#     "Algorithm": Param(
+#         name="algorithm",
+#         type=ParamInput(name="algorithm", label="algorithm"),
+#         values=["multistart", "mbh", "global", "population", "genetic"],
+#     ),
+#     "Set max time": Param(
+#         name="max_time",
+#         type=ParamType.BOOLEAN_WITH_INPUT_WITH_UNITY,
+#         values=["s", "h", "ms", "m"],
+#     ),
+#     "Set max iterations": Param(
+#         name="max_iterations",
+#         type=ParamType.BOOLEAN_WITH_INPUT,
+#     ),
+#     "Enable verbose": Param(name="verbose", type=ParamType.BOOLEAN),
+#     "Enable debug mode": Param(name="debug", type=ParamType.BOOLEAN),
+#     "No starting point": Param(name="no_starting_point", type=ParamType.BOOLEAN),
+#     "No simplified model": Param(name="no_simplified_model", type=ParamType.BOOLEAN),
+# }
+#
+# params = {
+#     "Generate starting point": Param(name="starting_point", type=ParamType.BOOLEAN),
+#     "Pressure": Param(
+#         name="pressure_in", type=ParamType.INPUT_WITH_UNITY, values=["bar", "kPa", "Pa"]
+#     ),
+#     "Use simplified model": Param(name="simplified_model", type=ParamType.BOOLEAN),
+#     "Algorithm": Param(
+#         name="Algorithm",
+#         type=ParamType.SELECT,
+#         values=["multistart", "mbh", "global", "genetic", "population"],
+#     ),
+#     "Set max time": Param(
+#         name="max_time",
+#         type=ParamType.BOOLEAN_WITH_INPUT_WITH_UNITY,
+#         values=["s", "h", "ms", "days"],
+#     ),
+#     "Set max iterations": Param(
+#         name="max_iterations", type=ParamType.BOOLEAN_WITH_INPUT
+#     ),
+#     "Pressure ratio": Param(
+#         name="pressure_ratio",
+#         type=ParamType.INPUT,
+#         # values=["s", "h", "ms", "days"],
+#     ),
+#     "Pressure ratio": Param(
+#         name="pressure_ratio",
+#         type=ParamType.INPUT,
+#         # values=["s", "h", "ms", "days"],
+#     ),
+#     "Alpha": Param(name="BY", type=ParamType.COMPONENT, values=["bar", "kPa", "Pa"]),
+# }
+#
+# param = {
+#     # "Alpha": Param(
+#     #     name="Alpha", type=ParamType.BOOLEAN_WITH_INPUT, values=["bar", "kPa", "Pa"]
+#     # ),
+#     "Pressure ratio": Param(
+#         name="pressure_ratio",
+#         type=ParamType.INPUT,
+#         # values=["s", "h", "ms", "days"],
+#     ),
+#     "Alpha": Param(name="BY", type=ParamType.COMPONENT, values=["bar", "kPa", "Pa"]),
+# }
+#
+# param_page1 = {"Algorithm parameters": algo_params, "Other parameters": param}
+# param_page2 = {"Algorithm parameters": params}
 
 
 class Parameter:
