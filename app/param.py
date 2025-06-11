@@ -15,6 +15,14 @@ from PyQt6.QtWidgets import (
 )
 
 # -----------------------------------------------------------
+class FILE(enum.Enum):
+    CONFIG = enum.auto()
+    DATA = enum.auto()
+    PERM = enum.auto()
+    ECO = enum.auto()
+    COMMAND = enum.auto()
+
+# -----------------------------------------------------------
 
 class ParamType(enum.Enum):
     INPUT = enum.auto()  # seulement de l'input
@@ -34,10 +42,14 @@ class Param:
     def __init__(
         self,
         name: str,
+        file: FILE,
+        optional: bool = False
     ) -> None:
         self.name = name  # the exact name in the data files
         self.category: ParamCategory 
-        # TODO: add optional attribute
+        self.file = file
+        self.optional = optional
+
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         raise NotImplementedError("Subclasses must implement build_widgets")
@@ -48,21 +60,23 @@ class Param:
     def row_span(self) -> int:
         return 1
     def to_file(self) -> str:
-        # TODO: implement for all parameters
-        return ""
+        raise NotImplementedError("Subclasses must implement to_file")
 
 
 # -----------------------------------------------------------
 
 class ParamInput(Param):
-    def __init__(self, name: str) -> None:
-        super().__init__(name)
+    def __init__(self, name: str, file: FILE, optional: bool = False) -> None:
+        super().__init__(name, file)
         self.question_label = None
         self.line_edit = None
         self.last_line_edit = ""
+        self.file = file
+        self.optional = optional
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        label = f"{label}{'' if self.optional else ' *'}"
         question_label = QLabel(label)
         line_edit = QLineEdit()
 
@@ -88,27 +102,30 @@ class ParamInput(Param):
             self.last_line_edit = self.line_edit.text()
 
     def to_file(self) -> str:
-        return f"{self.name} = {self.last_line_edit}"
+        return f"{self.name} := {self.last_line_edit}"
 
+# TODO: change the input based on another added attribute if necessary
 
 # -----------------------------------------------------------
 
 class ParamSelect(Param):
-    # TODO: add values somewhere
-    def __init__(self, name: str) -> None:
-        super().__init__(name)
+    def __init__(self, name: str, file: FILE, values: list[str], optional: bool = False) -> None:
+        super().__init__(name, file)
         self.question_label = None
         self.combo_box = None
         self.last_combo_box = ""
+        self.values = values
+        self.optional = optional
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        label = f"{label}{'' if self.optional else ' *'}"
         question_label = QLabel(label)
         combo_box = QComboBox()
         combo_box.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
 
-        combo_box.addItems(["item 1", "item 2", "item 3"])
+        combo_box.addItems(self.values)
 
         self.question_label = question_label
         self.combo_box = combo_box
@@ -135,18 +152,22 @@ class ParamSelect(Param):
             self.last_combo_box = self.combo_box.currentText()
         pass
 
+    def to_file(self) -> str:
+        return f"{self.name} := {self.last_combo_box}"
+
 
 # -----------------------------------------------------------
 
 class ParamBoolean(Param):
-    # TODO: add values somewhere
-    def __init__(self, name: str) -> None:
-        super().__init__(name)
+    def __init__(self, name: str, file: FILE, optional: bool = False) -> None:
+        super().__init__(name, file)
         self.question_label = None
         self.check_box = None
         self.last_check_box = False
+        self.optional = optional
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        label = f"{label}{'' if self.optional else ' *'}"
         container = QWidget()
         h_layout = QHBoxLayout(container)
         h_layout.setContentsMargins(0, 0, 0, 0)
@@ -175,24 +196,31 @@ class ParamBoolean(Param):
         if self.check_box is not None:
             self.last_check_box = self.check_box.isChecked()
 
+    def to_file(self) -> str:
+        return f"{self.name} := {self.last_check_box}"
+
 # -----------------------------------------------------------
 class ParamInputWithUnity(Param):
     # TODO: add values somewhere
-    def __init__(self, name: str) -> None:
-        super().__init__(name)
+    def __init__(self, name: str, file: FILE, values: list[str], optional: bool = False) -> None:
+        super().__init__(name, file = file)
         self.question_label = None
         self.line_edit = None
         self.combo_box = None
 
         self.last_line_edit = ""
         self.last_combo_box = ""
+
+        self.values = values
+        self.optional = optional
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        label = f"{label}{'' if self.optional else ' *'}"
         question_label = QLabel(label)
         line_edit = QLineEdit()
         combo_box = QComboBox()
-        combo_box.addItems(["unity 1", "unity 2", "unity 3"])
+        combo_box.addItems(self.values)
         grid_layout.addWidget(question_label, row, 0)
         grid_layout.addItem(
             QSpacerItem(0, 0, QSizePolicy.Policy.Expanding,
@@ -226,19 +254,25 @@ class ParamInputWithUnity(Param):
             self.last_combo_box = self.combo_box.currentText()
         pass
 
+    def to_file(self) -> str:
+        return f"{self.name} := {self.last_line_edit} #{self.last_combo_box}"
+
 # -----------------------------------------------------------
 class ParamBooleanWithInput(Param):
-    def __init__(self, name: str) -> None:
-        super().__init__(name)
+    def __init__(self, name: str, file: FILE, optional:bool = False) -> None:
+        super().__init__(name, file)
         self.question_label = None
         self.line_edit = None
         self.check_box = None
 
         self.last_check_box = False
         self.last_line_edit = ""
+
+        self.optional = optional
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        label = f"{label}{'' if self.optional else ' *'}"
         checkbox_container = QWidget()
         checkbox_layout = QHBoxLayout(checkbox_container)
         checkbox_layout.setContentsMargins(0, 0, 0, 0)
@@ -287,12 +321,15 @@ class ParamBooleanWithInput(Param):
     def row_span(self) -> int:
         return 2
 
+    def to_file(self) -> str:
+        return f"{self.name} := {self.last_check_box}\n{self.name} := {self.last_line_edit}"
+
 
 # -----------------------------------------------------------
 
 class ParamBooleanWithInputWithUnity(Param):
-    def __init__(self, name: str) -> None:
-        super().__init__(name)
+    def __init__(self, name: str, file: FILE, values: list[str], optional: bool = False) -> None:
+        super().__init__(name, file)
         self.question_label = None
         self.check_box = None
         self.combo_box = None
@@ -302,7 +339,12 @@ class ParamBooleanWithInputWithUnity(Param):
         self.last_combo_box = ""
         self.last_line_edit = ""
 
+        self.optional = optional
+
+        self.values = values
+
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        label = f"{label}{'' if self.optional else ' *'}"
         checkbox_container = QWidget()
         checkbox_layout = QHBoxLayout(checkbox_container)
         checkbox_layout.setContentsMargins(0, 0, 0, 0)
@@ -312,7 +354,7 @@ class ParamBooleanWithInputWithUnity(Param):
         question_label = QLabel(label)
 
         combo_box = QComboBox()
-        combo_box.addItems(["Item 1", "Item 2", "Item 3"])
+        combo_box.addItems(self.values)
 
         line_edit = QLineEdit()
         line_edit.setEnabled(False)
@@ -362,19 +404,24 @@ class ParamBooleanWithInputWithUnity(Param):
     def row_span(self) -> int:
         return 2
 
+    def to_file(self) -> str:
+        return f"{self.name} := {self.last_check_box}\n{self.name} := {self.last_line_edit} #{self.last_combo_box}"
 # -----------------------------------------------------------
 
 class ParamComponent(Param):
-    def __init__(self, name: str) -> None:
-        super().__init__(name)
+    def __init__(self, name: str, file: FILE, values: list[str], optional: bool = False) -> None:
+        super().__init__(name, file)
         self.question_label = None
         self.combo_box = None
         self.extra_rows = 0
 
         self.combo_boxes = []
         self.last_combo_boxes = []
+        self.optional = optional
+        self.values = values
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        label = f"{label}{'' if self.optional else ' *'}"
         question_label = QLabel(label)
         grid_layout.addWidget(question_label, row, 0)
         self.combo_boxes = []
@@ -385,7 +432,7 @@ class ParamComponent(Param):
             for i in range(self.extra_rows):
                 combo = QComboBox()
                 combo.setPlaceholderText("Extra input")
-                combo.addItems(["Item 1", "Item 2", "Item 3"])
+                combo.addItems(self.values)
                 combo.setCurrentText(self.last_combo_boxes[i])
                 combo.setSizePolicy(QSizePolicy.Policy.Expanding,
                                     QSizePolicy.Policy.Fixed)
@@ -402,7 +449,7 @@ class ParamComponent(Param):
 
         extra_combo = QComboBox()
         extra_combo.setPlaceholderText("Extra input")
-        extra_combo.addItems(["Item 1", "Item 2", "Item 3"])
+        extra_combo.addItems(self.values)
         self.combo_boxes.append(extra_combo)
         grid_layout.addWidget(extra_combo, row, 2)
         extra_combo.currentIndexChanged.connect(lambda : self.add_component_row(row, grid_layout))
@@ -446,6 +493,13 @@ class ParamComponent(Param):
 
     def row_span(self) -> int:
         return 1 + self.extra_rows
+
+    def to_file(self) -> str:
+        value = ""
+        for el in self.last_combo_boxes:
+            value += f"\"{el}\" "
+
+        return f"{self.name} := {value}\n"
 
 # -----------------------------------------------------------
 
@@ -494,7 +548,7 @@ class ParamCategory(QWidget):
         self.store_values()
         self.clear_grid_layout()
         self.build_param()
-        # self.write_to_file()
+        self.write_to_file()
 
     def clear_grid_layout(self):
         while self.grid_layout.count():
@@ -506,9 +560,24 @@ class ParamCategory(QWidget):
                     widget.deleteLater()
 
     def write_to_file(self):
-        # FIXME: change according to the right file
-        with open("params.txt", "w") as f:
-            for _, param in self.param.items():
-                # self.store_values()
-                value = param.to_file()
-                f.write(f"{value}\n")
+        file_map = {
+            FILE.DATA: "data.dat",
+            FILE.CONFIG: "config.ini",
+            FILE.PERM: "perm.dat",
+            FILE.ECO: "eco.dat",
+            FILE.COMMAND: "command.sh"
+        }
+        used_files = {file_map[param.file] for param in self.param.values() if param.file in file_map}
+        for file_name in used_files:
+            open(file_name, "w").close()
+
+        for _, param in self.param.items():
+            file_name = file_map.get(param.file)
+            if not file_name:
+                print(f"Unknown file type for param {param.name}")
+            else:
+                with open(file_name, "a") as f:
+                    value = param.to_file()
+                    if value != "":
+                        f.write(f"{value}\n")
+

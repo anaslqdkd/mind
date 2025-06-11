@@ -12,39 +12,34 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from app.param import Param, ParamBoolean, ParamBooleanWithInput, ParamBooleanWithInputWithUnity, ParamCategory, ParamComponent, ParamInput, ParamInputWithUnity, ParamSelect, ParamType
+from app.param import FILE, Param, ParamBoolean, ParamBooleanWithInput, ParamBooleanWithInputWithUnity, ParamCategory, ParamComponent, ParamInput, ParamInputWithUnity, ParamSelect, ParamType
 
 # TODO: same but for actual input types
 
 
-class FILE(enum.Enum):
-    CONFIG = enum.auto()
-    DATA = enum.auto()
-    PERM = enum.auto()
-    ECO = enum.auto()
-    COMMAND = enum.auto()
-# TODO: for each param add a to_file method
 
 # -----------------------------------------------------------
 
-def create_param(name: str, param_type: ParamType) -> Param:
+def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Param:
+    optional = kwargs.get("optional", False)
     match param_type:
         case ParamType.INPUT:
-            return ParamInput(name)
+            return ParamInput(name, optional=optional, file=file)
         case ParamType.SELECT:
-            return ParamSelect(name)
+            return ParamSelect(name, file=file, values=kwargs.get("values", []))
         case ParamType.BOOLEAN:
-            return ParamBoolean(name)
+            return ParamBoolean(name, file)
         case ParamType.INPUT_WITH_UNITY:
-            return ParamInputWithUnity(name)
+            return ParamInputWithUnity(name, file=file, values=kwargs.get("values", []))
         case ParamType.BOOLEAN_WITH_INPUT:
-            return ParamBooleanWithInput(name)
+            return ParamBooleanWithInput(name, file)
         case ParamType.BOOLEAN_WITH_INPUT_WITH_UNITY:
-            return ParamBooleanWithInputWithUnity(name)
+            return ParamBooleanWithInputWithUnity(name, file = file, values=kwargs.get("values", []))
         case ParamType.COMPONENT:
-            return ParamComponent(name)
+            return ParamComponent(name, file, values=kwargs.get("values", []))
         case _:
             raise ValueError(f"Unsupported param type: {param_type}")
+
 
 # -----------------------------------------------------------
 
@@ -135,31 +130,31 @@ class MainWindow(QMainWindow):
     def set_param(self):
         algo_params = {
             "Algorithm": 
-                create_param(name="algorithm", param_type=ParamType.INPUT)
+                create_param(name="algorithm", param_type=ParamType.INPUT, file = FILE.DATA, optional = True)
             ,
             "Another one": 
-                create_param(name="idk", param_type=ParamType.INPUT)
+                create_param(name="idk", param_type=ParamType.INPUT, file = FILE.DATA)
             ,
             "Select test": 
-                create_param(name="select", param_type=ParamType.SELECT)
+                create_param(name="select", param_type=ParamType.SELECT, values=["multistart", "mbh", "global", "population", "genetic"], file = FILE.DATA)
             ,
             "Bool test": 
-                create_param(name="check", param_type=ParamType.BOOLEAN)
+                create_param(name="check", param_type=ParamType.BOOLEAN, file = FILE.DATA)
             ,
             "Input with unity test": 
-                create_param(name="input with unity", param_type=ParamType.INPUT_WITH_UNITY)
+                create_param(name="input with unity", param_type=ParamType.INPUT_WITH_UNITY, values=["bar", "Pa", "kPa"], file = FILE.DATA)
             ,
             "Boolean with input test": 
-                create_param(name="boolean with input", param_type=ParamType.BOOLEAN_WITH_INPUT)
+                create_param(name="boolean with input", param_type=ParamType.BOOLEAN_WITH_INPUT, file = FILE.DATA)
             ,
             "Boolean with input and unity": 
-                create_param(name="boolean with input and unity", param_type=ParamType.BOOLEAN_WITH_INPUT_WITH_UNITY)
+                create_param(name="boolean with input and unity", param_type=ParamType.BOOLEAN_WITH_INPUT_WITH_UNITY, values=["option 1", "option 2", "option 3"], file = FILE.DATA)
             ,
             "Component": 
-                create_param(name="component test", param_type=ParamType.COMPONENT)
+                create_param(name="component test", param_type=ParamType.COMPONENT, file = FILE.DATA, values=["component 1", "component 2", "component 3"])
             ,
             "Another flds": 
-                create_param(name="bu", param_type=ParamType.INPUT)
+                create_param(name="bu", param_type=ParamType.INPUT, file = FILE.DATA)
             ,
         }
         param = {
