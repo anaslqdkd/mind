@@ -1,7 +1,7 @@
 import enum
 import re
 from typing import Optional, Union
-from PyQt6.QtCore import QEvent, Qt
+from PyQt6.QtCore import QEvent, Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QApplication,
     QCheckBox,
@@ -41,6 +41,7 @@ class ParamType(enum.Enum):
     COMPONENT_WITH_VALUE_WITH_UNITY = enum.auto()  # components xin
     # TODO: add a param type for components attributes
 
+# -----------------------------------------------------------
 
 class FILE(enum.Enum):
     CONFIG = enum.auto()
@@ -49,41 +50,451 @@ class FILE(enum.Enum):
     ECO = enum.auto()
     COMMAND = enum.auto()
 
-
-class ParamInput:
-    def __init__(self, name: str) -> None:
-        self.name = name
-        self.question_label = QLabel()
-        self.line_edit = QLineEdit()
-        self.last_line_edit: str = ""
-        pass
-
-
-class ParamSelect:
-    def __init__(self, name: str, label: str) -> None:
-        self.name = name
-        self.question_label = QLabel(label)
-        self.line_edit = QLineEdit()
-        pass
-
+# -----------------------------------------------------------
 
 class Param:
     def __init__(
         self,
         name: str,
-        type: Union[ParamInput, ParamSelect],
+        # type: Union[ParamInput, ParamSelect],
+        # type: ParamType,
         # file: FILE,
-        values: Optional[list[str]] = None,
+        # values: Optional[list[str]] = None,
     ) -> None:
         self.name = name  # the exact name in the data files
-        self.type = type  # the type as an Enum in ParamType
-        self.values = values or []  # values taken if it is a select param
+        # self.type = type  # the type as an Enum in ParamType
+        # self.values = values or []  # values taken if it is a select param
         # self.file = file
+        self.category: ParamCategory 
+
         self.widgets: dict[str, dict["str", Union[QLineEdit, QComboBox, QCheckBox]]] = (
             {}
         )
         # TODO: add widget dictionnary builder according to param type
         # TODO: add optional attribute
+
+    def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        raise NotImplementedError("Subclasses must implement build_widgets")
+    def store_value(self):
+        raise NotImplementedError("Subclasses must implement store_values")
+    def row_span(self) -> int:
+        return 1
+
+
+
+# -----------------------------------------------------------
+
+class ParamInput(Param):
+    def __init__(self, name: str) -> None:
+        super().__init__(name)
+        self.question_label = None
+        self.line_edit = None
+        self.last_line_edit = ""
+        pass
+
+    def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        # TODO: restore the value if it is rebuild after
+        question_label = QLabel(label)
+        line_edit = QLineEdit()
+        self.question_label = question_label
+        self.line_edit = line_edit
+        line_edit.setText(self.last_line_edit)
+        grid_layout.addWidget(question_label, row, 0)
+        grid_layout.addItem(
+            QSpacerItem(0, 0, QSizePolicy.Policy.Expanding,
+                        QSizePolicy.Policy.Minimum),
+            row,
+            1,
+        )
+        grid_layout.addWidget(line_edit, row, 2)
+        self.question_label = question_label
+        self.line_edit = line_edit
+        pass
+
+    def store_value(self):
+        if self.line_edit is not None:
+            self.last_line_edit = self.line_edit.text()
+        pass
+
+# -----------------------------------------------------------
+
+class ParamSelect(Param):
+    # TODO: add values somewhere
+    def __init__(self, name: str) -> None:
+        super().__init__(name)
+        self.question_label = None
+        self.combo_box = None
+        self.last_combo_box = ""
+        pass
+
+    def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        # TODO: restore the value if it is rebuild after
+        question_label = QLabel(label)
+        combo_box = QComboBox()
+        combo_box.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+
+        combo_box.addItems(["item 1", "item 2", "item 3"])
+
+        # FIXME: encapsulate all this in a method "restore"
+        if self.last_combo_box:
+            index = combo_box.findText(self.last_combo_box)
+            if index != -1:
+                combo_box.setCurrentIndex(index)
+
+        self.question_label = question_label
+        self.combo_box = combo_box
+
+        grid_layout.addWidget(question_label, row, 0)
+
+        # Spacer to push the combo box to the right
+        spacer = QSpacerItem(
+            0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
+        )
+        grid_layout.addItem(spacer, row, 1)
+
+        grid_layout.addWidget(combo_box, row, 2, 1, 2)
+        self.combo_box = combo_box
+        self.question_label = question_label
+
+        pass
+    def store_value(self):
+        # TODO:
+        if self.combo_box is not None:
+            self.last_combo_box = self.combo_box.currentText()
+        pass
+
+
+# -----------------------------------------------------------
+
+class ParamBoolean(Param):
+    # TODO: add values somewhere
+    def __init__(self, name: str) -> None:
+        super().__init__(name)
+        self.question_label = None
+        self.check_box = None
+        self.last_check_box = False
+
+    def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        container = QWidget()
+        h_layout = QHBoxLayout(container)
+        h_layout.setContentsMargins(0, 0, 0, 0)
+
+        check_box = QCheckBox()
+        question_label = QLabel(label)
+
+        self.check_box = check_box
+
+        if self.last_check_box:
+            check_box.setChecked(True)
+
+        h_layout.addWidget(check_box)
+        h_layout.addWidget(question_label)
+        h_layout.addStretch()
+
+        # span 2 columns if needed
+        grid_layout.addWidget(container, row, 0, 1, 2)
+
+        pass
+    def store_value(self):
+        if self.check_box is not None:
+            self.last_check_box = self.check_box.isChecked()
+
+# -----------------------------------------------------------
+class ParamInputWithUnity(Param):
+    # TODO: add values somewhere
+    def __init__(self, name: str) -> None:
+        super().__init__(name)
+        self.question_label = None
+        self.line_edit = None
+        self.combo_box = None
+
+        self.last_line_edit = ""
+        self.last_combo_box = ""
+        pass
+
+    def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        # TODO: restore the value if it is rebuild after
+        question_label = QLabel(label)
+        line_edit = QLineEdit()
+        combo_box = QComboBox()
+        combo_box.addItems(["unity 1", "unity 2", "unity 3"])
+        grid_layout.addWidget(question_label, row, 0)
+        grid_layout.addItem(
+            QSpacerItem(0, 0, QSizePolicy.Policy.Expanding,
+                        QSizePolicy.Policy.Minimum),
+            row,
+            1,
+        )
+        self.line_edit = line_edit
+        self.combo_box = combo_box
+
+        if self.last_combo_box:
+            index = combo_box.findText(self.last_combo_box)
+            if index != -1:
+                combo_box.setCurrentIndex(index)
+        if self.last_line_edit:
+            line_edit.setText(self.last_line_edit)
+
+        grid_layout.addWidget(line_edit, row, 2)
+        grid_layout.addWidget(combo_box, row, 3)
+        # param_obj.widgets[param_obj.name] = {"line_edit": line_edit}
+        # param_obj.widgets[param_obj.name] = {"combo_box": combo_box}
+
+        pass
+    def store_value(self):
+        if self.line_edit is not None:
+            self.last_line_edit = self.line_edit.text()
+            pass
+        if self.combo_box is not None:
+            self.last_combo_box = self.combo_box.currentText()
+        pass
+
+# -----------------------------------------------------------
+class ParamBooleanWithInput(Param):
+    def __init__(self, name: str) -> None:
+        super().__init__(name)
+        self.question_label = None
+        self.line_edit = None
+        self.check_box = None
+
+        self.last_check_box = False
+        self.last_line_edit = ""
+        pass
+
+    def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        checkbox_container = QWidget()
+        checkbox_layout = QHBoxLayout(checkbox_container)
+        checkbox_layout.setContentsMargins(0, 0, 0, 0)
+        checkbox_layout.setSpacing(5)
+
+        check_box = QCheckBox()
+        question_label = QLabel(label)
+
+        line_edit = QLineEdit()
+        line_edit.setEnabled(False)
+
+        checkbox_layout.addWidget(check_box)
+        checkbox_layout.addWidget(question_label)
+        checkbox_layout.addStretch()
+
+        self.line_edit = line_edit
+        self.check_box = check_box
+
+        if self.last_check_box:
+            check_box.setChecked(True)
+            line_edit.setEnabled(True)
+        if self.last_line_edit:
+            line_edit.setText(self.last_line_edit)
+
+        grid_layout.addWidget(checkbox_container, row, 0, 1, 2)
+
+        t_label = QLabel(label)
+        # line_edit.setEnabled(False)
+
+
+        check_box.toggled.connect(line_edit.setEnabled)
+
+        grid_layout.addWidget(t_label, row + 1, 0)
+        grid_layout.addWidget(line_edit, row + 1, 2)
+
+    def store_value(self):
+        if self.line_edit is not None:
+            self.last_line_edit = self.line_edit.text()
+        if self.check_box is not None:
+            self.last_check_box = self.check_box.isChecked()
+
+    def row_span(self) -> int:
+        return 2
+
+
+# -----------------------------------------------------------
+
+class ParamBooleanWithInputWithUnity(Param):
+    def __init__(self, name: str) -> None:
+        super().__init__(name)
+        self.question_label = None
+        self.check_box = None
+        self.combo_box = None
+        self.line_edit = None
+
+        self.last_check_box = False
+        self.last_combo_box = ""
+        self.last_line_edit = ""
+
+    def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        checkbox_container = QWidget()
+        checkbox_layout = QHBoxLayout(checkbox_container)
+        checkbox_layout.setContentsMargins(0, 0, 0, 0)
+        checkbox_layout.setSpacing(5)
+
+        check_box = QCheckBox()
+        question_label = QLabel(label)
+
+        combo_box = QComboBox()
+        combo_box.addItems(["Item 1", "Item 2", "Item 3"])
+
+        line_edit = QLineEdit()
+        line_edit.setEnabled(False)
+        check_box.toggled.connect(line_edit.setEnabled)
+
+        self.check_box = check_box
+        self.combo_box = combo_box
+        self.line_edit = line_edit
+
+
+        if self.last_check_box:
+            check_box.setChecked(True)
+        if self.line_edit:
+            line_edit.setText(self.last_line_edit)
+        if self.last_combo_box:
+            index = combo_box.findText(self.last_combo_box)
+            if index != -1:
+                combo_box.setCurrentIndex(index)
+
+        checkbox_layout.addWidget(check_box)
+        checkbox_layout.addWidget(question_label)
+        checkbox_layout.addStretch()
+
+        grid_layout.addWidget(checkbox_container, row, 0, 1, 2)
+
+        # Second row: Label + input field
+        t_label = QLabel(label)
+
+        grid_layout.addWidget(t_label, row + 1, 0)
+        spacer = QWidget()
+        grid_layout.addWidget(spacer, row + 1, 1)
+        grid_layout.addWidget(line_edit, row + 1, 2)
+        grid_layout.addWidget(combo_box, row + 1, 3)
+
+    def store_value(self):
+        if self.combo_box is not None:
+            self.last_combo_box = self.combo_box.currentText()
+        if self.check_box is not None:
+            self.last_check_box = self.check_box.isChecked()
+        if self.line_edit is not None:
+            self.last_line_edit = self.line_edit.text()
+
+
+    def row_span(self) -> int:
+        return 2
+
+# -----------------------------------------------------------
+
+class ParamComponent(Param):
+    def __init__(self, name: str) -> None:
+        super().__init__(name)
+        self.question_label = None
+        self.combo_box = None
+        self.extra_rows = 0
+        self.combo_boxes = []
+
+        self.last_combo_boxes = []
+
+    def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        question_label = QLabel(label)
+        grid_layout.addWidget(question_label, row, 0)
+
+        # update method
+        if self.extra_rows > 0:
+            for i in range(self.extra_rows):
+                combo = QComboBox()
+                combo.setPlaceholderText("Extra input")
+                combo.addItems(["Item 1", "Item 2", "Item 3"])
+                combo.setSizePolicy(QSizePolicy.Policy.Expanding,
+                                    QSizePolicy.Policy.Fixed)
+                remove_button = QPushButton("✕")
+                remove_button.setFixedWidth(30)
+                remove_button.clicked.connect(
+                lambda _, c=combo, b=remove_button: self.remove_widget_pair(c, b, grid_layout)
+            )
+                grid_layout.addWidget(combo, row, 2)
+                grid_layout.addWidget(remove_button, row, 3)
+
+                row += 1
+
+        # TODO: restore the value if it is rebuild after
+        extra_combo = QComboBox()
+        extra_combo.setPlaceholderText("Extra input")
+        extra_combo.addItems(["Item 1", "Item 2", "Item 3"])
+        grid_layout.addWidget(extra_combo, row, 2)
+        remove_button = QPushButton("✕")
+        remove_button.setFixedWidth(30)
+        remove_button.clicked.connect(
+        lambda _, c=extra_combo, b=remove_button: self.remove_widget_pair(c, b, grid_layout)
+    )
+        # self.extra_combo.currentIndexChanged.connect(
+        #     lambda idx, combo=self.extra_combo: self.store_value(combo)
+        # )
+        # extra_combo.currentIndexChanged.connect(self.add_component_row)
+        extra_combo.currentIndexChanged.connect(lambda : self.add_component_row(row, grid_layout))
+        grid_layout.addWidget(remove_button, row, 3)
+
+    def remove_widget_pair(self, widget1: QWidget, widget2: QWidget, layout: QGridLayout):
+        layout.removeWidget(widget1)
+        layout.removeWidget(widget2)
+        widget1.deleteLater()
+        widget2.deleteLater()
+
+        self.extra_rows = max(0, self.extra_rows - 1)
+        self.category.update_category()
+
+    def add_component_row(self, row: int, grid_layout: QGridLayout):
+        self.component_base_row = row
+        self.extra_rows += 1
+        # FIXME: needs to change after implementing update method
+
+        combo = QComboBox()
+        combo.setPlaceholderText("Extra input")
+        combo.addItems(["Item 1", "Item 2", "Item 3"])
+        combo.setSizePolicy(QSizePolicy.Policy.Expanding,
+                            QSizePolicy.Policy.Fixed)
+
+        remove_button = QPushButton("✕")
+        remove_button.setFixedWidth(30)
+
+        grid_layout.addWidget(combo, row + 1, 2)
+        grid_layout.addWidget(remove_button, row + 1, 3)
+
+
+        combo.currentIndexChanged.connect(lambda idx: self.add_component_row(row + 1, grid_layout))
+        self.category.update_category()
+        # TODO: replace with update method (for the current category), the update method is supposed to store values of each input, same in the remove function
+        # self.clear_grid_layout()
+        # self.build_param()
+        # self.update_category()
+
+
+
+    def row_span(self) -> int:
+        return 1 + self.extra_rows
+
+    def store_value(self):
+        # TODO:
+        return 0
+        pass
+# -----------------------------------------------------------
+
+def create_param(name: str, param_type: ParamType) -> Param:
+    match param_type:
+        case ParamType.INPUT:
+            return ParamInput(name)
+        case ParamType.SELECT:
+            return ParamSelect(name)
+        case ParamType.BOOLEAN:
+            return ParamBoolean(name)
+        case ParamType.INPUT_WITH_UNITY:
+            return ParamInputWithUnity(name)
+        case ParamType.BOOLEAN_WITH_INPUT:
+            return ParamBooleanWithInput(name)
+        case ParamType.BOOLEAN_WITH_INPUT_WITH_UNITY:
+            return ParamBooleanWithInputWithUnity(name)
+        case ParamType.COMPONENT:
+            return ParamComponent(name)
+        case _:
+            raise ValueError(f"Unsupported param type: {param_type}")
+
+# -----------------------------------------------------------
 
 
 # TODO: advanced button to unlock more "unusual" settings
@@ -124,43 +535,18 @@ class ParamCategory(QWidget):
     def build_param(self) -> QWidget:
         self.row = 0
         for label, param_obj in self.param.items():
-            print("+++++ the type is", param_obj.type)
-            if isinstance(param_obj.type, ParamInput):
-                print("55555")
-                print(param_obj.name)
-                self.add_param_input(self.row, label, param_obj)
-                self.row += 1
-            match param_obj.type:
-                case ParamType.INPUT:
-                    print("the row in input is", self.row)
-                    self.add_param_input(self.row, label, param_obj)
-                    self.row += 1
-                case ParamType.INPUT_WITH_UNITY:
-                    self.add_param_input_with_unity(self.row, label, param_obj)
-                    self.row += 1
-                    pass
-                case ParamType.BOOLEAN:
-                    self.add_param_boolean(self.row, label, param_obj)
-                    self.row += 1
-                case ParamType.SELECT:
-                    self.add_param_select(self.row, label, param_obj)
-                    self.row += 1
-                    # pass
-                case ParamType.BOOLEAN_WITH_INPUT:
-                    self.add_param_boolean_with_input(self.row, label, param_obj)
-                    self.row += 2
-                    pass
-                case ParamType.BOOLEAN_WITH_INPUT_WITH_UNITY:
-                    self.add_param_boolean_with_input_with_unity(
-                        self.row, label, param_obj
-                    )
-                    self.row += 2
-                case ParamType.COMPONENT:
-                    # self.row += 2
-                    print("the row is", self.row)
-                    self.build_components(self.row, label)
-                    self.row += self.extra_rows + 1
-                    # self.row += self.extra_rows
+            # print("+++++ the type is", param_obj.type)
+            # if isinstance(param_obj.type, ParamInput):
+            #     print("55555")
+            #     print(param_obj.name)
+            #     self.add_param_input(self.row, label, param_obj)
+            #     self.row += 1
+            # if isinstance(param_obj.type, ParamSelect):
+            #     print("in the param select in the build param")
+            #     self.add_param_select(self.row, label, param_obj)
+            #     self.row += 1
+            param_obj.build_widget(self.row, label, self.grid_layout)
+            self.row += param_obj.row_span()
         self.build_param_values()
         # TODO: add method to rebuild the inserted values
 
@@ -178,7 +564,8 @@ class ParamCategory(QWidget):
             combo.addItems(["Item 1", "Item 2", "Item 3"])
             combo.setCurrentIndex(self.components_index[i])
             print("self.components_index", self.components_index)
-            combo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+            combo.setSizePolicy(QSizePolicy.Policy.Expanding,
+                                QSizePolicy.Policy.Fixed)
             remove_button = QPushButton("✕")
             remove_button.setFixedWidth(30)
             remove_button.clicked.connect(lambda: self.remove_component(i))
@@ -213,7 +600,8 @@ class ParamCategory(QWidget):
             line_edit.setText(param_obj.type.last_line_edit)
         self.grid_layout.addWidget(question_label, row, 0)
         self.grid_layout.addItem(
-            QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum),
+            QSpacerItem(0, 0, QSizePolicy.Policy.Expanding,
+                        QSizePolicy.Policy.Minimum),
             row,
             1,
         )
@@ -233,7 +621,8 @@ class ParamCategory(QWidget):
         # self.grid_layout.addWidget(combo_box, row, 2)
         self.grid_layout.addWidget(question_label, row, 0)
         self.grid_layout.addItem(
-            QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum),
+            QSpacerItem(0, 0, QSizePolicy.Policy.Expanding,
+                        QSizePolicy.Policy.Minimum),
             row,
             1,
         )
@@ -245,7 +634,8 @@ class ParamCategory(QWidget):
     def add_param_boolean(self, row: int, label: str, param_obj: Param):
         container = QWidget()
         h_layout = QHBoxLayout(container)
-        h_layout.setContentsMargins(0, 0, 0, 0)  # remove margins for tighter layout
+        # remove margins for tighter layout
+        h_layout.setContentsMargins(0, 0, 0, 0)
         # h_layout.setSpacing(5)  # optional: tweak spacing between checkbox and label
 
         check_box = QCheckBox()
@@ -255,7 +645,8 @@ class ParamCategory(QWidget):
         h_layout.addWidget(question_label)
         h_layout.addStretch()
 
-        self.grid_layout.addWidget(container, row, 0, 1, 2)  # span 2 columns if needed
+        # span 2 columns if needed
+        self.grid_layout.addWidget(container, row, 0, 1, 2)
 
     def add_param_boolean_with_input(self, row: int, label: str, param_obj: Param):
         checkbox_container = QWidget()
@@ -324,7 +715,14 @@ class ParamCategory(QWidget):
         question_label = QLabel(label)
         combo_box = QComboBox()
         combo_box.addItems(param_obj.values)
-        combo_box.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        combo_box.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+
+        # FIXME: check isinstance of to avoir lsp errors
+        if isinstance(param_obj.type, ParamSelect):
+            if param_obj.type.last_combo_box != "":
+                print("°°°°°", param_obj.type.last_combo_box)
+                combo_box.setCurrentText(param_obj.type.last_combo_box)
 
         self.grid_layout.addWidget(question_label, row, 0)
 
@@ -336,6 +734,8 @@ class ParamCategory(QWidget):
 
         # self.grid_layout.addWidget(combo_box, row, 2)
         self.grid_layout.addWidget(combo_box, row, 2, 1, 2)
+        param_obj.type.combo_box = combo_box
+
         param_obj.widgets[param_obj.name] = {"combo_box": combo_box}
 
     def add_param_component(self, row: int, label: str, param_obj: Param):
@@ -388,7 +788,8 @@ class ParamCategory(QWidget):
         combo = QComboBox()
         combo.setPlaceholderText("Extra input")
         combo.addItems(["Item 1", "Item 2", "Item 3"])
-        combo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        combo.setSizePolicy(QSizePolicy.Policy.Expanding,
+                            QSizePolicy.Policy.Fixed)
 
         remove_button = QPushButton("✕")
         remove_button.setFixedWidth(30)
@@ -404,18 +805,14 @@ class ParamCategory(QWidget):
         # self.clear_grid_layout()
         # self.build_param()
         self.update_category()
+    def store_values(self):
+        for name, param in self.param.items():
+            param.store_value()
 
     def update_category(self):
         self.store_values()
         self.clear_grid_layout()
         self.build_param()
-        # TODO: change the build param to build from the stored values
-
-    def store_values(self):
-        for label, param_obj in self.param.items():
-            if isinstance(param_obj.type, ParamInput):
-                param_obj.type.last_line_edit = param_obj.type.line_edit.text()
-                print("------", param_obj.type.last_line_edit)
 
     def clear_grid_layout(self):
         while self.grid_layout.count():
@@ -448,7 +845,6 @@ class ParamCategory(QWidget):
                         # elif el == "check_box":
                     elif isinstance(widget, QCheckBox):
                         values[label] = widget.isChecked()
-        print("THE VALUES ARE", values)
 
         pass
 
@@ -549,31 +945,53 @@ class MainWindow(QMainWindow):
 
     def set_param(self):
         algo_params = {
-            "Algorithm": Param(
-                name="algorithm",
-                type=ParamInput(name="algorithm"),
-                # values=["multistart", "mbh", "global", "population", "genetic"],
-            ),
-            "Set max time": Param(
-                name="max_time",
-                type=ParamType.BOOLEAN_WITH_INPUT_WITH_UNITY,
-                values=["s", "h", "ms", "m"],
-            ),
-            "Set max iterations": Param(
-                name="max_iterations",
-                type=ParamType.BOOLEAN_WITH_INPUT,
-            ),
-            "Alpha": Param(
-                name="BY", type=ParamType.COMPONENT, values=["bar", "kPa", "Pa"]
-            ),
-            "Enable verbose": Param(name="verbose", type=ParamType.BOOLEAN),
-            "Enable debug mode": Param(name="debug", type=ParamType.BOOLEAN),
-            "No starting point": Param(
-                name="no_starting_point", type=ParamType.BOOLEAN
-            ),
-            "No simplified model": Param(
-                name="no_simplified_model", type=ParamType.BOOLEAN
-            ),
+            "Algorithm": 
+                create_param(name="algorithm", param_type=ParamType.INPUT)
+            ,
+            "Another one": 
+                create_param(name="idk", param_type=ParamType.INPUT)
+            ,
+            "Select test": 
+                create_param(name="select", param_type=ParamType.SELECT)
+            ,
+            "Bool test": 
+                create_param(name="check", param_type=ParamType.BOOLEAN)
+            ,
+            "Input with unity test": 
+                create_param(name="input with unity", param_type=ParamType.INPUT_WITH_UNITY)
+            ,
+            "Boolean with input test": 
+                create_param(name="boolean with input", param_type=ParamType.BOOLEAN_WITH_INPUT)
+            ,
+            "Boolean with input and unity": 
+                create_param(name="boolean with input and unity", param_type=ParamType.BOOLEAN_WITH_INPUT_WITH_UNITY)
+            ,
+            "Component": 
+                create_param(name="component test", param_type=ParamType.COMPONENT)
+            ,
+            "Another flds": 
+                create_param(name="bu", param_type=ParamType.INPUT)
+            ,
+            # "Set max time": Param(
+            #     name="max_time",
+            #     type=ParamType.BOOLEAN_WITH_INPUT_WITH_UNITY,
+            #     values=["s", "h", "ms", "m"],
+            # ),
+            # "Set max iterations": Param(
+            #     name="max_iterations",
+            #     type=ParamType.BOOLEAN_WITH_INPUT,
+            # ),
+            # "Alpha": Param(
+            #     name="BY", type=ParamType.COMPONENT, values=["bar", "kPa", "Pa"]
+            # ),
+            # "Enable verbose": Param(name="verbose", type=ParamType.BOOLEAN),
+            # "Enable debug mode": Param(name="debug", type=ParamType.BOOLEAN),
+            # "No starting point": Param(
+            #     name="no_starting_point", type=ParamType.BOOLEAN
+            # ),
+            # "No simplified model": Param(
+            #     name="no_simplified_model", type=ParamType.BOOLEAN
+            # ),
         }
         param = {
             # "Alpha": Param(
@@ -584,11 +1002,12 @@ class MainWindow(QMainWindow):
             #     type=ParamType.INPUT,
             #     # values=["s", "h", "ms", "days"],
             # ),
-            "Alpha": Param(
-                name="BY", type=ParamType.COMPONENT, values=["bar", "kPa", "Pa"]
-            ),
+            # "Alpha": Param(
+            #     name="BY", type=ParamType.COMPONENT, values=["bar", "kPa", "Pa"]
+            # ),
         }
-        param_page1 = {"Algorithm parameters": algo_params, "Other parameters": param}
+        param_page1 = {"Algorithm parameters": algo_params,
+                       "Other parameters": param}
         return param_page1
 
 
@@ -731,6 +1150,8 @@ class PageParametersGlobal(QWidget):
 
         for key, value in param_category.items():
             ex_params = ParamCategory(key, value)
+            for name, param in value.items():
+                param.category = ex_params
             main_layout.addWidget(ex_params)
 
         # ex_params = ParamCategory("Algorithm parameters", param)
@@ -760,7 +1181,8 @@ class PageParametersComponent(QWidget):
         # self.components_widget.setFixedSize(100, 100)
         self.components_layout.addWidget(row_widget)
         self.components_layout.setSpacing(1)  # Reduce space between items
-        self.components_layout.setContentsMargins(0, 0, 0, 0)  # Remove outer margins
+        self.components_layout.setContentsMargins(
+            0, 0, 0, 0)  # Remove outer margins
         self.components_layout.setAlignment(
             # keeps items on top
             Qt.AlignmentFlag.AlignTop
@@ -786,5 +1208,6 @@ class PageParametersComponent(QWidget):
         # row_widget.setFixedSize(70, 40)
         self.components_layout.addWidget(row_widget)
         # row_widget.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
-        row_widget.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        row_widget.setSizePolicy(
+            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
         # self.components.append((line_edit, combo_box))
