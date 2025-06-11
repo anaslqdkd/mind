@@ -394,6 +394,7 @@ class ParamComponent(Param):
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         question_label = QLabel(label)
         grid_layout.addWidget(question_label, row, 0)
+        self.combo_boxes = []
 
         # update method
         if self.extra_rows > 0:
@@ -401,6 +402,7 @@ class ParamComponent(Param):
                 combo = QComboBox()
                 combo.setPlaceholderText("Extra input")
                 combo.addItems(["Item 1", "Item 2", "Item 3"])
+                combo.setCurrentText(self.last_combo_boxes[i])
                 combo.setSizePolicy(QSizePolicy.Policy.Expanding,
                                     QSizePolicy.Policy.Fixed)
                 remove_button = QPushButton("✕")
@@ -410,25 +412,44 @@ class ParamComponent(Param):
             )
                 grid_layout.addWidget(combo, row, 2)
                 grid_layout.addWidget(remove_button, row, 3)
+                self.combo_boxes.append(combo)
 
                 row += 1
 
-        # TODO: restore the value if it is rebuild after
         extra_combo = QComboBox()
         extra_combo.setPlaceholderText("Extra input")
         extra_combo.addItems(["Item 1", "Item 2", "Item 3"])
+        self.combo_boxes.append(extra_combo)
         grid_layout.addWidget(extra_combo, row, 2)
+        extra_combo.currentIndexChanged.connect(lambda : self.add_component_row(row, grid_layout))
+
+    def add_component_row(self, row: int, grid_layout: QGridLayout):
+        self.component_base_row = row
+        self.extra_rows += 1
+
+        combo = QComboBox()
+        combo.setPlaceholderText("Extra input")
+        combo.addItems(["Item 1", "Item 2", "Item 3"])
+        combo.setSizePolicy(QSizePolicy.Policy.Expanding,
+                            QSizePolicy.Policy.Fixed)
+        self.combo_boxes.append(combo)
+
+
         remove_button = QPushButton("✕")
         remove_button.setFixedWidth(30)
-        remove_button.clicked.connect(
-        lambda _, c=extra_combo, b=remove_button: self.remove_widget_pair(c, b, grid_layout)
-    )
-        # self.extra_combo.currentIndexChanged.connect(
-        #     lambda idx, combo=self.extra_combo: self.store_value(combo)
-        # )
-        # extra_combo.currentIndexChanged.connect(self.add_component_row)
-        extra_combo.currentIndexChanged.connect(lambda : self.add_component_row(row, grid_layout))
-        grid_layout.addWidget(remove_button, row, 3)
+
+        grid_layout.addWidget(combo, row + 1, 2)
+        grid_layout.addWidget(remove_button, row + 1, 3)
+
+
+        combo.currentIndexChanged.connect(lambda: self.add_component_row(row + 1, grid_layout))
+
+        self.category.update_category()
+
+    def store_value(self):
+        self.last_combo_boxes.clear()
+        for el in self.combo_boxes:
+            self.last_combo_boxes.append(el.currentText())
 
     def remove_widget_pair(self, widget1: QWidget, widget2: QWidget, layout: QGridLayout):
         layout.removeWidget(widget1)
@@ -439,40 +460,14 @@ class ParamComponent(Param):
         self.extra_rows = max(0, self.extra_rows - 1)
         self.category.update_category()
 
-    def add_component_row(self, row: int, grid_layout: QGridLayout):
-        self.component_base_row = row
-        self.extra_rows += 1
-        # FIXME: needs to change after implementing update method
 
-        combo = QComboBox()
-        combo.setPlaceholderText("Extra input")
-        combo.addItems(["Item 1", "Item 2", "Item 3"])
-        combo.setSizePolicy(QSizePolicy.Policy.Expanding,
-                            QSizePolicy.Policy.Fixed)
-
-        remove_button = QPushButton("✕")
-        remove_button.setFixedWidth(30)
-
-        grid_layout.addWidget(combo, row + 1, 2)
-        grid_layout.addWidget(remove_button, row + 1, 3)
-
-
-        combo.currentIndexChanged.connect(lambda idx: self.add_component_row(row + 1, grid_layout))
-        self.category.update_category()
-        # TODO: replace with update method (for the current category), the update method is supposed to store values of each input, same in the remove function
-        # self.clear_grid_layout()
-        # self.build_param()
-        # self.update_category()
+        # pass
 
 
 
     def row_span(self) -> int:
         return 1 + self.extra_rows
 
-    def store_value(self):
-        # TODO:
-        return 0
-        pass
 # -----------------------------------------------------------
 
 def create_param(name: str, param_type: ParamType) -> Param:
@@ -797,13 +792,8 @@ class ParamCategory(QWidget):
         self.grid_layout.addWidget(combo, row, 1)
         self.grid_layout.addWidget(remove_button, row, 2)
 
-        # Keep track of them to remove later
-        self.component_widgets.append((combo, remove_button))
-
         combo.currentIndexChanged.connect(self.add_component_row)
-        # TODO: replace with update method (for the current category), the update method is supposed to store values of each input, same in the remove function
-        # self.clear_grid_layout()
-        # self.build_param()
+        self.component_widgets.append((combo, remove_button))
         self.update_category()
     def store_values(self):
         for name, param in self.param.items():
