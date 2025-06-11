@@ -62,6 +62,9 @@ class Param:
     def store_value(self):
         raise NotImplementedError("Subclasses must implement store_values")
 
+    # def restore_values(self):
+    #     raise NotImplementedError("Subclasses must implement restore_values")
+
     def row_span(self) -> int:
         return 1
 
@@ -76,28 +79,29 @@ class ParamInput(Param):
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
-        # TODO: restore the value if it is rebuild after
         question_label = QLabel(label)
         line_edit = QLineEdit()
+
         self.question_label = question_label
         self.line_edit = line_edit
-        line_edit.setText(self.last_line_edit)
-        grid_layout.addWidget(question_label, row, 0)
+
+        self.restore_values()
+        grid_layout.addWidget(self.question_label, row, 0)
         grid_layout.addItem(
             QSpacerItem(0, 0, QSizePolicy.Policy.Expanding,
                         QSizePolicy.Policy.Minimum),
             row,
             1,
         )
-        grid_layout.addWidget(line_edit, row, 2)
-        self.question_label = question_label
-        self.line_edit = line_edit
-        pass
+        grid_layout.addWidget(self.line_edit, row, 2)
+
+    def restore_values(self):
+        if self.line_edit is not None:
+            self.line_edit.setText(self.last_line_edit)
 
     def store_value(self):
         if self.line_edit is not None:
             self.last_line_edit = self.line_edit.text()
-        pass
 
 # -----------------------------------------------------------
 
@@ -111,7 +115,6 @@ class ParamSelect(Param):
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
-        # TODO: restore the value if it is rebuild after
         question_label = QLabel(label)
         combo_box = QComboBox()
         combo_box.setSizePolicy(
@@ -119,30 +122,27 @@ class ParamSelect(Param):
 
         combo_box.addItems(["item 1", "item 2", "item 3"])
 
-        # FIXME: encapsulate all this in a method "restore"
-        if self.last_combo_box:
-            index = combo_box.findText(self.last_combo_box)
-            if index != -1:
-                combo_box.setCurrentIndex(index)
-
         self.question_label = question_label
         self.combo_box = combo_box
 
-        grid_layout.addWidget(question_label, row, 0)
+        self.restore_values()
 
-        # Spacer to push the combo box to the right
+        grid_layout.addWidget(self.question_label, row, 0)
+
         spacer = QSpacerItem(
             0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
         )
         grid_layout.addItem(spacer, row, 1)
 
-        grid_layout.addWidget(combo_box, row, 2, 1, 2)
-        self.combo_box = combo_box
-        self.question_label = question_label
+        grid_layout.addWidget(self.combo_box, row, 2, 1, 2)
 
-        pass
+    def restore_values(self):
+        if self.combo_box:
+            index = self.combo_box.findText(self.last_combo_box)
+            if index != -1:
+                self.combo_box.setCurrentIndex(index)
+
     def store_value(self):
-        # TODO:
         if self.combo_box is not None:
             self.last_combo_box = self.combo_box.currentText()
         pass
@@ -167,18 +167,22 @@ class ParamBoolean(Param):
         question_label = QLabel(label)
 
         self.check_box = check_box
+        self.question_label = question_label
 
-        if self.last_check_box:
-            check_box.setChecked(True)
+        self.check_box = check_box
 
-        h_layout.addWidget(check_box)
-        h_layout.addWidget(question_label)
+        self.restore_values()
+        h_layout.addWidget(self.check_box)
+        h_layout.addWidget(self.question_label)
         h_layout.addStretch()
 
-        # span 2 columns if needed
         grid_layout.addWidget(container, row, 0, 1, 2)
 
-        pass
+    def restore_values(self):
+        if self.last_check_box:
+            if self.check_box:
+                self.check_box.setChecked(True)
+
     def store_value(self):
         if self.check_box is not None:
             self.last_check_box = self.check_box.isChecked()
@@ -197,7 +201,6 @@ class ParamInputWithUnity(Param):
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
-        # TODO: restore the value if it is rebuild after
         question_label = QLabel(label)
         line_edit = QLineEdit()
         combo_box = QComboBox()
@@ -212,19 +215,21 @@ class ParamInputWithUnity(Param):
         self.line_edit = line_edit
         self.combo_box = combo_box
 
+        self.restore_value()
+
+        grid_layout.addWidget(self.line_edit, row, 2)
+        grid_layout.addWidget(self.combo_box, row, 3)
+
+    def restore_value(self):
         if self.last_combo_box:
-            index = combo_box.findText(self.last_combo_box)
-            if index != -1:
-                combo_box.setCurrentIndex(index)
+            if self.combo_box:
+                index = self.combo_box.findText(self.last_combo_box)
+                if index != -1:
+                    self.combo_box.setCurrentIndex(index)
         if self.last_line_edit:
-            line_edit.setText(self.last_line_edit)
+            if self.line_edit:
+                self.line_edit.setText(self.last_line_edit)
 
-        grid_layout.addWidget(line_edit, row, 2)
-        grid_layout.addWidget(combo_box, row, 3)
-        # param_obj.widgets[param_obj.name] = {"line_edit": line_edit}
-        # param_obj.widgets[param_obj.name] = {"combo_box": combo_box}
-
-        pass
     def store_value(self):
         if self.line_edit is not None:
             self.last_line_edit = self.line_edit.text()
@@ -264,22 +269,26 @@ class ParamBooleanWithInput(Param):
         self.line_edit = line_edit
         self.check_box = check_box
 
-        if self.last_check_box:
-            check_box.setChecked(True)
-            line_edit.setEnabled(True)
-        if self.last_line_edit:
-            line_edit.setText(self.last_line_edit)
+        self.restore_values()
 
         grid_layout.addWidget(checkbox_container, row, 0, 1, 2)
 
         t_label = QLabel(label)
-        # line_edit.setEnabled(False)
-
 
         check_box.toggled.connect(line_edit.setEnabled)
 
         grid_layout.addWidget(t_label, row + 1, 0)
         grid_layout.addWidget(line_edit, row + 1, 2)
+
+    def restore_values(self):
+        if self.last_check_box:
+            if self.check_box:
+                self.check_box.setChecked(True)
+            if self.line_edit:
+                self.line_edit.setEnabled(True)
+        if self.last_line_edit:
+            if self.line_edit:
+                self.line_edit.setText(self.last_line_edit)
 
     def store_value(self):
         if self.line_edit is not None:
@@ -325,15 +334,7 @@ class ParamBooleanWithInputWithUnity(Param):
         self.combo_box = combo_box
         self.line_edit = line_edit
 
-
-        if self.last_check_box:
-            check_box.setChecked(True)
-        if self.line_edit:
-            line_edit.setText(self.last_line_edit)
-        if self.last_combo_box:
-            index = combo_box.findText(self.last_combo_box)
-            if index != -1:
-                combo_box.setCurrentIndex(index)
+        self.restore_values()
 
         checkbox_layout.addWidget(check_box)
         checkbox_layout.addWidget(question_label)
@@ -341,7 +342,6 @@ class ParamBooleanWithInputWithUnity(Param):
 
         grid_layout.addWidget(checkbox_container, row, 0, 1, 2)
 
-        # Second row: Label + input field
         t_label = QLabel(label)
 
         grid_layout.addWidget(t_label, row + 1, 0)
@@ -349,6 +349,18 @@ class ParamBooleanWithInputWithUnity(Param):
         grid_layout.addWidget(spacer, row + 1, 1)
         grid_layout.addWidget(line_edit, row + 1, 2)
         grid_layout.addWidget(combo_box, row + 1, 3)
+
+    def restore_values(self):
+        if self.last_check_box:
+            if self.check_box:
+                self.check_box.setChecked(True)
+        if self.line_edit:
+            self.line_edit.setText(self.last_line_edit)
+        if self.last_combo_box:
+            if self.combo_box:
+                index = self.combo_box.findText(self.last_combo_box)
+                if index != -1:
+                    self.combo_box.setCurrentIndex(index)
 
     def store_value(self):
         if self.combo_box is not None:
@@ -370,8 +382,8 @@ class ParamComponent(Param):
         self.question_label = None
         self.combo_box = None
         self.extra_rows = 0
-        self.combo_boxes = []
 
+        self.combo_boxes = []
         self.last_combo_boxes = []
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
@@ -380,6 +392,7 @@ class ParamComponent(Param):
         self.combo_boxes = []
 
         # update method
+        # FIXME: move this to a restore value function
         if self.extra_rows > 0:
             for i in range(self.extra_rows):
                 combo = QComboBox()
@@ -406,6 +419,7 @@ class ParamComponent(Param):
         grid_layout.addWidget(extra_combo, row, 2)
         extra_combo.currentIndexChanged.connect(lambda : self.add_component_row(row, grid_layout))
 
+
     def add_component_row(self, row: int, grid_layout: QGridLayout):
         self.component_base_row = row
         self.extra_rows += 1
@@ -416,7 +430,6 @@ class ParamComponent(Param):
         combo.setSizePolicy(QSizePolicy.Policy.Expanding,
                             QSizePolicy.Policy.Fixed)
         self.combo_boxes.append(combo)
-
 
         remove_button = QPushButton("✕")
         remove_button.setFixedWidth(30)
@@ -469,10 +482,7 @@ def create_param(name: str, param_type: ParamType) -> Param:
 
 # -----------------------------------------------------------
 
-
 # TODO: advanced button to unlock more "unusual" settings
-# TODO: see for alpha parameter, lower bounds etc, to set them maybe with a cursor instead of having 3 possible fields?
-# TODO: store the input
 
 
 class ParamCategory(QWidget):
@@ -524,13 +534,11 @@ class ParamCategory(QWidget):
     def clear_grid_layout(self):
         while self.grid_layout.count():
             item = self.grid_layout.takeAt(0)
-            widget = item.widget()
-            if widget:
-                widget.setParent(None)
-                widget.deleteLater()
-            elif item.layout():
-                self.clear_grid_layout(item.layout())
-                item.layout().deleteLater()
+            if item is not None:
+                widget = item.widget()
+                if widget is not None:
+                    widget.setParent(None)
+                    widget.deleteLater()
 
 class MainWindow(QMainWindow):
     def __init__(self):
