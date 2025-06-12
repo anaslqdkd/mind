@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
+    QMessageBox,
     QPushButton,
     QSizePolicy,
     QSpacerItem,
@@ -54,6 +55,7 @@ class Param:
         file: FILE,
         depends_on: Optional[dict[str, DependencyType]] = None,
         optional: bool = False,
+        expected_type=str,
     ) -> None:
         self.name = name  # the exact name in the data files
         self.category: ParamCategory 
@@ -62,6 +64,7 @@ class Param:
         self.depends_on_names: dict[str, DependencyType] = depends_on or {}
         self.depends_on_params: dict[Param, DependencyType] = {}
         self.dependants: dict[Param, DependencyType] = {}
+        self.expected_type = expected_type
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         raise NotImplementedError("Subclasses must implement build_widgets")
@@ -81,7 +84,7 @@ class Param:
 # -----------------------------------------------------------
 
 class ParamInput(Param):
-    def __init__(self, name: str, file: FILE, depends_on: Optional[dict[str, DependencyType]], optional: bool = False) -> None:
+    def __init__(self, name: str, file: FILE, depends_on: Optional[dict[str, DependencyType]], optional: bool = False, expected_type=str) -> None:
         super().__init__(name, file, depends_on=depends_on)
         self.question_label = None
         self.line_edit = None
@@ -107,6 +110,29 @@ class ParamInput(Param):
             1,
         )
         grid_layout.addWidget(self.line_edit, row, 2)
+        self.line_edit.editingFinished.connect(self.validate_input)
+
+    def validate_input(self):
+        text = self.line_edit.text().strip()
+        
+        if text == "":
+            # Empty input is allowed — clear any error state
+            self.line_edit.setStyleSheet("")
+            return
+
+        try:
+            value = float(text)
+            if 0 <= value <= 1:
+                self.line_edit.setStyleSheet("")  # Valid
+            else:
+                raise ValueError("Out of range")
+        except ValueError:
+            self.line_edit.setStyleSheet("border: 1px solid red;")
+            QMessageBox.warning(
+                self.line_edit,
+                "Invalid Input",
+                "Please enter a number between 0 and 1"
+            )
 
     def restore_values(self):
         if self.line_edit is not None:
@@ -136,7 +162,7 @@ class ParamInput(Param):
 # -----------------------------------------------------------
 
 class ParamSelect(Param):
-    def __init__(self, name: str, file: FILE, values: list[str], depends_on: Optional[dict[str, DependencyType]], optional: bool = False) -> None:
+    def __init__(self, name: str, file: FILE, values: list[str], depends_on: Optional[dict[str, DependencyType]], optional: bool = False, expected_type=str) -> None:
         super().__init__(name, file, depends_on=depends_on)
         self.question_label = None
         self.combo_box = None
@@ -186,7 +212,7 @@ class ParamSelect(Param):
 # -----------------------------------------------------------
 
 class ParamBoolean(Param):
-    def __init__(self, name: str, file: FILE, depends_on: Optional[dict[str, DependencyType]], optional: bool = False) -> None:
+    def __init__(self, name: str, file: FILE, depends_on: Optional[dict[str, DependencyType]], optional: bool = False, expected_type=str) -> None:
         super().__init__(name, file, depends_on=depends_on)
         self.question_label = None
         self.check_box = None
@@ -228,7 +254,7 @@ class ParamBoolean(Param):
 
 # -----------------------------------------------------------
 class ParamInputWithUnity(Param):
-    def __init__(self, name: str, file: FILE, values: list[str], depends_on: Optional[dict[str, DependencyType]], optional: bool = False) -> None:
+    def __init__(self, name: str, file: FILE, values: list[str], depends_on: Optional[dict[str, DependencyType]], optional: bool = False, expected_type=str) -> None:
         super().__init__(name, file = file, depends_on=depends_on)
         self.question_label = None
         self.line_edit = None
@@ -285,7 +311,7 @@ class ParamInputWithUnity(Param):
 
 # -----------------------------------------------------------
 class ParamBooleanWithInput(Param):
-    def __init__(self, name: str, file: FILE, depends_on: Optional[dict[str, DependencyType]], optional:bool = False) -> None:
+    def __init__(self, name: str, file: FILE, depends_on: Optional[dict[str, DependencyType]], optional:bool = False, expected_type=str) -> None:
         super().__init__(name, file, depends_on=depends_on)
         self.question_label = None
         self.line_edit = None
@@ -354,7 +380,7 @@ class ParamBooleanWithInput(Param):
 # -----------------------------------------------------------
 
 class ParamBooleanWithInputWithUnity(Param):
-    def __init__(self, name: str, file: FILE, values: list[str], depends_on: Optional[dict[str, DependencyType]], optional: bool = False) -> None:
+    def __init__(self, name: str, file: FILE, values: list[str], depends_on: Optional[dict[str, DependencyType]], optional: bool = False, expected_type=str) -> None:
         super().__init__(name, file, depends_on = depends_on)
         self.question_label = None
         self.check_box = None
@@ -435,7 +461,7 @@ class ParamBooleanWithInputWithUnity(Param):
 # -----------------------------------------------------------
 
 class ParamComponent(Param):
-    def __init__(self, name: str, file: FILE, values: list[str], depends_on:Optional[dict[str, DependencyType]], optional: bool = False) -> None:
+    def __init__(self, name: str, file: FILE, values: list[str], depends_on:Optional[dict[str, DependencyType]], optional: bool = False, expected_type=str) -> None:
         super().__init__(name, file, depends_on=depends_on)
         self.question_label = None
         self.combo_box = None
@@ -529,7 +555,7 @@ class ParamComponent(Param):
 
 # -----------------------------------------------------------
 class ParamFixedWithInput(Param):
-    def __init__(self, name: str, file: FILE, depends_on: Optional[dict[str, DependencyType]], optional: bool = False) -> None:
+    def __init__(self, name: str, file: FILE, depends_on: Optional[dict[str, DependencyType]], optional: bool = False, expected_type=str) -> None:
         super().__init__(name, file = file, depends_on = depends_on)
         self.question_label = None
         self.line_edit = None
@@ -539,16 +565,23 @@ class ParamFixedWithInput(Param):
         self.last_combo_box = ""
 
         self.optional = optional
+        self.rows = 0
         # TODO: param depends on + the thing that is afected in a dictionary
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        self.row = row
+        self.label = label
+        self.grid_layout = grid_layout
         label = f"{label}{'' if self.optional else ' *'}"
         question_label = QLabel(label)
         line_edit = QLineEdit()
-        combo_box = QComboBox()
         grid_layout.addWidget(question_label, row, 0)
-        grid_layout.addWidget(combo_box, row, 1)
+        for i in range(self.rows):
+            # FIXME: clear the grid before
+            combo_box = QComboBox()
+            grid_layout.addWidget(combo_box, self.row, 1)
+            self.row += 1
         grid_layout.addItem(
             QSpacerItem(0, 0, QSizePolicy.Policy.Expanding,
                         QSizePolicy.Policy.Minimum),
@@ -592,8 +625,14 @@ class ParamFixedWithInput(Param):
             match dependency_type:
                 case DependencyType.COMPONENT_COUNT:
                     # FIXME: retrieve method in each because some parameters may not have a line edit + call the update method or store method
-                    # FIXME: manage this in the build_widget to rebuild the ui based on the input from the user
+
                     print("6666666", param.last_line_edit)
+                    
+                    try:
+                        self.rows = int(param.last_line_edit)
+                        self.build_widget(self.row, self.label, self.grid_layout)
+                    except (ValueError, TypeError):
+                        print(f"Invalid integer input: {param.last_line_edit}")
 
 
         # match 
