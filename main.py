@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QApplication
-from app.controllers import ComponentsController, MainController
+# from app.controllers import ComponentsController, MainController
 from app.views import MainWindow
 
 # from app.views import
@@ -10,8 +10,8 @@ if __name__ == "__main__":
     # param_page = ParameterPage()
     # controller = ParameterController(model, param_page)
     main_window = MainWindow()
-    main_controller = MainController(main_window)
-    components_controller = ComponentsController(main_window.page_components)
+    # main_controller = MainController(main_window)
+    # components_controller = ComponentsController(main_window.page_components)
     # parameter_page = ParameterPage(main_window)
     main_window.show()
     app.exec()

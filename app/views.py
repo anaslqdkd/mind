@@ -12,31 +12,33 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from app.param import FILE, Param, ParamBoolean, ParamBooleanWithInput, ParamBooleanWithInputWithUnity, ParamCategory, ParamComponent, ParamInput, ParamInputWithUnity, ParamSelect, ParamType
+from app.param import FILE, DependencyType, Param, ParamBoolean, ParamBooleanWithInput, ParamBooleanWithInputWithUnity, ParamCategory, ParamComponent, ParamFixedWithInput, ParamInput, ParamInputWithUnity, ParamSelect, ParamType
 
 # TODO: same but for actual input types
-
-
 
 # -----------------------------------------------------------
 
 def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Param:
     optional = kwargs.get("optional", False)
+    values = kwargs.get("values", [])
+    depends_on = kwargs.get("depends_on", [])
     match param_type:
         case ParamType.INPUT:
-            return ParamInput(name, optional=optional, file=file)
+            return ParamInput(name, optional=optional, file=file, depends_on = depends_on)
         case ParamType.SELECT:
-            return ParamSelect(name, file=file, values=kwargs.get("values", []))
+            return ParamSelect(name, file=file, values=values, depends_on = depends_on)
         case ParamType.BOOLEAN:
-            return ParamBoolean(name, file)
+            return ParamBoolean(name, file, depends_on = depends_on)
         case ParamType.INPUT_WITH_UNITY:
-            return ParamInputWithUnity(name, file=file, values=kwargs.get("values", []))
+            return ParamInputWithUnity(name, file=file, values = values, depends_on = depends_on)
         case ParamType.BOOLEAN_WITH_INPUT:
-            return ParamBooleanWithInput(name, file)
+            return ParamBooleanWithInput(name, file, depends_on = depends_on)
         case ParamType.BOOLEAN_WITH_INPUT_WITH_UNITY:
-            return ParamBooleanWithInputWithUnity(name, file = file, values=kwargs.get("values", []))
+            return ParamBooleanWithInputWithUnity(name, file = file, values = values, depends_on = depends_on)
         case ParamType.COMPONENT:
-            return ParamComponent(name, file, values=kwargs.get("values", []))
+            return ParamComponent(name, file, values = values, depends_on = depends_on)
+        case ParamType.FIXED_WITH_INPUT:
+            return ParamFixedWithInput(name, file, depends_on = depends_on)
         case _:
             raise ValueError(f"Unsupported param type: {param_type}")
 
@@ -69,8 +71,8 @@ class MainWindow(QMainWindow):
 
         # pages
         param_page1 = self.set_param()
-        self.page_components = PageParametersGlobal(self, param_page1)
-        self.page1 = PageParametersGlobal(self, param_page1)
+        self.page_components = PageParameters(self, param_page1)
+        self.page1 = PageParameters(self, param_page1)
 
         self.main_area = QWidget()
         tab1_layout = QHBoxLayout(self.main_area)
@@ -129,8 +131,8 @@ class MainWindow(QMainWindow):
 
     def set_param(self):
         algo_params = {
-            "Algorithm": 
-                create_param(name="algorithm", param_type=ParamType.INPUT, file = FILE.DATA, optional = True)
+            "num_membranes": 
+                create_param(name="num_membranes", param_type=ParamType.INPUT, file = FILE.DATA, optional = True)
             ,
             "Another one": 
                 create_param(name="idk", param_type=ParamType.INPUT, file = FILE.DATA)
@@ -151,20 +153,73 @@ class MainWindow(QMainWindow):
                 create_param(name="boolean with input and unity", param_type=ParamType.BOOLEAN_WITH_INPUT_WITH_UNITY, values=["option 1", "option 2", "option 3"], file = FILE.DATA)
             ,
             "Component": 
-                create_param(name="component test", param_type=ParamType.COMPONENT, file = FILE.DATA, values=["component 1", "component 2", "component 3"])
+                create_param(name="component test", param_type=ParamType.COMPONENT, file = FILE.DATA, values=["H2O", "H2", "CO2"])
             ,
             "Another flds": 
-                create_param(name="bu", param_type=ParamType.INPUT, file = FILE.DATA)
+            create_param(name="bu", param_type=ParamType.FIXED_WITH_INPUT, file = FILE.DATA, depends_on = {"num_membranes": DependencyType.COMPONENT_COUNT})
             ,
         }
         param = {
         }
+        # for key, value in algo_params.items():
+        #     # FIXME: put this in a function, and get the param name not the label
+
+        #     for el in value.depends_on_names:
+        #         print("the value.name is", el)
+        #         dep_param = algo_params.get(el)
+        #         if dep_param:
+        #             print("here")
+        #             print(dep_param.name)
+        #             value.depends_on_params.append(dep_param)
+        #             dep_param.dependants.append(value)
+
+        for key, value in algo_params.items():
+            # FIXME: put this in a function, and get the param name not the label
+            depends_on = getattr(value, "depends_on", None)
+            if not depends_on:
+                continue
+            for el in value.depends_on_names:
+                print("the value.name is", el)
+                dep_param = algo_params.get(el)
+                if dep_param:
+                    print("here")
+                    print(dep_param.name)
+                    dep_type = value.depends_on.get(el)
+                    value.depends_on_params[dep_param] = dep_type
+                    if not hasattr(dep_param, "dependants"):
+                        dep_param.dependants = {}
+                    dep_param.dependants[value] = dep_type
+
+        for key, value in algo_params.items():
+            # print("++++", value.depends_on_names)
+            depends_on = getattr(value, "depends_on_names", None)
+            if not depends_on:
+                # print("°))) here")
+                continue
+            for dep_name, dep_type in value.depends_on_names.items():
+                # print("TTTTTT")
+                dep_param = algo_params.get(dep_name)
+                print(dep_param)
+                if dep_param:
+                    print(f"Dependency found: {dep_name} → {dep_type}")
+                    value.depends_on_params[dep_param] = dep_type
+                    if not hasattr(dep_param, "dependants"):
+                        dep_param.dependants = {}
+                    dep_param.dependants[value] = dep_type
+
+
+        # for name, param in  algo_params.items():
+        #     print("buu")
+        #     for dep_name in param.depends_on_names:
+        #         dep_param = algo_params.get(dep_name)
+        #         if dep_param:
+        #             param.depens_on_params.append(dep_param)
         param_page1 = {"Algorithm parameters": algo_params,
                        "Other parameters": param}
         return param_page1
 
 
-class PageParametersGlobal(QWidget):
+class PageParameters(QWidget):
     def __init__(
         self, main_window, param_category: dict["str", dict[str, Param]]
     ) -> None:

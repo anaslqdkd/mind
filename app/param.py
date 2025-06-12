@@ -1,5 +1,7 @@
 import enum
+from typing import Optional
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import (
     QCheckBox,
     QComboBox,
@@ -34,7 +36,14 @@ class ParamType(enum.Enum):
     COMPONENT = enum.auto()  # set components
     COMPONENT_WITH_VALUE = enum.auto()  # components xin
     COMPONENT_WITH_VALUE_WITH_UNITY = enum.auto()  # components xin
+    FIXED_WITH_INPUT = enum.auto()  # components xin
     # TODO: add a param type for components attributes
+
+# -----------------------------------------------------------
+
+class DependencyType(enum.Enum):
+    COMPONENT_COUNT = enum.auto()  
+    VALUE = enum.auto()  
 
 # -----------------------------------------------------------
 
@@ -43,13 +52,16 @@ class Param:
         self,
         name: str,
         file: FILE,
-        optional: bool = False
+        depends_on: Optional[dict[str, DependencyType]] = None,
+        optional: bool = False,
     ) -> None:
         self.name = name  # the exact name in the data files
         self.category: ParamCategory 
         self.file = file
         self.optional = optional
-
+        self.depends_on_names: dict[str, DependencyType] = depends_on or {}
+        self.depends_on_params: dict[Param, DependencyType] = {}
+        self.dependants: dict[Param, DependencyType] = {}
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         raise NotImplementedError("Subclasses must implement build_widgets")
@@ -62,12 +74,15 @@ class Param:
     def to_file(self) -> str:
         raise NotImplementedError("Subclasses must implement to_file")
 
+    def notify_dependants(self) -> None:
+        print("In the notify dependants !")
+
 
 # -----------------------------------------------------------
 
 class ParamInput(Param):
-    def __init__(self, name: str, file: FILE, optional: bool = False) -> None:
-        super().__init__(name, file)
+    def __init__(self, name: str, file: FILE, depends_on: Optional[dict[str, DependencyType]], optional: bool = False) -> None:
+        super().__init__(name, file, depends_on=depends_on)
         self.question_label = None
         self.line_edit = None
         self.last_line_edit = ""
@@ -98,19 +113,31 @@ class ParamInput(Param):
             self.line_edit.setText(self.last_line_edit)
 
     def store_value(self):
+        # FIXME: do not call this here
+        # self.notify_dependents()
+        # self.category.test_button.clicked.connect(self.notify_dependents)
         if self.line_edit is not None:
             self.last_line_edit = self.line_edit.text()
 
+    def notify_dependants(self) -> None:
+        print("TATATATATA")
+        print(self.dependants)
+        for dep in self.dependants.keys():
+            print("the dep before TATATATA", dep)
+            dep.on_dependency_updated(self)
+        pass
+
     def to_file(self) -> str:
         return f"{self.name} := {self.last_line_edit}"
+
 
 # TODO: change the input based on another added attribute if necessary
 
 # -----------------------------------------------------------
 
 class ParamSelect(Param):
-    def __init__(self, name: str, file: FILE, values: list[str], optional: bool = False) -> None:
-        super().__init__(name, file)
+    def __init__(self, name: str, file: FILE, values: list[str], depends_on: Optional[dict[str, DependencyType]], optional: bool = False) -> None:
+        super().__init__(name, file, depends_on=depends_on)
         self.question_label = None
         self.combo_box = None
         self.last_combo_box = ""
@@ -159,8 +186,8 @@ class ParamSelect(Param):
 # -----------------------------------------------------------
 
 class ParamBoolean(Param):
-    def __init__(self, name: str, file: FILE, optional: bool = False) -> None:
-        super().__init__(name, file)
+    def __init__(self, name: str, file: FILE, depends_on: Optional[dict[str, DependencyType]], optional: bool = False) -> None:
+        super().__init__(name, file, depends_on=depends_on)
         self.question_label = None
         self.check_box = None
         self.last_check_box = False
@@ -201,9 +228,8 @@ class ParamBoolean(Param):
 
 # -----------------------------------------------------------
 class ParamInputWithUnity(Param):
-    # TODO: add values somewhere
-    def __init__(self, name: str, file: FILE, values: list[str], optional: bool = False) -> None:
-        super().__init__(name, file = file)
+    def __init__(self, name: str, file: FILE, values: list[str], depends_on: Optional[dict[str, DependencyType]], optional: bool = False) -> None:
+        super().__init__(name, file = file, depends_on=depends_on)
         self.question_label = None
         self.line_edit = None
         self.combo_box = None
@@ -259,8 +285,8 @@ class ParamInputWithUnity(Param):
 
 # -----------------------------------------------------------
 class ParamBooleanWithInput(Param):
-    def __init__(self, name: str, file: FILE, optional:bool = False) -> None:
-        super().__init__(name, file)
+    def __init__(self, name: str, file: FILE, depends_on: Optional[dict[str, DependencyType]], optional:bool = False) -> None:
+        super().__init__(name, file, depends_on=depends_on)
         self.question_label = None
         self.line_edit = None
         self.check_box = None
@@ -328,8 +354,8 @@ class ParamBooleanWithInput(Param):
 # -----------------------------------------------------------
 
 class ParamBooleanWithInputWithUnity(Param):
-    def __init__(self, name: str, file: FILE, values: list[str], optional: bool = False) -> None:
-        super().__init__(name, file)
+    def __init__(self, name: str, file: FILE, values: list[str], depends_on: Optional[dict[str, DependencyType]], optional: bool = False) -> None:
+        super().__init__(name, file, depends_on = depends_on)
         self.question_label = None
         self.check_box = None
         self.combo_box = None
@@ -409,8 +435,8 @@ class ParamBooleanWithInputWithUnity(Param):
 # -----------------------------------------------------------
 
 class ParamComponent(Param):
-    def __init__(self, name: str, file: FILE, values: list[str], optional: bool = False) -> None:
-        super().__init__(name, file)
+    def __init__(self, name: str, file: FILE, values: list[str], depends_on:Optional[dict[str, DependencyType]], optional: bool = False) -> None:
+        super().__init__(name, file, depends_on=depends_on)
         self.question_label = None
         self.combo_box = None
         self.extra_rows = 0
@@ -502,6 +528,85 @@ class ParamComponent(Param):
         return f"{self.name} := {value}\n"
 
 # -----------------------------------------------------------
+class ParamFixedWithInput(Param):
+    def __init__(self, name: str, file: FILE, depends_on: Optional[dict[str, DependencyType]], optional: bool = False) -> None:
+        super().__init__(name, file = file, depends_on = depends_on)
+        self.question_label = None
+        self.line_edit = None
+        self.combo_box = None
+
+        self.last_line_edit = ""
+        self.last_combo_box = ""
+
+        self.optional = optional
+        # TODO: param depends on + the thing that is afected in a dictionary
+        pass
+
+    def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        label = f"{label}{'' if self.optional else ' *'}"
+        question_label = QLabel(label)
+        line_edit = QLineEdit()
+        combo_box = QComboBox()
+        grid_layout.addWidget(question_label, row, 0)
+        grid_layout.addWidget(combo_box, row, 1)
+        grid_layout.addItem(
+            QSpacerItem(0, 0, QSizePolicy.Policy.Expanding,
+                        QSizePolicy.Policy.Minimum),
+            row,
+            1,
+        )
+        self.line_edit = line_edit
+
+        self.restore_value()
+
+        grid_layout.addWidget(self.line_edit, row, 2)
+
+    def restore_value(self):
+        if self.last_combo_box:
+            if self.combo_box:
+                index = self.combo_box.findText(self.last_combo_box)
+                if index != -1:
+                    self.combo_box.setCurrentIndex(index)
+        if self.last_line_edit:
+            if self.line_edit:
+                self.line_edit.setText(self.last_line_edit)
+
+    def store_value(self):
+        if self.line_edit is not None:
+            self.last_line_edit = self.line_edit.text()
+            pass
+        if self.combo_box is not None:
+            self.last_combo_box = self.combo_box.currentText()
+        pass
+
+    def to_file(self) -> str:
+        return f"{self.name} := {self.last_line_edit} #{self.last_combo_box}"
+
+    def on_dependency_updated(self, changed_param:Param):
+        print("%%%%: in the dependency updated", changed_param.name)
+        # print(self.dep)
+        # for el in self.
+        if changed_param in self.depends_on_params.keys():
+            print("YAAAA")
+        for param, dependency_type in self.depends_on_params.items():
+            match dependency_type:
+                case DependencyType.COMPONENT_COUNT:
+                    # FIXME: retrieve method in each because some parameters may not have a line edit + call the update method or store method
+                    # FIXME: manage this in the build_widget to rebuild the ui based on the input from the user
+                    print("6666666", param.last_line_edit)
+
+
+        # match 
+        
+        # TODO: rebuild the ui
+        # if changed_param.name == "num_membranes":
+        #     print("AAAAAA")
+        # self.build_widget()
+        # self.category.update_category()
+        print(f"{self.name} updated because the dependant {changed_param.name} changed")
+
+
+# -----------------------------------------------------------
 
 class ParamCategory(QWidget):
     def __init__(self, name: str, param: dict["str", Param]) -> None:
@@ -521,6 +626,8 @@ class ParamCategory(QWidget):
         self.label = QLabel(f"{name}")
         self.extra_rows = 0
 
+        self.test_button = QPushButton("Test")
+
         # self.combo_boxes = []
         self.label.setStyleSheet(
             """
@@ -531,7 +638,18 @@ class ParamCategory(QWidget):
         )
         layout.addWidget(self.label)
         layout.addWidget(self.grid_widget)
+
+        # test button
+        self.test_button.setFixedWidth(50)
+        self.test_button.clicked.connect(self.notify_dependents)
+        layout.addWidget(self.test_button)
+
+
         self.build_param()
+
+    def notify_dependents(self):
+        for name, param in self.param.items():
+            param.notify_dependants()
 
     def build_param(self) -> QWidget:
         self.row = 0
