@@ -13,10 +13,11 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from app.param import Param, ParamCategory
+from app.param import InputValidation, Param, ParamCategory
 from app.param_factory import set_param
 from app.param_factory import algo_param_specs
 from app.param_factory import algo_param_specs2
+from app.param_validator import LineEditValidation, NonOptionalInputValidation
 
 # TODO: close button verification before quitting, to abort modifs
 # TODO: advanced button to unlock more "unusual" settings
@@ -149,36 +150,61 @@ class PageParameters(QWidget):
 
         self.setLayout(main_layout)
 
-    # TODO: button radio
-    # TODO: window for component selection
-
+    # TODO: move this to the validator class
     def go_to_next_page(self):
         # TODO: trigger errors for not optional values
+        print("the rest of validate_all_input", self.validate_all_input())
         if self.validate_required_params():
+            # FIXME: restore when validate input works properly
+            # and self.validate_all_input():
+
             current_index = self.sidebar.currentRow()
             count = self.sidebar.count()
             next_index = (current_index + 1) % count
             self.sidebar.setCurrentRow(next_index)
+        # FIXME: same
+        # elif not self.validate_all_input():
+        #     QMessageBox.warning(
+        #         self, "text" "Invalid Input", f"Please input the right values"
+        #     )
         else:
             # TODO: put in red all parameters that are non optional and not selected
             for category in self.param_category.values():
                 for param in category.values():
-                    if not getattr(param, "optional", False):
-                        if hasattr(param, "line_edit"):
-                            if param.line_edit.text() == "":
-                                line_edit = param.line_edit
-                                line_edit.setStyleSheet("border: 1px solid red;")
-                                print("pb")
-            QMessageBox.warning(self, "text" "Invalid Input", f"Please input all forms")
+                    if isinstance(param, NonOptionalInputValidation):
+                        if not param.is_filled():
+                            line_edit = param.line_edit
+                            line_edit.setStyleSheet("border: 1px solid red")
+            QMessageBox.warning(
+                self, "text" "Invalid Input", f"Please input all required forms"
+            )
 
     def validate_required_params(self):
         for category in self.param_category.values():
             for param in category.values():
-                if not getattr(param, "optional", False):
-                    # TODO: validate input (or another function that checks if there is input)
-                    # if has line input
-                    if hasattr(param, "line_edit"):
-                        # InputValidation.validate_input(param.line_edit, param.expected_type)
-                        InputValidation.check_required(
-                            param.name, param.line_edit, param.optional
-                        )
+                if isinstance(param, NonOptionalInputValidation):
+                    print("param is a instance of non optional input validation")
+                    if not param.is_filled():
+                        return False
+        return True
+
+    def validate_all_input(self):
+        for category in self.param_category.values():
+            for param in category.values():
+                if isinstance(param, LineEditValidation):
+                    print("param is a instance of non optional input validation")
+                    text = param.line_edit.text()
+                    print("the text in ", text)
+                    if not param.validate_input(param.line_edit.text()):
+                        print("2345678", param.name)
+                        return False
+        return True
+
+        # if not getattr(param, "optional", False):
+        #     # TODO: validate input (or another function that checks if there is input)
+        #     # if has line input
+        #     if hasattr(param, "line_edit"):
+        #         # InputValidation.validate_input(param.line_edit, param.expected_type)
+        #         InputValidation.check_required(
+        #             param.name, param.line_edit, param.optional
+        #         )

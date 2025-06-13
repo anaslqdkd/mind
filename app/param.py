@@ -23,7 +23,7 @@ from PyQt6.QtWidgets import (
 )
 
 from app.param_enums import FILE, DependencyType
-from app.param_validator import LineEditValidation
+from app.param_validator import LineEditValidation, NonOptionalInputValidation
 
 
 # -----------------------------------------------------------
@@ -54,8 +54,6 @@ class SquareCheckboxSelector(QDialog):
 
         layout.addWidget(buttons)
         self.setLayout(layout)
-
-    # TODO: force restore after calling this
 
     def get_selected(self):
         # print(selected)
@@ -146,10 +144,12 @@ class Param:
         print("In the notify dependants !")
 
 
+# TODO: for bool with input, additionnal check if the case is checked
+
 # -----------------------------------------------------------
 
 
-class ParamInput(Param, LineEditValidation):
+class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
     def __init__(
         self,
         name: str,
@@ -160,8 +160,6 @@ class ParamInput(Param, LineEditValidation):
     ) -> None:
         super().__init__(name, file, depends_on=depends_on)
         LineEditValidation.__init__(self)
-        # TODO: set validation rules when creating the parameter:
-        #     param.set_validation(min_value=0, max_value=1, optional=True)
         self.question_label = None
         self.line_edit = None
         self.last_line_edit = ""
@@ -767,7 +765,6 @@ class ParamFixedWithInput(Param):
         for param, dependency_type in self.depends_on_params.items():
             match dependency_type:
                 case DependencyType.COMPONENT_COUNT:
-                    # FIXME: retrieve method in each because some parameters may not have a line edit + call the update method or store method
                     # TODO: clear the grid before
 
                     print("6666666", param.last_line_edit)
@@ -852,7 +849,6 @@ class ParamRadio(Param):
         for param, dependency_type in self.depends_on_params.items():
             match dependency_type:
                 case DependencyType.COMPONENT_COUNT:
-                    # FIXME: retrieve method in each because some parameters may not have a line edit + call the update method or store method
                     # TODO: clear the grid before
 
                     print("6666666", param.last_line_edit)
@@ -955,7 +951,6 @@ class ParamComponentSelector(Param):
         for param, dependency_type in self.depends_on_params.items():
             match dependency_type:
                 case DependencyType.COMPONENT_COUNT:
-                    # FIXME: retrieve method in each because some parameters may not have a line edit + call the update method or store method
                     # TODO: clear the grid before
 
                     print("6666666", param.last_line_edit)
