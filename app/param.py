@@ -16,6 +16,7 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
 # -----------------------------------------------------------
 class InputValidation:
     @staticmethod
@@ -55,6 +56,32 @@ class InputValidation:
             return False
         return True
             # print("Error not all non optional params insterted")
+
+# -----------------------------------------------------------
+
+class LineEditValidation:
+    def __init__(self) -> None:
+        self.validation_rules = {}
+        pass
+
+    def set_validation(self, min_value=None, max_value=None, optional=False):
+        self.validation_rules["min"] = min_value
+        self.validation_rules["max"] = max_value
+        self.validation_rules["optional"] = optional
+
+    def validate_input(self, text: str) -> bool:
+        if text == "":
+            return self.validation_rules.get("optional", False)
+
+        try:
+            value = float(text)
+            min_val = self.validation_rules.get("min", float("-inf"))
+            max_val = self.validation_rules.get("max", float("inf"))
+            if value is not None:
+                # FIXME: adapt if min_value or max_value is missing
+                return min_val <= value <= max_val
+        except ValueError:
+            return False
 
 
 # -----------------------------------------------------------
@@ -122,9 +149,12 @@ class Param:
 
 # -----------------------------------------------------------
 
-class ParamInput(Param):
+class ParamInput(Param, LineEditValidation):
     def __init__(self, name: str, file: FILE, depends_on: Optional[dict[str, DependencyType]], optional: bool = False, expected_type=str) -> None:
         super().__init__(name, file, depends_on=depends_on)
+        LineEditValidation.__init__(self)
+        # TODO: set validation rules when creating the parameter:
+        #     param.set_validation(min_value=0, max_value=1, optional=True)
         self.question_label = None
         self.line_edit = None
         self.last_line_edit = ""
@@ -154,11 +184,33 @@ class ParamInput(Param):
         if self.line_edit is not None:
             line_edit = self.line_edit  # local variable guaranteed not None
             expected_type = self.expected_type
-            line_edit.editingFinished.connect(
-                lambda: InputValidation.validate_input(line_edit, expected_type)
-            )
+            # line_edit.editingFinished.connect(
+            #     lambda: InputValidation.validate_input(line_edit, expected_type)
+            # )
             # TODO: add this for all input parameters
+            self.line_edit.editingFinished.connect(self.validate_and_highlight)
 
+
+    def validate_and_highlight(self):
+        if self.validation_rules == {}:
+            return
+        print(self.validation_rules)
+        text = self.line_edit.text()
+        if self.validate_input(text):
+            self.line_edit.setStyleSheet("")  # Clear any red border
+        else:
+            self.line_edit.setStyleSheet("border: 1px solid red;")
+            self.show_error_message("Invalid input. Please enter a valid value "
+                                    # f"({self.validation_rules['type'].__name__})"
+                                    f"{' between ' + str(self.validation_rules['min']) + ' and ' + str(self.validation_rules['max']) if self.validation_rules['min'] is not None and self.validation_rules['max'] is not None else ''}.")
+
+    def show_error_message(self, message: str):
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Icon.Warning)
+        msg_box.setWindowTitle("Input Error")
+        msg_box.setText(message)
+        msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
+        msg_box.exec()
 
     def restore_values(self):
         if self.line_edit is not None:

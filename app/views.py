@@ -1,7 +1,9 @@
 import enum
+from PyQt6.QtCore import QLine
 from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
+    QLineEdit,
     QListWidget,
     QMainWindow,
     QMessageBox,
@@ -13,7 +15,7 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from app.param import FILE, DependencyType, InputValidation, Param, ParamBoolean, ParamBooleanWithInput, ParamBooleanWithInputWithUnity, ParamCategory, ParamComponent, ParamFixedWithInput, ParamInput, ParamInputWithUnity, ParamSelect, ParamType
+from app.param import FILE, DependencyType, InputValidation, LineEditValidation, Param, ParamBoolean, ParamBooleanWithInput, ParamBooleanWithInputWithUnity, ParamCategory, ParamComponent, ParamFixedWithInput, ParamInput, ParamInputWithUnity, ParamSelect, ParamType
 
 # TODO: same but for actual input types
 # TODO: close button verification before quitting, to abort modifs
@@ -45,6 +47,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
             return ParamFixedWithInput(name, file, depends_on = depends_on, expected_type=expected_type)
         case _:
             raise ValueError(f"Unsupported param type: {param_type}")
+
 
 
 # -----------------------------------------------------------
@@ -138,10 +141,10 @@ class MainWindow(QMainWindow):
     def set_param(self):
         algo_params = {
             "num_membranes": 
-                create_param(name="num_membranes", param_type=ParamType.INPUT, file = FILE.DATA, optional = True, expected_type=int)
+                create_param(name="num_membranes", param_type=ParamType.INPUT, file = FILE.DATA, optional = False, expected_type=int)
             ,
             "Another one": 
-                create_param(name="idk", param_type=ParamType.INPUT, file = FILE.DATA)
+                create_param(name="idk", param_type=ParamType.INPUT, file = FILE.DATA, expected_type=int)
             ,
             "Select test": 
                 create_param(name="select", param_type=ParamType.SELECT, values=["multistart", "mbh", "global", "population", "genetic"], file = FILE.DATA)
@@ -201,6 +204,25 @@ class MainWindow(QMainWindow):
                     if not hasattr(dep_param, "dependants"):
                         dep_param.dependants = {}
                     dep_param.dependants[value] = dep_type
+        def apply_validation_rules(param: Param, rules: dict):
+            if isinstance(param, LineEditValidation):
+                param.set_validation(**rules)
+
+        for key, value in algo_params.items():
+            print(value.name)
+            if value.name == "num_membranes":
+                apply_validation_rules(value, {"min_value":1, "max_value":2})
+                # if isinstance(value, LineEditValidation):
+                #     value.set_validation(min_value=1, max_value=10)
+                #     print("the param validation rules are: ++++", value.validation_rules)
+
+
+        # FIXME: refactor with: 
+        #     def apply_validation_rules(param: Param, rules: dict):
+        #         if isinstance(param, LineEditValidationMixin):
+        #             param.set_validation(**rules)
+        # then use with 
+        # apply_validation_rules(param, {"min_value": 0, "max_value": 1, "expected_type": float})
 
 
         # for name, param in  algo_params.items():
@@ -340,13 +362,19 @@ class PageParameters(QWidget):
             self.sidebar.setCurrentRow(next_index)
         else:
             # TODO: put in red all parameters that are non optional and not selected
+            for category in self.param_category.values():
+                for param in category.values():
+                    if not getattr(param, "optional", False):
+                        if hasattr(param, "line_edit"):
+                            if param.line_edit.text() == "":
+                                line_edit = param.line_edit
+                                line_edit.setStyleSheet("border: 1px solid red;")
+                                print("pb")
             QMessageBox.warning(
-                # line_edit,
                 self,
                 "text"
                 "Invalid Input",
                 f"Please input all forms"
-                # + (" between 0 and 1" if expected_type == float else "")
             )
 
 
