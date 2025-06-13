@@ -1,5 +1,6 @@
 import enum
 
+
 class ParamType(enum.Enum):
     INPUT = enum.auto()  # seulement de l'input
     INPUT_WITH_UNITY = enum.auto()  # parametre avec unité dans un menu deroulant
@@ -11,14 +12,20 @@ class ParamType(enum.Enum):
     COMPONENT_WITH_VALUE = enum.auto()  # components xin
     COMPONENT_WITH_VALUE_WITH_UNITY = enum.auto()  # components xin
     FIXED_WITH_INPUT = enum.auto()  # components xin
+    RADIO = enum.auto()
+    COMPONENT_SELECTOR = enum.auto()
+
 
 # -----------------------------------------------------------
+
 
 class DependencyType(enum.Enum):
-    COMPONENT_COUNT = enum.auto()  
-    VALUE = enum.auto()  
+    COMPONENT_COUNT = enum.auto()
+    VALUE = enum.auto()
+
 
 # -----------------------------------------------------------
+
 
 class FILE(enum.Enum):
     CONFIG = enum.auto()

@@ -47,7 +47,22 @@ algo_param_specs = {
         "file": FILE.DATA,
         "values": ["H2O", "H2", "CO2"],
     },
+    "Radio text": {
+        "name": "bu",
+        "param_type": ParamType.RADIO,
+        "file": FILE.DATA,
+        # "depends_on": {"num_membranes": DependencyType.COMPONENT_COUNT},
+        "values": ["option 1", "option 2", "option 3"],
+        "expected_type": int,
+    },
     "Another flds": {
+        "name": "bu",
+        "param_type": ParamType.COMPONENT_SELECTOR,
+        "file": FILE.DATA,
+        "depends_on": {"num_membranes": DependencyType.COMPONENT_COUNT},
+        "expected_type": int,
+    },
+    "AAAA": {
         "name": "bu",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.DATA,
