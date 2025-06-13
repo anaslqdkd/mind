@@ -16,6 +16,46 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+# -----------------------------------------------------------
+class InputValidation:
+    @staticmethod
+    def validate_input(line_edit: QLineEdit, expected_type: type):
+        # TODO: remove the text from the input after warning
+        text = line_edit.text().strip()
+
+        if text == "":
+            # Empty input is allowed — clear any error state
+            line_edit.setStyleSheet("")
+            return
+
+        try:
+            if expected_type == int:
+                value = int(text)
+            elif expected_type == float:
+                value = float(text)
+            else:
+                value = text  # fallback to string
+
+            # Example: for float, check range 0-1
+            if expected_type == float and not (0 <= value <= 1):
+                raise ValueError("Out of range")
+            line_edit.setStyleSheet("")  # Valid
+        except ValueError:
+            line_edit.setStyleSheet("border: 1px solid red;")
+            QMessageBox.warning(
+                line_edit,
+                "Invalid Input",
+                f"Please enter a valid {expected_type.__name__}"
+                + (" between 0 and 1" if expected_type == float else "")
+            )
+    @staticmethod
+    def check_required(name: str, line_edit: QLineEdit, optional: bool) -> bool:
+        if not optional and line_edit.text() == "":
+            print(f"Error, the param {name} is not inserted")
+            return False
+        return True
+            # print("Error not all non optional params insterted")
+
 
 # -----------------------------------------------------------
 class FILE(enum.Enum):
@@ -38,7 +78,6 @@ class ParamType(enum.Enum):
     COMPONENT_WITH_VALUE = enum.auto()  # components xin
     COMPONENT_WITH_VALUE_WITH_UNITY = enum.auto()  # components xin
     FIXED_WITH_INPUT = enum.auto()  # components xin
-    # TODO: add a param type for components attributes
 
 # -----------------------------------------------------------
 
@@ -91,6 +130,7 @@ class ParamInput(Param):
         self.last_line_edit = ""
         self.file = file
         self.optional = optional
+        self.expected_type = expected_type
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
@@ -110,38 +150,21 @@ class ParamInput(Param):
             1,
         )
         grid_layout.addWidget(self.line_edit, row, 2)
-        self.line_edit.editingFinished.connect(self.validate_input)
 
-    def validate_input(self):
-        text = self.line_edit.text().strip()
-        
-        if text == "":
-            # Empty input is allowed — clear any error state
-            self.line_edit.setStyleSheet("")
-            return
-
-        try:
-            value = float(text)
-            if 0 <= value <= 1:
-                self.line_edit.setStyleSheet("")  # Valid
-            else:
-                raise ValueError("Out of range")
-        except ValueError:
-            self.line_edit.setStyleSheet("border: 1px solid red;")
-            QMessageBox.warning(
-                self.line_edit,
-                "Invalid Input",
-                "Please enter a number between 0 and 1"
+        if self.line_edit is not None:
+            line_edit = self.line_edit  # local variable guaranteed not None
+            expected_type = self.expected_type
+            line_edit.editingFinished.connect(
+                lambda: InputValidation.validate_input(line_edit, expected_type)
             )
+            # TODO: add this for all input parameters
+
 
     def restore_values(self):
         if self.line_edit is not None:
             self.line_edit.setText(self.last_line_edit)
 
     def store_value(self):
-        # FIXME: do not call this here
-        # self.notify_dependents()
-        # self.category.test_button.clicked.connect(self.notify_dependents)
         if self.line_edit is not None:
             self.last_line_edit = self.line_edit.text()
 
@@ -157,7 +180,6 @@ class ParamInput(Param):
         return f"{self.name} := {self.last_line_edit}"
 
 
-# TODO: change the input based on another added attribute if necessary
 
 # -----------------------------------------------------------
 
@@ -566,7 +588,6 @@ class ParamFixedWithInput(Param):
 
         self.optional = optional
         self.rows = 0
-        # TODO: param depends on + the thing that is afected in a dictionary
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
@@ -625,6 +646,7 @@ class ParamFixedWithInput(Param):
             match dependency_type:
                 case DependencyType.COMPONENT_COUNT:
                     # FIXME: retrieve method in each because some parameters may not have a line edit + call the update method or store method
+                    # TODO: clear the grid before
 
                     print("6666666", param.last_line_edit)
                     
@@ -636,12 +658,6 @@ class ParamFixedWithInput(Param):
 
 
         # match 
-        
-        # TODO: rebuild the ui
-        # if changed_param.name == "num_membranes":
-        #     print("AAAAAA")
-        # self.build_widget()
-        # self.category.update_category()
         print(f"{self.name} updated because the dependant {changed_param.name} changed")
 
 
