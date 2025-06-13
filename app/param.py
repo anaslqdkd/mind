@@ -17,6 +17,9 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from app.param_enums import FILE, DependencyType
+from app.param_validator import LineEditValidation
+
 # -----------------------------------------------------------
 class InputValidation:
     @staticmethod
@@ -59,60 +62,6 @@ class InputValidation:
 
 # -----------------------------------------------------------
 
-class LineEditValidation:
-    def __init__(self) -> None:
-        self.validation_rules = {}
-        pass
-
-    def set_validation(self, min_value=None, max_value=None, optional=False):
-        self.validation_rules["min"] = min_value
-        self.validation_rules["max"] = max_value
-        self.validation_rules["optional"] = optional
-
-    def validate_input(self, text: str) -> bool:
-        if text == "":
-            return self.validation_rules.get("optional", False)
-
-        try:
-            value = float(text)
-            min_val = self.validation_rules.get("min", float("-inf"))
-            max_val = self.validation_rules.get("max", float("inf"))
-            if value is not None:
-                # FIXME: adapt if min_value or max_value is missing
-                return min_val <= value <= max_val
-        except ValueError:
-            return False
-
-
-# -----------------------------------------------------------
-class FILE(enum.Enum):
-    CONFIG = enum.auto()
-    DATA = enum.auto()
-    PERM = enum.auto()
-    ECO = enum.auto()
-    COMMAND = enum.auto()
-
-# -----------------------------------------------------------
-
-class ParamType(enum.Enum):
-    INPUT = enum.auto()  # seulement de l'input
-    INPUT_WITH_UNITY = enum.auto()  # parametre avec unité dans un menu deroulant
-    BOOLEAN = enum.auto()  # checkbox
-    SELECT = enum.auto()  # menu deroulable
-    BOOLEAN_WITH_INPUT = enum.auto()  # maxiteration
-    BOOLEAN_WITH_INPUT_WITH_UNITY = enum.auto()  # pour maxtime
-    COMPONENT = enum.auto()  # set components
-    COMPONENT_WITH_VALUE = enum.auto()  # components xin
-    COMPONENT_WITH_VALUE_WITH_UNITY = enum.auto()  # components xin
-    FIXED_WITH_INPUT = enum.auto()  # components xin
-
-# -----------------------------------------------------------
-
-class DependencyType(enum.Enum):
-    COMPONENT_COUNT = enum.auto()  
-    VALUE = enum.auto()  
-
-# -----------------------------------------------------------
 
 class Param:
     def __init__(
