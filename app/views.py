@@ -1,3 +1,4 @@
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
@@ -15,8 +16,7 @@ from PyQt6.QtWidgets import (
 
 from app.param import InputValidation, Param, ParamCategory
 from app.param_factory import set_param
-from app.param_factory import algo_param_specs
-from app.param_factory import algo_param_specs2
+from app.param_factory import all_params
 from app.param_validator import LineEditValidation, NonOptionalInputValidation
 
 # TODO: close button verification before quitting, to abort modifs
@@ -63,8 +63,8 @@ class MainWindow(QMainWindow):
         sidebar_widget.setLayout(sidebar_layout)
 
         # pages
-        param_page1 = set_param(algo_param_specs)
-        param_page2 = set_param(algo_param_specs2)
+        param_page1 = set_param(all_params)
+        param_page2 = set_param(all_params)
 
         self.page1 = PageParameters(self, param_page1, self.stack, self.sidebar)
         self.page_components = PageParameters(
@@ -131,11 +131,25 @@ class PageParameters(QWidget):
         content_widget = QWidget()
         content_widget.setLayout(content_layout)
 
+        tab1_widget = QWidget()
+        # self.tab_widget.addTab(QWidget(), "Tab 2")
+        tab1_layout = QVBoxLayout(tab1_widget)
+
         for key, value in param_category.items():
             ex_params = ParamCategory(key, value)
             for name, param in value.items():
                 param.category = ex_params
-            main_layout.addWidget(ex_params)
+            # main_layout.addWidget(ex_params)
+            tab1_layout.addWidget(ex_params)
+            # self.tab_widget.addTab(ex_params, key)
+        self.tab_widget = QTabWidget()
+        self.tab_widget.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+        )
+        self.tab_widget.addTab(tab1_widget, "Tab 1")
+        self.tab_widget.addTab(QWidget(), "Tab 2")  # Placeholder for Tab 2
+        # main_layout.addWidget(self.tab_widget, stretch=1)
+        main_layout.addWidget(self.tab_widget, 0, Qt.AlignmentFlag.AlignTop)
 
         next_button = QPushButton("next")
 

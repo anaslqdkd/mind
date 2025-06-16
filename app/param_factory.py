@@ -3,92 +3,95 @@ from app.param_enums import FILE, DependencyType, ParamType
 from app.param_utils import create_param
 from app.param_validator import LineEditValidation
 
-algo_param_specs = {
-    "num_membranes": {
-        "name": "num_membranes",
-        "param_type": ParamType.INPUT,
-        "file": FILE.DATA,
-        "optional": False,
-        "expected_type": int,
+all_params = {
+    "Execution settings": {
+        "Enable Logging Output": {
+            "name": "logging",
+            "param_type": ParamType.BOOLEAN,
+            "file": FILE.COMMAND,
+            "optional": True,
+        },
+        "Enable Debug Mode": {
+            "name": "debug",
+            "param_type": ParamType.BOOLEAN,
+            "file": FILE.COMMAND,
+            "optional": True,
+        },
     },
-    "Another one": {
-        "name": "idk",
-        "param_type": ParamType.INPUT,
-        "file": FILE.DATA,
-        "expected_type": int,
+    "Algorithm Options": {
+        "Solver": {
+            "name": "solver",
+            "param_type": ParamType.SELECT,
+            "file": FILE.COMMAND,
+            "optional": True,
+            "values": ["knitro", "gurobi"],
+        },
+        "Use GAMS": {
+            "name": "gams",
+            "param_type": ParamType.BOOLEAN,
+            "file": FILE.COMMAND,
+            "optional": True,
+        },
+        "Max Iterations": {
+            "name": "maxiter",
+            "param_type": ParamType.BOOLEAN_WITH_INPUT,
+            "file": FILE.COMMAND,
+            "optional": True,
+        },
+        "Time Limit": {
+            "name": "maxtime",
+            "param_type": ParamType.BOOLEAN_WITH_INPUT_WITH_UNITY,
+            "file": FILE.COMMAND,
+            "optional": True,
+            "values": ["i1", "i2", "i3", "i4"],
+        },
+        "Algorithm": {
+            "name": "algorithm",
+            "param_type": ParamType.SELECT,
+            "file": FILE.COMMAND,
+            "values": ["multistart", "mbh", "global", "genetic", "population"],
+            "optional": True,
+        },
+        "Do Not Generate Starting Point": {
+            "name": "no_starting_point",
+            "param_type": ParamType.BOOLEAN,
+            "file": FILE.COMMAND,
+            "optional": True,
+        },
+        "Do Not Use Simplified Model": {
+            "name": "no_simplified_model",
+            "param_type": ParamType.BOOLEAN,
+            "file": FILE.COMMAND,
+            "optional": True,
+        },
     },
-    "Select test": {
-        "name": "select",
-        "param_type": ParamType.SELECT,
-        "values": ["multistart", "mbh", "global", "population", "genetic"],
-        "file": FILE.DATA,
+    "Visualization": {
+        "Enable Visualization": {
+            "name": "visualise",
+            "param_type": ParamType.BOOLEAN,
+            "file": FILE.COMMAND,
+            "optional": True,
+        },
+        "Show OPEX Visualization": {
+            "name": "opex",
+            "param_type": ParamType.BOOLEAN,
+            "file": FILE.COMMAND,
+            "optional": True,
+        },
+        "Show CAPEX Visualization": {
+            "name": "capex",
+            "param_type": ParamType.BOOLEAN,
+            "file": FILE.COMMAND,
+            "optional": True,
+        },
     },
-    "Bool test": {"name": "check", "param_type": ParamType.BOOLEAN, "file": FILE.DATA},
-    "Input with unity test": {
-        "name": "input with unity",
-        "param_type": ParamType.INPUT_WITH_UNITY,
-        "values": ["bar", "Pa", "kPa"],
-        "file": FILE.DATA,
-    },
-    "Boolean with input test": {
-        "name": "boolean with input",
-        "param_type": ParamType.BOOLEAN_WITH_INPUT,
-        "file": FILE.DATA,
-    },
-    "Boolean with input and unity": {
-        "name": "boolean with input and unity",
-        "param_type": ParamType.BOOLEAN_WITH_INPUT_WITH_UNITY,
-        "values": ["option 1", "option 2", "option 3"],
-        "file": FILE.DATA,
-    },
-    "Component": {
-        "name": "component test",
-        "param_type": ParamType.COMPONENT,
-        "file": FILE.DATA,
-        "values": ["H2O", "H2", "CO2"],
-    },
-    "Radio text": {
-        "name": "bu",
-        "param_type": ParamType.RADIO,
-        "file": FILE.DATA,
-        # "depends_on": {"num_membranes": DependencyType.COMPONENT_COUNT},
-        "values": ["option 1", "option 2", "option 3"],
-        "expected_type": int,
-    },
-    "Another flds": {
-        "name": "bu",
-        "param_type": ParamType.COMPONENT_SELECTOR,
-        "file": FILE.DATA,
-        "depends_on": {"num_membranes": DependencyType.COMPONENT_COUNT},
-        "expected_type": int,
-    },
-    "AAAA": {
-        "name": "bu",
-        "param_type": ParamType.FIXED_WITH_INPUT,
-        "file": FILE.DATA,
-        "depends_on": {"num_membranes": DependencyType.COMPONENT_COUNT},
-        "expected_type": int,
-    },
-}
-algo_param_specs2 = {
-    "num_membranes": {
-        "name": "num_membranes",
-        "param_type": ParamType.INPUT,
-        "file": FILE.DATA,
-        "optional": False,
-        "expected_type": int,
-    },
-    "Another one": {
-        "name": "idk",
-        "param_type": ParamType.INPUT,
-        "file": FILE.DATA,
-        "expected_type": int,
-    },
-    "Select test": {
-        "name": "select",
-        "param_type": ParamType.SELECT,
-        "values": ["multistart", "mbh", "global", "population", "genetic"],
-        "file": FILE.DATA,
+    "Output Options": {
+        "Save Solution Log": {
+            "name": "save_log_sol",
+            "param_type": ParamType.BOOLEAN,
+            "file": FILE.COMMAND,
+            "optionnal": True,
+        }
     },
 }
 
@@ -102,11 +105,16 @@ def build_param_dict(param_specs):
     return params
 
 
-def set_param(params: dict):
-    algo_params = build_param_dict(params)
-    param = {}
-    param_page1 = {"Algorithm parameters": algo_params, "Other parameters": param}
-    return param_page1
+def build_all_params(all_param_specs):
+    all_params = {}
+    for category, param_specs in all_param_specs.items():
+        all_params[category] = build_param_dict(param_specs)
+    return all_params
+
+
+def set_param(all_param_specs: dict):
+    all_params = build_all_params(all_param_specs)
+    return all_params
 
 
 # -----------------------------------------------------------

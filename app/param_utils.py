@@ -36,11 +36,16 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 file=file,
                 values=values,
                 depends_on=depends_on,
+                optional=optional,
                 expected_type=expected_type,
             )
         case ParamType.BOOLEAN:
             return ParamBoolean(
-                name, file, depends_on=depends_on, expected_type=expected_type
+                name,
+                file,
+                depends_on=depends_on,
+                expected_type=expected_type,
+                optional=optional,
             )
         case ParamType.INPUT_WITH_UNITY:
             return ParamInputWithUnity(
@@ -48,17 +53,23 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 file=file,
                 values=values,
                 depends_on=depends_on,
+                optional=optional,
                 expected_type=expected_type,
             )
         case ParamType.BOOLEAN_WITH_INPUT:
             return ParamBooleanWithInput(
-                name, file, depends_on=depends_on, expected_type=expected_type
+                name,
+                file,
+                depends_on=depends_on,
+                expected_type=expected_type,
+                optional=optional,
             )
         case ParamType.BOOLEAN_WITH_INPUT_WITH_UNITY:
             return ParamBooleanWithInputWithUnity(
                 name,
                 file=file,
                 values=values,
+                optional=optional,
                 depends_on=depends_on,
                 expected_type=expected_type,
             )
@@ -68,11 +79,16 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 file,
                 values=values,
                 depends_on=depends_on,
+                optional=optional,
                 expected_type=expected_type,
             )
         case ParamType.FIXED_WITH_INPUT:
             return ParamFixedWithInput(
-                name, file, depends_on=depends_on, expected_type=expected_type
+                name,
+                file,
+                depends_on=depends_on,
+                expected_type=expected_type,
+                optional=optional,
             )
         case ParamType.RADIO:
             return ParamRadio(
@@ -80,6 +96,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 file,
                 depends_on=depends_on,
                 values=values,
+                optional=optional,
                 expected_type=expected_type,
             )
         case ParamType.COMPONENT_SELECTOR:
@@ -88,6 +105,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 file,
                 depends_on=depends_on,
                 values=values,
+                optional=optional,
                 expected_type=expected_type,
             )
         case _:

@@ -8,7 +8,9 @@ from PyQt6.QtWidgets import (
     QComboBox,
     QDialog,
     QDialogButtonBox,
+    QFrame,
     QGridLayout,
+    QGroupBox,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -143,6 +145,9 @@ class Param:
     def notify_dependants(self) -> None:
         print("In the notify dependants !")
 
+    # def trigger_update(self) -> None:
+    #     self.category.update_category()
+
 
 # TODO: for bool with input, additionnal check if the case is checked
 
@@ -262,7 +267,7 @@ class ParamSelect(Param):
         label = f"{label}{'' if self.optional else ' *'}"
         question_label = QLabel(label)
         combo_box = QComboBox()
-        combo_box.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        # combo_box.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
 
         combo_box.addItems(self.values)
 
@@ -446,6 +451,8 @@ class ParamBooleanWithInput(Param):
         line_edit = QLineEdit()
         line_edit.setEnabled(False)
 
+        line_edit.setVisible(self.last_check_box)
+
         checkbox_layout.addWidget(check_box)
         checkbox_layout.addWidget(question_label)
         checkbox_layout.addStretch()
@@ -460,9 +467,14 @@ class ParamBooleanWithInput(Param):
         t_label = QLabel(label)
 
         check_box.toggled.connect(line_edit.setEnabled)
+        check_box.toggled.connect(self.trigger_update)
+        t_label.setVisible(self.last_check_box)
 
         grid_layout.addWidget(t_label, row + 1, 0)
         grid_layout.addWidget(line_edit, row + 1, 2)
+
+    def trigger_update(self):
+        self.category.update_category()
 
     def restore_values(self):
         if self.last_check_box:
@@ -529,7 +541,25 @@ class ParamBooleanWithInputWithUnity(Param):
 
         line_edit = QLineEdit()
         line_edit.setEnabled(False)
+
+        input_row_widget = QWidget()
+        input_row_layout = QHBoxLayout(input_row_widget)
+        input_row_layout.setContentsMargins(0, 0, 0, 0)
+        t_label = QLabel(label)
+        input_row_layout.addWidget(t_label)
+        input_row_layout.addWidget(line_edit)
+        input_row_layout.addWidget(combo_box)
+
+        def toggle_input_row(checked):
+            if checked:
+                grid_layout.addWidget(input_row_widget, row + 1, 0, 1, 4)
+            else:
+                grid_layout.removeWidget(input_row_widget)
+                input_row_widget.setParent(None)
+
         check_box.toggled.connect(line_edit.setEnabled)
+        check_box.toggled.connect(toggle_input_row)
+        check_box.toggled.connect(self.trigger_update)
 
         self.check_box = check_box
         self.combo_box = combo_box
@@ -542,14 +572,11 @@ class ParamBooleanWithInputWithUnity(Param):
         checkbox_layout.addStretch()
 
         grid_layout.addWidget(checkbox_container, row, 0, 1, 2)
+        if self.last_check_box:
+            grid_layout.addWidget(input_row_widget, row + 1, 0, 1, 4)
 
-        t_label = QLabel(label)
-
-        grid_layout.addWidget(t_label, row + 1, 0)
-        spacer = QWidget()
-        grid_layout.addWidget(spacer, row + 1, 1)
-        grid_layout.addWidget(line_edit, row + 1, 2)
-        grid_layout.addWidget(combo_box, row + 1, 3)
+    def trigger_update(self) -> None:
+        self.category.update_category()
 
     def restore_values(self):
         if self.last_check_box:
@@ -992,17 +1019,27 @@ class ParamCategory(QWidget):
         self.label.setStyleSheet(
             """
             font-weight: bold;
-            font-size: 14px;
+            font-size: 12px;
             color: #000;
 """
         )
+        self.grid_layout.setVerticalSpacing(7)
+
+        group_box = QGroupBox()
+        # group_box.setCheckable(True)
+        # group_box.setChecked(False)  # Collapsed by default
+        group_layout = QVBoxLayout(group_box)
+        group_layout.addWidget(self.grid_widget)
+
         layout.addWidget(self.label)
-        layout.addWidget(self.grid_widget)
+        layout.addWidget(group_box)
 
         # test button
         self.test_button.setFixedWidth(50)
         self.test_button.clicked.connect(self.notify_dependents)
-        layout.addWidget(self.test_button)
+
+        # NOTE: restore to test
+        # layout.addWidget(self.test_button)
 
         self.build_param()
 
@@ -1022,10 +1059,14 @@ class ParamCategory(QWidget):
             param.store_value()
 
     def update_category(self):
+        if getattr(self, "_updating", False):
+            return
+        self._updating = True
         self.store_values()
         self.clear_grid_layout()
         self.build_param()
         self.write_to_file()
+        self._updating = False
 
     def clear_grid_layout(self):
         while self.grid_layout.count():
