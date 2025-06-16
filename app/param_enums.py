@@ -14,6 +14,7 @@ class ParamType(enum.Enum):
     FIXED_WITH_INPUT = enum.auto()  # components xin
     RADIO = enum.auto()
     COMPONENT_SELECTOR = enum.auto()
+    SPIN_BOX = enum.auto()
 
 
 # -----------------------------------------------------------

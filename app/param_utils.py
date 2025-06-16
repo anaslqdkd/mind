@@ -10,6 +10,7 @@ from app.param import (
     ParamInputWithUnity,
     ParamRadio,
     ParamSelect,
+    ParamSpinBoxWithBool,
 )
 from app.param_enums import FILE, ParamType
 
@@ -105,6 +106,14 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 file,
                 depends_on=depends_on,
                 values=values,
+                optional=optional,
+                expected_type=expected_type,
+            )
+        case ParamType.SPIN_BOX:
+            return ParamSpinBoxWithBool(
+                name,
+                file,
+                depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,
             )

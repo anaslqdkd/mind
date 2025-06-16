@@ -90,8 +90,14 @@ all_params = {
             "name": "save_log_sol",
             "param_type": ParamType.BOOLEAN,
             "file": FILE.COMMAND,
-            "optionnal": True,
-        }
+            "optional": True,
+        },
+        "Spin box test": {
+            "name": "spin box",
+            "param_type": ParamType.SPIN_BOX,
+            "file": FILE.COMMAND,
+            "optional": True,
+        },
     },
 }
 

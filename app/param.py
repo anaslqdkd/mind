@@ -20,6 +20,7 @@ from PyQt6.QtWidgets import (
     QRadioButton,
     QSizePolicy,
     QSpacerItem,
+    QSpinBox,
     QVBoxLayout,
     QWidget,
 )
@@ -986,6 +987,81 @@ class ParamComponentSelector(Param):
 
 
 # -----------------------------------------------------------
+class ParamSpinBoxWithBool(Param, LineEditValidation, NonOptionalInputValidation):
+    def __init__(
+        self,
+        name: str,
+        file: FILE,
+        depends_on: Optional[dict[str, DependencyType]],
+        optional: bool = False,
+        expected_type=str,
+    ) -> None:
+        super().__init__(name, file, depends_on=depends_on)
+        LineEditValidation.__init__(self)
+        self.question_label = None
+        self.spin_box = None
+        self.last_spin_box = ""
+        self.file = file
+        self.optional = optional
+        self.expected_type = expected_type
+        self.last_check_box = False
+        pass
+
+    def trigger_update(self):
+        self.category.update_category()
+
+    def store_value(self):
+        return
+
+    def to_file(self) -> str:
+        return ""
+
+    def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        label = f"{label}{'' if self.optional else ' *'}"
+        checkbox_container = QWidget()
+        checkbox_layout = QHBoxLayout(checkbox_container)
+        checkbox_layout.setContentsMargins(0, 0, 0, 0)
+        checkbox_layout.setSpacing(5)
+
+        check_box = QCheckBox()
+        question_label = QLabel(label)
+
+        time_spin_box = TimeSpinBox()
+
+        checkbox_layout.addWidget(check_box)
+        checkbox_layout.addWidget(question_label)
+        checkbox_layout.addStretch()
+
+        self.line_edit = time_spin_box
+        self.check_box = check_box
+
+        self.restore_values()
+
+        grid_layout.addWidget(checkbox_container, row, 0, 1, 2)
+
+        t_label = QLabel(label)
+
+        check_box.toggled.connect(self.trigger_update)
+
+        t_label.setVisible(self.last_check_box)
+        time_spin_box.setVisible(self.last_check_box)
+
+        grid_layout.addWidget(t_label, row + 1, 0)
+        grid_layout.addWidget(time_spin_box, row + 1, 2)
+
+    def store_value(self):
+        if self.check_box is not None:
+            self.last_check_box = self.check_box.isChecked()
+
+    def restore_values(self):
+        if self.last_check_box:
+            if self.check_box:
+                self.check_box.setChecked(True)
+
+    # TODO: implement all other methods
+
+
+# -----------------------------------------------------------
 
 
 class ParamCategory(QWidget):
@@ -1096,3 +1172,29 @@ class ParamCategory(QWidget):
                     value = param.to_file()
                     if value != "":
                         f.write(f"{value}\n")
+
+
+# -----------------------------------------------------------
+
+
+class TimeSpinBox(QWidget):
+    def __init__(self):
+        super().__init__()
+        layout = QHBoxLayout(self)
+
+        self.spin = QSpinBox()
+        self.spin.setRange(0, 9999)
+        self.spin.setValue(10)
+        self.spin.setSuffix(" hours")  # Default suffix
+
+        self.unit_combo = QComboBox()
+        self.unit_combo.addItems(["sec", "min", "hours", "days"])
+        self.unit_combo.setCurrentIndex(2)
+        self.unit_combo.currentIndexChanged.connect(self.change_unit)
+
+        layout.addWidget(self.spin)
+        layout.addWidget(self.unit_combo)
+
+    def change_unit(self, idx):
+        units = [" sec", " min", " hours", " days"]
+        self.spin.setSuffix(units[idx])
