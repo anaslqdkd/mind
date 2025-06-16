@@ -1,5 +1,7 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
+    QFrame,
+    QGroupBox,
     QHBoxLayout,
     QLabel,
     QListWidget,
@@ -134,6 +136,7 @@ class PageParameters(QWidget):
         tab1_widget = QWidget()
         # self.tab_widget.addTab(QWidget(), "Tab 2")
         tab1_layout = QVBoxLayout(tab1_widget)
+        tab1_layout.setSpacing(0)
 
         for key, value in param_category.items():
             ex_params = ParamCategory(key, value)
@@ -143,13 +146,21 @@ class PageParameters(QWidget):
             tab1_layout.addWidget(ex_params)
             # self.tab_widget.addTab(ex_params, key)
         self.tab_widget = QTabWidget()
+        tab1_layout.addWidget(
+            CollapsibleGroupBox("Advanced section"), Qt.AlignmentFlag.AlignTop
+        )
+        tab1_layout.addWidget(
+            CollapsibleSection("Advanced section"), Qt.AlignmentFlag.AlignTop
+        )
         self.tab_widget.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
         self.tab_widget.addTab(tab1_widget, "Tab 1")
         self.tab_widget.addTab(QWidget(), "Tab 2")  # Placeholder for Tab 2
+        main_layout.addWidget(self.tab_widget, 1, Qt.AlignmentFlag.AlignTop)
         # main_layout.addWidget(self.tab_widget, stretch=1)
-        main_layout.addWidget(self.tab_widget, 0, Qt.AlignmentFlag.AlignTop)
+        # NOTE: here
+        main_layout.addStretch()
 
         next_button = QPushButton("next")
 
@@ -222,3 +233,69 @@ class PageParameters(QWidget):
         #         InputValidation.check_required(
         #             param.name, param.line_edit, param.optional
         #         )
+
+
+# -----------------------------------------------------------
+class CollapsibleGroupBox(QGroupBox):
+    def __init__(self, title, parent=None):
+        super().__init__(title, parent)
+        self.setCheckable(True)
+        self.setChecked(False)  # Start collapsed
+        self.toggled.connect(self.on_toggled)
+        self.setStyleSheet("font-weight: bold;")
+        self.setStyleSheet("QGroupBox { font-size: 12px; font-weight: bold; }")
+
+        self.label = QLabel("the is a label")
+        self.label.setVisible(False)
+        layout = QVBoxLayout(self)
+        layout.addWidget(self.label)
+
+    def on_toggled(self, checked):
+        for i in range(self.layout().count()):
+            widget = self.layout().itemAt(i).widget()
+            if widget:
+                widget.setVisible(checked)
+        self.adjustSize()
+        self.updateGeometry()
+        parent = self.parentWidget()
+        if parent:
+            parent.adjustSize()
+            parent.updateGeometry()
+            layout = parent.layout()
+            if layout:
+                layout.invalidate()
+                layout.activate()
+
+
+class CollapsibleSection(QWidget):
+    def __init__(self, title, parent=None):
+        super().__init__(parent)
+        self.toggle_button = QPushButton("▶ " + title)
+        font = self.toggle_button.font()
+        font.setBold(True)
+        self.toggle_button.setFont(font)
+        self.toggle_button.setCheckable(True)
+        self.toggle_button.setChecked(False)
+        self.toggle_button.setStyleSheet("text-align: left; border: none;")
+        self.toggle_button.clicked.connect(self.toggle)
+
+        self.content_area = QFrame()
+        self.content_area.setVisible(False)
+        content_layout = QVBoxLayout(self.content_area)
+        content_layout.addWidget(QLabel("Section content here"))
+
+        layout = QVBoxLayout(self)
+        layout.addWidget(self.toggle_button)
+        layout.addWidget(self.content_area)
+        layout.setContentsMargins(0, 0, 0, 0)
+
+    def toggle(self):
+        checked = self.toggle_button.isChecked()
+        if checked:
+            self.toggle_button.setText("▼ " + self.toggle_button.text()[2:])
+        else:
+            self.toggle_button.setText("▶ " + self.toggle_button.text()[2:])
+        self.content_area.setVisible(checked)
+
+
+# NOTE: question sur le nombre d'iterations, dans commande ou config.ini

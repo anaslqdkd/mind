@@ -1099,10 +1099,14 @@ class ParamCategory(QWidget):
         # group_box.setChecked(False)  # Collapsed by default
         group_layout = QVBoxLayout(group_box)
         group_layout.addWidget(self.grid_widget)
+        group_layout.setContentsMargins(0, 0, 0, 0)
         self.grid_widget.setMinimumWidth(370)
 
         layout.addWidget(self.label)
+        # layout.setSpacing(4)
+        layout.setContentsMargins(2, 2, 2, 2)
         layout.addWidget(group_box)
+        layout.addStretch()
 
         # test button
         self.test_button.setFixedWidth(50)
@@ -1198,3 +1202,28 @@ class TimeSpinBox(QWidget):
     def change_unit(self, idx):
         units = [" sec", " min", " hours", " days"]
         self.spin.setSuffix(units[idx])
+
+
+# TODO: search filter
+# TODO: restore the size after the collapsable menu were disabled
+# TODO: solve the problem with dynamic resizing of grid fields
+
+
+# -----------------------------------------------------------
+class CollapsibleGroupBox(QGroupBox):
+    def __init__(self, title, parent=None):
+        super().__init__(title, parent)
+        self.setCheckable(True)
+        self.setChecked(False)  # Start collapsed
+        self.toggled.connect(self.on_toggled)
+
+        # Your content
+        layout = QVBoxLayout(self)
+        layout.addWidget(QLabel("This is inside the collapsible section!"))
+
+    def on_toggled(self, checked):
+        # Show/hide children when toggled
+        for i in range(self.layout().count()):
+            widget = self.layout().itemAt(i).widget()
+            if widget:
+                widget.setVisible(checked)
