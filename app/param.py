@@ -1,6 +1,6 @@
 import enum
 from typing import Optional, Tuple
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import QPoint, Qt
 from PyQt6.QtGui import QAction, QTabletEvent
 from PyQt6.QtWidgets import (
     QButtonGroup,
@@ -24,6 +24,8 @@ from PyQt6.QtWidgets import (
     QSpinBox,
     QTableWidget,
     QTableWidgetItem,
+    QToolButton,
+    QToolTip,
     QVBoxLayout,
     QWidget,
 )
@@ -124,6 +126,7 @@ class Param:
         depends_on: Optional[dict[str, DependencyType]] = None,
         optional: bool = False,
         expected_type=str,
+        description: str = ""
     ) -> None:
         self.name = name  # the exact name in the data files
         self.category: ParamCategory
@@ -133,6 +136,7 @@ class Param:
         self.depends_on_params: dict[Param, DependencyType] = {}
         self.dependants: dict[Param, DependencyType] = {}
         self.expected_type = expected_type
+        self.description = description
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         raise NotImplementedError("Subclasses must implement build_widgets")
@@ -157,6 +161,18 @@ class Param:
 
     to_config_entry = to_file_entry
 
+    def build_header(self, label: str, description: str, optional: bool) -> QWidget:
+        header_container = QWidget()
+        header_layout = QHBoxLayout(header_container)
+        header_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        header_layout.setContentsMargins(0, 0, 0, 0)
+        label_text = f'{label}{" " if optional else " <span style=\"color:red;\">*</span>"}'
+        question_label = QLabel(label_text)
+        icon_label = HelpButtonDemo(description)
+        header_layout.addWidget(question_label)
+        header_layout.addWidget(icon_label)
+        return header_container
+
     # def trigger_update(self) -> None:
     #     self.category.update_category()
 
@@ -172,8 +188,9 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
         depends_on: Optional[dict[str, DependencyType]],
         optional: bool = False,
         expected_type=str,
+        description: str = ""
     ) -> None:
-        super().__init__(name, file, depends_on=depends_on)
+        super().__init__(name, file, depends_on=depends_on, description=description)
         LineEditValidation.__init__(self)
         self.question_label = None
         self.line_edit = None
@@ -184,21 +201,12 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
-        label = f"{label}{'' if self.optional else ' *'}"
-        question_label = QLabel(label)
         line_edit = QSpinBox()
-
-        self.question_label = question_label
+        header = self.build_header(label, self.description, self.optional)
+        grid_layout.addWidget(header, row, 0)
         self.line_edit = line_edit
-
         self.restore_values()
-        grid_layout.addWidget(self.question_label, row, 0)
-        grid_layout.addItem(
-            QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum),
-            row,
-            1,
-        )
-        grid_layout.addWidget(self.line_edit, row, 2)
+        grid_layout.addWidget(self.line_edit, row, 1)
 
         if self.line_edit is not None:
             line_edit = self.line_edit  # local variable guaranteed not None
@@ -280,7 +288,6 @@ class ParamSelect(Param):
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
-        label = f"{label}{'' if self.optional else ' *'}"
         question_label = QLabel(label)
         combo_box = QComboBox()
         # combo_box.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
@@ -292,7 +299,8 @@ class ParamSelect(Param):
 
         self.restore_values()
 
-        grid_layout.addWidget(self.question_label, row, 0)
+        header = self.build_header(label, self.description, self.optional)
+        grid_layout.addWidget(header, row, 0)
 
         spacer = QSpacerItem(
             0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
@@ -353,7 +361,8 @@ class ParamBoolean(Param):
 
         self.restore_values()
         h_layout.addWidget(self.check_box)
-        h_layout.addWidget(self.question_label)
+        header = self.build_header(label, self.description, self.optional)
+        h_layout.addWidget(header)
         h_layout.addStretch()
 
         grid_layout.addWidget(container, row, 0, 1, 2)
@@ -401,12 +410,11 @@ class ParamInputWithUnity(Param):
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
-        label = f"{label}{'' if self.optional else ' *'}"
-        question_label = QLabel(label)
+        header = self.build_header(label, self.description, self.optional)
+        grid_layout.addWidget(header, row, 0)
         line_edit = QLineEdit()
         combo_box = QComboBox()
         combo_box.addItems(self.values)
-        grid_layout.addWidget(question_label, row, 0)
         grid_layout.addItem(
             QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum),
             row,
@@ -467,20 +475,21 @@ class ParamBooleanWithInput(Param):
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
-        label = f"{label}{'' if self.optional else ' *'}"
+        header = self.build_header(label, self.description, self.optional)
+        grid_layout.addWidget(header, row, 0)
+
         checkbox_container = QWidget()
         checkbox_layout = QHBoxLayout(checkbox_container)
         checkbox_layout.setContentsMargins(0, 0, 0, 0)
         checkbox_layout.setSpacing(5)
 
         check_box = QCheckBox()
-        question_label = QLabel(label)
 
         line_edit = QLineEdit()
         line_edit.setEnabled(False)
 
         checkbox_layout.addWidget(check_box)
-        checkbox_layout.addWidget(question_label)
+        checkbox_layout.addWidget(header)
         checkbox_layout.addStretch()
 
         self.line_edit = line_edit
@@ -584,8 +593,9 @@ class ParamBooleanWithInputWithUnity(Param):
 
         self.restore_values()
 
+        header = self.build_header(label, self.description, self.optional)
         checkbox_layout.addWidget(check_box)
-        checkbox_layout.addWidget(question_label)
+        checkbox_layout.addWidget(header)
         checkbox_layout.addStretch()
 
         grid_layout.addWidget(checkbox_container, row, 0, 1, 2)
@@ -657,8 +667,8 @@ class ParamComponent(Param):
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         label = f"{label}{'' if self.optional else ' *'}"
-        question_label = QLabel(label)
-        grid_layout.addWidget(question_label, row, 0)
+        header = self.build_header(label, self.description, self.optional)
+        grid_layout.addWidget(header, row, 0)
         self.combo_boxes = []
 
         # update method
@@ -770,21 +780,28 @@ class ParamFixedWithInput(Param):
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
-        for col, col_name in enumerate(self.column_names, start=1):
-            grid_layout.addWidget(
-                QLabel(col_name), row, col, alignment=Qt.AlignmentFlag.AlignLeft
-            )
+        header = self.build_header(label, self.description, self.optional)
+        grid_layout.addWidget(header, row, 0)
+        row += 1
+
+        group_box = QGroupBox()
+        group_layout = QGridLayout(group_box)
+        group_box.setLayout(group_layout)
+
         for r, row_name in enumerate(self.row_names, start=1):
-            grid_layout.addWidget(QLabel(row_name), row + r, 0)
+            group_layout.addWidget(QLabel(row_name), r, 0)
             for c, col_name in enumerate(self.column_names, start=1):
                 line_edit = QLineEdit()
-                grid_layout.addWidget(
-                    line_edit, row + r, c, alignment=Qt.AlignmentFlag.AlignLeft
+                group_layout.addWidget(
+                    line_edit, r, c, alignment=Qt.AlignmentFlag.AlignCenter
                 )
+
+        grid_layout.addWidget(group_box, row, 0, 1, -1)
+
     # TODO: store and restore methods
 
     def row_span(self) -> int:
-        return len(self.row_names) + 1
+        return len(self.row_names) + 2
 
     def restore_value(self):
         if self.last_combo_box:
@@ -854,9 +871,8 @@ class ParamRadio(Param):
         self.row = row
         self.label = label
         self.grid_layout = grid_layout
-        label = f"{label}{'' if self.optional else ' *'}"
-        question_label = QLabel(label)
-        grid_layout.addWidget(question_label, row, 0)
+        header = self.build_header(label, self.description, self.optional)
+        grid_layout.addWidget(header, row, 0)
 
         self.button_group = QButtonGroup()
         for i, el in enumerate(self.values):
@@ -939,10 +955,10 @@ class ParamComponentSelector(Param):
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
-        question_label = QLabel(label)
         self.button = QPushButton("Select Components")
         self.button.clicked.connect(self.open_selector)
-        grid_layout.addWidget(question_label, row, 0)
+        header = self.build_header(label, self.description, self.optional)
+        grid_layout.addWidget(header, row, 0)
         grid_layout.addWidget(self.button, row, 2)
         row += 1
 
@@ -1055,12 +1071,12 @@ class ParamSpinBoxWithBool(Param):
         checkbox_layout.setSpacing(5)
 
         check_box = QCheckBox()
-        question_label = QLabel(label)
 
         time_spin_box = TimeSpinBox()
 
         checkbox_layout.addWidget(check_box)
-        checkbox_layout.addWidget(question_label)
+        header = self.build_header(label, self.description, self.optional)
+        checkbox_layout.addWidget(header)
         checkbox_layout.addStretch()
 
         self.time_spin_box = time_spin_box
@@ -1138,19 +1154,19 @@ class ParamCategory(QWidget):
             color: #000;
 """
         )
-        self.grid_layout.setVerticalSpacing(7)
-
         group_box = QGroupBox()
         # group_box.setCheckable(True)
         # group_box.setChecked(False)  # Collapsed by default
+        self.grid_layout.setContentsMargins(0, 0, 0, 0)
+        self.grid_layout.setVerticalSpacing(0)
         group_layout = QVBoxLayout(group_box)
-        group_layout.addWidget(self.grid_widget)
         group_layout.setContentsMargins(0, 0, 0, 0)
+        group_layout.addWidget(self.grid_widget)
         self.grid_widget.setMinimumWidth(370)
 
         layout.addWidget(self.label)
         # layout.setSpacing(4)
-        layout.setContentsMargins(2, 2, 2, 2)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(group_box)
         layout.addStretch()
 
@@ -1404,3 +1420,45 @@ class GridOptions(QWidget):
 
         grid_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         main_layout.addWidget(grid_container)
+
+
+# -----------------------------------------------------------
+class HelpButtonDemo(QWidget):
+    def __init__(self, description: str):
+        super().__init__()
+        self.description = description
+        layout = QHBoxLayout(self)
+
+        help_btn = QToolButton()
+        help_btn.setText("?")
+        help_btn.setToolTip(description)
+        help_btn.setFixedSize(14, 14)
+        help_btn.clicked.connect(self.show_help_tooltip)
+
+        # Round style via stylesheet
+        help_btn.setStyleSheet(
+            """
+            QToolButton {
+                border: 1px solid #888;
+                border-radius: 7px;        /* Half of width/height */
+                background: #f5f5f5;
+                font-weight: bold;
+                font-size: 14px;
+                color: #3366cc;
+            }
+            QToolButton:hover {
+                background: #e0eaff;
+                border: 1.5px solid #0057b8;
+            }
+        """
+        )
+
+        layout.addWidget(help_btn)
+
+    def show_help_tooltip(self):
+        # Show a tooltip near the button when clicked
+        QToolTip.showText(
+            self.mapToGlobal(self.sender().pos()) + QPoint(0, self.sender().height()),
+            self.description,
+            self.sender(),
+        )

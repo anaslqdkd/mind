@@ -117,25 +117,33 @@ membranes_options = {
         "name": "num_membranes",
         "param_type": ParamType.INPUT,
         "file": FILE.CONFIG,
+        "optional": False,
+        "description": "number of membranes"
     },
-    "ub_area": {
-        "name": "upper bound area",
+    "Upper bound area": {
+        "name": "ub_area",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.CONFIG,
     },
-    "lb_area": {
-        "name": "lower bound area",
+    "Lower bound area": {
+        "name": "lb_area",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.CONFIG,
     },
-    "ub_acell": {
-        "name": "upper bound for a cell",
+    "Upper bound cell": {
+        "name": "ub_acell",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.CONFIG,
     },
 }
-# TODO: add a field for descrition
 # TODO: add default value in the constructor
+
+# ----------aujourd'hui--------------------------------------
+
+# TODO: le fix me sur generate those dynamically
+# TODO: le dictionnaire des parameters differents
+
+# -----------------------------------------------------------
 
 all_params = {
     "Dict 1": {

@@ -1,3 +1,5 @@
+from PyQt6.QtCore import QPoint
+from PyQt6.QtWidgets import QHBoxLayout, QToolButton, QToolTip
 from app.param import (
     Param,
     ParamBoolean,
@@ -22,7 +24,8 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
     values = kwargs.get("values", [])
     depends_on = kwargs.get("depends_on", [])
     expected_type = kwargs.get("expected_type", str)
-    print(f"DEBUG[{__file__}:{inspect.currentframe().f_lineno}]:", "your message")
+    description = kwargs.get("description", "")
+    # print(f"DEBUG[{__file__}:{inspect.currentframe().f_lineno}]:", "your message")
     match param_type:
         case ParamType.INPUT:
             return ParamInput(
@@ -31,6 +34,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 file=file,
                 depends_on=depends_on,
                 expected_type=expected_type,
+                description=description,
             )
         case ParamType.SELECT:
             return ParamSelect(
@@ -40,6 +44,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,
+                # description=description,
             )
         case ParamType.BOOLEAN:
             return ParamBoolean(
@@ -48,6 +53,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 depends_on=depends_on,
                 expected_type=expected_type,
                 optional=optional,
+                # description=description,
             )
         case ParamType.INPUT_WITH_UNITY:
             return ParamInputWithUnity(
@@ -57,6 +63,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,
+                # description=description,
             )
         case ParamType.BOOLEAN_WITH_INPUT:
             return ParamBooleanWithInput(
@@ -65,6 +72,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 depends_on=depends_on,
                 expected_type=expected_type,
                 optional=optional,
+                # description=description,
             )
         case ParamType.BOOLEAN_WITH_INPUT_WITH_UNITY:
             return ParamBooleanWithInputWithUnity(
@@ -74,6 +82,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 optional=optional,
                 depends_on=depends_on,
                 expected_type=expected_type,
+                # description=description,
             )
         case ParamType.COMPONENT:
             return ParamComponent(
@@ -83,6 +92,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,
+                # description=description,
             )
         case ParamType.FIXED_WITH_INPUT:
             return ParamFixedWithInput(
@@ -91,6 +101,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 depends_on=depends_on,
                 expected_type=expected_type,
                 optional=optional,
+                # description=description,
             )
         case ParamType.RADIO:
             return ParamRadio(
@@ -100,6 +111,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 values=values,
                 optional=optional,
                 expected_type=expected_type,
+                # description=description,
             )
         case ParamType.COMPONENT_SELECTOR:
             return ParamComponentSelector(
@@ -109,6 +121,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 values=values,
                 optional=optional,
                 expected_type=expected_type,
+                # description=description,
             )
         case ParamType.SPIN_BOX:
             return ParamSpinBoxWithBool(
@@ -117,9 +130,11 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,
+                # description=description,
             )
         case _:
             raise ValueError(f"Unsupported param type: {param_type}")
 
 
+# -----------------------------------------------------------
 # -----------------------------------------------------------
