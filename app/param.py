@@ -146,6 +146,9 @@ class Param:
     def notify_dependants(self) -> None:
         print("In the notify dependants !")
 
+    def to_command_arg(self) -> str:
+        return ""
+
     # def trigger_update(self) -> None:
     #     self.category.update_category()
 
@@ -352,6 +355,12 @@ class ParamBoolean(Param):
     def to_file(self) -> str:
         return f"{self.name} := {self.last_check_box}"
 
+    def to_command_arg(self) -> str:
+        if self.last_check_box == True:
+            return f"--{self.name}"
+        else:
+            return ""
+
 
 # -----------------------------------------------------------
 class ParamInputWithUnity(Param):
@@ -416,6 +425,9 @@ class ParamInputWithUnity(Param):
 
     def to_file(self) -> str:
         return f"{self.name} := {self.last_line_edit} #{self.last_combo_box}"
+
+    def to_command_arg(self):
+        return f"--{self.name}"
 
 
 # -----------------------------------------------------------
@@ -987,7 +999,7 @@ class ParamComponentSelector(Param):
 
 
 # -----------------------------------------------------------
-class ParamSpinBoxWithBool(Param, LineEditValidation, NonOptionalInputValidation):
+class ParamSpinBoxWithBool(Param):
     def __init__(
         self,
         name: str,
@@ -997,7 +1009,7 @@ class ParamSpinBoxWithBool(Param, LineEditValidation, NonOptionalInputValidation
         expected_type=str,
     ) -> None:
         super().__init__(name, file, depends_on=depends_on)
-        LineEditValidation.__init__(self)
+        # LineEditValidation.__init__(self)
         self.question_label = None
         self.spin_box = None
         self.last_spin_box = ""
@@ -1015,6 +1027,9 @@ class ParamSpinBoxWithBool(Param, LineEditValidation, NonOptionalInputValidation
 
     def to_file(self) -> str:
         return ""
+
+    def row_span(self) -> int:
+        return 2
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         label = f"{label}{'' if self.optional else ' *'}"
@@ -1139,7 +1154,7 @@ class ParamCategory(QWidget):
         self.store_values()
         self.clear_grid_layout()
         self.build_param()
-        self.write_to_file()
+        # self.write_to_file()
         self._updating = False
 
     def clear_grid_layout(self):
@@ -1159,23 +1174,49 @@ class ParamCategory(QWidget):
             FILE.ECO: "eco.dat",
             FILE.COMMAND: "command.sh",
         }
-        used_files = {
-            file_map[param.file]
-            for param in self.param.values()
-            if param.file in file_map
-        }
-        for file_name in used_files:
-            open(file_name, "w").close()
+        self.build_command()
+        # used_files = {
+        #     file_map[param.file]
+        #     for param in self.param.values()
+        #     if param.file in file_map
+        # }
+        # for file_name in used_files:
+        #     open(file_name, "w").close()
 
         for _, param in self.param.items():
+            print("the self.params is", self.param)
             file_name = file_map.get(param.file)
+            print("the file name is", {file_name})
+            lines = []
             if not file_name:
                 print(f"Unknown file type for param {param.name}")
             else:
-                with open(file_name, "a") as f:
-                    value = param.to_file()
-                    if value != "":
-                        f.write(f"{value}\n")
+                value = param.to_file()
+                print("the value is", value)
+                if value != "":
+                    lines.append(value)
+            print(lines)
+
+            with open(file_name, "a") as f:
+                f.writelines(lines)
+        # f.write(f"{value}\n")
+
+    def build_command(self):
+        file_map = {
+            FILE.DATA: "data.dat",
+            FILE.CONFIG: "config.ini",
+            FILE.PERM: "perm.dat",
+            FILE.ECO: "eco.dat",
+            FILE.COMMAND: "command.sh",
+        }
+        res = ""
+        for _, param in self.param.items():
+            if param.file == FILE.COMMAND:
+                print("AAAA", param.name)
+                res += f"--{param.name}"
+            file_name = file_map.get(param.file)
+        print("SDQFSDGHJFHKGDSFQ", res)
+        # if fi
 
 
 # -----------------------------------------------------------

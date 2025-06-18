@@ -3,106 +3,130 @@ from app.param_enums import FILE, DependencyType, ParamType
 from app.param_utils import create_param
 from app.param_validator import LineEditValidation
 
+execution_settings = {
+    "Enable Logging Output": {
+        "name": "verbose",
+        "param_type": ParamType.BOOLEAN,
+        "file": FILE.COMMAND,
+        "optional": True,
+    },
+    "Enable Debug Mode": {
+        "name": "debug",
+        "param_type": ParamType.BOOLEAN,
+        "file": FILE.COMMAND,
+        "optional": True,
+    },
+}
+
+algorithm_options = {
+    "Solver": {
+        "name": "solver",
+        "param_type": ParamType.SELECT,
+        "file": FILE.COMMAND,
+        "optional": True,
+        "values": ["knitro", "gurobi"],
+    },
+    "Use GAMS": {
+        "name": "gams",
+        "param_type": ParamType.BOOLEAN,
+        "file": FILE.COMMAND,
+        "optional": True,
+    },
+    "Max Iterations": {
+        "name": "maxiter",
+        "param_type": ParamType.BOOLEAN_WITH_INPUT,
+        "file": FILE.COMMAND,
+        "optional": True,
+    },
+    "Time Limit": {
+        "name": "maxtime",
+        "param_type": ParamType.SPIN_BOX,
+        "file": FILE.COMMAND,
+        "optional": True,
+        "values": ["i1", "i2", "i3", "i4"],
+    },
+    "Algorithm": {
+        "name": "algorithm",
+        "param_type": ParamType.SELECT,
+        "file": FILE.COMMAND,
+        "values": ["multistart", "mbh", "global", "genetic", "population"],
+        "optional": True,
+    },
+    "Do Not Generate Starting Point": {
+        "name": "no_starting_point",
+        "param_type": ParamType.BOOLEAN,
+        "file": FILE.COMMAND,
+        "optional": True,
+    },
+    "Do Not Use Simplified Model": {
+        "name": "no_simplified_model",
+        "param_type": ParamType.BOOLEAN,
+        "file": FILE.COMMAND,
+        "optional": True,
+    },
+}
+
+visualization = {
+    "Enable Visualization": {
+        "name": "visualise",
+        "param_type": ParamType.BOOLEAN,
+        "file": FILE.COMMAND,
+        "optional": True,
+    },
+    "Show OPEX Visualization": {
+        "name": "opex",
+        "param_type": ParamType.BOOLEAN,
+        "file": FILE.COMMAND,
+        "optional": True,
+    },
+    "Show CAPEX Visualization": {
+        "name": "capex",
+        "param_type": ParamType.BOOLEAN,
+        "file": FILE.COMMAND,
+        "optional": True,
+    },
+}
+
+output_options = {
+    "Save Solution Log": {
+        "name": "save_log_sol",
+        "param_type": ParamType.BOOLEAN,
+        "file": FILE.COMMAND,
+        "optional": True,
+    },
+}
+
+advanced = {
+    "Save Solution Log": {
+        "name": "save_log_sol",
+        "param_type": ParamType.BOOLEAN,
+        "file": FILE.COMMAND,
+        "optional": True,
+    },
+    "Spin box test": {
+        "name": "spin box",
+        "param_type": ParamType.SPIN_BOX,
+        "file": FILE.COMMAND,
+        "optional": True,
+    },
+}
+
 all_params = {
-    "Execution settings": {
-        "Enable Logging Output": {
-            "name": "logging",
-            "param_type": ParamType.BOOLEAN,
-            "file": FILE.COMMAND,
-            "optional": True,
-        },
-        "Enable Debug Mode": {
-            "name": "debug",
-            "param_type": ParamType.BOOLEAN,
-            "file": FILE.COMMAND,
-            "optional": True,
-        },
+    "Dict 1": {
+        "Execution settings": execution_settings,
+        "Algorithm Options": algorithm_options,
+        "Visualisation": visualization,
+        "Output Options": output_options,
     },
-    "Algorithm Options": {
-        "Solver": {
-            "name": "solver",
-            "param_type": ParamType.SELECT,
-            "file": FILE.COMMAND,
-            "optional": True,
-            "values": ["knitro", "gurobi"],
-        },
-        "Use GAMS": {
-            "name": "gams",
-            "param_type": ParamType.BOOLEAN,
-            "file": FILE.COMMAND,
-            "optional": True,
-        },
-        "Max Iterations": {
-            "name": "maxiter",
-            "param_type": ParamType.BOOLEAN_WITH_INPUT,
-            "file": FILE.COMMAND,
-            "optional": True,
-        },
-        "Time Limit": {
-            "name": "maxtime",
-            "param_type": ParamType.BOOLEAN_WITH_INPUT_WITH_UNITY,
-            "file": FILE.COMMAND,
-            "optional": True,
-            "values": ["i1", "i2", "i3", "i4"],
-        },
-        "Algorithm": {
-            "name": "algorithm",
-            "param_type": ParamType.SELECT,
-            "file": FILE.COMMAND,
-            "values": ["multistart", "mbh", "global", "genetic", "population"],
-            "optional": True,
-        },
-        "Do Not Generate Starting Point": {
-            "name": "no_starting_point",
-            "param_type": ParamType.BOOLEAN,
-            "file": FILE.COMMAND,
-            "optional": True,
-        },
-        "Do Not Use Simplified Model": {
-            "name": "no_simplified_model",
-            "param_type": ParamType.BOOLEAN,
-            "file": FILE.COMMAND,
-            "optional": True,
-        },
-    },
-    "Visualization": {
-        "Enable Visualization": {
-            "name": "visualise",
-            "param_type": ParamType.BOOLEAN,
-            "file": FILE.COMMAND,
-            "optional": True,
-        },
-        "Show OPEX Visualization": {
-            "name": "opex",
-            "param_type": ParamType.BOOLEAN,
-            "file": FILE.COMMAND,
-            "optional": True,
-        },
-        "Show CAPEX Visualization": {
-            "name": "capex",
-            "param_type": ParamType.BOOLEAN,
-            "file": FILE.COMMAND,
-            "optional": True,
-        },
-    },
-    "Output Options": {
-        "Save Solution Log": {
-            "name": "save_log_sol",
-            "param_type": ParamType.BOOLEAN,
-            "file": FILE.COMMAND,
-            "optional": True,
-        },
-        "Spin box test": {
-            "name": "spin box",
-            "param_type": ParamType.SPIN_BOX,
-            "file": FILE.COMMAND,
-            "optional": True,
-        },
+    "Dict 2": {
+        "Visualization": visualization,
+        "Output Options": output_options,
+        "Advanced": advanced,
     },
 }
 
 
-def build_param_dict(param_specs):
+def build_param_dict(param_specs) -> dict[str, Param]:
     params = {}
     for label, spec in param_specs.items():
         params[label] = create_param(**spec)
@@ -111,14 +135,14 @@ def build_param_dict(param_specs):
     return params
 
 
-def build_all_params(all_param_specs):
+def build_all_params(all_param_specs) -> dict[str, dict[str, Param]]:
     all_params = {}
     for category, param_specs in all_param_specs.items():
         all_params[category] = build_param_dict(param_specs)
     return all_params
 
 
-def set_param(all_param_specs: dict):
+def set_param(all_param_specs: dict) -> dict[str, dict[str, Param]]:
     all_params = build_all_params(all_param_specs)
     return all_params
 

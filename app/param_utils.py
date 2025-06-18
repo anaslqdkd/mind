@@ -13,6 +13,7 @@ from app.param import (
     ParamSpinBoxWithBool,
 )
 from app.param_enums import FILE, ParamType
+import inspect
 
 
 # -----------------------------------------------------------
@@ -21,7 +22,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
     values = kwargs.get("values", [])
     depends_on = kwargs.get("depends_on", [])
     expected_type = kwargs.get("expected_type", str)
-    print("the expected type in create param is", expected_type)
+    print(f"DEBUG[{__file__}:{inspect.currentframe().f_lineno}]:", "your message")
     match param_type:
         case ParamType.INPUT:
             return ParamInput(

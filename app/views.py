@@ -17,6 +17,7 @@ from PyQt6.QtWidgets import (
 )
 
 from app.param import InputValidation, Param, ParamCategory
+from app.param_enums import FILE
 from app.param_factory import set_param
 from app.param_factory import all_params
 from app.param_validator import LineEditValidation, NonOptionalInputValidation
@@ -64,14 +65,17 @@ class MainWindow(QMainWindow):
         sidebar_widget = QWidget()
         sidebar_widget.setLayout(sidebar_layout)
 
-        # pages
-        param_page1 = set_param(all_params)
-        param_page2 = set_param(all_params)
+        self.all_params: list[Param] = []
 
-        self.page1 = PageParameters(self, param_page1, self.stack, self.sidebar)
-        self.page_components = PageParameters(
-            self, param_page2, self.stack, self.sidebar
-        )
+        self.pages: list[PageParameters] = []
+        for key, items in all_params.items():
+            params_page = set_param(items)
+            self.pages.append(
+                PageParameters(self, params_page, self.stack, self.sidebar)
+            )
+            for name, dict in params_page.items():
+                for el, param in dict.items():
+                    self.all_params.append(param)
 
         self.main_area = QWidget()
         tab1_layout = QHBoxLayout(self.main_area)
@@ -83,7 +87,7 @@ class MainWindow(QMainWindow):
 
         button = QPushButton("A propos")
         quit_button = QPushButton("Fermer")
-        apply_button = QPushButton("Appliquer")
+        self.apply_button = QPushButton("Appliquer")
 
         end_buttons = QWidget()
         end_buttons_layout = QHBoxLayout(end_buttons)
@@ -94,22 +98,66 @@ class MainWindow(QMainWindow):
         end_buttons_layout.addSpacerItem(spacer)
         end_buttons_layout.addStretch()
         end_buttons_layout.addWidget(quit_button)
-        end_buttons_layout.addWidget(apply_button)
 
         layout.addWidget(end_buttons)
         tab1_layout.addWidget(self.sidebar)
-        tab1_layout.addWidget(self.page1)
         tab1_layout.addWidget(self.stack)
         tab1_layout.addStretch()
 
-        self.stack.addWidget(self.page1)
-        self.stack.addWidget(self.page_components)
+        self.builder = CommandBuilder(self.all_params)
+        # command = builder.build_command()
+        # print("the command is", command)
+
+        for el in self.pages:
+            self.stack.addWidget(el)
+
         self.sidebar.currentRowChanged.connect(self.stack.setCurrentIndex)
+        self.apply_button.clicked.connect(self.build_command)
+        end_buttons_layout.addWidget(self.apply_button)
 
         self.tab1.setLayout(tab1_layout)
         central_widget = QWidget()
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
+
+    def update_pages(self):
+        for page in self.pages:
+            page.update_param_page()
+
+    def build_command(self):
+        self.update_pages()
+        command = self.builder.build_command()
+        print("the command is", command)
+
+        # res = ""
+        # for page_parameter in self.pages[:1]:
+        #     for category in page_parameter.categories:
+        #         print("the category name is", category.name)
+        #         for param in category.param.values():
+        #             if param.file == FILE.COMMAND:
+        #                 print("%%%%%%%%%%%%", param.name)
+        #                 # FIXME: for booleans, simply put -- name, for bools with input etc
+        #                 res += f"--{param.name}"
+        # print(res)
+
+
+# -----------------------------------------------------------
+
+# TODO: sidebar categories based on the dict pages name
+# TODO: to_command for select, bool with input, spin box
+
+
+class CommandBuilder:
+    def __init__(self, params) -> None:
+        self.params = params
+
+    def build_command(self):
+        args = [
+            param.to_command_arg()
+            for param in self.params
+            if param.file == FILE.COMMAND
+        ]
+        return " ".join(arg for arg in args if arg)
 
 
 class PageParameters(QWidget):
@@ -126,6 +174,7 @@ class PageParameters(QWidget):
         self.stack = stack
         self.sidebar = sidebar
         self.sidebar.setCurrentRow(0)
+        self.categories: list[ParamCategory] = []
 
         main_layout = QVBoxLayout()
 
@@ -139,19 +188,18 @@ class PageParameters(QWidget):
         tab1_layout.setSpacing(0)
 
         for key, value in param_category.items():
-            ex_params = ParamCategory(key, value)
-            for name, param in value.items():
-                param.category = ex_params
-            # main_layout.addWidget(ex_params)
-            tab1_layout.addWidget(ex_params)
-            # self.tab_widget.addTab(ex_params, key)
+            widget = ParamCategory(key, value)
+            self.categories.append(widget)
+            if key == "Advanced":
+                section = CollapsibleSection("Advanced section")
+                ex_params = ParamCategory("Title", value)
+                section.addWidget(ex_params)
+                widget = section
+            else:
+                for name, param in value.items():
+                    param.category = widget
+            tab1_layout.addWidget(widget)
         self.tab_widget = QTabWidget()
-        tab1_layout.addWidget(
-            CollapsibleGroupBox("Advanced section"), Qt.AlignmentFlag.AlignTop
-        )
-        tab1_layout.addWidget(
-            CollapsibleSection("Advanced section"), Qt.AlignmentFlag.AlignTop
-        )
         self.tab_widget.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
@@ -174,6 +222,10 @@ class PageParameters(QWidget):
         main_layout.addStretch()
 
         self.setLayout(main_layout)
+
+    def update_param_page(self):
+        for category in self.categories:
+            category.update_category()
 
     # TODO: move this to the validator class
     def go_to_next_page(self):
@@ -281,8 +333,7 @@ class CollapsibleSection(QWidget):
 
         self.content_area = QFrame()
         self.content_area.setVisible(False)
-        content_layout = QVBoxLayout(self.content_area)
-        content_layout.addWidget(QLabel("Section content here"))
+        self.content_layout = QVBoxLayout(self.content_area)
 
         layout = QVBoxLayout(self)
         layout.addWidget(self.toggle_button)
@@ -296,6 +347,9 @@ class CollapsibleSection(QWidget):
         else:
             self.toggle_button.setText("▶ " + self.toggle_button.text()[2:])
         self.content_area.setVisible(checked)
+
+    def addWidget(self, widget):
+        self.content_layout.addWidget(widget)
 
 
 # NOTE: question sur le nombre d'iterations, dans commande ou config.ini
