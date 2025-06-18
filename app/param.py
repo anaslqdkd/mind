@@ -1,7 +1,7 @@
 import enum
 from typing import Optional, Tuple
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QAction
+from PyQt6.QtGui import QAction, QTabletEvent
 from PyQt6.QtWidgets import (
     QButtonGroup,
     QCheckBox,
@@ -18,9 +18,12 @@ from PyQt6.QtWidgets import (
     QMessageBox,
     QPushButton,
     QRadioButton,
+    QScrollArea,
     QSizePolicy,
     QSpacerItem,
     QSpinBox,
+    QTableWidget,
+    QTableWidgetItem,
     QVBoxLayout,
     QWidget,
 )
@@ -149,11 +152,14 @@ class Param:
     def to_command_arg(self) -> str:
         return ""
 
+    def to_file_entry(self):
+        return ""
+
+    to_config_entry = to_file_entry
+
     # def trigger_update(self) -> None:
     #     self.category.update_category()
 
-
-# TODO: for bool with input, additionnal check if the case is checked
 
 # -----------------------------------------------------------
 
@@ -180,7 +186,7 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         label = f"{label}{'' if self.optional else ' *'}"
         question_label = QLabel(label)
-        line_edit = QLineEdit()
+        line_edit = QSpinBox()
 
         self.question_label = question_label
         self.line_edit = line_edit
@@ -228,11 +234,17 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
 
     def restore_values(self):
         if self.line_edit is not None:
-            self.line_edit.setText(self.last_line_edit)
+            self.line_edit.setValue(
+                int(self.last_line_edit) if self.last_line_edit else 0
+            )
+            # self.line_edit.setText(self.last_line_edit)
+
+    # NOTE: add maybe a use_spin_box attribute and build accordingly
 
     def store_value(self):
         if self.line_edit is not None:
-            self.last_line_edit = self.line_edit.text()
+            # self.last_line_edit = self.line_edit.text()
+            self.last_line_edit = str(self.line_edit.value())
 
     def notify_dependants(self) -> None:
         print("TATATATATA")
@@ -749,33 +761,30 @@ class ParamFixedWithInput(Param):
         self.last_line_edit = ""
         self.last_combo_box = ""
 
+        # FIXME: generate those dynamically
+        self.column_names = ["Molar Mass"]
+        self.row_names = ["Component1", "Component 2", "Component 3"]
+
         self.optional = optional
         self.rows = 0
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
-        self.row = row
-        self.label = label
-        self.grid_layout = grid_layout
-        label = f"{label}{'' if self.optional else ' *'}"
-        question_label = QLabel(label)
-        line_edit = QLineEdit()
-        grid_layout.addWidget(question_label, row, 0)
-        for i in range(self.rows):
-            # FIXME: clear the grid before
-            combo_box = QComboBox()
-            grid_layout.addWidget(combo_box, self.row, 1)
-            self.row += 1
-        grid_layout.addItem(
-            QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum),
-            row,
-            1,
-        )
-        self.line_edit = line_edit
+        for col, col_name in enumerate(self.column_names, start=1):
+            grid_layout.addWidget(
+                QLabel(col_name), row, col, alignment=Qt.AlignmentFlag.AlignLeft
+            )
+        for r, row_name in enumerate(self.row_names, start=1):
+            grid_layout.addWidget(QLabel(row_name), row + r, 0)
+            for c, col_name in enumerate(self.column_names, start=1):
+                line_edit = QLineEdit()
+                grid_layout.addWidget(
+                    line_edit, row + r, c, alignment=Qt.AlignmentFlag.AlignLeft
+                )
+    # TODO: store and restore methods
 
-        self.restore_value()
-
-        grid_layout.addWidget(self.line_edit, row, 2)
+    def row_span(self) -> int:
+        return len(self.row_names) + 1
 
     def restore_value(self):
         if self.last_combo_box:
@@ -1098,7 +1107,6 @@ class ParamSpinBoxWithBool(Param):
             return ""
 
 
-
 # -----------------------------------------------------------
 
 
@@ -1312,3 +1320,87 @@ class CollapsibleGroupBox(QGroupBox):
             widget = self.layout().itemAt(i).widget()
             if widget:
                 widget.setVisible(checked)
+
+
+# -----------------------------------------------------------
+
+
+class MembraneOptions(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Membrane Options")
+
+        self.main_layout = QVBoxLayout(self)
+
+        # Number of membranes control
+        spin_layout = QHBoxLayout()
+        spin_layout.addWidget(QLabel("Number of membranes *"))
+        self.num_membranes = QSpinBox()
+        self.num_membranes.setMinimum(0)
+        self.num_membranes.valueChanged.connect(self.update_grid)
+        spin_layout.addWidget(self.num_membranes)
+        self.main_layout.addLayout(spin_layout)
+
+        # Scroll area for grid
+        self.scroll_area = QScrollArea()
+        self.scroll_area.setWidgetResizable(True)
+        self.grid_container = QWidget()
+        self.grid_layout = QGridLayout(self.grid_container)
+        # self.scroll_area.setWidget(self.grid_container)
+        self.main_layout.addWidget(self.grid_container)
+        self.grid_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        self.edit_widgets = []
+
+    def update_grid(self, count):
+        # Clear previous widgets from grid layout
+        while self.grid_layout.count():
+            item = self.grid_layout.takeAt(0)
+            widget = item.widget()
+            if widget is not None:
+                widget.deleteLater()
+        self.edit_widgets = []
+
+        # Header row
+        self.grid_layout.addWidget(QLabel("Membrane"), 0, 0)
+        self.grid_layout.addWidget(QLabel("ub_area"), 0, 1)
+        self.grid_layout.addWidget(QLabel("lb_area"), 0, 2)
+        self.grid_layout.addWidget(QLabel("ub_acell"), 0, 3)
+
+        # Membrane rows
+        for i in range(count):
+            self.grid_layout.addWidget(QLabel(f"Membrane {i+1}"), i + 1, 0)
+            ub_area = QLineEdit()
+            lb_area = QLineEdit()
+            ub_acell = QLineEdit()
+            self.grid_layout.addWidget(ub_area, i + 1, 1)
+            self.grid_layout.addWidget(lb_area, i + 1, 2)
+            self.grid_layout.addWidget(ub_acell, i + 1, 3)
+            self.edit_widgets.append((ub_area, lb_area, ub_acell))
+
+
+class GridOptions(QWidget):
+    def __init__(self, column_names, row_names, parent=None):
+        super().__init__(parent)
+        self.column_names = column_names
+        self.row_names = row_names
+        self.cell_widgets = {}
+
+        main_layout = QVBoxLayout(self)
+
+        grid_container = QWidget()
+        grid_layout = QGridLayout(grid_container)
+
+        grid_layout.addWidget(QLabel(""), 0, 0)
+        for col, cname in enumerate(column_names, start=1):
+            grid_layout.addWidget(QLabel(cname), 0, col)
+
+        for row, rname in enumerate(row_names, start=1):
+            grid_layout.addWidget(QLabel(rname), row, 0)
+            for col, cname in enumerate(column_names, start=1):
+                le = QLineEdit()
+                grid_layout.addWidget(le, row, col)
+                self.cell_widgets[(rname, cname)] = le
+
+        grid_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        main_layout.addWidget(grid_container)

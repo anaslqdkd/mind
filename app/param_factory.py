@@ -93,8 +93,10 @@ output_options = {
         "param_type": ParamType.BOOLEAN,
         "file": FILE.COMMAND,
         "optional": True,
+        "description": "",
     },
 }
+# TODO: add parameters for page 2
 
 advanced = {
     "Save Solution Log": {
@@ -110,6 +112,30 @@ advanced = {
         "optional": True,
     },
 }
+membranes_options = {
+    "Number of membranes": {
+        "name": "num_membranes",
+        "param_type": ParamType.INPUT,
+        "file": FILE.CONFIG,
+    },
+    "ub_area": {
+        "name": "upper bound area",
+        "param_type": ParamType.FIXED_WITH_INPUT,
+        "file": FILE.CONFIG,
+    },
+    "lb_area": {
+        "name": "lower bound area",
+        "param_type": ParamType.FIXED_WITH_INPUT,
+        "file": FILE.CONFIG,
+    },
+    "ub_acell": {
+        "name": "upper bound for a cell",
+        "param_type": ParamType.FIXED_WITH_INPUT,
+        "file": FILE.CONFIG,
+    },
+}
+# TODO: add a field for descrition
+# TODO: add default value in the constructor
 
 all_params = {
     "Dict 1": {
@@ -123,6 +149,7 @@ all_params = {
         "Output Options": output_options,
         "Advanced": advanced,
     },
+    "Dict 3": {"Membrane options": membranes_options},
 }
 
 

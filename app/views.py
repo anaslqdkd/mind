@@ -16,7 +16,13 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from app.param import InputValidation, Param, ParamCategory
+from app.param import (
+    GridOptions,
+    InputValidation,
+    MembraneOptions,
+    Param,
+    ParamCategory,
+)
 from app.param_enums import FILE
 from app.param_factory import set_param
 from app.param_factory import all_params
@@ -193,13 +199,19 @@ class PageParameters(QWidget):
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
         self.tab_widget.addTab(tab1_widget, "Tab 1")
-        self.tab_widget.addTab(QWidget(), "Tab 2")  # Placeholder for Tab 2
         main_layout.addWidget(self.tab_widget, 1, Qt.AlignmentFlag.AlignTop)
         # main_layout.addWidget(self.tab_widget, stretch=1)
         # NOTE: here
         main_layout.addStretch()
 
         next_button = QPushButton("next")
+        self.tab_widget.addTab(
+            GridOptions(
+                ["Molar Mass"],
+                ["Component 1", "Component 2", "Component 3"],
+            ),
+            "Tab 2",
+        )  # Placeholder for Tab 2
 
         end_button_widget = QWidget()
         end_button_layout = QHBoxLayout(end_button_widget)
@@ -208,6 +220,7 @@ class PageParameters(QWidget):
         end_button_layout.addWidget(next_button)
         main_layout.addWidget(end_button_widget)
 
+        # main_layout.addWidget(MembraneOptions)
         main_layout.addStretch()
 
         self.setLayout(main_layout)
