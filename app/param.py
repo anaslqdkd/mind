@@ -1,5 +1,5 @@
 import enum
-from typing import Optional
+from typing import Optional, Tuple
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import (
@@ -300,6 +300,9 @@ class ParamSelect(Param):
             self.last_combo_box = self.combo_box.currentText()
         pass
 
+    def to_command_arg(self) -> str:
+        return f"--{self.name} {self.last_combo_box}"
+
     def to_file(self) -> str:
         return f"{self.name} := {self.last_combo_box}"
 
@@ -507,6 +510,12 @@ class ParamBooleanWithInput(Param):
 
     def row_span(self) -> int:
         return 2
+
+    def to_command_arg(self) -> str:
+        if self.last_check_box == True:
+            return f"--{self.name} {self.last_line_edit}"
+        else:
+            return ""
 
     def to_file(self) -> str:
         return f"{self.name} := {self.last_check_box}\n{self.name} := {self.last_line_edit}"
@@ -1009,21 +1018,19 @@ class ParamSpinBoxWithBool(Param):
         expected_type=str,
     ) -> None:
         super().__init__(name, file, depends_on=depends_on)
-        # LineEditValidation.__init__(self)
         self.question_label = None
-        self.spin_box = None
+        self.time_spin_box = None
         self.last_spin_box = ""
         self.file = file
         self.optional = optional
         self.expected_type = expected_type
         self.last_check_box = False
+        self.last_time_spin_box = None
+        self.last_unity = None
         pass
 
     def trigger_update(self):
         self.category.update_category()
-
-    def store_value(self):
-        return
 
     def to_file(self) -> str:
         return ""
@@ -1047,7 +1054,7 @@ class ParamSpinBoxWithBool(Param):
         checkbox_layout.addWidget(question_label)
         checkbox_layout.addStretch()
 
-        self.line_edit = time_spin_box
+        self.time_spin_box = time_spin_box
         self.check_box = check_box
 
         self.restore_values()
@@ -1067,13 +1074,29 @@ class ParamSpinBoxWithBool(Param):
     def store_value(self):
         if self.check_box is not None:
             self.last_check_box = self.check_box.isChecked()
+        if self.time_spin_box is not None:
+            self.time_spin_box.get_value()
+            self.last_time_spin_box, self.last_unity = self.time_spin_box.get_value()
 
     def restore_values(self):
         if self.last_check_box:
             if self.check_box:
                 self.check_box.setChecked(True)
+        if self.last_time_spin_box is not None and self.last_unity is not None:
+            if self.time_spin_box:
+                print(f"the self.last_unity was {self.last_unity}")
+                self.time_spin_box.set_value(self.last_time_spin_box, self.last_unity)
 
-    # TODO: implement all other methods
+    def to_command_arg(self) -> str:
+        if self.last_check_box == True:
+            # pour que le lsp ne râle pas, mais techniquement impossible
+            if self.last_time_spin_box and self.last_unity and self.time_spin_box:
+                return f"--{self.name} {self.time_spin_box.to_seconds(self.last_time_spin_box, self.last_unity)}"
+            else:
+                return ""
+        else:
+            return ""
+
 
 
 # -----------------------------------------------------------
@@ -1243,6 +1266,27 @@ class TimeSpinBox(QWidget):
     def change_unit(self, idx):
         units = [" sec", " min", " hours", " days"]
         self.spin.setSuffix(units[idx])
+
+    def to_seconds(self, value: int, unity_index: int) -> int:
+        units = ["sec", "min", "hours", "days"]
+        unit = units[unity_index]
+        if unit == "sec":
+            return value
+        elif unit == "min":
+            return value * 60
+        elif unit == "hours":
+            return value * 3600
+        elif unit == "days":
+            return value * 86400
+        else:
+            return value
+
+    def get_value(self) -> Tuple[int, int]:
+        return self.spin.value(), self.unit_combo.currentIndex()
+
+    def set_value(self, value: int, index: int) -> None:
+        self.unit_combo.setCurrentIndex(index)
+        self.spin.setValue(value)
 
 
 # TODO: search filter

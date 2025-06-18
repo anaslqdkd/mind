@@ -129,17 +129,6 @@ class MainWindow(QMainWindow):
         command = self.builder.build_command()
         print("the command is", command)
 
-        # res = ""
-        # for page_parameter in self.pages[:1]:
-        #     for category in page_parameter.categories:
-        #         print("the category name is", category.name)
-        #         for param in category.param.values():
-        #             if param.file == FILE.COMMAND:
-        #                 print("%%%%%%%%%%%%", param.name)
-        #                 # FIXME: for booleans, simply put -- name, for bools with input etc
-        #                 res += f"--{param.name}"
-        # print(res)
-
 
 # -----------------------------------------------------------
 
