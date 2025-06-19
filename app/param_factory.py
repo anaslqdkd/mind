@@ -118,7 +118,10 @@ membranes_options = {
         "param_type": ParamType.INPUT,
         "file": FILE.CONFIG,
         "optional": False,
-        "description": "number of membranes"
+        "description": "number of membranes",
+        "default": 0,
+        "min_value": 0,
+        "max_value": 3, # the inital program assert <= 3
     },
     "Upper bound area": {
         "name": "ub_area",
@@ -168,18 +171,42 @@ membranes_behaviour_flags = {
 algo_iteration_control = {
         "Iteration":{
             "name": "iteration",
-            "param_type": ParamType.BOOLEAN,
+            "param_type": ParamType.INPUT,
             "file": FILE.CONFIG,
             "optional": False,
+            "default": 200,
+            "min_value": 1,
+            "max_value": 10000,
+            "step": 10,
             },
-
+        "Max no improve":{
+            "name": "max_no_improve",
+            "param_type": ParamType.INPUT,
+            "file": FILE.CONFIG,
+            "optional": False,
+            "default": 5,
+            "min_value": 1,
+            "max_value": 10000,
+            "step": 1,
+            },
+        "Max trials":{
+            "name": "max_trials",
+            "param_type": ParamType.INPUT,
+            "file": FILE.CONFIG,
+            "optional": False,
+            "default": 10,
+            "min_value": 1,
+            "max_value": 10000,
+            "step": 1,
+            },
+        # eventually, pop_size, generation, and n1_element
         }
+# pop_size, generations and n1_element for population/genetic algorithm
 # TODO: add default value in the constructor
 
 
 # TODO: le fix me sur generate those dynamically
 # TODO: le dictionnaire des parameters differents
-
 
 all_params = {
     "Dict 1": {
@@ -194,7 +221,15 @@ all_params = {
         "Advanced": advanced,
     },
     "Dict 3": {"Membrane options": membranes_options,
-               "Membrane behaviour": membranes_behaviour_flags},
+               "Membrane behaviour": membranes_behaviour_flags,
+               "Algorithm iteration control": algo_iteration_control},
+    # "Dict 2": {
+    #     "Visualization": visualization,
+    #     CollapsibleSectionSpec("Advanced", {
+    #         "Output Options": output_options,
+    #         "Advanced": advanced,
+    #     }),
+    # },
 }
 
 
@@ -270,3 +305,9 @@ def set_dependency(params: dict["str", Param]):
                 if not hasattr(dep_param, "dependants"):
                     dep_param.dependants = {}
                 dep_param.dependants[value] = dep_type
+# -----------------------------------------------------------
+
+class CollapsibleSectionSpec:
+    def __init__(self, title:str, categories: dict["str", dict["str", dict]]):
+        self.title: str = title
+        self.categories: dict["str", dict["str", dict]] = categories  

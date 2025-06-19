@@ -25,6 +25,10 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
     depends_on = kwargs.get("depends_on", {})
     expected_type = kwargs.get("expected_type", str)
     description = kwargs.get("description", "")
+    default = kwargs.get("default")
+    min_value = kwargs.get("min_value")
+    max_value = kwargs.get("max_value")
+    step = kwargs.get("step")
     # print(f"DEBUG[{__file__}:{inspect.currentframe().f_lineno}]:", "your message")
     match param_type:
         case ParamType.INPUT:
@@ -35,6 +39,10 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 depends_on=depends_on,
                 expected_type=expected_type,
                 description=description,
+                default=default,
+                min_value=min_value,
+                max_value=max_value,
+                step=step,
             )
         case ParamType.SELECT:
             return ParamSelect(

@@ -194,7 +194,11 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
         depends_on: Optional[dict[str, DependencyType]],
         optional: bool = False,
         expected_type=str,
-        description: str = ""
+        description: str = "",
+        default: Optional[int] =None,
+        min_value: Optional[int] = None,
+        max_value: Optional[int] =None,
+        step: Optional[int]= None
     ) -> None:
         super().__init__(name, file, depends_on=depends_on, description=description)
         LineEditValidation.__init__(self)
@@ -204,10 +208,23 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
         self.file = file
         self.optional = optional
         self.expected_type = expected_type
+        self.default = default
+        self.min_value = min_value
+        self.max_value = max_value
+        self.step = step
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         line_edit = QSpinBox()
+
+        if self.min_value is not None:
+            line_edit.setMinimum(self.min_value)
+        if self.max_value is not None:
+            line_edit.setMaximum(self.max_value)
+        if self.default is not None:
+            line_edit.setValue(self.default)
+        if self.step is not None:
+            line_edit.setSingleStep(self.step)
         header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(header, row, 0)
         self.line_edit = line_edit
@@ -248,11 +265,8 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
         msg_box.exec()
 
     def restore_values(self):
-        if self.line_edit is not None:
-            self.line_edit.setValue(
-                int(self.last_line_edit) if self.last_line_edit else 0
-            )
-            # self.line_edit.setText(self.last_line_edit)
+        if self.line_edit is not None and self.last_line_edit != "":
+            self.line_edit.setValue(int(self.last_line_edit))
 
     # NOTE: add maybe a use_spin_box attribute and build accordingly
 
@@ -790,15 +804,14 @@ class ParamFixedWithInput(Param):
         self.last_combo_box = ""
 
         # FIXME: generate those dynamically
-        self.column_names = ["Molar Mass"]
-        self.row_names = ["Component1", "Component 2", "Component 3"]
+        # self.column_names = ["Molar Mass"]
+        # self.row_names = ["Component1", "Component 2", "Component 3"]
         self.row_nb = 0
 
         self.optional = optional
         self.rows = 0
         pass
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
-        # Restore row_nb from dependency if available
         for param, dependency_type in self.depends_on_params.items():
             if dependency_type.name == "COMPONENT_COUNT":
                 try:
@@ -818,8 +831,9 @@ class ParamFixedWithInput(Param):
         group_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
         for r in range(self.row_nb):
-            group_layout.addWidget(QLabel(f"{r+1}"), r, 0)
-            for c, col_name in enumerate(self.column_names, start=1):
+            debug_print("here in build widget", self.row_nb)
+            group_layout.addWidget(QLabel(f"Membrane {r+1}"), r, 0)
+            for c in range(1, 2):
                 line_edit = QLineEdit()
                 group_layout.addWidget(
                     line_edit, r, c, alignment=Qt.AlignmentFlag.AlignCenter
@@ -827,11 +841,8 @@ class ParamFixedWithInput(Param):
 
         self.grid_layout.addWidget(group_box, row, 0, 1, -1)
 
-
-    # TODO: store and restore methods
-
     def row_span(self) -> int:
-        return len(self.row_names) + 2
+        return self.row_nb + 2
 
     def restore_value(self):
         if self.last_combo_box:
@@ -1155,9 +1166,10 @@ class ParamCategory(QWidget):
     def notify_dependents(self):
         for name, param in self.param.items():
             param.notify_dependants()
-
     def build_param(self) -> QWidget:
         self.row = 0
+        for label, param_obj in self.param.items():
+            param_obj.category = self  
         for label, param_obj in self.param.items():
             param_obj.build_widget(self.row, label, self.grid_layout)
             self.row += param_obj.row_span()
