@@ -36,7 +36,7 @@ algorithm_options = {
         "name": "maxiter",
         "param_type": ParamType.BOOLEAN_WITH_INPUT,
         "file": FILE.COMMAND,
-        "optional": True,
+        "optional": False,
     },
     "Time Limit": {
         "name": "maxtime",
@@ -124,26 +124,62 @@ membranes_options = {
         "name": "ub_area",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.CONFIG,
+        "depends_on": {"Number of membranes": DependencyType.COMPONENT_COUNT}
     },
     "Lower bound area": {
         "name": "lb_area",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.CONFIG,
+        "depends_on": {"Number of membranes": DependencyType.COMPONENT_COUNT}
     },
     "Upper bound cell": {
         "name": "ub_acell",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.CONFIG,
+        "depends_on": {"Number of membranes": DependencyType.COMPONENT_COUNT}
     },
 }
+membranes_behaviour_flags = {
+        "Fixing":{
+            "name": "fixing_var",
+            "param_type": ParamType.BOOLEAN,
+            "file": FILE.CONFIG,
+            "optional": False,
+            },
+        "Uniform Pup":{
+            "name": "uniform_pup",
+            "param_type": ParamType.BOOLEAN,
+            "file": FILE.CONFIG,
+            "optional": False,
+            },
+        "Vacuum Pump":{
+            "name": "vp",
+            "param_type": ParamType.BOOLEAN,
+            "file": FILE.CONFIG,
+            "optional": False,
+            },
+        "Variable Permeability":{
+            "name": "variable_perm",
+            "param_type": ParamType.BOOLEAN,
+            "file": FILE.CONFIG,
+            "optional": False,
+            },
+        }
+algo_iteration_control = {
+        "Iteration":{
+            "name": "iteration",
+            "param_type": ParamType.BOOLEAN,
+            "file": FILE.CONFIG,
+            "optional": False,
+            },
+
+        }
 # TODO: add default value in the constructor
 
-# ----------aujourd'hui--------------------------------------
 
 # TODO: le fix me sur generate those dynamically
 # TODO: le dictionnaire des parameters differents
 
-# -----------------------------------------------------------
 
 all_params = {
     "Dict 1": {
@@ -157,7 +193,8 @@ all_params = {
         "Output Options": output_options,
         "Advanced": advanced,
     },
-    "Dict 3": {"Membrane options": membranes_options},
+    "Dict 3": {"Membrane options": membranes_options,
+               "Membrane behaviour": membranes_behaviour_flags},
 }
 
 

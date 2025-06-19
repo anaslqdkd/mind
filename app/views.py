@@ -24,6 +24,7 @@ from app.param import (
     MembraneOptions,
     Param,
     ParamCategory,
+    debug_print,
 )
 from app.param_enums import FILE
 from app.param_factory import set_param
@@ -233,6 +234,7 @@ class PageParameters(QWidget):
 
     # TODO: move this to the validator class
     def go_to_next_page(self):
+        debug_print("here")
         # TODO: trigger errors for not optional values
         print("the rest of validate_all_input", self.validate_all_input())
         if self.validate_required_params():

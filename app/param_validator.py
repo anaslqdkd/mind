@@ -31,7 +31,6 @@ class LineEditValidation:
 
 
 class NonOptionalInputValidation:
-    # TODO: check if optional or not
     def __init__(self, line_edit: Optional[QLineEdit]) -> None:
         self.line_edit = line_edit
 
@@ -42,5 +41,4 @@ class NonOptionalInputValidation:
             return
 
 
-# TODO: command builder
 # TODO: file import

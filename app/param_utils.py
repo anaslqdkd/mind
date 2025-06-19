@@ -22,7 +22,7 @@ import inspect
 def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Param:
     optional = kwargs.get("optional", False)
     values = kwargs.get("values", [])
-    depends_on = kwargs.get("depends_on", [])
+    depends_on = kwargs.get("depends_on", {})
     expected_type = kwargs.get("expected_type", str)
     description = kwargs.get("description", "")
     # print(f"DEBUG[{__file__}:{inspect.currentframe().f_lineno}]:", "your message")

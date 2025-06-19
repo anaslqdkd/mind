@@ -29,10 +29,16 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+import inspect
 
 from app.param_enums import FILE, DependencyType
 from app.param_validator import LineEditValidation, NonOptionalInputValidation
 
+def debug_print(*args, **kwargs):
+    frame = inspect.currentframe().f_back
+    func_name = frame.f_code.co_name
+    line_no = frame.f_lineno
+    print(f"[{func_name}:{line_no}]", *args, **kwargs)
 
 # -----------------------------------------------------------
 class SquareCheckboxSelector(QDialog):
@@ -215,7 +221,8 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
             #     lambda: InputValidation.validate_input(line_edit, expected_type)
             # )
             # TODO: add this for all input parameters
-            self.line_edit.editingFinished.connect(self.validate_and_highlight)
+            # self.line_edit.editingFinished.connect(self.validate_and_highlight)
+            self.line_edit.valueChanged.connect(self.notify_dependants)
 
     def validate_and_highlight(self):
         if self.validation_rules == {}:
@@ -255,12 +262,25 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
             self.last_line_edit = str(self.line_edit.value())
 
     def notify_dependants(self) -> None:
-        print("TATATATATA")
-        print(self.dependants)
         for dep in self.dependants.keys():
-            print("the dep before TATATATA", dep)
             dep.on_dependency_updated(self)
         pass
+
+    def get_dependency_value(self, dependency_type: DependencyType) -> int | float | str:
+        if dependency_type == DependencyType.COMPONENT_COUNT:
+            if self.line_edit is not None:
+                return self.line_edit.value()
+            try:
+                return int(self.last_line_edit)
+            except Exception:
+                return 0
+        if self.line_edit is not None:
+            return self.line_edit.value()
+        try:
+            return int(self.last_line_edit)
+        except Exception:
+            return 0
+
 
     def to_file(self) -> str:
         return f"{self.name} := {self.last_line_edit}"
@@ -346,7 +366,6 @@ class ParamBoolean(Param):
         self.optional = optional
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
-        label = f"{label}{'' if self.optional else ' *'}"
         container = QWidget()
         h_layout = QHBoxLayout(container)
         h_layout.setContentsMargins(0, 0, 0, 0)
@@ -666,7 +685,6 @@ class ParamComponent(Param):
         self.values = values
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
-        label = f"{label}{'' if self.optional else ' *'}"
         header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(header, row, 0)
         self.combo_boxes = []
@@ -774,12 +792,22 @@ class ParamFixedWithInput(Param):
         # FIXME: generate those dynamically
         self.column_names = ["Molar Mass"]
         self.row_names = ["Component1", "Component 2", "Component 3"]
+        self.row_nb = 0
 
         self.optional = optional
         self.rows = 0
         pass
-
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        # Restore row_nb from dependency if available
+        for param, dependency_type in self.depends_on_params.items():
+            if dependency_type.name == "COMPONENT_COUNT":
+                try:
+                    self.row_nb = int(getattr(param, "last_line_edit", 0))
+                except Exception:
+                    self.row_nb = 0
+        self.row = row
+        self.label = label
+        self.grid_layout = grid_layout
         header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(header, row, 0)
         row += 1
@@ -787,16 +815,18 @@ class ParamFixedWithInput(Param):
         group_box = QGroupBox()
         group_layout = QGridLayout(group_box)
         group_box.setLayout(group_layout)
+        group_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
-        for r, row_name in enumerate(self.row_names, start=1):
-            group_layout.addWidget(QLabel(row_name), r, 0)
+        for r in range(self.row_nb):
+            group_layout.addWidget(QLabel(f"{r+1}"), r, 0)
             for c, col_name in enumerate(self.column_names, start=1):
                 line_edit = QLineEdit()
                 group_layout.addWidget(
                     line_edit, r, c, alignment=Qt.AlignmentFlag.AlignCenter
                 )
 
-        grid_layout.addWidget(group_box, row, 0, 1, -1)
+        self.grid_layout.addWidget(group_box, row, 0, 1, -1)
+
 
     # TODO: store and restore methods
 
@@ -825,29 +855,16 @@ class ParamFixedWithInput(Param):
         return f"{self.name} := {self.last_line_edit} #{self.last_combo_box}"
 
     def on_dependency_updated(self, changed_param: Param):
-        print("%%%%: in the dependency updated", changed_param.name)
-        # print(self.dep)
-        # for el in self.
-        if changed_param in self.depends_on_params.keys():
-            print("YAAAA")
         for param, dependency_type in self.depends_on_params.items():
-            match dependency_type:
-                case DependencyType.COMPONENT_COUNT:
-                    # TODO: clear the grid before
-
-                    print("6666666", param.last_line_edit)
-
-                    try:
-                        self.rows = int(param.last_line_edit)
-                        self.build_widget(self.row, self.label, self.grid_layout)
-                    except (ValueError, TypeError):
-                        print(f"Invalid integer input: {param.last_line_edit}")
-
-        # match
-        print(f"{self.name} updated because the dependant {changed_param.name} changed")
-
+            if param == changed_param:
+                match dependency_type:
+                    case DependencyType.COMPONENT_COUNT:
+                        self.category.update_category()
+                        self.row_nb = param.get_dependency_value(DependencyType.COMPONENT_COUNT)
+                        self.category.update_category()
 
 # -----------------------------------------------------------
+# TODO: add default value
 class ParamRadio(Param):
     def __init__(
         self,
@@ -906,28 +923,6 @@ class ParamRadio(Param):
         # TODO:
         return f"ta mere"
 
-    # FIXME: adapt function below for the class
-    def on_dependency_updated(self, changed_param: Param):
-        print("%%%%: in the dependency updated", changed_param.name)
-        # print(self.dep)
-        # for el in self.
-        if changed_param in self.depends_on_params.keys():
-            print("YAAAA")
-        for param, dependency_type in self.depends_on_params.items():
-            match dependency_type:
-                case DependencyType.COMPONENT_COUNT:
-                    # TODO: clear the grid before
-
-                    print("6666666", param.last_line_edit)
-
-                    try:
-                        self.rows = int(param.last_line_edit)
-                        self.build_widget(self.row, self.label, self.grid_layout)
-                    except (ValueError, TypeError):
-                        print(f"Invalid integer input: {param.last_line_edit}")
-
-        # match
-        print(f"{self.name} updated because the dependant {changed_param.name} changed")
 
 
 # -----------------------------------------------------------
@@ -1008,28 +1003,6 @@ class ParamComponentSelector(Param):
         # TODO:
         return f"ta mere"
 
-    # FIXME: adapt function below for the class
-    def on_dependency_updated(self, changed_param: Param):
-        print("%%%%: in the dependency updated", changed_param.name)
-        # print(self.dep)
-        # for el in self.
-        if changed_param in self.depends_on_params.keys():
-            print("YAAAA")
-        for param, dependency_type in self.depends_on_params.items():
-            match dependency_type:
-                case DependencyType.COMPONENT_COUNT:
-                    # TODO: clear the grid before
-
-                    print("6666666", param.last_line_edit)
-
-                    try:
-                        self.rows = int(param.last_line_edit)
-                        self.build_widget(self.row, self.label, self.grid_layout)
-                    except (ValueError, TypeError):
-                        print(f"Invalid integer input: {param.last_line_edit}")
-
-        # match
-        print(f"{self.name} updated because the dependant {changed_param.name} changed")
 
 
 # -----------------------------------------------------------
