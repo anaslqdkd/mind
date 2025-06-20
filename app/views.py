@@ -113,7 +113,8 @@ class MainWindow(QMainWindow):
         tab1_layout.addWidget(self.stack)
         tab1_layout.addStretch()
 
-        self.builder = CommandBuilder(self.all_params)
+        self.command_builder = CommandBuilder(self.all_params)
+        self.config_builder = ConfigBuilder(self.all_params)
         # command = builder.build_command()
         # print("the command is", command)
 
@@ -135,8 +136,10 @@ class MainWindow(QMainWindow):
 
     def build_command(self):
         self.update_pages()
-        command = self.builder.build_command()
-        print("the command is", command)
+        command = self.command_builder.build_command()
+        config = self.config_builder.build_config()
+        debug_print("the command is", command)
+        debug_print("the config is", config)
 
 
 # -----------------------------------------------------------
@@ -156,6 +159,19 @@ class CommandBuilder:
             if param.file == FILE.COMMAND
         ]
         return " ".join(arg for arg in args if arg)
+
+class ConfigBuilder:
+    def __init__(self, params) -> None:
+        self.params = params
+
+    def build_config(self):
+        args = [
+            param.to_config_entry()
+            for param in self.params
+            if param.file == FILE.CONFIG
+        ]
+        return " ".join(arg for arg in args if arg)
+
 
 
 class PageParameters(QWidget):

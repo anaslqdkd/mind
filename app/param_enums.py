@@ -15,6 +15,7 @@ class ParamType(enum.Enum):
     RADIO = enum.auto()
     COMPONENT_SELECTOR = enum.auto()
     SPIN_BOX = enum.auto()
+    FILECHOOSER = enum.auto()
 
 
 # -----------------------------------------------------------
@@ -24,7 +25,7 @@ class DependencyType(enum.Enum):
     COMPONENT_COUNT = enum.auto()
     VALUE = enum.auto()
 
-
+# TODO: add dependency type for if visible or not
 # -----------------------------------------------------------
 
 

@@ -8,6 +8,7 @@ from PyQt6.QtWidgets import (
     QComboBox,
     QDialog,
     QDialogButtonBox,
+    QDoubleSpinBox,
     QFrame,
     QGridLayout,
     QGroupBox,
@@ -215,7 +216,10 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
-        line_edit = QSpinBox()
+        if type(self.default) == int:
+            line_edit = QSpinBox()
+        else:
+            line_edit = QDoubleSpinBox()
 
         if self.min_value is not None:
             line_edit.setMinimum(self.min_value)
@@ -266,7 +270,17 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
 
     def restore_values(self):
         if self.line_edit is not None and self.last_line_edit != "":
-            self.line_edit.setValue(int(self.last_line_edit))
+            debug_print(self.last_line_edit)
+            try:
+                value = int(self.last_line_edit)
+            except ValueError:
+                try:
+                    value = float(self.last_line_edit)
+                except ValueError:
+                    debug_print("Could not convert last_line_edit to a number.")
+                    return
+            self.line_edit.setValue(value)
+
 
     # NOTE: add maybe a use_spin_box attribute and build accordingly
 
@@ -299,6 +313,9 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
     def to_file(self) -> str:
         return f"{self.name} := {self.last_line_edit}"
 
+    def to_config_entry(self) -> str:
+        return f"{self.name}:= {self.last_line_edit}"
+
 
 # -----------------------------------------------------------
 
@@ -311,6 +328,7 @@ class ParamSelect(Param):
         values: list[str],
         depends_on: Optional[dict[str, DependencyType]],
         optional: bool = False,
+        description: str = "",
         expected_type=str,
     ) -> None:
         super().__init__(name, file, depends_on=depends_on)
@@ -319,6 +337,7 @@ class ParamSelect(Param):
         self.last_combo_box = ""
         self.values = values
         self.optional = optional
+        self.description = description
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
@@ -371,6 +390,7 @@ class ParamBoolean(Param):
         file: FILE,
         depends_on: Optional[dict[str, DependencyType]],
         optional: bool = False,
+        description: str = "",
         expected_type=str,
     ) -> None:
         super().__init__(name, file, depends_on=depends_on)
@@ -378,6 +398,7 @@ class ParamBoolean(Param):
         self.check_box = None
         self.last_check_box = False
         self.optional = optional
+        self.description = description
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         container = QWidget()
@@ -427,6 +448,7 @@ class ParamInputWithUnity(Param):
         file: FILE,
         values: list[str],
         depends_on: Optional[dict[str, DependencyType]],
+        description: str = "",
         optional: bool = False,
         expected_type=str,
     ) -> None:
@@ -434,6 +456,7 @@ class ParamInputWithUnity(Param):
         self.question_label = None
         self.line_edit = None
         self.combo_box = None
+        self.description = description
 
         self.last_line_edit = ""
         self.last_combo_box = ""
@@ -494,12 +517,14 @@ class ParamBooleanWithInput(Param):
         file: FILE,
         depends_on: Optional[dict[str, DependencyType]],
         optional: bool = False,
+        description: str = "",
         expected_type=str,
     ) -> None:
         super().__init__(name, file, depends_on=depends_on)
         self.question_label = None
         self.line_edit = None
         self.check_box = None
+        self.description = description
 
         self.last_check_box = False
         self.last_line_edit = ""
@@ -586,6 +611,7 @@ class ParamBooleanWithInputWithUnity(Param):
         values: list[str],
         depends_on: Optional[dict[str, DependencyType]],
         optional: bool = False,
+        description: str = "",
         expected_type=str,
     ) -> None:
         super().__init__(name, file, depends_on=depends_on)
@@ -593,6 +619,7 @@ class ParamBooleanWithInputWithUnity(Param):
         self.check_box = None
         self.combo_box = None
         self.line_edit = None
+        self.description = description
 
         self.last_check_box = False
         self.last_combo_box = ""
@@ -686,12 +713,14 @@ class ParamComponent(Param):
         values: list[str],
         depends_on: Optional[dict[str, DependencyType]],
         optional: bool = False,
+        description: str = "",
         expected_type=str,
     ) -> None:
         super().__init__(name, file, depends_on=depends_on)
         self.question_label = None
         self.combo_box = None
         self.extra_rows = 0
+        self.description = description
 
         self.combo_boxes = []
         self.last_combo_boxes = []
@@ -793,23 +822,31 @@ class ParamFixedWithInput(Param):
         file: FILE,
         depends_on: Optional[dict[str, DependencyType]],
         optional: bool = False,
+        description: str = "",
         expected_type=str,
+        default: Optional[int] =None,
+        min_value: Optional[int] = None,
+        max_value: Optional[int] =None,
+        step: Optional[int]= None
     ) -> None:
         super().__init__(name, file=file, depends_on=depends_on)
         self.question_label = None
         self.line_edit = None
         self.combo_box = None
+        self.description = description
 
         self.last_line_edit = ""
         self.last_combo_box = ""
 
-        # FIXME: generate those dynamically
-        # self.column_names = ["Molar Mass"]
-        # self.row_names = ["Component1", "Component 2", "Component 3"]
         self.row_nb = 0
 
         self.optional = optional
         self.rows = 0
+        self.default = default
+
+        self.min_value = min_value
+        self.max_value = max_value
+        self.step = step
         pass
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         self.row = row
@@ -827,7 +864,20 @@ class ParamFixedWithInput(Param):
         for r in range(self.row_nb):
             group_layout.addWidget(QLabel(f"{r+1}"), r, 0)
             for c in range(1, 2):
-                line_edit = QLineEdit()
+                # line_edit = QSpinBox()
+                if type(self.default) == int:
+                    line_edit = QSpinBox()
+                else:
+                    line_edit = QDoubleSpinBox()
+
+                if self.min_value is not None:
+                    line_edit.setMinimum(self.min_value)
+                if self.max_value is not None:
+                    line_edit.setMaximum(self.max_value)
+                if self.default is not None:
+                    line_edit.setValue(self.default)
+                if self.step is not None:
+                    line_edit.setSingleStep(self.step)
                 group_layout.addWidget(
                     line_edit, r, c, alignment=Qt.AlignmentFlag.AlignCenter
                 )
@@ -879,9 +929,12 @@ class ParamRadio(Param):
         values: list[str],
         optional: bool = False,
         expected_type=str,
+        description: str = "",
+
     ) -> None:
         super().__init__(name, file=file, depends_on=depends_on)
         self.question_label = None
+        self.description = description
 
         self.optional = optional
         self.rows = 1
@@ -941,10 +994,12 @@ class ParamComponentSelector(Param):
         depends_on: Optional[dict[str, DependencyType]],
         values: list[str],
         optional: bool = False,
+        description: str = "",
         expected_type=str,
     ) -> None:
         super().__init__(name, file=file, depends_on=depends_on)
         self.question_label = None
+        self.description = description
 
         self.optional = optional
         self.rows = 1
@@ -1033,6 +1088,7 @@ class ParamSpinBoxWithBool(Param):
         depends_on: Optional[dict[str, DependencyType]],
         optional: bool = False,
         expected_type=str,
+        description: str = "",
     ) -> None:
         super().__init__(name, file, depends_on=depends_on)
         self.question_label = None
@@ -1044,6 +1100,7 @@ class ParamSpinBoxWithBool(Param):
         self.last_check_box = False
         self.last_time_spin_box = None
         self.last_unity = None
+        self.description = description
         pass
 
     def trigger_update(self):
@@ -1116,7 +1173,65 @@ class ParamSpinBoxWithBool(Param):
 
 
 # -----------------------------------------------------------
+class ParamFileChooser(Param):
+    def __init__(
+        self,
+        name: str,
+        file: FILE,
+        depends_on: Optional[dict[str, DependencyType]] = None,
+        optional: bool = False,
+        description: str = "",
+        expected_type=str,
+    ) -> None:
+        super().__init__(name, file, depends_on=depends_on)
+        self.question_label = None
+        self.line_edit = None
+        self.button = None
+        self.last_file_path = ""
+        self.optional = optional
+        self.description = description
 
+    def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        header = self.build_header(label, self.description, self.optional)
+        grid_layout.addWidget(header, row, 0)
+
+        self.line_edit = QLineEdit()
+        self.line_edit.setReadOnly(True)
+        self.button = QPushButton("Browse")
+        self.button.clicked.connect(self.open_file_dialog)
+
+        grid_layout.addWidget(self.line_edit, row, 1)
+        grid_layout.addWidget(self.button, row, 2)
+
+        self.restore_value()
+
+    def open_file_dialog(self):
+        from PyQt6.QtWidgets import QFileDialog
+
+        file_path, _ = QFileDialog.getOpenFileName(
+            None, "Select File", "", "All Files (*)"
+        )
+        if file_path:
+            self.line_edit.setText(file_path)
+            self.last_file_path = file_path
+
+    def restore_value(self):
+        if self.last_file_path and self.line_edit:
+            self.line_edit.setText(self.last_file_path)
+
+    def store_value(self):
+        if self.line_edit is not None:
+            self.last_file_path = self.line_edit.text()
+
+    def to_file(self) -> str:
+        return f"{self.name} := {self.last_file_path}"
+
+    def to_command_arg(self) -> str:
+        if self.last_file_path:
+            return f"--{self.name} \"{self.last_file_path}\""
+        return ""
+
+# -----------------------------------------------------------
 
 class ParamCategory(QWidget):
     def __init__(self, name: str, param: dict["str", Param]) -> None:

@@ -7,8 +7,6 @@ class LineEditValidation:
         self.validation_rules = {}
         pass
 
-    # TODO: add type verification
-
     # FIXME: change text to line_edit instance
     def set_validation(self, min_value=None, max_value=None):
         self.validation_rules["min"] = min_value

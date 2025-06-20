@@ -7,6 +7,7 @@ from app.param import (
     ParamBooleanWithInputWithUnity,
     ParamComponent,
     ParamComponentSelector,
+    ParamFileChooser,
     ParamFixedWithInput,
     ParamInput,
     ParamInputWithUnity,
@@ -52,7 +53,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,
-                # description=description,
+                description=description,
             )
         case ParamType.BOOLEAN:
             return ParamBoolean(
@@ -109,7 +110,11 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 depends_on=depends_on,
                 expected_type=expected_type,
                 optional=optional,
-                # description=description,
+                description=description,
+                default=default,
+                min_value=min_value,
+                max_value=max_value,
+                step=step,
             )
         case ParamType.RADIO:
             return ParamRadio(
@@ -133,6 +138,15 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
             )
         case ParamType.SPIN_BOX:
             return ParamSpinBoxWithBool(
+                name,
+                file,
+                depends_on=depends_on,
+                optional=optional,
+                expected_type=expected_type,
+                # description=description,
+            )
+        case ParamType.FILECHOOSER:
+            return ParamFileChooser(
                 name,
                 file,
                 depends_on=depends_on,

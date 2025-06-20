@@ -50,6 +50,7 @@ algorithm_options = {
         "param_type": ParamType.SELECT,
         "file": FILE.COMMAND,
         "values": ["multistart", "mbh", "global", "genetic", "population"],
+        "description": "Selected algorithm for the simulation",
         "optional": True,
     },
     "Do Not Generate Starting Point": {
@@ -96,7 +97,6 @@ output_options = {
         "description": "",
     },
 }
-# TODO: add parameters for page 2
 
 advanced = {
     "Save Solution Log": {
@@ -121,116 +121,139 @@ membranes_options = {
         "description": "number of membranes",
         "default": 0,
         "min_value": 0,
-        "max_value": 3, # the inital program assert <= 3
+        "max_value": 3,  # the inital program assert <= 3
     },
     "Upper bound area": {
         "name": "ub_area",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.CONFIG,
-        "depends_on": {"Number of membranes": DependencyType.COMPONENT_COUNT}
+        "depends_on": {"Number of membranes": DependencyType.COMPONENT_COUNT},
+        "default": 5,
+        "min_value": 0,
+        "max_value": 10,
+        "step": 1,
     },
     "Lower bound area": {
         "name": "lb_area",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.CONFIG,
-        "depends_on": {"Number of membranes": DependencyType.COMPONENT_COUNT}
+        "depends_on": {"Number of membranes": DependencyType.COMPONENT_COUNT},
+        "default": 0.1,
+        "min_value": 0,
+        "max_value": 10,
+        "step": 0.1,
     },
     "Upper bound cell": {
         "name": "ub_acell",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.CONFIG,
-        "depends_on": {"Number of membranes": DependencyType.COMPONENT_COUNT}
+        "depends_on": {"Number of membranes": DependencyType.COMPONENT_COUNT},
+        "default": 0.1,
+        "min_value": 0,
+        "max_value": 10,
+        "step": 0.1,
     },
 }
 membranes_behaviour_flags = {
-        "Fixing":{
-            "name": "fixing_var",
-            "param_type": ParamType.BOOLEAN,
-            "file": FILE.CONFIG,
-            "optional": False,
-            },
-        "Uniform Pup":{
-            "name": "uniform_pup",
-            "param_type": ParamType.BOOLEAN,
-            "file": FILE.CONFIG,
-            "optional": False,
-            },
-        "Vacuum Pump":{
-            "name": "vp",
-            "param_type": ParamType.BOOLEAN,
-            "file": FILE.CONFIG,
-            "optional": False,
-            },
-        "Variable Permeability":{
-            "name": "variable_perm",
-            "param_type": ParamType.BOOLEAN,
-            "file": FILE.CONFIG,
-            "optional": False,
-            },
-        }
+    "Fixing": {
+        "name": "fixing_var",
+        "param_type": ParamType.BOOLEAN,
+        "file": FILE.CONFIG,
+        "optional": False,
+    },
+    "Uniform Pup": {
+        "name": "uniform_pup",
+        "param_type": ParamType.BOOLEAN,
+        "file": FILE.CONFIG,
+        "optional": False,
+    },
+    "Vacuum Pump": {
+        "name": "vp",
+        "param_type": ParamType.BOOLEAN,
+        "file": FILE.CONFIG,
+        "optional": False,
+    },
+    "Variable Permeability": {
+        "name": "variable_perm",
+        "param_type": ParamType.BOOLEAN,
+        "file": FILE.CONFIG,
+        "optional": False,
+    },
+}
 algo_iteration_control = {
-        "Iteration":{
-            "name": "iteration",
-            "param_type": ParamType.INPUT,
-            "file": FILE.CONFIG,
-            "optional": False,
-            "default": 200,
-            "min_value": 1,
-            "max_value": 10000,
-            "step": 10,
-            },
-        "Max no improve":{
-            "name": "max_no_improve",
-            "param_type": ParamType.INPUT,
-            "file": FILE.CONFIG,
-            "optional": False,
-            "default": 5,
-            "min_value": 1,
-            "max_value": 10000,
-            "step": 1,
-            },
-        "Max trials":{
-            "name": "max_trials",
-            "param_type": ParamType.INPUT,
-            "file": FILE.CONFIG,
-            "optional": False,
-            "default": 10,
-            "min_value": 1,
-            "max_value": 10000,
-            "step": 1,
-            },
-        # eventually, pop_size, generation, and n1_element
-        }
+    "Iteration": {
+        "name": "iteration",
+        "param_type": ParamType.INPUT,
+        "file": FILE.CONFIG,
+        "optional": False,
+        "default": 200,
+        "min_value": 1,
+        "max_value": 10000,
+        "step": 10,
+    },
+    "Max no improve": {
+        "name": "max_no_improve",
+        "param_type": ParamType.INPUT,
+        "file": FILE.CONFIG,
+        "optional": False,
+        "default": 5,
+        "min_value": 1,
+        "max_value": 10000,
+        "step": 1,
+    },
+    "Max trials": {
+        "name": "max_trials",
+        "param_type": ParamType.INPUT,
+        "file": FILE.CONFIG,
+        "optional": False,
+        "default": 10,
+        "min_value": 1,
+        "max_value": 10000,
+        "step": 1,
+    },
+    "Pressure ratio": {
+        "name": "pressure_ratio",
+        "param_type": ParamType.INPUT,
+        "file": FILE.CONFIG,
+        "optional": False,
+        "default": 0.03,
+        "min_value": 0,
+        "max_value": 1,
+        "step": 0.01,
+    },
+
+    # eventually, pop_size, generation, and n1_element
+# TODO: add dependency for pop_size, generation and n1_element
+}
 components = {
-        "Components":{
-            "name": "set components",
-            "param_type": ParamType.COMPONENT_SELECTOR,
-            "file": FILE.DATA,
-            "values": ["H20", "O2", "H2"],
-            "optional": False,
-            },
-        "XIN":{
-            "name": "param xin",
-            "param_type": ParamType.FIXED_WITH_INPUT,
-            "file": FILE.DATA,
-            "optional": False,
-            "depends_on": {"Components": DependencyType.COMPONENT_COUNT}
-            },
-        "Molar Mass":{
-            "name": "param molarmass",
-            "param_type": ParamType.FIXED_WITH_INPUT,
-            "file": FILE.DATA,
-            "optional": False,
-            "depends_on": {"Components": DependencyType.COMPONENT_COUNT}
-            },
-
-        }
-# pop_size, generations and n1_element for population/genetic algorithm
-# TODO: add default value in the constructor
-
-
-# TODO: le fix me sur generate those dynamically
-# TODO: le dictionnaire des parameters differents
+    "Components": {
+        "name": "set components",
+        "param_type": ParamType.COMPONENT_SELECTOR,
+        "file": FILE.DATA,
+        "values": ["H20", "O2", "H2"],
+        "optional": False,
+    },
+    "XIN": {
+        "name": "param xin",
+        "param_type": ParamType.FIXED_WITH_INPUT,
+        "file": FILE.DATA,
+        "optional": False,
+        "depends_on": {"Components": DependencyType.COMPONENT_COUNT},
+    },
+    "Molar Mass": {
+        "name": "param molarmass",
+        "param_type": ParamType.FIXED_WITH_INPUT,
+        "file": FILE.DATA,
+        "optional": False,
+        "depends_on": {"Components": DependencyType.COMPONENT_COUNT},
+    },
+    "Filechooser test": {
+        "name": "param molarmass",
+        "param_type": ParamType.FILECHOOSER,
+        "file": FILE.DATA,
+        "optional": False,
+    },
+}
 
 all_params = {
     "Dict 1": {
@@ -244,11 +267,14 @@ all_params = {
         "Output Options": output_options,
         "Advanced": advanced,
     },
-    "Dict 3": {"Membrane options": membranes_options,
-               "Membrane behaviour": membranes_behaviour_flags,
-               "Algorithm iteration control": algo_iteration_control},
-    "Dict 4": {"Components": components,
-               }
+    "Dict 3": {
+        "Membrane options": membranes_options,
+        "Membrane behaviour": membranes_behaviour_flags,
+        "Algorithm iteration control": algo_iteration_control,
+    },
+    "Dict 4": {
+        "Components": components,
+    },
 }
 
 
@@ -318,5 +344,6 @@ def set_dependency(params: dict["str", Param]):
                 if not hasattr(dep_param, "dependants"):
                     dep_param.dependants = {}
                 dep_param.dependants[value] = dep_type
-# -----------------------------------------------------------
 
+
+# -----------------------------------------------------------
