@@ -1,4 +1,4 @@
-from app.param import Param
+from app.param import Param, debug_print
 from app.param_enums import FILE, DependencyType, ParamType
 from app.param_utils import create_param
 from app.param_validator import LineEditValidation
@@ -9,6 +9,7 @@ execution_settings = {
         "param_type": ParamType.BOOLEAN,
         "file": FILE.COMMAND,
         "optional": True,
+        "description": "Verbose option for debugging",
     },
     "Enable Debug Mode": {
         "name": "debug",
@@ -64,6 +65,15 @@ algorithm_options = {
         "param_type": ParamType.BOOLEAN,
         "file": FILE.COMMAND,
         "optional": True,
+    },
+    "Population Size": {
+        "name": "pop_size",
+        "param_type": ParamType.INPUT,
+        "file": FILE.CONFIG,
+        "optional": False,
+        "depends_on": {"Algorithm": DependencyType.VISIBLE},
+        "expected_value": ["population", "genetic"],
+        "hidden": True,
     },
 }
 
@@ -221,9 +231,8 @@ algo_iteration_control = {
         "max_value": 1,
         "step": 0.01,
     },
-
     # eventually, pop_size, generation, and n1_element
-# TODO: add dependency for pop_size, generation and n1_element
+    # TODO: add dependency for pop_size, generation and n1_element
 }
 components = {
     "Components": {
@@ -277,12 +286,16 @@ all_params = {
     },
 }
 
+param_registry = {}
+
 
 def build_param_dict(param_specs) -> dict[str, Param]:
     params = {}
     for label, spec in param_specs.items():
         params[label] = create_param(**spec)
+        param_registry[label] = params[label]
     set_dependency(params)
+    # TODO: manage dependency between parameters that are not in the same category
     set_validation(params)
     return params
 
@@ -337,7 +350,6 @@ def set_dependency(params: dict["str", Param]):
             continue
         for dep_name, dep_type in value.depends_on_names.items():
             dep_param = params.get(dep_name)
-            print(dep_param)
             if dep_param:
                 print(f"Dependency found: {dep_name} → {dep_type}")
                 value.depends_on_params[dep_param] = dep_type

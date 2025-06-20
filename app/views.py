@@ -17,6 +17,7 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+import configparser
 
 from app.param import (
     GridOptions,
@@ -160,6 +161,7 @@ class CommandBuilder:
         ]
         return " ".join(arg for arg in args if arg)
 
+
 class ConfigBuilder:
     def __init__(self, params) -> None:
         self.params = params
@@ -171,7 +173,6 @@ class ConfigBuilder:
             if param.file == FILE.CONFIG
         ]
         return " ".join(arg for arg in args if arg)
-
 
 
 class PageParameters(QWidget):
@@ -250,9 +251,7 @@ class PageParameters(QWidget):
 
     # TODO: move this to the validator class
     def go_to_next_page(self):
-        debug_print("here")
         # TODO: trigger errors for not optional values
-        print("the rest of validate_all_input", self.validate_all_input())
         if self.validate_required_params():
             # FIXME: restore when validate input works properly
             # and self.validate_all_input():
@@ -375,3 +374,80 @@ class CollapsibleSection(QWidget):
 
 
 # NOTE: question sur le nombre d'iterations, dans commande ou config.ini
+def load_configuration():
+    tuning_params = [
+        "seed1",
+        "seed2",
+        "iteration",
+        "max_no_improve",
+        "epsilon",
+        "pressure_ratio",
+        "max_trials",
+        "pop_size",
+        "generations",
+        "n1_element",
+    ]
+
+    instance_params = [
+        "fname",
+        "fname_perm",
+        "fname_eco",
+        "num_membranes",
+        "ub_area",
+        "lb_area",
+        "ub_acell",
+        "vp",
+        "uniform_pup",
+        "variable_perm",
+        "fixing_var",
+    ]
+    config = configparser.ConfigParser()
+    try:
+        config.read("data/config.ini")
+        if not ("tuning" in config.sections() and "instance" in config.sections()):
+            raise ValueError(
+                f"Errror: config.ini is not set correctly, generate new one with option (--config)"
+            )
+        for param in tuning_params:
+            if param not in config["tuning"]:
+                raise ValueError(
+                    f"Eroor: {param} not defined in config.ini (section: tuning)"
+                )
+
+        for param in instance_params:
+            if param not in config["instance"]:
+                raise ValueError(
+                    f"Eroor: {param} not defined in config.ini (section: instance)"
+                )
+    except Exception as e:
+        raise
+
+    #  convert functions
+    convert_list = lambda type_, table: [
+        type_(x) for x in table[1 : len(table) - 1].split(", ")
+    ]
+    convert_dict = lambda type_, table: {
+        x.split(":")[0][1 : len(x.split(":")[0]) - 1]: type_(x.split(":")[1])
+        for x in table[1 : len(table) - 1].split(", ")
+    }
+    convert_bool = lambda name: (
+        True if name in ["true", "True", "on", "ON", "yes", "YES"] else False
+    )
+
+    tuning = dict(config.items("tuning"))
+    instance = dict(config.items("instance"))
+    # convert instances
+    # FIXME: replace with the actual parameters with param_registry["ub_area"]
+    instance["ub_area"] = convert_list(float, instance["ub_area"])
+    instance["lb_area"] = convert_list(float, instance["lb_area"])
+    instance["ub_acell"] = convert_list(float, instance["ub_acell"])
+
+    instance["vp"] = convert_bool(instance["vp"])
+    instance["uniform_pup"] = convert_bool(instance["uniform_pup"])
+    instance["variable_perm"] = convert_bool(instance["variable_perm"])
+    instance["fixing_var"] = convert_bool(instance["fixing_var"])
+
+    tuning["pressure_ratio"] = float(tuning["pressure_ratio"])
+    tuning["epsilon"] = convert_dict(float, tuning["epsilon"])
+
+    return tuning, instance

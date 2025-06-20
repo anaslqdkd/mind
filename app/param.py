@@ -76,7 +76,6 @@ class SquareCheckboxSelector(QDialog):
             if cb.isChecked():
                 self.selected.append(cb.text())
 
-        print("the selected list is", self.selected)
         return [cb.text() for cb in self.checkboxes if cb.isChecked()]
 
 
@@ -199,7 +198,8 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
         default: Optional[int] =None,
         min_value: Optional[int] = None,
         max_value: Optional[int] =None,
-        step: Optional[int]= None
+        step: Optional[int]= None,
+        hidden: bool = False,
     ) -> None:
         super().__init__(name, file, depends_on=depends_on, description=description)
         LineEditValidation.__init__(self)
@@ -213,9 +213,16 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
         self.min_value = min_value
         self.max_value = max_value
         self.step = step
+        # FIXME: take from the constructor
+        self.expected_value = ["population", "genetic"]
+        self.header = None
+        self.hidden = hidden
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        if self.hidden:
+            # self.hide()
+            return
         if type(self.default) == int:
             line_edit = QSpinBox()
         else:
@@ -230,7 +237,8 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
         if self.step is not None:
             line_edit.setSingleStep(self.step)
         header = self.build_header(label, self.description, self.optional)
-        grid_layout.addWidget(header, row, 0)
+        self.header = header
+        grid_layout.addWidget(self.header, row, 0)
         self.line_edit = line_edit
         self.restore_values()
         grid_layout.addWidget(self.line_edit, row, 1)
@@ -270,14 +278,12 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
 
     def restore_values(self):
         if self.line_edit is not None and self.last_line_edit != "":
-            debug_print(self.last_line_edit)
             try:
                 value = int(self.last_line_edit)
             except ValueError:
                 try:
                     value = float(self.last_line_edit)
                 except ValueError:
-                    debug_print("Could not convert last_line_edit to a number.")
                     return
             self.line_edit.setValue(value)
 
@@ -285,9 +291,9 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
     # NOTE: add maybe a use_spin_box attribute and build accordingly
 
     def store_value(self):
-        if self.line_edit is not None:
-            # self.last_line_edit = self.line_edit.text()
-            self.last_line_edit = str(self.line_edit.value())
+        if not self.hidden:
+            if self.line_edit is not None:
+                self.last_line_edit = str(self.line_edit.value())
 
     def notify_dependants(self) -> None:
         for dep in self.dependants.keys():
@@ -308,6 +314,30 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
             return int(self.last_line_edit)
         except Exception:
             return 0
+
+    def on_dependency_updated(self, changed_param):
+        # FIXME: hide all widget not only the line edit
+        if self.depends_on_params.get(changed_param) == DependencyType.VISIBLE:
+            if changed_param.get_value() in self.expected_value:
+                # self.line_edit.show()
+                self.show()
+            else:
+                # self.line_edit.hide()
+                self.hide()
+
+    def hide(self):
+        self.hidden = True
+        # if self.line_edit is not None:
+        #     self.line_edit.hide()
+        # if self.header is not None:
+            # self.header.hide()
+
+    def show(self):
+        self.hidden = False
+        # if self.line_edit is not None:
+        #     self.line_edit.show()
+        # if self.header is not None:
+        #     self.header.show()
 
 
     def to_file(self) -> str:
@@ -349,8 +379,9 @@ class ParamSelect(Param):
 
         self.question_label = question_label
         self.combo_box = combo_box
-
+        self.combo_box.currentIndexChanged.connect(self.notify_dependants)
         self.restore_values()
+
 
         header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(header, row, 0)
@@ -361,6 +392,12 @@ class ParamSelect(Param):
         grid_layout.addItem(spacer, row, 1)
 
         grid_layout.addWidget(self.combo_box, row, 2, 1, 2)
+
+    def notify_dependants(self) -> None:
+        self.category.update_category()
+        for dep in self.dependants.keys():
+            dep.on_dependency_updated(self)
+        pass
 
     def restore_values(self):
         if self.combo_box:
@@ -378,6 +415,10 @@ class ParamSelect(Param):
 
     def to_file(self) -> str:
         return f"{self.name} := {self.last_combo_box}"
+
+    def get_value(self) -> str:
+        return self.last_combo_box
+
 
 
 # -----------------------------------------------------------
@@ -438,6 +479,8 @@ class ParamBoolean(Param):
             return f"--{self.name}"
         else:
             return ""
+    def get_value(self) -> bool:
+        return self.last_check_box
 
 
 # -----------------------------------------------------------
@@ -915,7 +958,6 @@ class ParamFixedWithInput(Param):
                     case DependencyType.COMPONENT_COUNT:
                         self.category.update_category()
                         self.row_nb = param.get_dependency_value(DependencyType.COMPONENT_COUNT)
-                        debug_print(self.row_nb)
                         self.category.update_category()
 
 # -----------------------------------------------------------
@@ -1046,7 +1088,6 @@ class ParamComponentSelector(Param):
         pass
 
     def get_dependency_value(self, dependency_type: DependencyType) -> int | float | str:
-        debug_print(len(self.selected_components))
         if dependency_type == DependencyType.COMPONENT_COUNT:
             return (len(self.selected_components))
         else:
@@ -1101,6 +1142,7 @@ class ParamSpinBoxWithBool(Param):
         self.last_time_spin_box = None
         self.last_unity = None
         self.description = description
+        self.check_box = None
         pass
 
     def trigger_update(self):

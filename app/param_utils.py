@@ -30,6 +30,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
     min_value = kwargs.get("min_value")
     max_value = kwargs.get("max_value")
     step = kwargs.get("step")
+    hidden = kwargs.get("hidden")
     # print(f"DEBUG[{__file__}:{inspect.currentframe().f_lineno}]:", "your message")
     match param_type:
         case ParamType.INPUT:
@@ -44,6 +45,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 min_value=min_value,
                 max_value=max_value,
                 step=step,
+                hidden=hidden
             )
         case ParamType.SELECT:
             return ParamSelect(
@@ -62,7 +64,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 depends_on=depends_on,
                 expected_type=expected_type,
                 optional=optional,
-                # description=description,
+                description=description,
             )
         case ParamType.INPUT_WITH_UNITY:
             return ParamInputWithUnity(
@@ -81,7 +83,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 depends_on=depends_on,
                 expected_type=expected_type,
                 optional=optional,
-                # description=description,
+                description=description,
             )
         case ParamType.BOOLEAN_WITH_INPUT_WITH_UNITY:
             return ParamBooleanWithInputWithUnity(
@@ -101,7 +103,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,
-                # description=description,
+                description=description,
             )
         case ParamType.FIXED_WITH_INPUT:
             return ParamFixedWithInput(

@@ -24,6 +24,7 @@ class ParamType(enum.Enum):
 class DependencyType(enum.Enum):
     COMPONENT_COUNT = enum.auto()
     VALUE = enum.auto()
+    VISIBLE = enum.auto()
 
 # TODO: add dependency type for if visible or not
 # -----------------------------------------------------------
