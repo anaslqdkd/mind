@@ -812,12 +812,6 @@ class ParamFixedWithInput(Param):
         self.rows = 0
         pass
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
-        for param, dependency_type in self.depends_on_params.items():
-            if dependency_type.name == "COMPONENT_COUNT":
-                try:
-                    self.row_nb = int(getattr(param, "last_line_edit", 0))
-                except Exception:
-                    self.row_nb = 0
         self.row = row
         self.label = label
         self.grid_layout = grid_layout
@@ -831,8 +825,7 @@ class ParamFixedWithInput(Param):
         group_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
         for r in range(self.row_nb):
-            debug_print("here in build widget", self.row_nb)
-            group_layout.addWidget(QLabel(f"Membrane {r+1}"), r, 0)
+            group_layout.addWidget(QLabel(f"{r+1}"), r, 0)
             for c in range(1, 2):
                 line_edit = QLineEdit()
                 group_layout.addWidget(
@@ -872,6 +865,7 @@ class ParamFixedWithInput(Param):
                     case DependencyType.COMPONENT_COUNT:
                         self.category.update_category()
                         self.row_nb = param.get_dependency_value(DependencyType.COMPONENT_COUNT)
+                        debug_print(self.row_nb)
                         self.category.update_category()
 
 # -----------------------------------------------------------
@@ -984,11 +978,24 @@ class ParamComponentSelector(Param):
             row += 1
 
     def open_selector(self):
-        dialog = SquareCheckboxSelector(self.components, self.selected_components)
+        dialog = SquareCheckboxSelector(self.values, self.selected_components)
         if dialog.exec():
             self.selected_components = dialog.get_selected()
             self.button.setText(f"Selected: {len(self.selected_components)}")
+            self.notify_dependants()
             self.category.update_category()
+
+    def notify_dependants(self) -> None:
+        for dep in self.dependants.keys():
+            dep.on_dependency_updated(self)
+        pass
+
+    def get_dependency_value(self, dependency_type: DependencyType) -> int | float | str:
+        debug_print(len(self.selected_components))
+        if dependency_type == DependencyType.COMPONENT_COUNT:
+            return (len(self.selected_components))
+        else:
+            return 0
 
     def remove_selected_component(
         self, component, grid_layout, remove_button, line_edit
@@ -999,6 +1006,7 @@ class ParamComponentSelector(Param):
         grid_layout.removeWidget(remove_button)
         line_edit.deleteLater()
         remove_button.deleteLater()
+        self.notify_dependants()
         self.category.update_category()
 
     def restore_value(self):
@@ -1012,7 +1020,7 @@ class ParamComponentSelector(Param):
 
     def to_file(self) -> str:
         # TODO:
-        return f"ta mere"
+        return f""
 
 
 

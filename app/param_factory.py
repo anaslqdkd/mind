@@ -201,6 +201,30 @@ algo_iteration_control = {
             },
         # eventually, pop_size, generation, and n1_element
         }
+components = {
+        "Components":{
+            "name": "set components",
+            "param_type": ParamType.COMPONENT_SELECTOR,
+            "file": FILE.DATA,
+            "values": ["H20", "O2", "H2"],
+            "optional": False,
+            },
+        "XIN":{
+            "name": "param xin",
+            "param_type": ParamType.FIXED_WITH_INPUT,
+            "file": FILE.DATA,
+            "optional": False,
+            "depends_on": {"Components": DependencyType.COMPONENT_COUNT}
+            },
+        "Molar Mass":{
+            "name": "param molarmass",
+            "param_type": ParamType.FIXED_WITH_INPUT,
+            "file": FILE.DATA,
+            "optional": False,
+            "depends_on": {"Components": DependencyType.COMPONENT_COUNT}
+            },
+
+        }
 # pop_size, generations and n1_element for population/genetic algorithm
 # TODO: add default value in the constructor
 
@@ -223,13 +247,8 @@ all_params = {
     "Dict 3": {"Membrane options": membranes_options,
                "Membrane behaviour": membranes_behaviour_flags,
                "Algorithm iteration control": algo_iteration_control},
-    # "Dict 2": {
-    #     "Visualization": visualization,
-    #     CollapsibleSectionSpec("Advanced", {
-    #         "Output Options": output_options,
-    #         "Advanced": advanced,
-    #     }),
-    # },
+    "Dict 4": {"Components": components,
+               }
 }
 
 
@@ -277,11 +296,8 @@ def set_dependency(params: dict["str", Param]):
         if not depends_on:
             continue
         for el in value.depends_on_names:
-            print("the value.name is", el)
             dep_param = params.get(el)
             if dep_param:
-                print("here")
-                print(dep_param.name)
                 dep_type = value.depends_on.get(el)
                 value.depends_on_params[dep_param] = dep_type
                 if not hasattr(dep_param, "dependants"):
@@ -290,13 +306,10 @@ def set_dependency(params: dict["str", Param]):
 
     # link dependencies
     for key, value in params.items():
-        # print("++++", value.depends_on_names)
         depends_on = getattr(value, "depends_on_names", None)
         if not depends_on:
-            # print("°))) here")
             continue
         for dep_name, dep_type in value.depends_on_names.items():
-            # print("TTTTTT")
             dep_param = params.get(dep_name)
             print(dep_param)
             if dep_param:
@@ -307,7 +320,3 @@ def set_dependency(params: dict["str", Param]):
                 dep_param.dependants[value] = dep_type
 # -----------------------------------------------------------
 
-class CollapsibleSectionSpec:
-    def __init__(self, title:str, categories: dict["str", dict["str", dict]]):
-        self.title: str = title
-        self.categories: dict["str", dict["str", dict]] = categories  
