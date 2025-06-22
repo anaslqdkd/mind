@@ -28,7 +28,7 @@ from app.param import (
     debug_print,
 )
 from app.param_enums import FILE
-from app.param_factory import set_param
+from app.param_factory import set_dep, set_param
 from app.param_factory import all_params
 from app.param_validator import LineEditValidation, NonOptionalInputValidation
 
@@ -86,6 +86,7 @@ class MainWindow(QMainWindow):
             for name, dict in params_page.items():
                 for el, param in dict.items():
                     self.all_params.append(param)
+        set_dep()
 
         self.main_area = QWidget()
         tab1_layout = QHBoxLayout(self.main_area)
@@ -252,30 +253,31 @@ class PageParameters(QWidget):
     # TODO: move this to the validator class
     def go_to_next_page(self):
         # TODO: trigger errors for not optional values
-        if self.validate_required_params():
-            # FIXME: restore when validate input works properly
-            # and self.validate_all_input():
+        # if self.validate_required_params():
+        # FIXME: restore when validate input works properly
+        # and self.validate_all_input():
 
-            current_index = self.sidebar.currentRow()
-            count = self.sidebar.count()
-            next_index = (current_index + 1) % count
-            self.sidebar.setCurrentRow(next_index)
+        current_index = self.sidebar.currentRow()
+        count = self.sidebar.count()
+        next_index = (current_index + 1) % count
+        self.sidebar.setCurrentRow(next_index)
         # FIXME: same
         # elif not self.validate_all_input():
         #     QMessageBox.warning(
         #         self, "text" "Invalid Input", f"Please input the right values"
         #     )
-        else:
-            # TODO: put in red all parameters that are non optional and not selected
-            for category in self.param_category.values():
-                for param in category.values():
-                    if isinstance(param, NonOptionalInputValidation):
-                        if not param.is_filled():
-                            line_edit = param.line_edit
-                            line_edit.setStyleSheet("border: 1px solid red")
-            QMessageBox.warning(
-                self, "text" "Invalid Input", f"Please input all required forms"
-            )
+        # else:
+        #     # TODO: put in red all parameters that are non optional and not selected
+        #     for category in self.param_category.values():
+        #         for param in category.values():
+        #             if isinstance(param, NonOptionalInputValidation):
+        #                 if not param.is_filled():
+        #                     line_edit = param.line_edit
+        #                     if line_edit is not None:
+        #                         line_edit.setStyleSheet("border: 1px solid red")
+        #     QMessageBox.warning(
+        #         self, "text" "Invalid Input", f"Please input all required forms"
+        #     )
 
     def validate_required_params(self):
         for category in self.param_category.values():

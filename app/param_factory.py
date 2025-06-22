@@ -1,4 +1,5 @@
-from app.param import Param, debug_print
+from app import dependency_manager
+from app.param import Param, ParamFixedWithInput, ParamInput, debug_print
 from app.param_enums import FILE, DependencyType, ParamType
 from app.param_utils import create_param
 from app.param_validator import LineEditValidation
@@ -71,7 +72,7 @@ algorithm_options = {
         "param_type": ParamType.INPUT,
         "file": FILE.CONFIG,
         "optional": False,
-        "depends_on": {"Algorithm": DependencyType.VISIBLE},
+        # "depends_on": {"Algorithm": DependencyType.VISIBLE},
         "expected_value": ["population", "genetic"],
         "hidden": True,
     },
@@ -137,7 +138,7 @@ membranes_options = {
         "name": "ub_area",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.CONFIG,
-        "depends_on": {"Number of membranes": DependencyType.COMPONENT_COUNT},
+        # "depends_on": {"Number of membranes": DependencyType.COMPONENT_COUNT},
         "default": 5,
         "min_value": 0,
         "max_value": 10,
@@ -147,7 +148,7 @@ membranes_options = {
         "name": "lb_area",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.CONFIG,
-        "depends_on": {"Number of membranes": DependencyType.COMPONENT_COUNT},
+        # "depends_on": {"Number of membranes": DependencyType.COMPONENT_COUNT},
         "default": 0.1,
         "min_value": 0,
         "max_value": 10,
@@ -157,7 +158,7 @@ membranes_options = {
         "name": "ub_acell",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.CONFIG,
-        "depends_on": {"Number of membranes": DependencyType.COMPONENT_COUNT},
+        # "depends_on": {"Number of membranes": DependencyType.COMPONENT_COUNT},
         "default": 0.1,
         "min_value": 0,
         "max_value": 10,
@@ -247,14 +248,14 @@ components = {
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.DATA,
         "optional": False,
-        "depends_on": {"Components": DependencyType.COMPONENT_COUNT},
+        # "depends_on": {"Components": DependencyType.COMPONENT_COUNT},
     },
     "Molar Mass": {
         "name": "param molarmass",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.DATA,
         "optional": False,
-        "depends_on": {"Components": DependencyType.COMPONENT_COUNT},
+        # "depends_on": {"Components": DependencyType.COMPONENT_COUNT},
     },
     "Filechooser test": {
         "name": "param molarmass",
@@ -294,7 +295,7 @@ def build_param_dict(param_specs) -> dict[str, Param]:
     for label, spec in param_specs.items():
         params[label] = create_param(**spec)
         param_registry[label] = params[label]
-    set_dependency(params)
+    # set_dependency(params)
     # TODO: manage dependency between parameters that are not in the same category
     set_validation(params)
     return params
@@ -304,12 +305,48 @@ def build_all_params(all_param_specs) -> dict[str, dict[str, Param]]:
     all_params = {}
     for category, param_specs in all_param_specs.items():
         all_params[category] = build_param_dict(param_specs)
+    # debug_print(param_registry.keys())
     return all_params
+
+
+dependency_manager = dependency_manager.DependencyManager()
 
 
 def set_param(all_param_specs: dict) -> dict[str, dict[str, Param]]:
     all_params = build_all_params(all_param_specs)
     return all_params
+
+
+def set_dep():
+    debug_print(param_registry)
+    register_param_dependencies(param_registry, dependency_manager)
+    for param in param_registry.values():
+        param.manager = dependency_manager
+
+
+# -----------------------------------------------------------
+def register_param_dependencies(param_registry, dependency_manager):
+    dependency_manager.add_dependency(
+        param_registry["Number of membranes"],
+        param_registry["Upper bound area"],
+        update_fn,
+    )
+    dependency_manager.add_dependency(
+        param_registry["Number of membranes"],
+        param_registry["Lower bound area"],
+        update_fn,
+    )
+    debug_print(dependency_manager.dependencies)
+
+
+def update_fn(target: ParamFixedWithInput, source: ParamInput):
+    debug_print(f"the source is {source.name} and the target is {target.name}")
+    target.set_rows_nb(int(source.get_value()))
+    target.category.update_category()
+    debug_print("in the update fn fucntion")
+
+def update_fn_2(source: Param, target: Param):
+    debug_print("in the update fn function 2")
 
 
 # -----------------------------------------------------------

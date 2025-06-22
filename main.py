@@ -1,17 +1,14 @@
 from PyQt6.QtWidgets import QApplication
-# from app.controllers import ComponentsController, MainController
-from app.views import MainWindow
 
-# from app.views import
+from app.param import debug_print
+from app.views import MainWindow, load_configuration
+
 
 if __name__ == "__main__":
     app = QApplication([])
-    # model = Parameters()
-    # param_page = ParameterPage()
-    # controller = ParameterController(model, param_page)
     main_window = MainWindow()
-    # main_controller = MainController(main_window)
-    # components_controller = ComponentsController(main_window.page_components)
-    # parameter_page = ParameterPage(main_window)
+    tuning, instance = load_configuration()
+    debug_print(tuning)
+    debug_print(instance)
     main_window.show()
     app.exec()

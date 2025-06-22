@@ -32,6 +32,7 @@ from PyQt6.QtWidgets import (
 )
 import inspect
 
+from app.dependency_manager import DependencyManager
 from app.param_enums import FILE, DependencyType
 from app.param_validator import LineEditValidation, NonOptionalInputValidation
 
@@ -102,7 +103,7 @@ class InputValidation:
             # Example: for float, check range 0-1
             if expected_type == float and not (0 <= value <= 1):
                 raise ValueError("Out of range")
-            line_edit.setStyleSheet("")  # Valid
+            line_edit.setStyleSheet("")  
         except ValueError:
             line_edit.setStyleSheet("border: 1px solid red;")
             QMessageBox.warning(
@@ -132,7 +133,8 @@ class Param:
         depends_on: Optional[dict[str, DependencyType]] = None,
         optional: bool = False,
         expected_type=str,
-        description: str = ""
+        description: str = "",
+        manager: Optional[DependencyManager] = None,
     ) -> None:
         self.name = name  # the exact name in the data files
         self.category: ParamCategory
@@ -217,6 +219,7 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
         self.expected_value = ["population", "genetic"]
         self.header = None
         self.hidden = hidden
+        self.manager: Optional[DependencyManager]
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
@@ -246,13 +249,17 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
         if self.line_edit is not None:
             line_edit = self.line_edit  # local variable guaranteed not None
             expected_type = self.expected_type
+            line_edit.valueChanged.connect(self._on_value_changed)
             # line_edit.editingFinished.connect(
             #     lambda: InputValidation.validate_input(line_edit, expected_type)
             # )
             # TODO: add this for all input parameters
             # self.line_edit.editingFinished.connect(self.validate_and_highlight)
             self.line_edit.valueChanged.connect(self.notify_dependants)
-
+    def _on_value_changed(self):
+        if self.manager is not None:
+            self.store_value()
+            self.manager.notify_change(self)
     def validate_and_highlight(self):
         if self.validation_rules == {}:
             return
@@ -294,6 +301,9 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
         if not self.hidden:
             if self.line_edit is not None:
                 self.last_line_edit = str(self.line_edit.value())
+
+    def get_value(self) -> str:
+        return self.last_line_edit
 
     def notify_dependants(self) -> None:
         for dep in self.dependants.keys():
@@ -891,7 +901,11 @@ class ParamFixedWithInput(Param):
         self.max_value = max_value
         self.step = step
         pass
+    def set_rows_nb(self, rows: int):
+        self.row_nb = rows
+
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        debug_print("+++++", {self.row_nb})
         self.row = row
         self.label = label
         self.grid_layout = grid_layout
