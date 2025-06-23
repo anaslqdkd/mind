@@ -35,11 +35,13 @@ import inspect
 from app.dependency_manager import DependencyManager
 from app.param_enums import FILE, DependencyType
 
+
 def debug_print(*args, **kwargs):
     frame = inspect.currentframe().f_back
     func_name = frame.f_code.co_name
     line_no = frame.f_lineno
     print(f"[{func_name}:{line_no}]", *args, **kwargs)
+
 
 # -----------------------------------------------------------
 class SquareCheckboxSelector(QDialog):
@@ -128,7 +130,9 @@ class Param:
         header_layout = QHBoxLayout(header_container)
         header_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
         header_layout.setContentsMargins(0, 0, 0, 0)
-        label_text = f'{label}{" " if optional else " <span style=\"color:red;\">*</span>"}'
+        label_text = (
+            f'{label}{" " if optional else " <span style=\"color:red;\">*</span>"}'
+        )
         question_label = QLabel(label_text)
         icon_label = HelpButtonDemo(description)
         header_layout.addWidget(question_label)
@@ -137,6 +141,7 @@ class Param:
 
     # def trigger_update(self) -> None:
     #     self.category.update_category()
+
 
 # -----------------------------------------------------------
 
@@ -150,10 +155,10 @@ class ParamInput(Param):
         optional: bool = False,
         expected_type=str,
         description: str = "",
-        default: Optional[int] =None,
+        default: Optional[int] = None,
         min_value: Optional[int] = None,
-        max_value: Optional[int] =None,
-        step: Optional[int]= None,
+        max_value: Optional[int] = None,
+        step: Optional[int] = None,
         hidden: bool = False,
     ) -> None:
         super().__init__(name, file, depends_on=depends_on, description=description)
@@ -199,13 +204,17 @@ class ParamInput(Param):
         grid_layout.addWidget(self.line_edit, row, 1)
 
         if self.line_edit is not None:
-            line_edit = self.line_edit  
+            line_edit = self.line_edit
             line_edit.valueChanged.connect(self._on_value_changed)
 
     def _on_value_changed(self):
         if self.manager is not None:
             self.store_value()
             self.manager.notify_change(self)
+
+    def set_value(self, value: int):
+        if self.line_edit is not None:
+            self.line_edit.setValue(value)
 
     def restore_values(self):
         if self.line_edit is not None and self.last_line_edit != "":
@@ -231,7 +240,6 @@ class ParamInput(Param):
 
     def show(self):
         self.hidden = False
-
 
     def to_file(self) -> str:
         return f"{self.name} := {self.last_line_edit}"
@@ -275,7 +283,6 @@ class ParamSelect(Param):
         # self.combo_box.currentIndexChanged.connect(self.notify_dependants)
         self.restore_values()
 
-
         header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(header, row, 0)
 
@@ -285,7 +292,6 @@ class ParamSelect(Param):
         grid_layout.addItem(spacer, row, 1)
 
         grid_layout.addWidget(self.combo_box, row, 2, 1, 2)
-
 
     def restore_values(self):
         if self.combo_box:
@@ -306,7 +312,6 @@ class ParamSelect(Param):
 
     def get_value(self) -> str:
         return self.last_combo_box
-
 
 
 # -----------------------------------------------------------
@@ -359,6 +364,10 @@ class ParamBoolean(Param):
         if self.check_box is not None:
             self.last_check_box = self.check_box.isChecked()
 
+    def set_value(self, value: bool):
+        if self.check_box is not None:
+            self.check_box.setChecked(value)
+
     def to_file(self) -> str:
         return f"{self.name} := {self.last_check_box}"
 
@@ -367,6 +376,7 @@ class ParamBoolean(Param):
             return f"--{self.name}"
         else:
             return ""
+
     def get_value(self) -> bool:
         return self.last_check_box
 
@@ -755,10 +765,10 @@ class ParamFixedWithInput(Param):
         optional: bool = False,
         description: str = "",
         expected_type=str,
-        default: Optional[int] =None,
+        default: Optional[int] = None,
         min_value: Optional[int] = None,
-        max_value: Optional[int] =None,
-        step: Optional[int]= None
+        max_value: Optional[int] = None,
+        step: Optional[int] = None,
     ) -> None:
         super().__init__(name, file=file, depends_on=depends_on)
         self.question_label = None
@@ -779,6 +789,7 @@ class ParamFixedWithInput(Param):
         self.max_value = max_value
         self.step = step
         pass
+
     def set_rows_nb(self, rows: int):
         self.row_nb = rows
 
@@ -855,7 +866,6 @@ class ParamRadio(Param):
         optional: bool = False,
         expected_type=str,
         description: str = "",
-
     ) -> None:
         super().__init__(name, file=file, depends_on=depends_on)
         self.question_label = None
@@ -905,7 +915,6 @@ class ParamRadio(Param):
     def to_file(self) -> str:
         # TODO:
         return f"ta mere"
-
 
 
 # -----------------------------------------------------------
@@ -970,9 +979,11 @@ class ParamComponentSelector(Param):
             dep.on_dependency_updated(self)
         pass
 
-    def get_dependency_value(self, dependency_type: DependencyType) -> int | float | str:
+    def get_dependency_value(
+        self, dependency_type: DependencyType
+    ) -> int | float | str:
         if dependency_type == DependencyType.COMPONENT_COUNT:
-            return (len(self.selected_components))
+            return len(self.selected_components)
         else:
             return 0
 
@@ -1000,7 +1011,6 @@ class ParamComponentSelector(Param):
     def to_file(self) -> str:
         # TODO:
         return f""
-
 
 
 # -----------------------------------------------------------
@@ -1153,10 +1163,12 @@ class ParamFileChooser(Param):
 
     def to_command_arg(self) -> str:
         if self.last_file_path:
-            return f"--{self.name} \"{self.last_file_path}\""
+            return f'--{self.name} "{self.last_file_path}"'
         return ""
 
+
 # -----------------------------------------------------------
+
 
 class ParamCategory(QWidget):
     def __init__(self, name: str, param: list[Param]) -> None:
@@ -1214,11 +1226,12 @@ class ParamCategory(QWidget):
     def notify_dependents(self):
         for name, param in self.param.items():
             param.notify_dependants()
+
     def build_param(self) -> QWidget:
         self.row = 0
         # for label, param_obj in self.param.items():
         for param_obj in self.param:
-            param_obj.category = self  
+            param_obj.category = self
         # for label, param_obj in self.param.items():
         for param_obj in self.param:
             param_obj.build_widget(self.row, param_obj.name, self.grid_layout)

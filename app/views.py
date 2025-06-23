@@ -24,6 +24,7 @@ from app.param import (
     GridOptions,
     MembraneOptions,
     Param,
+    ParamBoolean,
     ParamCategory,
     ParamFixedWithInput,
     ParamInput,
@@ -51,15 +52,18 @@ class MainWindow(QMainWindow):
         self.tabs = QTabWidget()
         self.tab_param = QWidget()
         self.tab_versions = QWidget()
+        self.tab_buttons = QWidget()
 
         tab_param_layout = QVBoxLayout()
         tab_versions_layout = QVBoxLayout()
+        tab_buttons_layout = QVBoxLayout()
 
         tab_param_layout.addWidget(QLabel("Parameters"))
         tab_versions_layout.addWidget(QLabel("Versions"))
 
         self.tabs.addTab(self.tab_param, "Parameters")
         self.tabs.addTab(self.tab_versions, "Versions")
+        self.tabs.addTab(self.tab_buttons, "Importer")
 
         # sidebar
         self.sidebar = QListWidget()
@@ -67,6 +71,17 @@ class MainWindow(QMainWindow):
         sidebar_layout = QVBoxLayout(sidebar_widget)
         sidebar_layout.addWidget(self.sidebar)
         sidebar_layout.addStretch()
+
+        # tab importer
+        import_config_button = QPushButton("Import config")
+        import_config_button.setFixedSize(100, 30)
+        import_perm_button = QPushButton("Import perm")
+        import_perm_button.setFixedSize(100, 30)
+        tab_buttons_layout.addWidget(import_config_button)
+        tab_buttons_layout.addWidget(import_perm_button)
+        import_config_button.clicked.connect(self.load_config)
+        import_perm_button.clicked.connect(self.load_perm)
+        self.tab_buttons.setLayout(tab_buttons_layout)
 
         self.all_params: list[Param] = []
         self.pages: list[PageParameters] = []
@@ -120,6 +135,39 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central_widget)
 
     # TODO: add spin_box everywhere
+    def load_config(self):
+        tuning, instance = load_configuration()
+        for el, value in tuning.items():
+            if el in self.param_registry.keys():
+                self.param_registry[el].set_value(int(value))
+
+        # TODO: manage all other params
+
+        for el, value in instance.items():
+            if el in self.param_registry.keys():
+                debug_print(el, value, self.param_registry[el])
+                if isinstance(self.param_registry[el], ParamBoolean):
+                    self.param_registry[el].set_value(bool(value))
+                if isinstance(self.param_registry[el], ParamInput):
+                    self.param_registry[el].set_value(int(value))
+
+                pass
+    def load_perm(self):
+        res = {}
+        filepath = "data/example_perm.dat"
+        with open(filepath, "r") as file:
+            # TODO: see the diff between fixed and variable parser for perm
+            perm_param = parser_fixed_permeability_data_simple(file)
+            # perm_param = parser_fixed_permeability_data(file, res)
+        debug_print(perm_param)
+        # for key, value in perm_param.items():
+        #     debug_print(f"the key is {key}, and the value is {value}")
+        #     for attr_, value_ in vars(value).items():
+        #         if type(value_) == list:
+        #             for el in value_:
+        #                 if isinstance(el, GasItemPerm):
+        #                     debug_print(f"component item {attr_}", el)
+        #             debug_print("component item", value_)
 
     def _define_pages(self):
         self.pages_names = {
@@ -143,7 +191,6 @@ class MainWindow(QMainWindow):
                 "algorithm",
                 "no_starting_point",
                 "no_simplified_model",
-                "pop_size",
                 "visualise",
                 "opex",
                 "capex",
@@ -265,6 +312,7 @@ class MainWindow(QMainWindow):
                 param_registry["lb_area"],
                 self.update_fn,
             )
+
         register_param_dependencies(self.param_registry, dependency_manager)
 
     def update_fn(self, target: ParamFixedWithInput, source: ParamInput):
@@ -272,7 +320,6 @@ class MainWindow(QMainWindow):
         target.set_rows_nb(int(source.get_value()))
         target.category.update_category()
         debug_print("in the update fn fucntion")
-
 
     def update_pages(self):
         for page in self.pages:
@@ -412,7 +459,9 @@ class CollapsibleSection(QWidget):
     def addWidget(self, widget):
         self.content_layout.addWidget(widget)
 
+
 # -----------------------------------------------------------
+
 
 def load_configuration():
     tuning_params = [
@@ -491,3 +540,382 @@ def load_configuration():
     tuning["epsilon"] = convert_dict(float, tuning["epsilon"])
 
     return tuning, instance
+class PermType:
+    """Data structure used to store permeability's information.
+
+    Attributes:
+        robeson_multi (flaot) : robeson bound multiplicater
+
+        robeson_power (flaot) : robeson bound power
+
+        ub_alpha (flaot) : upper bound of \\(\\alpha\\)
+
+        lb_alpha (flaot) : lower bound of \\(\\alpha\\)
+
+        thickness (flaot) : thickness of membrane
+
+        mem_out_prod (`str`) : 'RET' or 'PERM' indicating the position of `final_product`
+
+        component_item (`mind.builder.GasItemPerm`) : component permeances's value
+
+        which_mem (`List[Int]`) : data structure manipulating information about
+        association of membrane's postion and membrane's type.
+
+    """
+
+    def __init__(self, robeson_multi, robeson_power, ub_alpha, lb_alpha,
+                 component_item, thickness, mem_out_prod, which_mem):
+        # Initalise some values
+        self.robeson_multi = robeson_multi
+        self.robeson_power = robeson_power
+        self.ub_alpha = ub_alpha
+        self.lb_alpha = lb_alpha
+        self.thickness = thickness
+        self.mem_out_prod = mem_out_prod
+        self.component_item = component_item  # list of class GasItemPerm
+        self.thickness = thickness
+        self.which_mem = which_mem  # list of integer
+
+    def __str__(self):
+        # for i in range(0, len(self.component_item)):
+        #     print(self.component_item[i])
+        return ("PermType (" + '\nrobeson_multi = ' + str(self.robeson_multi) +
+                '\nrobeson_power = ' + str(self.robeson_power) +
+                '\nub_alpha = ' + str(self.ub_alpha) + '\nlb_alpha = ' +
+                str(self.lb_alpha) + '\nthickness = ' + str(self.thickness) +
+                '\ncomponent_item = ' + str(self.component_item) +
+                '\nmem_out_prod = ' + str(self.mem_out_prod) +
+                '\nwhich_mem = ' + str(self.which_mem))
+
+def delete_value_from(list_of_line, value):
+    index = 0
+    while index < len(list_of_line):
+        if list_of_line[index][0] == value:
+            list_of_line.pop(index)
+        else:
+            index += 1
+
+def parser_variable_permeability_data(file, permeability_data):
+    """Permeability's data parser.
+
+    When permeability's variables in model are not fixed.
+
+    Args:
+        file (`_io.TextIOWrapper`) : permeability 's datafile
+
+        permeability_data (dict) : data structure which will finally
+        contain permeability's informations.
+
+    Returns:
+        a dictionary containing permeability's data
+
+    Raises:
+        Exception : if datafile format are not repected during lecture of file
+    """
+    contents = file.readlines()
+    delete_value_from(contents, "#")
+    delete_value_from(contents, "\n")
+    txt = []
+    for line in contents:
+        txt.append(line.replace('\n', ''))
+
+    contents = txt
+
+    # set mem_type_set := A B
+    mem_type = contents[0]
+    begining_index = mem_type.find('=')
+    mem_type = mem_type[begining_index + 1:]
+    mem_type = mem_type.split()
+    contents.remove(contents[0])
+
+    for type_mem in mem_type:
+        robeson_multiplicater = None
+        robeson_power = None
+        ub_alpha = None
+        lb_alpha = None
+        component_item = []
+        thickness = 1
+        mem_out_prod = "RET"
+
+        permeability_data[type_mem] = PermType(robeson_multiplicater,
+                                               robeson_power, ub_alpha,
+                                               lb_alpha, component_item,
+                                               thickness, mem_out_prod, [])
+
+    # param Robeson_multi :=
+    contents.remove(contents[0])
+    for type_mem in mem_type:
+        multiplicater = contents[0].split()
+        index = multiplicater[0]
+        value = float(multiplicater[-1])
+        contents.remove(contents[0])
+        # convert from barrer to xxx
+        permeability_data[index].robeson_multi = value * 3.347e-05
+
+    # param Robeson_power :=
+    contents.remove(contents[0])
+    for type_mem in mem_type:
+        power = contents[0].split()
+        index = power[0]
+        value = float(power[-1])
+        contents.remove(contents[0])
+        permeability_data[index].robeson_power = value
+
+    # param alpha_ub_bounds :=
+    contents.remove(contents[0])
+    for type_mem in mem_type:
+        alpha_bounds = contents[0].split()
+        index = alpha_bounds[0]
+        value = float(alpha_bounds[-1])
+        contents.remove(contents[0])
+        permeability_data[index].ub_alpha = value
+
+    # param alpha_lb_bounds :=
+    contents.remove(contents[0])
+    for type_mem in mem_type:
+        alpha_bounds = contents[0].split()
+        index = alpha_bounds[0]
+        value = float(alpha_bounds[-1])
+        contents.remove(contents[0])
+        permeability_data[index].lb_alpha = value
+
+    # permeability bounds lb
+    contents.remove(contents[0])
+    for type_mem in mem_type:
+        perm_bounds = contents[0].split()
+        index = perm_bounds[0]
+        element = perm_bounds[1]
+        value = float(perm_bounds[2]) * 3.347e-05
+        contents.remove(contents[0])
+        item = GasItemPerm(element, value, None, None)
+        permeability_data[index].component_item.append(item)
+
+    # permeability bounds ub
+    contents.remove(contents[0])
+    for type_mem in mem_type:
+        perm_bounds = contents[0].split()
+        index = perm_bounds[0]
+        element = perm_bounds[1]
+        value = float(perm_bounds[2]) * 3.347e-05
+        contents.remove(contents[0])
+        permeability_data[index].component_item[0].ub = value
+
+    # param thickness :=
+    contents.remove(contents[0])
+    for type_mem in mem_type:
+        thickness = contents[0].split()
+        index = thickness[0]
+        value = float(thickness[-1])
+        contents.remove(contents[0])
+        permeability_data[index].thickness = value
+
+    # param mem_product :=
+    contents.remove(contents[0])
+    for type_mem in mem_type:
+        mem_product = contents[0].split()
+        index = mem_product[0]
+        value = mem_product[1]
+        permeability_data[index].mem_out_prod = value
+        contents.remove(contents[0])
+
+    # param mem_type :=
+    if len(contents) > 0:
+        contents.remove(contents[0])
+    while len(contents) > 0:
+        mem_list = contents[0]
+        mem_list = mem_list.split()
+        mem = int(mem_list[0])
+        index = mem_list[-1]
+        permeability_data[index].which_mem.append(mem)
+        contents.remove(contents[0])
+
+    return permeability_data
+
+def parser_fixed_permeability_data(file, permeability_data):
+    """Permeability's data parser.
+
+    When permeability's variables in model are fixed.
+
+    Args:
+        file (`_io.TextIOWrapper`) : permeability 's datafile
+
+        permeability_data (dict) : data structure which will finally
+        contain permeability's informations.
+
+    Returns:
+        a dictionary containing permeability's data
+
+    Raises:
+        Exception : if datafile format are not repected during lecture of file
+    """
+    contents = file.readlines()
+    delete_value_from(contents, "#")
+    delete_value_from(contents, "\n")
+
+    txt = []
+    for line in contents:
+        txt.append(line.replace('\n', ''))
+
+    contents = txt
+    # set mem_type_set := A B
+    mem_type = contents[0]
+    begining_index = mem_type.find('=')
+    mem_type = mem_type[begining_index + 1:]
+    mem_type = mem_type.split()
+    contents.remove(contents[0])
+
+    # param nb_gas := 2
+    nb_components = contents[0]
+    nb_gas = int(nb_components[-1])
+    contents.remove(contents[0])
+
+    # param permeability
+    contents.remove(contents[0])
+
+    for type_membrane in mem_type:
+        # initialisation
+        # defining the dictionary entry for each type of membrane
+
+        robeson_multi = None
+        robeson_power = None
+        ub_alpha = None
+        lb_alpha = None
+        component_item = []
+        thickness = 1  # default value
+        mem_out_prod = "RET"  # default value
+
+        permeability_data[type_membrane] = PermType(robeson_multi,
+                                                    robeson_power, ub_alpha,
+                                                    lb_alpha, component_item,
+                                                    thickness, mem_out_prod, [])
+
+    for type_membrane in mem_type:
+        # read and save pair of (component -> perm value)
+        for j in range(nb_gas):
+            permeance = contents[0]
+            permeance = permeance.split()
+            index = permeance[0]
+            element = permeance[1]
+            # convert from barrer to # XXX
+            value = float(permeance[2]) * 3.347e-05
+            item = GasItemPerm(element, value, value, value)
+            permeability_data[index].component_item.append(item)
+            contents.remove(contents[0])
+
+    # param thickness
+    contents.remove(contents[0])
+    for type_membrane in mem_type:
+        thickness = contents[0]
+        thickness = thickness.split()
+        index = thickness[0]
+        thick = float(thickness[-1])
+        permeability_data[index].thickness = float(thick)
+        contents.remove(contents[0])
+
+    # param mem_product
+    contents.remove(contents[0])
+    for type_membrane in mem_type:
+        mem_product = contents[0]
+        mem_product = mem_product.split()
+        index = mem_product[0]
+        mem_out_prod = mem_product[1]
+        permeability_data[index].mem_out_prod = mem_out_prod
+        contents.remove(contents[0])
+
+    if len(contents) > 0:
+        contents.remove(contents[0])
+    while len(contents) > 0:
+        mem_list = contents[0]
+        mem_list = mem_list.split()
+        mem = int(mem_list[0])
+        index = mem_list[-1]
+        permeability_data[index].which_mem.append(mem)
+        contents.remove(contents[0])
+
+    return permeability_data
+
+
+
+
+
+class GasItemPerm:
+    """Data structure used to store gas components permeances's value when
+     `permeability's variables` are fixed (constant).
+
+    Attributes:
+        index (`Int`): Index of component
+        lb (`Float`): lower bound of component permeance
+        value (`Float`): value of component permeance if given
+        ub (`Float`): lower bound of component permeance
+
+    """
+
+    def __init__(self, index, lb, value, ub):
+        # initialisation of gas permeance bound or values
+        self.index = index
+        self.lb = lb
+        self.value = value
+        self.ub = ub
+
+    def __str__(self):
+        return ('index = {} \t lb = {} value = {} \t ub = {}'.format(
+            self.index, self.lb, self.value, self.ub))
+
+def parser_fixed_permeability_data_simple(file):
+    # TODO: finir
+    contents = file.readlines()
+    # Remove comments and empty lines
+    contents = [line.strip() for line in contents if line.strip() and not line.strip().startswith("#")]
+
+    # set mem_type_set := A B
+    mem_type_line = contents.pop(0)
+    mem_type = mem_type_line.split("=")[-1].split()
+    # param nb_gas := 2
+    nb_gas = int(contents.pop(0).split()[-1])
+
+    # param permeability
+    contents.pop(0)
+
+    permeability_dict = {}
+    for _ in range(nb_gas * len(mem_type)):
+        permeance = contents.pop(0).split()
+        type_membrane = permeance[0]
+        element = permeance[1]
+        value = float(permeance[2])
+        if type_membrane not in permeability_dict:
+            permeability_dict[type_membrane] = {
+                "Permeability": {},
+                "thickness": None,
+                "mem_out_prod": None,
+                "which_mem": [],
+            }
+        permeability_dict[type_membrane]["Permeability"][element] = value
+
+    # param thickness
+    contents.pop(0)
+    for type_membrane in mem_type:
+        thickness_line = contents.pop(0).split()
+        index = thickness_line[0]
+        thick = float(thickness_line[-1])
+        permeability_dict[index]["thickness"] = thick
+
+    # param mem_product
+    contents.pop(0)
+    for type_membrane in mem_type:
+        mem_product_line = contents.pop(0).split()
+        index = mem_product_line[0]
+        mem_out_prod = mem_product_line[1]
+        permeability_dict[index]["mem_out_prod"] = mem_out_prod
+
+    # param mem_type (optional)
+    # if contents:
+    #     contents.pop(0)
+    # while contents:
+    #     mem_list = contents.pop(0).split()
+    #     mem = int(mem_list[0])
+    #     index = mem_list[-1]
+    #     permeability_dict[index]["which_mem"].append(mem)
+
+
+    # The rest of the file is ignored for this simple dictionary output
+    return permeability_dict

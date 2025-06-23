@@ -7,6 +7,5 @@ from app.views import MainWindow, load_configuration
 if __name__ == "__main__":
     app = QApplication([])
     main_window = MainWindow()
-    tuning, instance = load_configuration()
     main_window.show()
     app.exec()
