@@ -1290,7 +1290,7 @@ class ParamFileChooser(Param):
 # -----------------------------------------------------------
 
 class ParamCategory(QWidget):
-    def __init__(self, name: str, param: dict["str", Param]) -> None:
+    def __init__(self, name: str, param: list[Param]) -> None:
         super().__init__()
         layout = QVBoxLayout()
         self.name = name
@@ -1347,15 +1347,17 @@ class ParamCategory(QWidget):
             param.notify_dependants()
     def build_param(self) -> QWidget:
         self.row = 0
-        for label, param_obj in self.param.items():
+        # for label, param_obj in self.param.items():
+        for param_obj in self.param:
             param_obj.category = self  
-        for label, param_obj in self.param.items():
-            param_obj.build_widget(self.row, label, self.grid_layout)
+        # for label, param_obj in self.param.items():
+        for param_obj in self.param:
+            param_obj.build_widget(self.row, param_obj.name, self.grid_layout)
             self.row += param_obj.row_span()
         return self
 
     def store_values(self):
-        for name, param in self.param.items():
+        for param in self.param:
             param.store_value()
 
     def update_category(self):

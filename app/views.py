@@ -19,6 +19,7 @@ from PyQt6.QtWidgets import (
 )
 import configparser
 
+from app import param_dict
 from app.param import (
     GridOptions,
     InputValidation,
@@ -31,6 +32,7 @@ from app.param_enums import FILE
 from app.param_factory import set_dep, set_param
 from app.param_factory import all_params
 from app.param_validator import LineEditValidation, NonOptionalInputValidation
+from app.param_dict import params_dict
 
 # TODO: close button verification before quitting, to abort modifs
 # TODO: advanced button to unlock more "unusual" settings
@@ -47,50 +49,32 @@ class MainWindow(QMainWindow):
 
         # tabs
         self.tabs = QTabWidget()
-        self.tab1 = QWidget()
-        self.tab2 = QWidget()
-        tab1_layout = QVBoxLayout()
-        tab1_layout.addWidget(QLabel("Parameters"))
-        tab2_layout = QVBoxLayout()
-        tab2_layout.addWidget(QLabel("Versions"))
-        self.tab2.setLayout(tab2_layout)
+        self.tab_param = QWidget()
+        self.tab_versions = QWidget()
 
-        self.tabs.addTab(self.tab1, "Parameters")
-        self.tabs.addTab(self.tab2, "Versions")
+        tab_param_layout = QVBoxLayout()
+        tab_versions_layout = QVBoxLayout()
+
+        tab_param_layout.addWidget(QLabel("Parameters"))
+        tab_versions_layout.addWidget(QLabel("Versions"))
+
+        self.tabs.addTab(self.tab_param, "Parameters")
+        self.tabs.addTab(self.tab_versions, "Versions")
 
         # sidebar
         self.sidebar = QListWidget()
-        self.sidebar.addItems(
-            [
-                "Global Parameters",
-                "Components",
-                "Membrane/Permeability",
-                "Operational Constraints",
-                "Fixed variables",
-            ]
-        )
-        sidebar_layout = QVBoxLayout()
+        sidebar_widget = QWidget()
+        sidebar_layout = QVBoxLayout(sidebar_widget)
         sidebar_layout.addWidget(self.sidebar)
         sidebar_layout.addStretch()
-        sidebar_widget = QWidget()
-        sidebar_widget.setLayout(sidebar_layout)
 
         self.all_params: list[Param] = []
-
         self.pages: list[PageParameters] = []
-        for key, items in all_params.items():
-            params_page = set_param(items)
-            self.pages.append(
-                PageParameters(self, params_page, self.stack, self.sidebar)
-            )
-            for name, dict in params_page.items():
-                for el, param in dict.items():
-                    self.all_params.append(param)
-        set_dep()
 
         self.main_area = QWidget()
-        tab1_layout = QHBoxLayout(self.main_area)
         header = QLabel("Main Area Header")
+
+        tab_param_layout = QHBoxLayout(self.main_area)
 
         layout = QVBoxLayout()
         layout.addWidget(header)
@@ -111,15 +95,17 @@ class MainWindow(QMainWindow):
         end_buttons_layout.addWidget(quit_button)
 
         layout.addWidget(end_buttons)
-        tab1_layout.addWidget(self.sidebar)
-        tab1_layout.addWidget(self.stack)
-        tab1_layout.addStretch()
+        tab_param_layout.addWidget(self.sidebar)
+        tab_param_layout.addWidget(self.stack)
+        tab_param_layout.addStretch()
 
-        self.command_builder = CommandBuilder(self.all_params)
-        self.config_builder = ConfigBuilder(self.all_params)
-        # command = builder.build_command()
-        # print("the command is", command)
+        # FIXME: probably change the passed param
+        # self.command_builder = CommandBuilder(self.all_params)
+        # self.config_builder = ConfigBuilder(self.all_params)
 
+        # add pages to the stack
+        self._define_pages()
+        self._init_pages()
         for el in self.pages:
             self.stack.addWidget(el)
 
@@ -127,10 +113,140 @@ class MainWindow(QMainWindow):
         self.apply_button.clicked.connect(self.build_command)
         end_buttons_layout.addWidget(self.apply_button)
 
-        self.tab1.setLayout(tab1_layout)
+        self.tab_param.setLayout(tab_param_layout)
         central_widget = QWidget()
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
+
+    # TODO: add spin_box everywhere
+
+    def _define_pages(self):
+        self.pages_names = {
+            "Page 1": ["General"],
+            "Page 2": ["Membranes"],
+            "Page 3": ["Data"],
+            "Page 4": ["Data2"],
+            "Page 5": ["Perm"],
+            "Page 6": ["Eco"],
+            "Page 7": ["Eco2"],
+        }
+
+        self.categories_names = {
+            "General": [
+                "verbose",
+                "debug",
+                "solver",
+                "gams",
+                "maxiter",
+                "maxtime",
+                "algorithm",
+                "no_starting_point",
+                "no_simplified_model",
+                "pop_size",
+                "visualise",
+                "opex",
+                "capex",
+                "save_log_sol",
+            ],
+            "Membranes": [
+                "num_membranes",
+                "ub_area",
+                "lb_area",
+                "ub_acell",
+                "fixing_var",
+                "uniform_pup",
+                "vp",
+                "variable_perm",
+                "iteration",
+                "max_no_improve",
+                "max_trials",
+                "pressure_ratio",
+                "pop_size",
+                "generations",
+            ],
+            "Data": [
+                "set components",
+                "param xin",
+                "param molarmass",
+                "param pressure_in",
+                "param lb_perc_prod",
+                "param lb_perc_waste",
+                "param FEED",
+                "param normalized_product_qt",
+                "param final_product",
+                "param ub_press_down",
+                "param lb_press_down",
+                "param ub_press_up",
+            ],
+            "Data2": [
+                "param pressure_prod",
+                "param lb_press_down",
+                "param ub_feed",
+                "param ub_out_prod",
+                "param ub_out_waste",
+                "param ub_feed",
+                "param tol_zero",
+                "param n",
+                "states",
+            ],
+            "Perm": [
+                "set mem_types_set",
+                "param nb_gas",
+                "param Permeability",
+                "param thickness",
+                "param mem_product",
+                "alpha",
+                "perm_ref",
+            ],
+            "Eco": [
+                "param R",
+                "param phi",
+                "param T",
+                "param gamma",
+                "param C_cp",
+                "param C_exp",
+                "param C_vp",
+                "param eta_cp",
+                "param K_mr",
+                "param K_gp",
+                "param K_m",
+                "param K_mf",
+                "param K_el",
+                "param K_er",
+                "param t_op",
+            ],
+            "Eco2": [
+                "param MFc",
+                "param nu",
+                "param UF_1968",
+                "param MPFc",
+                "param i",
+                "param i",
+                "param z",
+                "param eta_vp_1",
+            ],
+        }
+
+    def _init_pages(self):
+        self.param_registry = set_param(params_dict)
+        self.category_params = {
+            cat: [self.param_registry[name] for name in names]
+            for cat, names in self.categories_names.items()
+        }
+
+        self.category_instances = {}
+        for key, list_param in self.category_params.items():
+            temp_category = ParamCategory(key, list_param)
+            self.category_instances[key] = temp_category
+
+        for page, category_name_list in self.pages_names.items():
+            self.sidebar.addItem(page)
+            page_categories = []
+            for el in category_name_list:
+                page_categories.append(self.category_instances[el])
+            page_temp = PageParameters(self, page_categories, self.stack, self.sidebar)
+            self.pages.append(page_temp)
+        pass
 
     def update_pages(self):
         for page in self.pages:
@@ -138,10 +254,10 @@ class MainWindow(QMainWindow):
 
     def build_command(self):
         self.update_pages()
-        command = self.command_builder.build_command()
-        config = self.config_builder.build_config()
-        debug_print("the command is", command)
-        debug_print("the config is", config)
+        # command = self.command_builder.build_command()
+        # config = self.config_builder.build_config()
+        # debug_print("the command is", command)
+        # debug_print("the config is", config)
 
 
 # -----------------------------------------------------------
@@ -180,13 +296,13 @@ class PageParameters(QWidget):
     def __init__(
         self,
         main_window,
-        param_category: dict["str", dict[str, Param]],
+        param_category: list[ParamCategory],
         stack: QStackedWidget,
         sidebar: QListWidget,
     ) -> None:
         super().__init__()
         self.main_window = main_window
-        self.param_category = param_category
+        # self.param_category = param_category
         self.stack = stack
         self.sidebar = sidebar
         self.sidebar.setCurrentRow(0)
@@ -203,18 +319,21 @@ class PageParameters(QWidget):
         tab1_layout = QVBoxLayout(tab1_widget)
         tab1_layout.setSpacing(0)
 
-        for key, value in param_category.items():
-            widget = ParamCategory(key, value)
-            self.categories.append(widget)
-            if key == "Advanced":
-                section = CollapsibleSection("Advanced section")
-                ex_params = ParamCategory("Title", value)
-                section.addWidget(ex_params)
-                widget = section
-            else:
-                for name, param in value.items():
-                    param.category = widget
-            tab1_layout.addWidget(widget)
+        for el in param_category:
+            tab1_layout.addWidget(el)
+
+        # for key, value in param_category.items():
+        #     widget = ParamCategory(key, value)
+        #     self.categories.append(widget)
+        #     if key == "Advanced":
+        #         section = CollapsibleSection("Advanced section")
+        #         ex_params = ParamCategory("Title", value)
+        #         section.addWidget(ex_params)
+        #         widget = section
+        #     else:
+        #         for name, param in value.items():
+        #             param.category = widget
+        #     tab1_layout.addWidget(widget)
         self.tab_widget = QTabWidget()
         self.tab_widget.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding

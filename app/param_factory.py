@@ -1,8 +1,9 @@
-from app import dependency_manager
+from app import dependency_manager, param_dict
 from app.param import Param, ParamFixedWithInput, ParamInput, debug_print
 from app.param_enums import FILE, DependencyType, ParamType
 from app.param_utils import create_param
 from app.param_validator import LineEditValidation
+from app.param_dict import params_dict
 
 execution_settings = {
     "Enable Logging Output": {
@@ -290,32 +291,48 @@ all_params = {
 param_registry = {}
 
 
-def build_param_dict(param_specs) -> dict[str, Param]:
-    params = {}
-    for label, spec in param_specs.items():
-        params[label] = create_param(**spec)
-        param_registry[label] = params[label]
-    # set_dependency(params)
-    # TODO: manage dependency between parameters that are not in the same category
-    set_validation(params)
-    return params
 
-
-def build_all_params(all_param_specs) -> dict[str, dict[str, Param]]:
+def build_all_params(all_param_specs):
     all_params = {}
-    for category, param_specs in all_param_specs.items():
-        all_params[category] = build_param_dict(param_specs)
+    # debug_print(all_param_specs)
+    for name, param_specs in all_param_specs.items():
+        all_params[name] = create_param(**param_specs)
+    debug_print(all_params)
     # debug_print(param_registry.keys())
+    # all params contains all build params, with their actual instances
     return all_params
+
+
+categories = {
+        "Execution settings": ["verbose", "debug"]
+        }
+
 
 
 dependency_manager = dependency_manager.DependencyManager()
 
+param_registry = {}
 
-def set_param(all_param_specs: dict) -> dict[str, dict[str, Param]]:
+def set_param(all_param_specs: dict):
     all_params = build_all_params(all_param_specs)
-    return all_params
+    for name, param in all_params.items():
+        param_registry[name] = param
+    return param_registry
 
+# param_registry = set_param(params_dict)
+# debug_print(param_registry)
+set_param(params_dict)
+debug_print(param_registry)
+# categories = {
+#         "General": ["num_membranes", "iteration"],
+#         "Membranes": ["ub_area", "lb_area", "ub_acell"]
+#         }
+# category_params = {
+#         cat: [param_registry[name] for name in names]
+#         for cat, names in categories.items()
+#         }
+# debug_print(category_params)
+# now category params contain "Category name" + param instance
 
 def set_dep():
     debug_print(param_registry)
