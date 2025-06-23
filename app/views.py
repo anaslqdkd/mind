@@ -26,6 +26,7 @@ from app.param import (
     Param,
     ParamBoolean,
     ParamCategory,
+    ParamComponent,
     ParamFixedWithInput,
     ParamInput,
     debug_print,
@@ -304,6 +305,7 @@ class MainWindow(QMainWindow):
         def register_param_dependencies(param_registry, dependency_manager):
             dependency_manager.add_dependency(
                 param_registry["num_membranes"],
+                # ub_area depends on num_mebranes
                 param_registry["ub_area"],
                 self.update_fn,
             )
@@ -312,8 +314,24 @@ class MainWindow(QMainWindow):
                 param_registry["lb_area"],
                 self.update_fn,
             )
+            dependency_manager.add_dependency(
+                    param_registry["param nb_gas"],
+                    param_registry["param Permeability"],
+                    self.update_permeability,
+                    )
+            dependency_manager.add_dependency(
+                    param_registry["set mem_types_set"],
+                    param_registry["param Permeability"],
+                    self.update_permeability,
+                    )
 
         register_param_dependencies(self.param_registry, dependency_manager)
+
+    def update_permeability(self, target: ParamFixedWithInput, source: ParamComponent):
+        # debug_print("in the update permeability")
+        debug_print(source.get_value())
+        target.set_rows_nb(source.get_value())
+        target.category.update_category()
 
     def update_fn(self, target: ParamFixedWithInput, source: ParamInput):
         debug_print(f"the source is {source.name} and the target is {target.name}")

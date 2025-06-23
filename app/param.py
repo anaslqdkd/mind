@@ -667,6 +667,7 @@ class ParamComponent(Param):
         self.last_combo_boxes = []
         self.optional = optional
         self.values = values
+        self.manager: Optional[DependencyManager] = None
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         header = self.build_header(label, self.description, self.optional)
@@ -705,8 +706,17 @@ class ParamComponent(Param):
         extra_combo.currentIndexChanged.connect(
             lambda: self.add_component_row(row, grid_layout)
         )
+        extra_combo.currentIndexChanged.connect(self._on_value_changed)
+
+
+    def _on_value_changed(self):
+        debug_print("in on value changed")
+        if self.manager is not None:
+            self.store_value()
+            self.manager.notify_change(self)
 
     def add_component_row(self, row: int, grid_layout: QGridLayout):
+        # self._on_value_changed()
         self.component_base_row = row
         self.extra_rows += 1
 
@@ -728,14 +738,22 @@ class ParamComponent(Param):
 
         self.category.update_category()
 
+    def get_value(self):
+        debug_print(self.last_combo_boxes)
+        return len(self.last_combo_boxes)
+
     def store_value(self):
+        debug_print(self.last_combo_boxes)
         self.last_combo_boxes.clear()
         for el in self.combo_boxes:
-            self.last_combo_boxes.append(el.currentText())
+            if el.currentText() != "":
+                self.last_combo_boxes.append(el.currentText())
+        debug_print(self.last_combo_boxes)
 
     def remove_widget_pair(
         self, widget1: QWidget, widget2: QWidget, layout: QGridLayout
     ):
+        self._on_value_changed()
         layout.removeWidget(widget1)
         layout.removeWidget(widget2)
         widget1.deleteLater()
@@ -743,6 +761,7 @@ class ParamComponent(Param):
 
         self.extra_rows = max(0, self.extra_rows - 1)
         self.category.update_category()
+        self._on_value_changed()
 
     def row_span(self) -> int:
         return 1 + self.extra_rows
