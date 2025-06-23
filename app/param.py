@@ -34,7 +34,6 @@ import inspect
 
 from app.dependency_manager import DependencyManager
 from app.param_enums import FILE, DependencyType
-from app.param_validator import LineEditValidation, NonOptionalInputValidation
 
 def debug_print(*args, **kwargs):
     frame = inspect.currentframe().f_back
@@ -81,48 +80,6 @@ class SquareCheckboxSelector(QDialog):
 
 
 # -----------------------------------------------------------
-class InputValidation:
-    @staticmethod
-    def validate_input(line_edit: QLineEdit, expected_type: type):
-        # TODO: remove the text from the input after warning
-        text = line_edit.text().strip()
-
-        if text == "":
-            # Empty input is allowed — clear any error state
-            line_edit.setStyleSheet("")
-            return
-
-        try:
-            if expected_type == int:
-                value = int(text)
-            elif expected_type == float:
-                value = float(text)
-            else:
-                value = text  # fallback to string
-
-            # Example: for float, check range 0-1
-            if expected_type == float and not (0 <= value <= 1):
-                raise ValueError("Out of range")
-            line_edit.setStyleSheet("")  
-        except ValueError:
-            line_edit.setStyleSheet("border: 1px solid red;")
-            QMessageBox.warning(
-                line_edit,
-                "Invalid Input",
-                f"Please enter a valid {expected_type.__name__}"
-                + (" between 0 and 1" if expected_type == float else ""),
-            )
-
-    @staticmethod
-    def check_required(name: str, line_edit: QLineEdit, optional: bool) -> bool:
-        if not optional and line_edit.text() == "":
-            print(f"Error, the param {name} is not inserted")
-            return False
-        return True
-        # print("Error not all non optional params insterted")
-
-
-# -----------------------------------------------------------
 
 
 class Param:
@@ -158,9 +115,6 @@ class Param:
     def to_file(self) -> str:
         raise NotImplementedError("Subclasses must implement to_file")
 
-    def notify_dependants(self) -> None:
-        print("In the notify dependants !")
-
     def to_command_arg(self) -> str:
         return ""
 
@@ -184,11 +138,10 @@ class Param:
     # def trigger_update(self) -> None:
     #     self.category.update_category()
 
-
 # -----------------------------------------------------------
 
 
-class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
+class ParamInput(Param):
     def __init__(
         self,
         name: str,
@@ -204,7 +157,6 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
         hidden: bool = False,
     ) -> None:
         super().__init__(name, file, depends_on=depends_on, description=description)
-        LineEditValidation.__init__(self)
         self.question_label = None
         self.line_edit = None
         self.last_line_edit = ""
@@ -219,7 +171,7 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
         self.expected_value = ["population", "genetic"]
         self.header = None
         self.hidden = hidden
-        self.manager: Optional[DependencyManager]
+        self.manager: Optional[DependencyManager] = None
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
@@ -247,41 +199,13 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
         grid_layout.addWidget(self.line_edit, row, 1)
 
         if self.line_edit is not None:
-            line_edit = self.line_edit  # local variable guaranteed not None
-            expected_type = self.expected_type
+            line_edit = self.line_edit  
             line_edit.valueChanged.connect(self._on_value_changed)
-            # line_edit.editingFinished.connect(
-            #     lambda: InputValidation.validate_input(line_edit, expected_type)
-            # )
-            # TODO: add this for all input parameters
-            # self.line_edit.editingFinished.connect(self.validate_and_highlight)
-            self.line_edit.valueChanged.connect(self.notify_dependants)
+
     def _on_value_changed(self):
         if self.manager is not None:
             self.store_value()
             self.manager.notify_change(self)
-    def validate_and_highlight(self):
-        if self.validation_rules == {}:
-            return
-        print(self.validation_rules)
-        text = self.line_edit.text()
-        if self.validate_input(text):
-            self.line_edit.setStyleSheet("")  # Clear any red border
-        else:
-            self.line_edit.setStyleSheet("border: 1px solid red;")
-            self.show_error_message(
-                "Invalid input. Please enter a valid value "
-                # f"({self.validation_rules['type'].__name__})"
-                f"{' between ' + str(self.validation_rules['min']) + ' and ' + str(self.validation_rules['max']) if self.validation_rules['min'] is not None and self.validation_rules['max'] is not None else ''}."
-            )
-
-    def show_error_message(self, message: str):
-        msg_box = QMessageBox()
-        msg_box.setIcon(QMessageBox.Icon.Warning)
-        msg_box.setWindowTitle("Input Error")
-        msg_box.setText(message)
-        msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
-        msg_box.exec()
 
     def restore_values(self):
         if self.line_edit is not None and self.last_line_edit != "":
@@ -294,9 +218,6 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
                     return
             self.line_edit.setValue(value)
 
-
-    # NOTE: add maybe a use_spin_box attribute and build accordingly
-
     def store_value(self):
         if not self.hidden:
             if self.line_edit is not None:
@@ -305,49 +226,11 @@ class ParamInput(Param, LineEditValidation, NonOptionalInputValidation):
     def get_value(self) -> str:
         return self.last_line_edit
 
-    def notify_dependants(self) -> None:
-        for dep in self.dependants.keys():
-            dep.on_dependency_updated(self)
-        pass
-
-    def get_dependency_value(self, dependency_type: DependencyType) -> int | float | str:
-        if dependency_type == DependencyType.COMPONENT_COUNT:
-            if self.line_edit is not None:
-                return self.line_edit.value()
-            try:
-                return int(self.last_line_edit)
-            except Exception:
-                return 0
-        if self.line_edit is not None:
-            return self.line_edit.value()
-        try:
-            return int(self.last_line_edit)
-        except Exception:
-            return 0
-
-    def on_dependency_updated(self, changed_param):
-        # FIXME: hide all widget not only the line edit
-        if self.depends_on_params.get(changed_param) == DependencyType.VISIBLE:
-            if changed_param.get_value() in self.expected_value:
-                # self.line_edit.show()
-                self.show()
-            else:
-                # self.line_edit.hide()
-                self.hide()
-
     def hide(self):
         self.hidden = True
-        # if self.line_edit is not None:
-        #     self.line_edit.hide()
-        # if self.header is not None:
-            # self.header.hide()
 
     def show(self):
         self.hidden = False
-        # if self.line_edit is not None:
-        #     self.line_edit.show()
-        # if self.header is not None:
-        #     self.header.show()
 
 
     def to_file(self) -> str:
@@ -389,7 +272,7 @@ class ParamSelect(Param):
 
         self.question_label = question_label
         self.combo_box = combo_box
-        self.combo_box.currentIndexChanged.connect(self.notify_dependants)
+        # self.combo_box.currentIndexChanged.connect(self.notify_dependants)
         self.restore_values()
 
 
@@ -403,11 +286,6 @@ class ParamSelect(Param):
 
         grid_layout.addWidget(self.combo_box, row, 2, 1, 2)
 
-    def notify_dependants(self) -> None:
-        self.category.update_category()
-        for dep in self.dependants.keys():
-            dep.on_dependency_updated(self)
-        pass
 
     def restore_values(self):
         if self.combo_box:
@@ -905,7 +783,6 @@ class ParamFixedWithInput(Param):
         self.row_nb = rows
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
-        debug_print("+++++", {self.row_nb})
         self.row = row
         self.label = label
         self.grid_layout = grid_layout
@@ -965,14 +842,6 @@ class ParamFixedWithInput(Param):
     def to_file(self) -> str:
         return f"{self.name} := {self.last_line_edit} #{self.last_combo_box}"
 
-    def on_dependency_updated(self, changed_param: Param):
-        for param, dependency_type in self.depends_on_params.items():
-            if param == changed_param:
-                match dependency_type:
-                    case DependencyType.COMPONENT_COUNT:
-                        self.category.update_category()
-                        self.row_nb = param.get_dependency_value(DependencyType.COMPONENT_COUNT)
-                        self.category.update_category()
 
 # -----------------------------------------------------------
 # TODO: add default value

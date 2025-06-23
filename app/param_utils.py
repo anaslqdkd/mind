@@ -31,7 +31,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
     max_value = kwargs.get("max_value")
     step = kwargs.get("step")
     hidden = kwargs.get("hidden")
-    # print(f"DEBUG[{__file__}:{inspect.currentframe().f_lineno}]:", "your message")
     match param_type:
         case ParamType.INPUT:
             return ParamInput(
@@ -160,5 +159,4 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
             raise ValueError(f"Unsupported param type: {param_type}")
 
 
-# -----------------------------------------------------------
 # -----------------------------------------------------------

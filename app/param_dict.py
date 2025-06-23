@@ -1,4 +1,3 @@
-
 from app.param_enums import FILE, ParamType
 
 params_dict = {

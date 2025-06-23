@@ -19,20 +19,20 @@ from PyQt6.QtWidgets import (
 )
 import configparser
 
-from app import param_dict
+from app import dependency_manager, param_dict
 from app.param import (
     GridOptions,
-    InputValidation,
     MembraneOptions,
     Param,
     ParamCategory,
+    ParamFixedWithInput,
+    ParamInput,
     debug_print,
 )
 from app.param_enums import FILE
-from app.param_factory import set_dep, set_param
-from app.param_factory import all_params
-from app.param_validator import LineEditValidation, NonOptionalInputValidation
+from app.param_factory import set_param
 from app.param_dict import params_dict
+from app.dependency_manager import DependencyManager
 
 # TODO: close button verification before quitting, to abort modifs
 # TODO: advanced button to unlock more "unusual" settings
@@ -109,6 +109,7 @@ class MainWindow(QMainWindow):
         for el in self.pages:
             self.stack.addWidget(el)
 
+        self._set_dependencies()
         self.sidebar.currentRowChanged.connect(self.stack.setCurrentIndex)
         self.apply_button.clicked.connect(self.build_command)
         end_buttons_layout.addWidget(self.apply_button)
@@ -248,6 +249,31 @@ class MainWindow(QMainWindow):
             self.pages.append(page_temp)
         pass
 
+    def _set_dependencies(self):
+        dependency_manager = DependencyManager()
+        for param in self.param_registry.values():
+            param.manager = dependency_manager
+
+        def register_param_dependencies(param_registry, dependency_manager):
+            dependency_manager.add_dependency(
+                param_registry["num_membranes"],
+                param_registry["ub_area"],
+                self.update_fn,
+            )
+            dependency_manager.add_dependency(
+                param_registry["num_membranes"],
+                param_registry["lb_area"],
+                self.update_fn,
+            )
+        register_param_dependencies(self.param_registry, dependency_manager)
+
+    def update_fn(self, target: ParamFixedWithInput, source: ParamInput):
+        debug_print(f"the source is {source.name} and the target is {target.name}")
+        target.set_rows_nb(int(source.get_value()))
+        target.category.update_category()
+        debug_print("in the update fn fucntion")
+
+
     def update_pages(self):
         for page in self.pages:
             page.update_param_page()
@@ -315,43 +341,21 @@ class PageParameters(QWidget):
         content_widget.setLayout(content_layout)
 
         tab1_widget = QWidget()
-        # self.tab_widget.addTab(QWidget(), "Tab 2")
         tab1_layout = QVBoxLayout(tab1_widget)
         tab1_layout.setSpacing(0)
 
         for el in param_category:
             tab1_layout.addWidget(el)
 
-        # for key, value in param_category.items():
-        #     widget = ParamCategory(key, value)
-        #     self.categories.append(widget)
-        #     if key == "Advanced":
-        #         section = CollapsibleSection("Advanced section")
-        #         ex_params = ParamCategory("Title", value)
-        #         section.addWidget(ex_params)
-        #         widget = section
-        #     else:
-        #         for name, param in value.items():
-        #             param.category = widget
-        #     tab1_layout.addWidget(widget)
         self.tab_widget = QTabWidget()
         self.tab_widget.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
         self.tab_widget.addTab(tab1_widget, "Tab 1")
         main_layout.addWidget(self.tab_widget, 1, Qt.AlignmentFlag.AlignTop)
-        # main_layout.addWidget(self.tab_widget, stretch=1)
-        # NOTE: here
         main_layout.addStretch()
 
         next_button = QPushButton("next")
-        self.tab_widget.addTab(
-            GridOptions(
-                ["Molar Mass"],
-                ["Component 1", "Component 2", "Component 3"],
-            ),
-            "Tab 2",
-        )  # Placeholder for Tab 2
 
         end_button_widget = QWidget()
         end_button_layout = QHBoxLayout(end_button_widget)
@@ -360,7 +364,6 @@ class PageParameters(QWidget):
         end_button_layout.addWidget(next_button)
         main_layout.addWidget(end_button_widget)
 
-        # main_layout.addWidget(MembraneOptions)
         main_layout.addStretch()
 
         self.setLayout(main_layout)
@@ -369,98 +372,14 @@ class PageParameters(QWidget):
         for category in self.categories:
             category.update_category()
 
-    # TODO: move this to the validator class
     def go_to_next_page(self):
-        # TODO: trigger errors for not optional values
-        # if self.validate_required_params():
-        # FIXME: restore when validate input works properly
-        # and self.validate_all_input():
-
         current_index = self.sidebar.currentRow()
         count = self.sidebar.count()
         next_index = (current_index + 1) % count
         self.sidebar.setCurrentRow(next_index)
-        # FIXME: same
-        # elif not self.validate_all_input():
-        #     QMessageBox.warning(
-        #         self, "text" "Invalid Input", f"Please input the right values"
-        #     )
-        # else:
-        #     # TODO: put in red all parameters that are non optional and not selected
-        #     for category in self.param_category.values():
-        #         for param in category.values():
-        #             if isinstance(param, NonOptionalInputValidation):
-        #                 if not param.is_filled():
-        #                     line_edit = param.line_edit
-        #                     if line_edit is not None:
-        #                         line_edit.setStyleSheet("border: 1px solid red")
-        #     QMessageBox.warning(
-        #         self, "text" "Invalid Input", f"Please input all required forms"
-        #     )
-
-    def validate_required_params(self):
-        for category in self.param_category.values():
-            for param in category.values():
-                if isinstance(param, NonOptionalInputValidation):
-                    print("param is a instance of non optional input validation")
-                    if not param.is_filled():
-                        return False
-        return True
-
-    def validate_all_input(self):
-        for category in self.param_category.values():
-            for param in category.values():
-                if isinstance(param, LineEditValidation):
-                    print("param is a instance of non optional input validation")
-                    text = param.line_edit.text()
-                    print("the text in ", text)
-                    if not param.validate_input(param.line_edit.text()):
-                        print("2345678", param.name)
-                        return False
-        return True
-
-        # if not getattr(param, "optional", False):
-        #     # TODO: validate input (or another function that checks if there is input)
-        #     # if has line input
-        #     if hasattr(param, "line_edit"):
-        #         # InputValidation.validate_input(param.line_edit, param.expected_type)
-        #         InputValidation.check_required(
-        #             param.name, param.line_edit, param.optional
-        #         )
 
 
 # -----------------------------------------------------------
-class CollapsibleGroupBox(QGroupBox):
-    def __init__(self, title, parent=None):
-        super().__init__(title, parent)
-        self.setCheckable(True)
-        self.setChecked(False)  # Start collapsed
-        self.toggled.connect(self.on_toggled)
-        self.setStyleSheet("font-weight: bold;")
-        self.setStyleSheet("QGroupBox { font-size: 12px; font-weight: bold; }")
-
-        self.label = QLabel("the is a label")
-        self.label.setVisible(False)
-        layout = QVBoxLayout(self)
-        layout.addWidget(self.label)
-
-    def on_toggled(self, checked):
-        for i in range(self.layout().count()):
-            widget = self.layout().itemAt(i).widget()
-            if widget:
-                widget.setVisible(checked)
-        self.adjustSize()
-        self.updateGeometry()
-        parent = self.parentWidget()
-        if parent:
-            parent.adjustSize()
-            parent.updateGeometry()
-            layout = parent.layout()
-            if layout:
-                layout.invalidate()
-                layout.activate()
-
-
 class CollapsibleSection(QWidget):
     def __init__(self, title, parent=None):
         super().__init__(parent)
@@ -493,8 +412,8 @@ class CollapsibleSection(QWidget):
     def addWidget(self, widget):
         self.content_layout.addWidget(widget)
 
+# -----------------------------------------------------------
 
-# NOTE: question sur le nombre d'iterations, dans commande ou config.ini
 def load_configuration():
     tuning_params = [
         "seed1",
