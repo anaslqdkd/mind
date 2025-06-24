@@ -471,6 +471,12 @@ params_dict = {
         "file": FILE.PERM,
         "optional": False,
     },
+    "param mem_type": {
+        "name": "param mem_type",
+        "param_type": ParamType.FIXED_WITH_INPUT,
+        "file": FILE.PERM,
+        "optional": False,
+    },
     "param mem_product": {
         "name": "param mem_product",
         # FIXME: fixed with select

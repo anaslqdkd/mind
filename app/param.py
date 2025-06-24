@@ -708,6 +708,8 @@ class ParamComponent(Param):
         )
         extra_combo.currentIndexChanged.connect(self._on_value_changed)
 
+    # FIXME: cannot add the same component twice
+
 
     def _on_value_changed(self):
         debug_print("in on value changed")
@@ -807,10 +809,23 @@ class ParamFixedWithInput(Param):
         self.min_value = min_value
         self.max_value = max_value
         self.step = step
+        self.sizes = {}
+        self.keys = ["set components", "set mem_types_set"]
+        self.sizes = {k: 0 for k in self.keys}
         pass
 
-    def set_rows_nb(self, rows: int):
+    def set_rows_nb(self, rows: int, source: Param):
+        self.sizes[source.name] = rows
+        debug_print(self.sizes)
+        self.row_nb = 1
+        for val in self.sizes.values():
+            self.row_nb *= int(val)
+        # self.row_nb = rows
+
+    def set_rows(self, rows: int, source: Param):
+        self.sizes[source.name] = rows
         self.row_nb = rows
+
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         self.row = row
@@ -825,6 +840,8 @@ class ParamFixedWithInput(Param):
         group_box.setLayout(group_layout)
         group_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
+        debug_print(self.row_nb)
+        debug_print(type(self.row_nb))
         for r in range(self.row_nb):
             group_layout.addWidget(QLabel(f"{r+1}"), r, 0)
             for c in range(1, 2):
@@ -960,7 +977,12 @@ class ParamComponentSelector(Param):
         self.last_radio_button = None
         self.components = ["compo1", "compo2", "compo3"]
         self.selected_components = []
+        self.manager: Optional[DependencyManager] = None
         pass
+
+    def get_value(self):
+        return len(self.selected_components)
+
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         self.button = QPushButton("Select Components")
@@ -990,8 +1012,14 @@ class ParamComponentSelector(Param):
         if dialog.exec():
             self.selected_components = dialog.get_selected()
             self.button.setText(f"Selected: {len(self.selected_components)}")
-            self.notify_dependants()
+            # self.notify_dependants()
+            self._on_value_changed()
             self.category.update_category()
+
+    def _on_value_changed(self):
+        if self.manager is not None:
+            self.store_value()
+            self.manager.notify_change(self)
 
     def notify_dependants(self) -> None:
         for dep in self.dependants.keys():

@@ -27,6 +27,7 @@ from app.param import (
     ParamBoolean,
     ParamCategory,
     ParamComponent,
+    ParamComponentSelector,
     ParamFixedWithInput,
     ParamInput,
     debug_print,
@@ -240,10 +241,11 @@ class MainWindow(QMainWindow):
             ],
             "Perm": [
                 "set mem_types_set",
-                "param nb_gas",
+                # "param nb_gas",
                 "param Permeability",
                 "param thickness",
                 "param mem_product",
+                "param mem_type",
                 "alpha",
                 "perm_ref",
             ],
@@ -315,29 +317,44 @@ class MainWindow(QMainWindow):
                 self.update_fn,
             )
             dependency_manager.add_dependency(
-                    param_registry["param nb_gas"],
+                    param_registry["set components"],
                     param_registry["param Permeability"],
-                    self.update_permeability,
+                    self.update_permeability2,
                     )
             dependency_manager.add_dependency(
                     param_registry["set mem_types_set"],
                     param_registry["param Permeability"],
                     self.update_permeability,
                     )
+            dependency_manager.add_dependency(
+                    param_registry["set mem_types_set"],
+                    param_registry["param thickness"],
+                    self.update_permeability,
+                    )
+            dependency_manager.add_dependency(
+                    param_registry["set components"],
+                    param_registry["param mem_type"],
+                    self.update_permeability,
+                    )
+            # dependency_manager.add_dependency(
+            #         param_registry["set components"],
+            #         param_registry["param mem_type"],
+            #         self.update_permeability,
+            #         )
 
         register_param_dependencies(self.param_registry, dependency_manager)
 
     def update_permeability(self, target: ParamFixedWithInput, source: ParamComponent):
-        # debug_print("in the update permeability")
-        debug_print(source.get_value())
-        target.set_rows_nb(source.get_value())
+        target.set_rows(int(source.get_value()), source)
+        target.category.update_category()
+
+    def update_permeability2(self, target: ParamFixedWithInput, source: ParamComponentSelector):
+        target.set_rows_nb(int(source.get_value()), source)
         target.category.update_category()
 
     def update_fn(self, target: ParamFixedWithInput, source: ParamInput):
-        debug_print(f"the source is {source.name} and the target is {target.name}")
-        target.set_rows_nb(int(source.get_value()))
+        target.set_rows_nb(int(source.get_value()), source)
         target.category.update_category()
-        debug_print("in the update fn fucntion")
 
     def update_pages(self):
         for page in self.pages:
