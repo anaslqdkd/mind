@@ -80,10 +80,14 @@ class MainWindow(QMainWindow):
         import_config_button.setFixedSize(100, 30)
         import_perm_button = QPushButton("Import perm")
         import_perm_button.setFixedSize(100, 30)
+        import_eco_button = QPushButton("Import eco")
+        import_eco_button.setFixedSize(100, 30)
         tab_buttons_layout.addWidget(import_config_button)
         tab_buttons_layout.addWidget(import_perm_button)
+        tab_buttons_layout.addWidget(import_eco_button)
         import_config_button.clicked.connect(self.load_config)
         import_perm_button.clicked.connect(self.load_perm)
+        import_eco_button.clicked.connect(self.load_eco)
         self.tab_buttons.setLayout(tab_buttons_layout)
 
         self.all_params: list[Param] = []
@@ -171,6 +175,15 @@ class MainWindow(QMainWindow):
         #                 if isinstance(el, GasItemPerm):
         #                     debug_print(f"component item {attr_}", el)
         #             debug_print("component item", value_)
+
+    def load_eco(self):
+        res = load_coef("data/example_eco.dat")
+        for el, value in res.items():
+            if f"param {el}" in self.param_registry.keys():
+                debug_print(el)
+                self.param_registry[f"param {el}"].set_value(int(value))
+
+        debug_print(res)
 
     def _define_pages(self):
         self.pages_names = {
@@ -1008,3 +1021,47 @@ def parser_fixed_permeability_data_simple(file):
 
     # The rest of the file is ignored for this simple dictionary output
     return permeability_dict
+
+
+def load_coef(filename):
+    """Parser for objective function's coefficient.
+    Args:
+        filename (str) : filename containing economic data information
+
+    Raises:
+        Exception : if datafile format is not respected
+
+    Returns:
+        a dictionary `economic` containing essential information to send
+        to objective function's object
+    """
+
+    # list of validated coef
+    validated_coefficients = [
+        'R', 'T', 'eta_cp', 'eta_vp_0', 'eta_vp_1', 'C_cp', "C_vp", "C_exp",
+        'K_m', 'K_mf', 'K_mr', 'K_el', 'K_gp', "K_er", 'MDFc', "MPFc",
+        'MFc', 'UF_2000', "UF_2000", 'UF_2011', "UF_1968", 'ICF', 'nu',
+        't_op', 'gamma', 'phi', 'a', "i", "z"
+    ]
+
+    economic = {}
+
+    with open(filename, 'r') as file:
+        for line in file:
+            if line == "\n":
+                pass
+            else:
+                line = line.split()
+                if line[0] != 'param':
+                    raise ValueError("Unkown keyword ({} != param)"
+                                     " in economic datafile ({})".format(
+                                         line[0], filename))
+                if line[1] not in validated_coefficients:
+                    raise ValueError("Unkown keyword coefficient ({})"
+                                     " in economic datafile ({})".format(
+                                         line[1], filename))
+
+                economic[line[1]] = float(line[-1])
+
+    return economic
+
