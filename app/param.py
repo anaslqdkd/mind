@@ -330,6 +330,7 @@ class ParamSelect(Param):
         pass
 
     def to_command_arg(self) -> str:
+        debug_print(self.last_combo_box)
         return f"--{self.name} {self.last_combo_box}"
 
     def to_file(self) -> str:

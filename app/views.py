@@ -56,6 +56,7 @@ class MainWindow(QMainWindow):
         self.tab_param = QWidget()
         self.tab_versions = QWidget()
         self.tab_buttons = QWidget()
+        self.param_registry: dict[str, Param] = {}
 
         tab_param_layout = QVBoxLayout()
         tab_versions_layout = QVBoxLayout()
@@ -122,12 +123,12 @@ class MainWindow(QMainWindow):
         tab_param_layout.addStretch()
 
         # FIXME: probably change the passed param
-        # self.command_builder = CommandBuilder(self.all_params)
         # self.config_builder = ConfigBuilder(self.all_params)
 
         # add pages to the stack
         self._define_pages()
         self._init_pages()
+        self._build_builders()
         for el in self.pages:
             self.stack.addWidget(el)
 
@@ -159,6 +160,7 @@ class MainWindow(QMainWindow):
                     self.param_registry[el].set_value(int(value))
 
                 pass
+
     def load_perm(self):
         res = {}
         filepath = "data/example_perm.dat"
@@ -291,6 +293,9 @@ class MainWindow(QMainWindow):
                 "param eta_vp_1",
             ],
         }
+    def _build_builders(self):
+        self.command_builder = CommandBuilder(self.param_registry)
+        self.config_builder = ConfigBuilder(self.param_registry)
 
     def _init_pages(self):
         self.param_registry = set_param(params_dict)
@@ -336,60 +341,60 @@ class MainWindow(QMainWindow):
                 self.update_fn,
             )
             dependency_manager.add_dependency(
-                    param_registry["set components"],
-                    param_registry["param Permeability"],
-                    self.update_permeability2,
-                    )
+                param_registry["set components"],
+                param_registry["param Permeability"],
+                self.update_permeability2,
+            )
             dependency_manager.add_dependency(
-                    param_registry["set mem_types_set"],
-                    param_registry["param Permeability"],
-                    self.update_permeability2,
-                    )
+                param_registry["set mem_types_set"],
+                param_registry["param Permeability"],
+                self.update_permeability2,
+            )
             dependency_manager.add_dependency(
-                    param_registry["set mem_types_set"],
-                    param_registry["param thickness"],
-                    self.update_permeability,
-                    )
+                param_registry["set mem_types_set"],
+                param_registry["param thickness"],
+                self.update_permeability,
+            )
             dependency_manager.add_dependency(
-                    param_registry["set components"],
-                    param_registry["param mem_type"],
-                    self.update_permeability,
-                    )
+                param_registry["set components"],
+                param_registry["param mem_type"],
+                self.update_permeability,
+            )
             dependency_manager.add_dependency(
-                    param_registry["set mem_types_set"],
-                    param_registry["param mem_product"],
-                    self.update_permeability,
-                    )
+                param_registry["set mem_types_set"],
+                param_registry["param mem_product"],
+                self.update_permeability,
+            )
             dependency_manager.add_dependency(
-                    param_registry["set components"],
-                    param_registry["param xin"],
-                    self.update_permeability,
-                    )
+                param_registry["set components"],
+                param_registry["param xin"],
+                self.update_permeability,
+            )
             dependency_manager.add_dependency(
-                    param_registry["set components"],
-                    param_registry["param molarmass"],
-                    self.update_permeability,
-                    )
+                param_registry["set components"],
+                param_registry["param molarmass"],
+                self.update_permeability,
+            )
             dependency_manager.add_dependency(
-                    param_registry["set components"],
-                    param_registry["param lb_perc_prod"],
-                    self.update_permeability,
-                    )
+                param_registry["set components"],
+                param_registry["param lb_perc_prod"],
+                self.update_permeability,
+            )
             dependency_manager.add_dependency(
-                    param_registry["set components"],
-                    param_registry["param lb_perc_prod"],
-                    self.update_permeability,
-                    )
+                param_registry["set components"],
+                param_registry["param lb_perc_prod"],
+                self.update_permeability,
+            )
             dependency_manager.add_dependency(
-                    param_registry["algorithm"],
-                    param_registry["generations"],
-                    self.update_generations,
-                    )
+                param_registry["algorithm"],
+                param_registry["generations"],
+                self.update_generations,
+            )
             dependency_manager.add_dependency(
-                    param_registry["set components"],
-                    param_registry["param final_product"],
-                    self.update_final_product,
-                    )
+                param_registry["set components"],
+                param_registry["param final_product"],
+                self.update_final_product,
+            )
             # dependency_manager.add_dependency(
             #         param_registry["set components"],
             #         param_registry["param mem_type"],
@@ -405,16 +410,22 @@ class MainWindow(QMainWindow):
         target.set_rows(int(source.get_value()), source)
         target.category.update_category()
 
-    def update_permeability2(self, target: ParamFixedWithInput, source: ParamComponentSelector):
+    def update_permeability2(
+        self, target: ParamFixedWithInput, source: ParamComponentSelector
+    ):
         target.set_rows_nb(int(source.get_value()), source)
         target.category.update_category()
 
     def update_fn(self, target: ParamFixedWithInput, source: ParamInput):
-        target.set_row(int(source.get_value()))
+        debug_print(source.get_value())
+        target.set_row(int(float(source.get_value())))
+        # target.set_row(int(source.get_value()))
         target.category.update_category()
 
     def update_pages(self):
+        debug_print("in the update pages")
         for page in self.pages:
+            debug_print(f"page {page} is updating")
             page.update_param_page()
 
     def update_generations(self, target: Param, source: Param):
@@ -429,10 +440,10 @@ class MainWindow(QMainWindow):
 
     def build_command(self):
         self.update_pages()
-        # command = self.command_builder.build_command()
-        # config = self.config_builder.build_config()
-        # debug_print("the command is", command)
-        # debug_print("the config is", config)
+        command = self.command_builder.build_command()
+        config = self.config_builder.build_config()
+        debug_print("the command is", command)
+        debug_print("the config is", config)
 
 
 # -----------------------------------------------------------
@@ -442,29 +453,77 @@ class MainWindow(QMainWindow):
 
 
 class CommandBuilder:
-    def __init__(self, params) -> None:
-        self.params = params
+    def __init__(self, param_registry: dict[str, Param]) -> None:
+        self.param_registry = param_registry
+
+    # for reference
+        self.validated_params = [
+            "verbose",
+            "debug",
+            "config",
+            "exec",
+            "no_starting_point",
+            "no_simplified_model",
+            "gams",
+            "solver",
+            "maxiter",
+            "maxtime",
+            "algorithm",
+            "instance",
+            "visualise",
+            "opex",
+            "capex",
+            "save_log_sol",
+            "version",
+        ]
 
     def build_command(self):
-        args = [
-            param.to_command_arg()
-            for param in self.params
-            if param.file == FILE.COMMAND
-        ]
-        return " ".join(arg for arg in args if arg)
+        args = []
+        for param_name in self.validated_params:
+            if param_name in self.param_registry:
+                param = self.param_registry[param_name]
+                if hasattr(param, "file") and param.file == FILE.COMMAND:
+                    arg = param.to_command_arg()
+                    debug_print("--", arg)
+                    if arg:
+                        args.append(arg)
+        return " ".join(args)
+                
+
+
 
 
 class ConfigBuilder:
     def __init__(self, params) -> None:
-        self.params = params
+        self.param_registry = params
+
+        self.validated_params = [
+                "num_membranes",
+                "ub_area",
+                "lb_area",
+                "ub_acell",
+                "fixing_var",
+                "uniform_pup",
+                "vp"
+                "variable_perm",
+                "iteration",
+                "max_no_improve",
+                "pressure_ratio"
+                "pop_size",
+                "generations"
+                ]
 
     def build_config(self):
-        args = [
-            param.to_config_entry()
-            for param in self.params
-            if param.file == FILE.CONFIG
-        ]
-        return " ".join(arg for arg in args if arg)
+        args = []
+        for param_name in self.validated_params:
+            if param_name in self.param_registry:
+                param = self.param_registry[param_name]
+                if hasattr(param, "file") and param.file == FILE.CONFIG:
+                    arg = param.to_config_entry()
+                    debug_print(f"the args is {arg}, {param.name}")
+                    if arg:
+                        args.append(arg)
+        return " ".join(args)
 
 
 class PageParameters(QWidget):
@@ -481,7 +540,7 @@ class PageParameters(QWidget):
         self.stack = stack
         self.sidebar = sidebar
         self.sidebar.setCurrentRow(0)
-        self.categories: list[ParamCategory] = []
+        self.categories: list[ParamCategory] = param_category
 
         main_layout = QVBoxLayout()
 
@@ -642,6 +701,8 @@ def load_configuration():
     tuning["epsilon"] = convert_dict(float, tuning["epsilon"])
 
     return tuning, instance
+
+
 class PermType:
     """Data structure used to store permeability's information.
 
@@ -665,8 +726,17 @@ class PermType:
 
     """
 
-    def __init__(self, robeson_multi, robeson_power, ub_alpha, lb_alpha,
-                 component_item, thickness, mem_out_prod, which_mem):
+    def __init__(
+        self,
+        robeson_multi,
+        robeson_power,
+        ub_alpha,
+        lb_alpha,
+        component_item,
+        thickness,
+        mem_out_prod,
+        which_mem,
+    ):
         # Initalise some values
         self.robeson_multi = robeson_multi
         self.robeson_power = robeson_power
@@ -681,13 +751,26 @@ class PermType:
     def __str__(self):
         # for i in range(0, len(self.component_item)):
         #     print(self.component_item[i])
-        return ("PermType (" + '\nrobeson_multi = ' + str(self.robeson_multi) +
-                '\nrobeson_power = ' + str(self.robeson_power) +
-                '\nub_alpha = ' + str(self.ub_alpha) + '\nlb_alpha = ' +
-                str(self.lb_alpha) + '\nthickness = ' + str(self.thickness) +
-                '\ncomponent_item = ' + str(self.component_item) +
-                '\nmem_out_prod = ' + str(self.mem_out_prod) +
-                '\nwhich_mem = ' + str(self.which_mem))
+        return (
+            "PermType ("
+            + "\nrobeson_multi = "
+            + str(self.robeson_multi)
+            + "\nrobeson_power = "
+            + str(self.robeson_power)
+            + "\nub_alpha = "
+            + str(self.ub_alpha)
+            + "\nlb_alpha = "
+            + str(self.lb_alpha)
+            + "\nthickness = "
+            + str(self.thickness)
+            + "\ncomponent_item = "
+            + str(self.component_item)
+            + "\nmem_out_prod = "
+            + str(self.mem_out_prod)
+            + "\nwhich_mem = "
+            + str(self.which_mem)
+        )
+
 
 def delete_value_from(list_of_line, value):
     index = 0
@@ -696,6 +779,7 @@ def delete_value_from(list_of_line, value):
             list_of_line.pop(index)
         else:
             index += 1
+
 
 def parser_variable_permeability_data(file, permeability_data):
     """Permeability's data parser.
@@ -719,14 +803,14 @@ def parser_variable_permeability_data(file, permeability_data):
     delete_value_from(contents, "\n")
     txt = []
     for line in contents:
-        txt.append(line.replace('\n', ''))
+        txt.append(line.replace("\n", ""))
 
     contents = txt
 
     # set mem_type_set := A B
     mem_type = contents[0]
-    begining_index = mem_type.find('=')
-    mem_type = mem_type[begining_index + 1:]
+    begining_index = mem_type.find("=")
+    mem_type = mem_type[begining_index + 1 :]
     mem_type = mem_type.split()
     contents.remove(contents[0])
 
@@ -739,10 +823,16 @@ def parser_variable_permeability_data(file, permeability_data):
         thickness = 1
         mem_out_prod = "RET"
 
-        permeability_data[type_mem] = PermType(robeson_multiplicater,
-                                               robeson_power, ub_alpha,
-                                               lb_alpha, component_item,
-                                               thickness, mem_out_prod, [])
+        permeability_data[type_mem] = PermType(
+            robeson_multiplicater,
+            robeson_power,
+            ub_alpha,
+            lb_alpha,
+            component_item,
+            thickness,
+            mem_out_prod,
+            [],
+        )
 
     # param Robeson_multi :=
     contents.remove(contents[0])
@@ -833,6 +923,7 @@ def parser_variable_permeability_data(file, permeability_data):
 
     return permeability_data
 
+
 def parser_fixed_permeability_data(file, permeability_data):
     """Permeability's data parser.
 
@@ -856,13 +947,13 @@ def parser_fixed_permeability_data(file, permeability_data):
 
     txt = []
     for line in contents:
-        txt.append(line.replace('\n', ''))
+        txt.append(line.replace("\n", ""))
 
     contents = txt
     # set mem_type_set := A B
     mem_type = contents[0]
-    begining_index = mem_type.find('=')
-    mem_type = mem_type[begining_index + 1:]
+    begining_index = mem_type.find("=")
+    mem_type = mem_type[begining_index + 1 :]
     mem_type = mem_type.split()
     contents.remove(contents[0])
 
@@ -886,10 +977,16 @@ def parser_fixed_permeability_data(file, permeability_data):
         thickness = 1  # default value
         mem_out_prod = "RET"  # default value
 
-        permeability_data[type_membrane] = PermType(robeson_multi,
-                                                    robeson_power, ub_alpha,
-                                                    lb_alpha, component_item,
-                                                    thickness, mem_out_prod, [])
+        permeability_data[type_membrane] = PermType(
+            robeson_multi,
+            robeson_power,
+            ub_alpha,
+            lb_alpha,
+            component_item,
+            thickness,
+            mem_out_prod,
+            [],
+        )
 
     for type_membrane in mem_type:
         # read and save pair of (component -> perm value)
@@ -937,9 +1034,6 @@ def parser_fixed_permeability_data(file, permeability_data):
     return permeability_data
 
 
-
-
-
 class GasItemPerm:
     """Data structure used to store gas components permeances's value when
      `permeability's variables` are fixed (constant).
@@ -960,14 +1054,20 @@ class GasItemPerm:
         self.ub = ub
 
     def __str__(self):
-        return ('index = {} \t lb = {} value = {} \t ub = {}'.format(
-            self.index, self.lb, self.value, self.ub))
+        return "index = {} \t lb = {} value = {} \t ub = {}".format(
+            self.index, self.lb, self.value, self.ub
+        )
+
 
 def parser_fixed_permeability_data_simple(file):
     # TODO: finir
     contents = file.readlines()
     # Remove comments and empty lines
-    contents = [line.strip() for line in contents if line.strip() and not line.strip().startswith("#")]
+    contents = [
+        line.strip()
+        for line in contents
+        if line.strip() and not line.strip().startswith("#")
+    ]
 
     # set mem_type_set := A B
     mem_type_line = contents.pop(0)
@@ -1018,7 +1118,6 @@ def parser_fixed_permeability_data_simple(file):
     #     index = mem_list[-1]
     #     permeability_dict[index]["which_mem"].append(mem)
 
-
     # The rest of the file is ignored for this simple dictionary output
     return permeability_dict
 
@@ -1038,30 +1137,56 @@ def load_coef(filename):
 
     # list of validated coef
     validated_coefficients = [
-        'R', 'T', 'eta_cp', 'eta_vp_0', 'eta_vp_1', 'C_cp', "C_vp", "C_exp",
-        'K_m', 'K_mf', 'K_mr', 'K_el', 'K_gp', "K_er", 'MDFc', "MPFc",
-        'MFc', 'UF_2000', "UF_2000", 'UF_2011', "UF_1968", 'ICF', 'nu',
-        't_op', 'gamma', 'phi', 'a', "i", "z"
+        "R",
+        "T",
+        "eta_cp",
+        "eta_vp_0",
+        "eta_vp_1",
+        "C_cp",
+        "C_vp",
+        "C_exp",
+        "K_m",
+        "K_mf",
+        "K_mr",
+        "K_el",
+        "K_gp",
+        "K_er",
+        "MDFc",
+        "MPFc",
+        "MFc",
+        "UF_2000",
+        "UF_2000",
+        "UF_2011",
+        "UF_1968",
+        "ICF",
+        "nu",
+        "t_op",
+        "gamma",
+        "phi",
+        "a",
+        "i",
+        "z",
     ]
 
     economic = {}
 
-    with open(filename, 'r') as file:
+    with open(filename, "r") as file:
         for line in file:
             if line == "\n":
                 pass
             else:
                 line = line.split()
-                if line[0] != 'param':
-                    raise ValueError("Unkown keyword ({} != param)"
-                                     " in economic datafile ({})".format(
-                                         line[0], filename))
+                if line[0] != "param":
+                    raise ValueError(
+                        "Unkown keyword ({} != param)"
+                        " in economic datafile ({})".format(line[0], filename)
+                    )
                 if line[1] not in validated_coefficients:
-                    raise ValueError("Unkown keyword coefficient ({})"
-                                     " in economic datafile ({})".format(
-                                         line[1], filename))
+                    raise ValueError(
+                        "Unkown keyword coefficient ({})"
+                        " in economic datafile ({})".format(line[1], filename)
+                    )
 
                 economic[line[1]] = float(line[-1])
 
     return economic
-
