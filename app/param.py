@@ -239,6 +239,7 @@ class ParamInput(Param):
         self.hidden = True
 
     def show(self):
+        debug_print("in show function")
         self.hidden = False
 
     def to_file(self) -> str:
@@ -269,7 +270,11 @@ class ParamSelect(Param):
         self.values = values
         self.optional = optional
         self.description = description
+        self.manager: Optional[DependencyManager] = None
         pass
+    
+    def set_values(self, values: list[str]):
+        self.values = values
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         question_label = QLabel(label)
@@ -280,7 +285,7 @@ class ParamSelect(Param):
 
         self.question_label = question_label
         self.combo_box = combo_box
-        # self.combo_box.currentIndexChanged.connect(self.notify_dependants)
+        self.combo_box.currentIndexChanged.connect(self._on_value_changed)
         self.restore_values()
 
         header = self.build_header(label, self.description, self.optional)
@@ -298,6 +303,12 @@ class ParamSelect(Param):
             index = self.combo_box.findText(self.last_combo_box)
             if index != -1:
                 self.combo_box.setCurrentIndex(index)
+
+    def _on_value_changed(self):
+        debug_print("in _on_value_changed")
+        if self.manager is not None:
+            self.store_value()
+            self.manager.notify_change(self)
 
     def store_value(self):
         if self.combo_box is not None:
@@ -826,6 +837,9 @@ class ParamFixedWithInput(Param):
         self.sizes[source.name] = rows
         self.row_nb = rows
 
+    def set_row(self, rows: int):
+        self.row_nb = rows
+
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         self.row = row
@@ -1278,6 +1292,7 @@ class ParamCategory(QWidget):
         self.row = 0
         # for label, param_obj in self.param.items():
         for param_obj in self.param:
+            debug_print(f"----- {param_obj.name}")
             param_obj.category = self
         # for label, param_obj in self.param.items():
         for param_obj in self.param:
@@ -1406,6 +1421,113 @@ class TimeSpinBox(QWidget):
     def set_value(self, value: int, index: int) -> None:
         self.unit_combo.setCurrentIndex(index)
         self.spin.setValue(value)
+
+# -----------------------------------------------------------
+class ParamFixedWithSelect(Param):
+    def __init__(
+        self,
+        name: str,
+        file: FILE,
+        depends_on: Optional[dict[str, DependencyType]],
+        values: list[str],
+        optional: bool = False,
+        description: str = "",
+        expected_type=str,
+        default: Optional[int] = None,
+        min_value: Optional[int] = None,
+        max_value: Optional[int] = None,
+        step: Optional[int] = None,
+    ) -> None:
+        super().__init__(name, file=file, depends_on=depends_on)
+        self.question_label = None
+        self.line_edit = None
+        self.combo_box = None
+        self.description = description
+
+        self.last_line_edit = ""
+        self.last_combo_box = ""
+
+        self.row_nb = 0
+
+        self.optional = optional
+        self.rows = 0
+        self.default = default
+
+        self.min_value = min_value
+        self.values = values
+        self.max_value = max_value
+        self.step = step
+        self.sizes = {}
+        self.keys = ["set components", "set mem_types_set"]
+        self.sizes = {k: 0 for k in self.keys}
+        pass
+
+    def set_rows_nb(self, rows: int, source: Param):
+        self.sizes[source.name] = rows
+        debug_print(self.sizes)
+        self.row_nb = 1
+        for val in self.sizes.values():
+            self.row_nb *= int(val)
+        # self.row_nb = rows
+
+    def set_rows(self, rows: int, source: Param):
+        self.sizes[source.name] = rows
+        self.row_nb = rows
+
+
+
+    def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        self.row = row
+        self.label = label
+        self.grid_layout = grid_layout
+        header = self.build_header(label, self.description, self.optional)
+        grid_layout.addWidget(header, row, 0)
+        row += 1
+
+        group_box = QGroupBox()
+        group_layout = QGridLayout(group_box)
+        group_box.setLayout(group_layout)
+        group_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+
+        debug_print(self.row_nb)
+        debug_print(type(self.row_nb))
+        for r in range(self.row_nb):
+            group_layout.addWidget(QLabel(f"{r+1}"), r, 0)
+            for c in range(1, 2):
+                # line_edit = QSpinBox()
+                line_edit = QComboBox()
+                line_edit.addItems(self.values)
+
+                group_layout.addWidget(
+                    line_edit, r, c, alignment=Qt.AlignmentFlag.AlignCenter
+                )
+
+        self.grid_layout.addWidget(group_box, row, 0, 1, -1)
+
+    def row_span(self) -> int:
+        return self.row_nb + 2
+
+    def restore_value(self):
+        if self.last_combo_box:
+            if self.combo_box:
+                index = self.combo_box.findText(self.last_combo_box)
+                if index != -1:
+                    self.combo_box.setCurrentIndex(index)
+        if self.last_line_edit:
+            if self.line_edit:
+                self.line_edit.setText(self.last_line_edit)
+
+    def store_value(self):
+        if self.line_edit is not None:
+            self.last_line_edit = self.line_edit.text()
+            pass
+        if self.combo_box is not None:
+            self.last_combo_box = self.combo_box.currentText()
+        pass
+
+    def to_file(self) -> str:
+        return f"{self.name} := {self.last_line_edit} #{self.last_combo_box}"
+
 
 
 # TODO: search filter

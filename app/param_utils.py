@@ -14,6 +14,7 @@ from app.param import (
     ParamRadio,
     ParamSelect,
     ParamSpinBoxWithBool,
+    ParamFixedWithSelect,
 )
 from app.param_enums import FILE, ParamType
 import inspect
@@ -141,6 +142,16 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
             return ParamSpinBoxWithBool(
                 name,
                 file,
+                depends_on=depends_on,
+                optional=optional,
+                expected_type=expected_type,
+                # description=description,
+            )
+        case ParamType.FIXED_WITH_SELECT:
+            return ParamFixedWithSelect(
+                name,
+                file,
+                values = values,
                 depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,

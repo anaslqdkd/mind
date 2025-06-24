@@ -210,6 +210,7 @@ params_dict = {
         "min_value": 0,
         "max_value": 100,
         "step": 1,
+        "hidden": True,
     },
 
     # -----------------------------------------------------------
@@ -245,7 +246,7 @@ params_dict = {
         "optional": False,
     },
     "param lb_perc_prod": {
-        "name": "lb_perc_prod",
+        "name": "param lb_perc_prod",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.DATA,
         "optional": False,
@@ -480,7 +481,7 @@ params_dict = {
     "param mem_product": {
         "name": "param mem_product",
         # FIXME: fixed with select
-        "param_type": ParamType.SELECT,
+        "param_type": ParamType.FIXED_WITH_SELECT,
         "file": FILE.PERM,
         "optional": False,
         "values": ["RET", "PERM"]

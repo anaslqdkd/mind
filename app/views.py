@@ -30,6 +30,7 @@ from app.param import (
     ParamComponentSelector,
     ParamFixedWithInput,
     ParamInput,
+    ParamSelect,
     debug_print,
 )
 from app.param_enums import FILE
@@ -211,7 +212,7 @@ class MainWindow(QMainWindow):
                 "max_no_improve",
                 "max_trials",
                 "pressure_ratio",
-                "pop_size",
+                # "pop_size",
                 "generations",
             ],
             "Data": [
@@ -317,6 +318,11 @@ class MainWindow(QMainWindow):
                 self.update_fn,
             )
             dependency_manager.add_dependency(
+                param_registry["num_membranes"],
+                param_registry["ub_acell"],
+                self.update_fn,
+            )
+            dependency_manager.add_dependency(
                     param_registry["set components"],
                     param_registry["param Permeability"],
                     self.update_permeability2,
@@ -324,7 +330,7 @@ class MainWindow(QMainWindow):
             dependency_manager.add_dependency(
                     param_registry["set mem_types_set"],
                     param_registry["param Permeability"],
-                    self.update_permeability,
+                    self.update_permeability2,
                     )
             dependency_manager.add_dependency(
                     param_registry["set mem_types_set"],
@@ -336,6 +342,41 @@ class MainWindow(QMainWindow):
                     param_registry["param mem_type"],
                     self.update_permeability,
                     )
+            dependency_manager.add_dependency(
+                    param_registry["set mem_types_set"],
+                    param_registry["param mem_product"],
+                    self.update_permeability,
+                    )
+            dependency_manager.add_dependency(
+                    param_registry["set components"],
+                    param_registry["param xin"],
+                    self.update_permeability,
+                    )
+            dependency_manager.add_dependency(
+                    param_registry["set components"],
+                    param_registry["param molarmass"],
+                    self.update_permeability,
+                    )
+            dependency_manager.add_dependency(
+                    param_registry["set components"],
+                    param_registry["param lb_perc_prod"],
+                    self.update_permeability,
+                    )
+            dependency_manager.add_dependency(
+                    param_registry["set components"],
+                    param_registry["param lb_perc_prod"],
+                    self.update_permeability,
+                    )
+            dependency_manager.add_dependency(
+                    param_registry["algorithm"],
+                    param_registry["generations"],
+                    self.update_generations,
+                    )
+            dependency_manager.add_dependency(
+                    param_registry["set components"],
+                    param_registry["param final_product"],
+                    self.update_final_product,
+                    )
             # dependency_manager.add_dependency(
             #         param_registry["set components"],
             #         param_registry["param mem_type"],
@@ -343,6 +384,9 @@ class MainWindow(QMainWindow):
             #         )
 
         register_param_dependencies(self.param_registry, dependency_manager)
+
+    def update_final_product(self, target: ParamSelect, source: ParamComponentSelector):
+        target.set_values(source.selected_components)
 
     def update_permeability(self, target: ParamFixedWithInput, source: ParamComponent):
         target.set_rows(int(source.get_value()), source)
@@ -353,12 +397,22 @@ class MainWindow(QMainWindow):
         target.category.update_category()
 
     def update_fn(self, target: ParamFixedWithInput, source: ParamInput):
-        target.set_rows_nb(int(source.get_value()), source)
+        target.set_row(int(source.get_value()))
         target.category.update_category()
 
     def update_pages(self):
         for page in self.pages:
             page.update_param_page()
+
+    def update_generations(self, target: Param, source: Param):
+        debug_print(source.last_combo_box)
+        if source.last_combo_box != "genetic":
+            target.hide()
+        else:
+            debug_print("the last combo box is genetic")
+            target.show()
+        target.category.update_category()
+        debug_print("in update algo", target.name, source.name)
 
     def build_command(self):
         self.update_pages()
