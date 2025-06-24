@@ -183,10 +183,10 @@ class ParamInput(Param):
         if self.hidden:
             # self.hide()
             return
-        if type(self.default) == int:
-            line_edit = QSpinBox()
-        else:
-            line_edit = QDoubleSpinBox()
+        # if type(self.default) == int:
+        #     line_edit = QSpinBox()
+        # else:
+        line_edit = QDoubleSpinBox()
 
         if self.min_value is not None:
             line_edit.setMinimum(self.min_value)
@@ -212,8 +212,22 @@ class ParamInput(Param):
             self.store_value()
             self.manager.notify_change(self)
 
-    def set_value(self, value: int):
+    def set_value(self, value):
+        debug_print("in set value with value", value)
         if self.line_edit is not None:
+            # For QDoubleSpinBox
+            if hasattr(self.line_edit, "setDecimals"):
+                # Set decimals based on value precision
+                if isinstance(value, float):
+                    str_val = str(value)
+                    if '.' in str_val:
+                        decimals = len(str_val.split('.')[-1].rstrip('0'))
+                    else:
+                        decimals = 2
+                    self.line_edit.setDecimals(decimals)
+                else:
+                    self.line_edit.setDecimals(0)
+            self.line_edit.setMaximum(1e10)
             self.line_edit.setValue(value)
 
     def restore_values(self):

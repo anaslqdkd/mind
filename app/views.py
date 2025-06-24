@@ -181,7 +181,7 @@ class MainWindow(QMainWindow):
         for el, value in res.items():
             if f"param {el}" in self.param_registry.keys():
                 debug_print(el)
-                self.param_registry[f"param {el}"].set_value(int(value))
+                self.param_registry[f"param {el}"].set_value(value)
 
         debug_print(res)
 
