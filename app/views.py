@@ -153,7 +153,6 @@ class MainWindow(QMainWindow):
 
         for el, value in instance.items():
             if el in self.param_registry.keys():
-                debug_print(el, value, self.param_registry[el])
                 if isinstance(self.param_registry[el], ParamBoolean):
                     self.param_registry[el].set_value(bool(value))
                 if isinstance(self.param_registry[el], ParamInput):
@@ -293,6 +292,7 @@ class MainWindow(QMainWindow):
                 "param eta_vp_1",
             ],
         }
+
     def _build_builders(self):
         self.command_builder = CommandBuilder(self.param_registry)
         self.config_builder = ConfigBuilder(self.param_registry)
@@ -309,13 +309,27 @@ class MainWindow(QMainWindow):
             temp_category = ParamCategory(key, list_param)
             self.category_instances[key] = temp_category
 
-        for page, category_name_list in self.pages_names.items():
+        self.tab_categories = {
+                "Tab 1": [self.category_instances["General"]],
+                "Tab 2": [self.category_instances["Membranes"]],
+                "Tab 3": [self.category_instances["Data"]],
+                "Tab 4": [self.category_instances["Data2"]],
+                "Tab 5": [self.category_instances["Perm"]],
+                "Tab 6": [self.category_instances["Eco"]],
+                "Tab 7": [self.category_instances["Eco2"]],
+                }
+        self.tabs_names = {
+            "Page 1": ["Tab 1", "Tab 2"],
+            "Page 2": ["Tab 3", "Tab 4"],
+            "Page 3": ["Tab 5"],
+            "Page 4": ["Tab 6", "Tab 7"],
+        }
+        for page, tab_list in self.tabs_names.items():
             self.sidebar.addItem(page)
-            page_categories = []
-            for el in category_name_list:
-                page_categories.append(self.category_instances[el])
-            page_temp = PageParameters(self, page_categories, self.stack, self.sidebar)
+            page_tabs_categories = self.tab_categories
+            page_temp = PageParameters(self, self.stack, self.sidebar, tab_list, page_tabs_categories)
             self.pages.append(page_temp)
+
         pass
 
     def _set_dependencies(self):
@@ -423,20 +437,16 @@ class MainWindow(QMainWindow):
         target.category.update_category()
 
     def update_pages(self):
-        debug_print("in the update pages")
         for page in self.pages:
-            debug_print(f"page {page} is updating")
             page.update_param_page()
 
     def update_generations(self, target: Param, source: Param):
-        debug_print(source.last_combo_box)
         if source.last_combo_box != "genetic":
             target.hide()
         else:
             debug_print("the last combo box is genetic")
             target.show()
         target.category.update_category()
-        debug_print("in update algo", target.name, source.name)
 
     def build_command(self):
         self.update_pages()
@@ -456,7 +466,7 @@ class CommandBuilder:
     def __init__(self, param_registry: dict[str, Param]) -> None:
         self.param_registry = param_registry
 
-    # for reference
+        # for reference
         self.validated_params = [
             "verbose",
             "debug",
@@ -484,13 +494,9 @@ class CommandBuilder:
                 param = self.param_registry[param_name]
                 if hasattr(param, "file") and param.file == FILE.COMMAND:
                     arg = param.to_command_arg()
-                    debug_print("--", arg)
                     if arg:
                         args.append(arg)
         return " ".join(args)
-                
-
-
 
 
 class ConfigBuilder:
@@ -498,20 +504,18 @@ class ConfigBuilder:
         self.param_registry = params
 
         self.validated_params = [
-                "num_membranes",
-                "ub_area",
-                "lb_area",
-                "ub_acell",
-                "fixing_var",
-                "uniform_pup",
-                "vp"
-                "variable_perm",
-                "iteration",
-                "max_no_improve",
-                "pressure_ratio"
-                "pop_size",
-                "generations"
-                ]
+            "num_membranes",
+            "ub_area",
+            "lb_area",
+            "ub_acell",
+            "fixing_var",
+            "uniform_pup",
+            "vp" "variable_perm",
+            "iteration",
+            "max_no_improve",
+            "pressure_ratio" "pop_size",
+            "generations",
+        ]
 
     def build_config(self):
         args = []
@@ -520,27 +524,52 @@ class ConfigBuilder:
                 param = self.param_registry[param_name]
                 if hasattr(param, "file") and param.file == FILE.CONFIG:
                     arg = param.to_config_entry()
-                    debug_print(f"the args is {arg}, {param.name}")
+                    if arg:
+                        args.append(arg)
+        return " ".join(args)
+
+
+class EcoBuilder:
+    def __init__(self, params) -> None:
+        self.param_registry = params
+
+        self.validated_params = [
+            "param R",
+            "ub_area",
+            "lb_area",
+            "ub_acell",
+            "fixing_var",
+            "uniform_pup",
+            "vp" "variable_perm",
+            "iteration",
+            "max_no_improve",
+            "pressure_ratio" "pop_size",
+            "generations",
+        ]
+
+    def build_config(self):
+        args = []
+        for param_name in self.validated_params:
+            if param_name in self.param_registry:
+                param = self.param_registry[param_name]
+                if hasattr(param, "file") and param.file == FILE.CONFIG:
+                    arg = param.to_config_entry()
                     if arg:
                         args.append(arg)
         return " ".join(args)
 
 
 class PageParameters(QWidget):
-    def __init__(
-        self,
-        main_window,
-        param_category: list[ParamCategory],
-        stack: QStackedWidget,
-        sidebar: QListWidget,
-    ) -> None:
+    def __init__(self, main_window, stack, sidebar, tabs_for_page=None, tab_categories=None):
         super().__init__()
         self.main_window = main_window
         # self.param_category = param_category
         self.stack = stack
         self.sidebar = sidebar
         self.sidebar.setCurrentRow(0)
-        self.categories: list[ParamCategory] = param_category
+        self.categories: list[ParamCategory] = []
+        self.tab_categories = tab_categories
+        self.tabs: list[QWidget] = []
 
         main_layout = QVBoxLayout()
 
@@ -551,17 +580,41 @@ class PageParameters(QWidget):
         tab1_widget = QWidget()
         tab1_layout = QVBoxLayout(tab1_widget)
         tab1_layout.setSpacing(0)
-
-        for el in param_category:
-            tab1_layout.addWidget(el)
-
         self.tab_widget = QTabWidget()
-        self.tab_widget.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
-        )
-        self.tab_widget.addTab(tab1_widget, "Tab 1")
-        main_layout.addWidget(self.tab_widget, 1, Qt.AlignmentFlag.AlignTop)
-        main_layout.addStretch()
+        self.tab_widget.setTabPosition(QTabWidget.TabPosition.North)
+
+        if tabs_for_page and tab_categories:
+            for tab_name in tabs_for_page:
+                tab_widget = QWidget()
+                tab_layout = QVBoxLayout(tab_widget)
+                for cat in tab_categories.get(tab_name, []):
+                    self.categories.append(cat)
+                    tab_layout.addWidget(cat)
+                self.tab_widget.addTab(tab_widget, tab_name)
+
+        main_layout.addWidget(self.tab_widget)
+        self.setLayout(main_layout)
+
+        # for tab_name, category_instance in self.tab_categories.items():
+        #     tab_widget = QWidget()
+        #     tab_layout = QVBoxLayout(tab_widget)
+        #     self.tabs.append(tab_widget)
+        #
+        #     # tab1_layout.addWidget(el)
+        # for tab in self.tabs:
+        #     main_layout.addWidget(tab)
+        #
+        # self.tab_widget = QTabWidget()
+        # self.tab_widget.setSizePolicy(
+        #     QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+        # )
+        # self.tab_widget.addTab(tab1_widget, "Tab 1")
+        #
+        # # add another tab
+        # tab2_widget = QWidget()
+        # tab2_layout = QVBoxLayout(tab2_widget)
+        # tab2_layout.addWidget(QLabel("This is tab 2"))
+        # self.tab_widget.addTab(tab2_widget, "Tab 2")
 
         next_button = QPushButton("next")
 
@@ -570,6 +623,7 @@ class PageParameters(QWidget):
         end_button_layout.addStretch()
         next_button.clicked.connect(self.go_to_next_page)
         end_button_layout.addWidget(next_button)
+        # main_layout.addWidget(self.tab_widget)
         main_layout.addWidget(end_button_widget)
 
         main_layout.addStretch()

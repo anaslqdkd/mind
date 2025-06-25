@@ -213,7 +213,6 @@ class ParamInput(Param):
             self.manager.notify_change(self)
 
     def set_value(self, value):
-        debug_print("in set value with value", value)
         if self.line_edit is not None:
             # For QDoubleSpinBox
             if hasattr(self.line_edit, "setDecimals"):
@@ -253,7 +252,6 @@ class ParamInput(Param):
         self.hidden = True
 
     def show(self):
-        debug_print("in show function")
         self.hidden = False
 
     def to_file(self) -> str:
@@ -319,7 +317,6 @@ class ParamSelect(Param):
                 self.combo_box.setCurrentIndex(index)
 
     def _on_value_changed(self):
-        debug_print("in _on_value_changed")
         if self.manager is not None:
             self.store_value()
             self.manager.notify_change(self)
@@ -330,7 +327,6 @@ class ParamSelect(Param):
         pass
 
     def to_command_arg(self) -> str:
-        debug_print(self.last_combo_box)
         return f"--{self.name} {self.last_combo_box}"
 
     def to_file(self) -> str:
@@ -435,7 +431,7 @@ class ParamInputWithUnity(Param):
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(header, row, 0)
-        line_edit = QLineEdit()
+        line_edit = QSpinBox()
         combo_box = QComboBox()
         combo_box.addItems(self.values)
         grid_layout.addItem(
@@ -459,11 +455,11 @@ class ParamInputWithUnity(Param):
                     self.combo_box.setCurrentIndex(index)
         if self.last_line_edit:
             if self.line_edit:
-                self.line_edit.setText(self.last_line_edit)
+                self.line_edit.setValue(int(self.last_line_edit))
 
     def store_value(self):
         if self.line_edit is not None:
-            self.last_line_edit = self.line_edit.text()
+            self.last_line_edit = self.line_edit.value()
             pass
         if self.combo_box is not None:
             self.last_combo_box = self.combo_box.currentText()
@@ -738,7 +734,6 @@ class ParamComponent(Param):
 
 
     def _on_value_changed(self):
-        debug_print("in on value changed")
         if self.manager is not None:
             self.store_value()
             self.manager.notify_change(self)
@@ -767,16 +762,13 @@ class ParamComponent(Param):
         self.category.update_category()
 
     def get_value(self):
-        debug_print(self.last_combo_boxes)
         return len(self.last_combo_boxes)
 
     def store_value(self):
-        debug_print(self.last_combo_boxes)
         self.last_combo_boxes.clear()
         for el in self.combo_boxes:
             if el.currentText() != "":
                 self.last_combo_boxes.append(el.currentText())
-        debug_print(self.last_combo_boxes)
 
     def remove_widget_pair(
         self, widget1: QWidget, widget2: QWidget, layout: QGridLayout
@@ -842,7 +834,6 @@ class ParamFixedWithInput(Param):
 
     def set_rows_nb(self, rows: int, source: Param):
         self.sizes[source.name] = rows
-        debug_print(self.sizes)
         self.row_nb = 1
         for val in self.sizes.values():
             self.row_nb *= int(val)
@@ -869,8 +860,6 @@ class ParamFixedWithInput(Param):
         group_box.setLayout(group_layout)
         group_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
-        debug_print(self.row_nb)
-        debug_print(type(self.row_nb))
         for r in range(self.row_nb):
             group_layout.addWidget(QLabel(f"{r+1}"), r, 0)
             for c in range(1, 2):
@@ -1307,7 +1296,6 @@ class ParamCategory(QWidget):
         self.row = 0
         # for label, param_obj in self.param.items():
         for param_obj in self.param:
-            debug_print(f"----- {param_obj.name}")
             param_obj.category = self
         # for label, param_obj in self.param.items():
         for param_obj in self.param:
@@ -1479,7 +1467,6 @@ class ParamFixedWithSelect(Param):
 
     def set_rows_nb(self, rows: int, source: Param):
         self.sizes[source.name] = rows
-        debug_print(self.sizes)
         self.row_nb = 1
         for val in self.sizes.values():
             self.row_nb *= int(val)
@@ -1504,8 +1491,6 @@ class ParamFixedWithSelect(Param):
         group_box.setLayout(group_layout)
         group_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
-        debug_print(self.row_nb)
-        debug_print(type(self.row_nb))
         for r in range(self.row_nb):
             group_layout.addWidget(QLabel(f"{r+1}"), r, 0)
             for c in range(1, 2):
