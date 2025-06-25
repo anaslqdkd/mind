@@ -209,16 +209,22 @@ class MainWindow(QMainWindow):
                 "algorithm",
                 "no_starting_point",
                 "no_simplified_model",
-                "visualise",
-                "opex",
-                "capex",
+                # "visualise",
+                # "opex",
+                # "capex",
                 "save_log_sol",
             ],
-            "Membranes": [
+            "Surfaces": [
                 "num_membranes",
                 "ub_area",
                 "lb_area",
-                "ub_acell",
+                "ub_acell"
+                ],
+            "Membranes": [
+                # "num_membranes",
+                # "ub_area",
+                # "lb_area",
+                # "ub_acell",
                 "fixing_var",
                 "uniform_pup",
                 "vp",
@@ -312,6 +318,7 @@ class MainWindow(QMainWindow):
 
         self.tab_categories = {
                 "Tab 1": [self.category_instances["General"]],
+                "Tab a": [self.category_instances["Surfaces"]],
                 "Tab 2": [self.category_instances["Membranes"]],
                 "Tab 3": [self.category_instances["Data"]],
                 "Tab 4": [self.category_instances["Data2"]],
@@ -320,10 +327,12 @@ class MainWindow(QMainWindow):
                 "Tab 7": [self.category_instances["Eco2"]],
                 }
         self.tabs_names = {
-            "Page 1": ["Tab 1", "Tab 2"],
-            "Page 2": ["Tab 3", "Tab 4"],
-            "Page 3": ["Tab 5"],
-            "Page 4": ["Tab 6", "Tab 7"],
+            "Page 1": ["Tab 1"],
+            "Page 2": ["Tab a", "Tab 2"],
+            "Page 3": ["Tab 3", "Tab 4"],
+            "Page 4": ["Tab 4"],
+            "Page 5": ["Tab 5"],
+            "Page 6": ["Tab 6", "Tab 7"],
         }
         for page, tab_list in self.tabs_names.items():
             self.sidebar.addItem(page)
@@ -406,6 +415,16 @@ class MainWindow(QMainWindow):
                 self.update_generations,
             )
             dependency_manager.add_dependency(
+                param_registry["algorithm"],
+                param_registry["generations"],
+                self.update_generations,
+            )
+            dependency_manager.add_dependency(
+                param_registry["algorithm"],
+                param_registry["generations"],
+                self.update_config_algo_params,
+            )
+            dependency_manager.add_dependency(
                 param_registry["set components"],
                 param_registry["param final_product"],
                 self.update_final_product,
@@ -448,6 +467,28 @@ class MainWindow(QMainWindow):
             debug_print("the last combo box is genetic")
             target.show()
         target.category.update_category()
+
+    def update_config_algo_params(self, target: ParamInput, source: ParamSelect):
+        debug_print("in update config algo params")
+        # Example: show/hide params based on the selected algorithm
+        if source.last_combo_box == "multistart":
+            # Show "iteration" and "seed1" params
+            for param_name in ["iteration", "generations"]:
+                param = self.param_registry.get(param_name)
+                if param:
+                    param.show()
+                    if hasattr(param, "category") and param.category:
+                        param.category.update_category()
+        if source.last_combo_box == "mbh":
+            # Hide "iteration" and "seed1" params
+            for param_name in ["iteration", "generations"]:
+                param = self.param_registry.get(param_name)
+                if param:
+                    param.show()
+                    if hasattr(param, "category") and param.category:
+                        param.category.update_category()
+        # Add similar logic for "mbh" and "global_opt" as needed
+
 
     def build_command(self):
         self.update_pages()
@@ -511,10 +552,14 @@ class ConfigBuilder:
             "ub_acell",
             "fixing_var",
             "uniform_pup",
-            "vp" "variable_perm",
+            "max_trials",
+            "pop_size",
+            "vp",
+            "variable_perm",
             "iteration",
             "max_no_improve",
-            "pressure_ratio" "pop_size",
+            "pressure_ratio"
+            "pop_size",
             "generations",
         ]
 

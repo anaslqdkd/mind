@@ -15,6 +15,7 @@ from app.param import (
     ParamSelect,
     ParamSpinBoxWithBool,
     ParamFixedWithSelect,
+    debug_print,
 )
 from app.param_enums import FILE, ParamType
 import inspect
@@ -23,6 +24,8 @@ import inspect
 # -----------------------------------------------------------
 def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Param:
     optional = kwargs.get("optional", False)
+    label = kwargs.get("label", "")
+    debug_print(label, param_type)
     values = kwargs.get("values", [])
     depends_on = kwargs.get("depends_on", {})
     expected_type = kwargs.get("expected_type", str)
@@ -34,9 +37,11 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
     hidden = kwargs.get("hidden")
     match param_type:
         case ParamType.INPUT:
+            debug_print(label)
             return ParamInput(
                 name,
                 optional=optional,
+                label=label,
                 file=file,
                 depends_on=depends_on,
                 expected_type=expected_type,
@@ -52,15 +57,18 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 name,
                 file=file,
                 values=values,
+                label = label,
                 depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,
                 description=description,
             )
         case ParamType.BOOLEAN:
+            debug_print(label)
             return ParamBoolean(
                 name,
                 file,
+                label=label,
                 depends_on=depends_on,
                 expected_type=expected_type,
                 optional=optional,
@@ -80,6 +88,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
             return ParamBooleanWithInput(
                 name,
                 file,
+                label=label,
                 depends_on=depends_on,
                 expected_type=expected_type,
                 optional=optional,
@@ -89,6 +98,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
             return ParamBooleanWithInputWithUnity(
                 name,
                 file=file,
+                label=label,
                 values=values,
                 optional=optional,
                 depends_on=depends_on,
@@ -99,6 +109,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
             return ParamComponent(
                 name,
                 file,
+                label=label,
                 values=values,
                 depends_on=depends_on,
                 optional=optional,
@@ -109,6 +120,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
             return ParamFixedWithInput(
                 name,
                 file,
+                label=label,
                 depends_on=depends_on,
                 expected_type=expected_type,
                 optional=optional,
@@ -132,6 +144,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
             return ParamComponentSelector(
                 name,
                 file,
+                label = label,
                 depends_on=depends_on,
                 values=values,
                 optional=optional,
@@ -142,6 +155,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
             return ParamSpinBoxWithBool(
                 name,
                 file,
+                label=label,
                 depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,

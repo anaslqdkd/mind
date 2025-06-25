@@ -91,6 +91,7 @@ class Param:
         file: FILE,
         depends_on: Optional[dict[str, DependencyType]] = None,
         optional: bool = False,
+        label: str = "",
         expected_type=str,
         description: str = "",
         manager: Optional[DependencyManager] = None,
@@ -104,6 +105,7 @@ class Param:
         self.dependants: dict[Param, DependencyType] = {}
         self.expected_type = expected_type
         self.description = description
+        self.label = label
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         raise NotImplementedError("Subclasses must implement build_widgets")
@@ -155,13 +157,14 @@ class ParamInput(Param):
         optional: bool = False,
         expected_type=str,
         description: str = "",
+        label: str = "",
         default: Optional[int] = None,
         min_value: Optional[int] = None,
         max_value: Optional[int] = None,
         step: Optional[int] = None,
         hidden: bool = False,
     ) -> None:
-        super().__init__(name, file, depends_on=depends_on, description=description)
+        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
         self.question_label = None
         self.line_edit = None
         self.last_line_edit = ""
@@ -177,6 +180,7 @@ class ParamInput(Param):
         self.header = None
         self.hidden = hidden
         self.manager: Optional[DependencyManager] = None
+        # self.label = label or name
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
@@ -196,6 +200,7 @@ class ParamInput(Param):
             line_edit.setValue(self.default)
         if self.step is not None:
             line_edit.setSingleStep(self.step)
+        debug_print(self.label)
         header = self.build_header(label, self.description, self.optional)
         self.header = header
         grid_layout.addWidget(self.header, row, 0)
@@ -270,12 +275,13 @@ class ParamSelect(Param):
         name: str,
         file: FILE,
         values: list[str],
+        label: str,
         depends_on: Optional[dict[str, DependencyType]],
         optional: bool = False,
         description: str = "",
         expected_type=str,
     ) -> None:
-        super().__init__(name, file, depends_on=depends_on)
+        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
         self.question_label = None
         self.combo_box = None
         self.last_combo_box = ""
@@ -283,6 +289,7 @@ class ParamSelect(Param):
         self.optional = optional
         self.description = description
         self.manager: Optional[DependencyManager] = None
+        self.label = label
         pass
     
     def set_values(self, values: list[str]):
@@ -344,19 +351,22 @@ class ParamBoolean(Param):
         self,
         name: str,
         file: FILE,
+        label: str,
         depends_on: Optional[dict[str, DependencyType]],
         optional: bool = False,
         description: str = "",
         expected_type=str,
     ) -> None:
-        super().__init__(name, file, depends_on=depends_on)
+        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
         self.question_label = None
         self.check_box = None
         self.last_check_box = False
         self.optional = optional
         self.description = description
+        self.label = label
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        debug_print("+++", label)
         container = QWidget()
         h_layout = QHBoxLayout(container)
         h_layout.setContentsMargins(0, 0, 0, 0)
@@ -479,11 +489,12 @@ class ParamBooleanWithInput(Param):
         name: str,
         file: FILE,
         depends_on: Optional[dict[str, DependencyType]],
+        label: str,
         optional: bool = False,
         description: str = "",
         expected_type=str,
     ) -> None:
-        super().__init__(name, file, depends_on=depends_on)
+        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
         self.question_label = None
         self.line_edit = None
         self.check_box = None
@@ -571,13 +582,14 @@ class ParamBooleanWithInputWithUnity(Param):
         self,
         name: str,
         file: FILE,
+        label: str,
         values: list[str],
         depends_on: Optional[dict[str, DependencyType]],
         optional: bool = False,
         description: str = "",
         expected_type=str,
     ) -> None:
-        super().__init__(name, file, depends_on=depends_on)
+        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
         self.question_label = None
         self.check_box = None
         self.combo_box = None
@@ -673,13 +685,14 @@ class ParamComponent(Param):
         self,
         name: str,
         file: FILE,
+        label: str,
         values: list[str],
         depends_on: Optional[dict[str, DependencyType]],
         optional: bool = False,
         description: str = "",
         expected_type=str,
     ) -> None:
-        super().__init__(name, file, depends_on=depends_on)
+        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
         self.question_label = None
         self.combo_box = None
         self.extra_rows = 0
@@ -800,6 +813,7 @@ class ParamFixedWithInput(Param):
         self,
         name: str,
         file: FILE,
+        label: str,
         depends_on: Optional[dict[str, DependencyType]],
         optional: bool = False,
         description: str = "",
@@ -809,7 +823,7 @@ class ParamFixedWithInput(Param):
         max_value: Optional[int] = None,
         step: Optional[int] = None,
     ) -> None:
-        super().__init__(name, file=file, depends_on=depends_on)
+        super().__init__(name, file=file, depends_on=depends_on, label=label)
         self.question_label = None
         self.line_edit = None
         self.combo_box = None
@@ -818,7 +832,7 @@ class ParamFixedWithInput(Param):
         self.last_line_edit = ""
         self.last_combo_box = ""
 
-        self.row_nb = 0
+        self.row_nb = 1
 
         self.optional = optional
         self.rows = 0
@@ -849,21 +863,19 @@ class ParamFixedWithInput(Param):
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         self.row = row
-        self.label = label
+        # self.label = label
         self.grid_layout = grid_layout
         header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(header, row, 0)
         row += 1
 
-        group_box = QGroupBox()
-        group_layout = QGridLayout(group_box)
-        group_box.setLayout(group_layout)
-        group_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
-
+        # group_box = QGroupBox()
+        # group_layout = QGridLayout(group_box)
+        # group_box.setLayout(group_layout)
+        # group_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
         for r in range(self.row_nb):
-            group_layout.addWidget(QLabel(f"{r+1}"), r, 0)
+            grid_layout.addWidget(QLabel(f"{r+1}"), row + r, 0)
             for c in range(1, 2):
-                # line_edit = QSpinBox()
                 if type(self.default) == int:
                     line_edit = QSpinBox()
                 else:
@@ -877,11 +889,32 @@ class ParamFixedWithInput(Param):
                     line_edit.setValue(self.default)
                 if self.step is not None:
                     line_edit.setSingleStep(self.step)
-                group_layout.addWidget(
-                    line_edit, r, c, alignment=Qt.AlignmentFlag.AlignCenter
+                grid_layout.addWidget(
+                    line_edit, row + r, c, alignment=Qt.AlignmentFlag.AlignCenter
                 )
 
-        self.grid_layout.addWidget(group_box, row, 0, 1, -1)
+        # for r in range(self.row_nb):
+        #     grid_layout.addWidget(QLabel(f"{r+1}"), r, 0)
+        #     for c in range(1, 2):
+        #         # line_edit = QSpinBox()
+        #         if type(self.default) == int:
+        #             line_edit = QSpinBox()
+        #         else:
+        #             line_edit = QDoubleSpinBox()
+        #
+        #         if self.min_value is not None:
+        #             line_edit.setMinimum(self.min_value)
+        #         if self.max_value is not None:
+        #             line_edit.setMaximum(self.max_value)
+        #         if self.default is not None:
+        #             line_edit.setValue(self.default)
+        #         if self.step is not None:
+        #             line_edit.setSingleStep(self.step)
+        #         grid_layout.addWidget(
+        #             line_edit, r, c, alignment=Qt.AlignmentFlag.AlignCenter
+        #         )
+
+        # self.grid_layout.addWidget(group_box, row, 0, 1, -1)
 
     def row_span(self) -> int:
         return self.row_nb + 2
@@ -979,13 +1012,14 @@ class ParamComponentSelector(Param):
         self,
         name: str,
         file: FILE,
+        label: str,
         depends_on: Optional[dict[str, DependencyType]],
         values: list[str],
         optional: bool = False,
         description: str = "",
         expected_type=str,
     ) -> None:
-        super().__init__(name, file=file, depends_on=depends_on)
+        super().__init__(name, file=file, depends_on=depends_on, label=label)
         self.question_label = None
         self.description = description
 
@@ -1084,12 +1118,13 @@ class ParamSpinBoxWithBool(Param):
         self,
         name: str,
         file: FILE,
+        label: str,
         depends_on: Optional[dict[str, DependencyType]],
         optional: bool = False,
         expected_type=str,
         description: str = "",
     ) -> None:
-        super().__init__(name, file, depends_on=depends_on)
+        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
         self.question_label = None
         self.time_spin_box = None
         self.last_spin_box = ""
@@ -1299,7 +1334,8 @@ class ParamCategory(QWidget):
             param_obj.category = self
         # for label, param_obj in self.param.items():
         for param_obj in self.param:
-            param_obj.build_widget(self.row, param_obj.name, self.grid_layout)
+            debug_print(param_obj.label)
+            param_obj.build_widget(self.row, param_obj.label, self.grid_layout)
             self.row += param_obj.row_span()
         return self
 

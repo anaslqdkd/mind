@@ -5,6 +5,7 @@ params_dict = {
                 # command params
     "verbose": {
         "name": "verbose",
+        "label": "Enable verbose mode",
         "param_type": ParamType.BOOLEAN,
         "file": FILE.COMMAND,
         "optional": True,
@@ -12,6 +13,7 @@ params_dict = {
     },
     "debug": {
         "name": "debug",
+        "label": "Enable debug mode",
         "param_type": ParamType.BOOLEAN,
         "file": FILE.COMMAND,
         "optional": True,
@@ -19,31 +21,35 @@ params_dict = {
     "solver": {
         "name": "solver",
         "param_type": ParamType.SELECT,
+        "label": "Select solver",
         "file": FILE.COMMAND,
         "optional": True,
         "values": ["knitro", "gurobi"],
     },
     "gams": {
         "name": "gams",
+        "label": "Use gams",
         "param_type": ParamType.BOOLEAN,
         "file": FILE.COMMAND,
         "optional": True,
     },
     "maxiter": {
         "name": "maxiter",
+        "label": "Max iterations",
         "param_type": ParamType.BOOLEAN_WITH_INPUT,
         "file": FILE.COMMAND,
         "optional": False,
     },
     "maxtime": {
         "name": "maxtime",
+        "label": "Set maxtime",
         "param_type": ParamType.SPIN_BOX,
         "file": FILE.COMMAND,
         "optional": True,
-        "values": ["i1", "i2", "i3", "i4"],
     },
     "algorithm": {
         "name": "algorithm",
+        "label": "Algorithm",
         "param_type": ParamType.SELECT,
         "file": FILE.COMMAND,
         "values": ["multistart", "mbh", "global", "genetic", "population"],
@@ -52,18 +58,21 @@ params_dict = {
     },
     "no_starting_point": {
         "name": "no_starting_point",
+        "label": "No starting point",
         "param_type": ParamType.BOOLEAN,
         "file": FILE.COMMAND,
         "optional": True,
     },
     "no_simplified_model": {
         "name": "no_simplified_model",
+        "label": "No simplified model",
         "param_type": ParamType.BOOLEAN,
         "file": FILE.COMMAND,
         "optional": True,
     },
     "visualise": {
         "name": "visualise",
+        "label": "Visualise",
         "param_type": ParamType.BOOLEAN,
         "file": FILE.COMMAND,
         "optional": True,
@@ -82,6 +91,7 @@ params_dict = {
     },
     "save_log_sol": {
         "name": "save_log_sol",
+        "label": "Save sol log",
         "param_type": ParamType.BOOLEAN,
         "file": FILE.COMMAND,
         "optional": True,
@@ -92,16 +102,18 @@ params_dict = {
     #                   config params
     "num_membranes": {
         "name": "num_membranes",
+        "label": "Membranes floors",
         "param_type": ParamType.INPUT,
         "file": FILE.CONFIG,
         "optional": False,
         "description": "number of membranes",
-        "default": 0,
+        "default": 1,
         "min_value": 0,
         "max_value": 3,  # the inital program assert <= 3
     },
     "ub_area": {
         "name": "ub_area",
+        "label": "Upper bound area",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.CONFIG,
         "default": 6,
@@ -111,6 +123,7 @@ params_dict = {
     },
     "lb_area": {
         "name": "lb_area",
+        "label": "Lower bound area",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.CONFIG,
         "default": 0.2,
@@ -120,6 +133,7 @@ params_dict = {
     },
     "ub_acell": {
         "name": "ub_acell",
+        "label": "Lower bound cell",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.CONFIG,
         "default": 0.2,
@@ -129,30 +143,35 @@ params_dict = {
     },
     "fixing_var": {
         "name": "fixing_var",
+        "label": "Enable fixing var",
         "param_type": ParamType.BOOLEAN,
         "file": FILE.CONFIG,
         "optional": False,
     },
     "uniform_pup": {
         "name": "uniform_pup",
+        "label": "Uniform pup",
         "param_type": ParamType.BOOLEAN,
         "file": FILE.CONFIG,
         "optional": False,
     },
     "vp": {
         "name": "vp",
+        "label": "Vaccum pump",
         "param_type": ParamType.BOOLEAN,
         "file": FILE.CONFIG,
         "optional": False,
     },
     "variable_perm": {
         "name": "variable_perm",
+        "label": "Variable perm",
         "param_type": ParamType.BOOLEAN,
         "file": FILE.CONFIG,
         "optional": False,
     },
     "iteration": {
         "name": "iteration",
+        "label": "Iterations",
         "param_type": ParamType.INPUT,
         "file": FILE.CONFIG,
         "optional": False,
@@ -163,6 +182,7 @@ params_dict = {
     },
     "max_no_improve": {
         "name": "max_no_improve",
+        "label": "Max no improve",
         "param_type": ParamType.INPUT,
         "file": FILE.CONFIG,
         "optional": False,
@@ -173,6 +193,7 @@ params_dict = {
     },
     "max_trials": {
         "name": "max_trials",
+        "label": "Max trials",
         "param_type": ParamType.INPUT,
         "file": FILE.CONFIG,
         "optional": False,
@@ -183,6 +204,7 @@ params_dict = {
     },
     "pressure_ratio": {
         "name": "pressure_ratio",
+        "label": "Pressure ratio",
         "param_type": ParamType.INPUT,
         "file": FILE.CONFIG,
         "optional": False,
@@ -193,6 +215,7 @@ params_dict = {
     },
     "pop_size": {
         "name": "pop_size",
+        "label": "Population size",
         "param_type": ParamType.INPUT,
         "file": FILE.CONFIG,
         "optional": False,
@@ -203,6 +226,7 @@ params_dict = {
     },
     "generations": {
         "name": "generations",
+        "label": "Generations",
         "param_type": ParamType.INPUT,
         "file": FILE.CONFIG,
         "optional": False,
@@ -217,18 +241,21 @@ params_dict = {
     #               data.dat
     "param xin": {
         "name": "param xin",
+        "label": "XIN",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.DATA,
         "optional": False,
     },
     "param molarmass": {
         "name": "param molarmass",
+        "label": "Molarmass",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.DATA,
         "optional": False,
     },
     "param pressure_in": {
         "name": "param pressure_in",
+        "label": "Pressure in",
         "param_type": ParamType.INPUT_WITH_UNITY,
         "values": ["Bar", "Pa", "kPa"],
         "file": FILE.DATA,
@@ -240,6 +267,7 @@ params_dict = {
     },
     "set components": {
         "name": "set components",
+        "label": "Set components",
         "param_type": ParamType.COMPONENT_SELECTOR,
         "file": FILE.DATA,
         "values": ["H20", "O2", "H2", "CO2", "N2"],
@@ -247,24 +275,28 @@ params_dict = {
     },
     "param lb_perc_prod": {
         "name": "param lb_perc_prod",
+        "label": "Lower bound perc prod",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.DATA,
         "optional": False,
     },
     "param ub_perc_waste": {
         "name": "param ub_perc_waste",
+        "label": "Upper bound perc waste",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.DATA,
         "optional": False,
     },
     "param lb_perc_waste": {
-        "name": "param ub_perc_waste",
+        "name": "param lb_perc_waste",
+        "label": "Lower bound perc waste",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.DATA,
         "optional": False,
     },
     "param FEED": {
         "name": "param FEED",
+        "label": "FEED",
         "param_type": ParamType.INPUT_WITH_UNITY,
         "values": ["mol/s"],
         "default": 0.02,
@@ -276,6 +308,7 @@ params_dict = {
     },
     "param normalized_product_qt": {
         "name": "param normalized_product_qt",
+        "label": "Normalized product qt",
         "param_type": ParamType.INPUT,
         "default": 0.95,
         "min_value": 0,
@@ -286,12 +319,14 @@ params_dict = {
     },
     "param final_product": {
         "name": "param final_product",
+        "label": "Final product",
         "param_type": ParamType.SELECT,
         "file": FILE.DATA,
         "optional": False,
     },
     "param ub_press_down": {
         "name": "pram ub_press_down",
+        "label": "Upper bound pressure down",
         "param_type": ParamType.INPUT,
         "file": FILE.DATA,
         "default": 1,
@@ -302,6 +337,7 @@ params_dict = {
     },
     "param lb_press_down": {
         "name": "param lb_press_down",
+        "label": "Lower bound pressure down",
         "param_type": ParamType.INPUT,
         "file": FILE.DATA,
         "optional": False,
@@ -322,6 +358,7 @@ params_dict = {
     },
     "param lb_press_up": {
         "name": "param lb_press_up",
+        "label": "Lower bound pressure up",
         "param_type": ParamType.INPUT,
         "file": FILE.DATA,
         "optional": False,
@@ -332,6 +369,7 @@ params_dict = {
     },
     "param ub_press_up": {
         "name": "param ub_press_up",
+        "label": "Upper bound press up",
         "param_type": ParamType.INPUT,
         "file": FILE.DATA,
         "optional": False,
@@ -342,6 +380,7 @@ params_dict = {
     },
     "param pressure_prod": {
         "name": "param pressure_prod",
+        "label": "Pressure prod",
         "param_type": ParamType.INPUT,
         "file": FILE.DATA,
         "optional": False,
@@ -362,6 +401,7 @@ params_dict = {
     },
     "param ub_feed": {
         "name": "param ub_feed",
+        "label": "Upper bound feed",
         "param_type": ParamType.INPUT,
         "file": FILE.DATA,
         "optional": False,
@@ -372,6 +412,7 @@ params_dict = {
     },
     "param ub_feed_tot": {
         "name": "param ub_feed_tot",
+        "label": "Upper bound feed",
         "param_type": ParamType.INPUT,
         "file": FILE.DATA,
         "optional": False,
@@ -382,6 +423,7 @@ params_dict = {
     },
     "param ub_out_prod": {
         "name": "param ub_out_prod",
+        "label": "Upper bound out prod",
         "param_type": ParamType.INPUT,
         "file": FILE.DATA,
         "optional": False,
@@ -402,6 +444,7 @@ params_dict = {
     },
     "param ub_feed": {
         "name": "param ub_feed",
+        "label": "Upper bound feed",
         "param_type": ParamType.INPUT,
         "file": FILE.DATA,
         "optional": False,
@@ -412,6 +455,7 @@ params_dict = {
     },
     "param tol_zero": {
         "name": "tol_zero",
+        "label": "Tol zero",
         "param_type": ParamType.INPUT,
         "file": FILE.DATA,
         "optional": False,
@@ -422,6 +466,7 @@ params_dict = {
     },
     "param n": {
         "name": "n",
+        "label": "N",
         "param_type": ParamType.INPUT,
         "file": FILE.DATA,
         "optional": False,
@@ -432,6 +477,7 @@ params_dict = {
     },
     "states": {
         "name": "states",
+        "label": "States",
         "param_type": ParamType.INPUT,
         "file": FILE.DATA,
         "optional": False,
@@ -445,6 +491,7 @@ params_dict = {
     #      perm file
     "set mem_types_set": {
         "name": "set mem_types_set",
+        "label": "Mem types set",
         "param_type": ParamType.COMPONENT,
         "file": FILE.PERM,
         "values": ["M1", "M2", "M3"],
@@ -452,6 +499,7 @@ params_dict = {
     },
     "param nb_gas": {
         "name": "param nb_gas",
+        "label": "Nb gas",
         "param_type": ParamType.INPUT,
         "file": FILE.PERM,
         "optional": False,
@@ -462,24 +510,28 @@ params_dict = {
     },
     "param Permeability": {
         "name": "param Permeability",
+        "label": "Permeability",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.PERM,
         "optional": False,
     },
     "param thickness": {
         "name": "param thickness",
+        "label": "Thickness",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.PERM,
         "optional": False,
     },
     "param mem_type": {
         "name": "param mem_type",
+        "label": "Mem type",
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.PERM,
         "optional": False,
     },
     "param mem_product": {
         "name": "param mem_product",
+        "label": "Mem product",
         # FIXME: fixed with select
         "param_type": ParamType.FIXED_WITH_SELECT,
         "file": FILE.PERM,
@@ -488,6 +540,7 @@ params_dict = {
     },
     "alpha": {
         "name": "alpha",
+        "label": "Alpha",
         "param_type": ParamType.INPUT,
         "file": FILE.PERM,
         "optional": False,
@@ -498,6 +551,7 @@ params_dict = {
     },
     "perm_ref": {
         "name": "perm_ref",
+        "label": "Perm ref",
         "param_type": ParamType.INPUT,
         "file": FILE.PERM,
         "optional": False,
@@ -511,6 +565,7 @@ params_dict = {
     #               eco file
     "param R": {
         "name": "param R",
+        "label": "R",
         "param_type": ParamType.INPUT,
         "file": FILE.ECO,
         "optional": False,
@@ -518,6 +573,7 @@ params_dict = {
     },
     "param phi": {
         "name": "param phi",
+        "label": "Phi",
         "param_type": ParamType.INPUT,
         "file": FILE.ECO,
         "optional": False,
@@ -525,6 +581,7 @@ params_dict = {
     },
     "param T": {
         "name": "param T",
+        "label": "Temperature",
         "param_type": ParamType.INPUT,
         "file": FILE.ECO,
         "optional": False,
@@ -532,6 +589,7 @@ params_dict = {
     },
     "param gamma": {
         "name": "param gamma",
+        "label": "Gamma",
         "param_type": ParamType.INPUT,
         "file": FILE.ECO,
         "optional": False,
@@ -539,6 +597,7 @@ params_dict = {
     },
     "param C_cp": {
         "name": "param C_cp",
+        "label": "C_cp",
         "param_type": ParamType.INPUT,
         "file": FILE.ECO,
         "optional": False,
@@ -546,6 +605,7 @@ params_dict = {
     },
     "param C_exp": {
         "name": "param C_exp",
+        "label": "C_exp",
         "param_type": ParamType.INPUT,
         "file": FILE.ECO,
         "optional": False,
@@ -553,6 +613,7 @@ params_dict = {
     },
     "param C_vp": {
         "name": "param C_vp",
+        "label": "C_vp",
         "param_type": ParamType.INPUT,
         "file": FILE.ECO,
         "optional": False,
@@ -560,6 +621,7 @@ params_dict = {
     },
     "param eta_cp": {
         "name": "param eta_cp",
+        "label": "Eta_cp",
         "param_type": ParamType.INPUT,
         "file": FILE.ECO,
         "optional": False,
@@ -567,6 +629,7 @@ params_dict = {
     },
     "param K_mr": {
         "name": "param K_mr",
+        "label": "K_mr",
         "param_type": ParamType.INPUT,
         "file": FILE.ECO,
         "optional": False,
@@ -574,6 +637,7 @@ params_dict = {
     },
     "param K_gp": {
         "name": "param K_gp",
+        "label": "K_gp",
         "param_type": ParamType.INPUT,
         "file": FILE.ECO,
         "optional": False,
@@ -581,6 +645,7 @@ params_dict = {
     },
     "param K_m": {
         "name": "param K_m",
+        "label": "K_m",
         "param_type": ParamType.INPUT,
         "file": FILE.ECO,
         "optional": False,
@@ -588,6 +653,7 @@ params_dict = {
     },
     "param K_mf": {
         "name": "param K_mf",
+        "label": "K_mf",
         "param_type": ParamType.INPUT,
         "file": FILE.ECO,
         "optional": False,
@@ -595,6 +661,7 @@ params_dict = {
     },
     "param K_el": {
         "name": "param K_el",
+        "label": "K_el",
         "param_type": ParamType.INPUT,
         "file": FILE.ECO,
         "optional": False,
@@ -602,6 +669,7 @@ params_dict = {
     },
     "param K_er": {
         "name": "param K_er",
+        "label": "K_er",
         "param_type": ParamType.INPUT,
         "file": FILE.ECO,
         "optional": False,
@@ -609,6 +677,7 @@ params_dict = {
     },
     "param t_op": {
         "name": "param t_op",
+        "label": "t_op",
         "param_type": ParamType.INPUT,
         "file": FILE.ECO,
         "optional": False,
@@ -616,6 +685,7 @@ params_dict = {
     },
     "param MFc": {
         "name": "param MFc",
+        "label": "MFc",
         "param_type": ParamType.INPUT,
         "file": FILE.ECO,
         "optional": False,
@@ -623,6 +693,7 @@ params_dict = {
     },
     "param nu": {
         "name": "param nu",
+        "label": "Nu",
         "param_type": ParamType.INPUT,
         "file": FILE.ECO,
         "optional": False,
@@ -630,6 +701,7 @@ params_dict = {
     },
     "param UF_2000": {
         "name": "param UF_2000",
+        "label": "UF_2000",
         "param_type": ParamType.INPUT,
         "file": FILE.ECO,
         "optional": False,
@@ -637,6 +709,7 @@ params_dict = {
     },
     "param UF_1968": {
         "name": "param UF_1968",
+        "label": "UF_1968",
         "param_type": ParamType.INPUT,
         "file": FILE.ECO,
         "optional": False,
@@ -644,6 +717,7 @@ params_dict = {
     },
     "param MPFc": {
         "name": "param MPFc",
+        "label": "MPFc",
         "param_type": ParamType.INPUT,
         "file": FILE.ECO,
         "optional": False,
@@ -651,6 +725,7 @@ params_dict = {
     },
     "param i": {
         "name": "param i",
+        "label": "I",
         "param_type": ParamType.INPUT,
         "file": FILE.ECO,
         "optional": False,
@@ -658,6 +733,7 @@ params_dict = {
     },
     "param z": {
         "name": "param z",
+        "label": "Z",
         "param_type": ParamType.INPUT,
         "file": FILE.ECO,
         "optional": False,
@@ -665,6 +741,7 @@ params_dict = {
     },
     "param eta_vp_1": {
         "name": "param eta_vp_1",
+        "label": "Eta_vp_1",
         "param_type": ParamType.INPUT,
         "file": FILE.ECO,
         "optional": False,
@@ -672,6 +749,7 @@ params_dict = {
     },
     "param eta_vp_0": {
         "name": "param eta_vp_0",
+        "label": "Eta_vp_0",
         "param_type": ParamType.INPUT,
         "file": FILE.ECO,
         "optional": False,
