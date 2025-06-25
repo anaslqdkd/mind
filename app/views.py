@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import (
     QMainWindow,
     QMessageBox,
     QPushButton,
+    QScrollArea,
     QSizePolicy,
     QSpacerItem,
     QStackedWidget,
@@ -46,7 +47,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("App")
-        self.resize(800, 600)
+        self.resize(700, 600)
 
         # stack
         self.stack = QStackedWidget()
@@ -590,31 +591,17 @@ class PageParameters(QWidget):
                 for cat in tab_categories.get(tab_name, []):
                     self.categories.append(cat)
                     tab_layout.addWidget(cat)
-                self.tab_widget.addTab(tab_widget, tab_name)
+
+                debug_print("scroll area", tab_name)
+                scroll_area = QScrollArea()
+                scroll_area.setWidgetResizable(True)
+                scroll_area.setWidget(tab_widget)
+                # scroll_area.setStyleSheet("background: white;")
+                tab_widget.setStyleSheet("background-color: white;")
+                self.tab_widget.addTab(scroll_area, tab_name)
 
         main_layout.addWidget(self.tab_widget)
         self.setLayout(main_layout)
-
-        # for tab_name, category_instance in self.tab_categories.items():
-        #     tab_widget = QWidget()
-        #     tab_layout = QVBoxLayout(tab_widget)
-        #     self.tabs.append(tab_widget)
-        #
-        #     # tab1_layout.addWidget(el)
-        # for tab in self.tabs:
-        #     main_layout.addWidget(tab)
-        #
-        # self.tab_widget = QTabWidget()
-        # self.tab_widget.setSizePolicy(
-        #     QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
-        # )
-        # self.tab_widget.addTab(tab1_widget, "Tab 1")
-        #
-        # # add another tab
-        # tab2_widget = QWidget()
-        # tab2_layout = QVBoxLayout(tab2_widget)
-        # tab2_layout.addWidget(QLabel("This is tab 2"))
-        # self.tab_widget.addTab(tab2_widget, "Tab 2")
 
         next_button = QPushButton("next")
 
@@ -623,7 +610,6 @@ class PageParameters(QWidget):
         end_button_layout.addStretch()
         next_button.clicked.connect(self.go_to_next_page)
         end_button_layout.addWidget(next_button)
-        # main_layout.addWidget(self.tab_widget)
         main_layout.addWidget(end_button_widget)
 
         main_layout.addStretch()
@@ -635,10 +621,18 @@ class PageParameters(QWidget):
             category.update_category()
 
     def go_to_next_page(self):
+        if hasattr(self, "tab_widget"):
+            current_tab = self.tab_widget.currentIndex()
+            tab_count = self.tab_widget.count()
+            if current_tab < tab_count - 1:
+                self.tab_widget.setCurrentIndex(current_tab + 1)
+                return  
         current_index = self.sidebar.currentRow()
         count = self.sidebar.count()
         next_index = (current_index + 1) % count
         self.sidebar.setCurrentRow(next_index)
+        if hasattr(self, "tab_widget"):
+            self.tab_widget.setCurrentIndex(0)
 
 
 # -----------------------------------------------------------
