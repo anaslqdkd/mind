@@ -116,6 +116,14 @@ class Param:
     def row_span(self) -> int:
         return 1
 
+    def hide(self) -> None:
+        pass
+        # self.hidden = True
+
+    def show(self) -> None:
+        pass
+        self.hidden = False
+
     def to_file(self) -> str:
         raise NotImplementedError("Subclasses must implement to_file")
 
@@ -123,7 +131,7 @@ class Param:
         return ""
 
     def to_file_entry(self):
-        return ""
+        return None
 
     to_config_entry = to_file_entry
 
@@ -140,6 +148,7 @@ class Param:
         header_layout.addWidget(question_label)
         header_layout.addWidget(icon_label)
         return header_container
+
 
     # def trigger_update(self) -> None:
     #     self.category.update_category()
@@ -200,7 +209,6 @@ class ParamInput(Param):
             line_edit.setValue(self.default)
         if self.step is not None:
             line_edit.setSingleStep(self.step)
-        debug_print(self.label)
         header = self.build_header(label, self.description, self.optional)
         self.header = header
         grid_layout.addWidget(self.header, row, 0)
@@ -262,9 +270,9 @@ class ParamInput(Param):
     def to_file(self) -> str:
         return f"{self.name} := {self.last_line_edit}"
 
-    def to_config_entry(self) -> str:
-        return f"{self.name}:= {self.last_line_edit}"
-
+    def to_config_entry(self) -> Optional[str]:
+        if self.last_line_edit != "" and self.last_line_edit != None:
+            return f"{self.name} = {self.last_line_edit}"
 
 # -----------------------------------------------------------
 
@@ -277,6 +285,7 @@ class ParamSelect(Param):
         values: list[str],
         label: str,
         depends_on: Optional[dict[str, DependencyType]],
+        hidden: bool = False,
         optional: bool = False,
         description: str = "",
         expected_type=str,
@@ -290,12 +299,15 @@ class ParamSelect(Param):
         self.description = description
         self.manager: Optional[DependencyManager] = None
         self.label = label
+        self.hidden = hidden
         pass
     
     def set_values(self, values: list[str]):
         self.values = values
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        if self.hidden:
+            return
         question_label = QLabel(label)
         combo_box = QComboBox()
         # combo_box.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
@@ -317,6 +329,12 @@ class ParamSelect(Param):
 
         grid_layout.addWidget(self.combo_box, row, 2, 1, 2)
 
+    def hide(self):
+        self.hidden = True
+
+    def show(self):
+        self.hidden = False
+
     def restore_values(self):
         if self.combo_box:
             index = self.combo_box.findText(self.last_combo_box)
@@ -335,6 +353,10 @@ class ParamSelect(Param):
 
     def to_command_arg(self) -> str:
         return f"--{self.name} {self.last_combo_box}"
+
+    def to_config_entry(self):
+        if self.last_combo_box:
+            return f"{self.name} = {self.last_combo_box}"
 
     def to_file(self) -> str:
         return f"{self.name} := {self.last_combo_box}"
@@ -366,7 +388,6 @@ class ParamBoolean(Param):
         self.label = label
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
-        debug_print("+++", label)
         container = QWidget()
         h_layout = QHBoxLayout(container)
         h_layout.setContentsMargins(0, 0, 0, 0)
@@ -408,6 +429,10 @@ class ParamBoolean(Param):
             return f"--{self.name}"
         else:
             return ""
+
+    def to_config_entry(self):
+        return f"{self.name} = {self.last_check_box}"
+
 
     def get_value(self) -> bool:
         return self.last_check_box
@@ -844,6 +869,8 @@ class ParamFixedWithInput(Param):
         self.sizes = {}
         self.keys = ["set components", "set mem_types_set"]
         self.sizes = {k: 0 for k in self.keys}
+        self.last_line_edits = []
+        self.line_edits = []
         pass
 
     def set_rows_nb(self, rows: int, source: Param):
@@ -873,6 +900,7 @@ class ParamFixedWithInput(Param):
         # group_layout = QGridLayout(group_box)
         # group_box.setLayout(group_layout)
         # group_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.line_edits = []
         for r in range(self.row_nb):
             grid_layout.addWidget(QLabel(f"{r+1}"), row + r, 0)
             for c in range(1, 2):
@@ -892,50 +920,28 @@ class ParamFixedWithInput(Param):
                 grid_layout.addWidget(
                     line_edit, row + r, c, alignment=Qt.AlignmentFlag.AlignCenter
                 )
-
-        # for r in range(self.row_nb):
-        #     grid_layout.addWidget(QLabel(f"{r+1}"), r, 0)
-        #     for c in range(1, 2):
-        #         # line_edit = QSpinBox()
-        #         if type(self.default) == int:
-        #             line_edit = QSpinBox()
-        #         else:
-        #             line_edit = QDoubleSpinBox()
-        #
-        #         if self.min_value is not None:
-        #             line_edit.setMinimum(self.min_value)
-        #         if self.max_value is not None:
-        #             line_edit.setMaximum(self.max_value)
-        #         if self.default is not None:
-        #             line_edit.setValue(self.default)
-        #         if self.step is not None:
-        #             line_edit.setSingleStep(self.step)
-        #         grid_layout.addWidget(
-        #             line_edit, r, c, alignment=Qt.AlignmentFlag.AlignCenter
-        #         )
-
-        # self.grid_layout.addWidget(group_box, row, 0, 1, -1)
+                self.line_edits.append(line_edit)
+        self.restore_value()
 
     def row_span(self) -> int:
         return self.row_nb + 2
 
-    def restore_value(self):
-        if self.last_combo_box:
-            if self.combo_box:
-                index = self.combo_box.findText(self.last_combo_box)
-                if index != -1:
-                    self.combo_box.setCurrentIndex(index)
-        if self.last_line_edit:
-            if self.line_edit:
-                self.line_edit.setText(self.last_line_edit)
-
     def store_value(self):
-        if self.line_edit is not None:
-            self.last_line_edit = self.line_edit.text()
-            pass
-        if self.combo_box is not None:
-            self.last_combo_box = self.combo_box.currentText()
-        pass
+        self.last_line_edits = []
+        for line_edit in self.line_edits:
+            self.last_line_edits.append(line_edit.value())
+
+    def restore_value(self):
+        for index, value in enumerate(self.last_line_edits):
+            if index < len(self.line_edits):
+                self.line_edits[index].setValue(value)
+
+        # FIXME: adapt to params
+
+    def to_config_entry(self):
+        values_str = ", ".join(str(value) for value in self.last_line_edits)
+        res = f"{self.name} = [{values_str}]"
+        return res
 
     def to_file(self) -> str:
         return f"{self.name} := {self.last_line_edit} #{self.last_combo_box}"
@@ -1213,20 +1219,25 @@ class ParamFileChooser(Param):
         self,
         name: str,
         file: FILE,
+        label: str,
+        hidden: bool = False,
         depends_on: Optional[dict[str, DependencyType]] = None,
         optional: bool = False,
         description: str = "",
         expected_type=str,
     ) -> None:
-        super().__init__(name, file, depends_on=depends_on)
+        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
         self.question_label = None
         self.line_edit = None
         self.button = None
         self.last_file_path = ""
         self.optional = optional
         self.description = description
+        self.hidden = hidden
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        if self.hidden:
+            return
         header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(header, row, 0)
 
@@ -1254,6 +1265,12 @@ class ParamFileChooser(Param):
         if self.last_file_path and self.line_edit:
             self.line_edit.setText(self.last_file_path)
 
+    def hide(self):
+        self.hidden = True
+
+    def show(self):
+        self.hidden = False
+
     def store_value(self):
         if self.line_edit is not None:
             self.last_file_path = self.line_edit.text()
@@ -1265,6 +1282,11 @@ class ParamFileChooser(Param):
         if self.last_file_path:
             return f'--{self.name} "{self.last_file_path}"'
         return ""
+
+    def to_config_entry(self) -> Optional[str]:
+        if self.last_file_path:
+            return f'{self.name} = {self.last_file_path}'
+        return None
 
 
 # -----------------------------------------------------------
@@ -1334,7 +1356,6 @@ class ParamCategory(QWidget):
             param_obj.category = self
         # for label, param_obj in self.param.items():
         for param_obj in self.param:
-            debug_print(param_obj.label)
             param_obj.build_widget(self.row, param_obj.label, self.grid_layout)
             self.row += param_obj.row_span()
         return self
@@ -1361,6 +1382,13 @@ class ParamCategory(QWidget):
                 if widget is not None:
                     widget.setParent(None)
                     widget.deleteLater()
+                    for param in self.param:
+                        if hasattr(param, "line_edit") and param.line_edit is widget:
+                            param.line_edit = None
+                        if hasattr(param, "combo_box") and param.combo_box is widget:
+                            param.combo_box = None
+                        if hasattr(param, "check_box") and param.check_box is widget:
+                            param.check_box = None
 
     def write_to_file(self):
         file_map = {

@@ -52,7 +52,7 @@ params_dict = {
         "label": "Algorithm",
         "param_type": ParamType.SELECT,
         "file": FILE.COMMAND,
-        "values": ["multistart", "mbh", "global", "genetic", "population"],
+        "values": ["multistart", "mbh", "global_opt", "genetic", "population"],
         "description": "Selected algorithm for the simulation",
         "optional": True,
     },
@@ -169,17 +169,6 @@ params_dict = {
         "file": FILE.CONFIG,
         "optional": False,
     },
-    "iteration": {
-        "name": "iteration",
-        "label": "Iterations",
-        "param_type": ParamType.INPUT,
-        "file": FILE.CONFIG,
-        "optional": False,
-        "default": 300,
-        "min_value": 1,
-        "max_value": 10000,
-        "step": 10,
-    },
     "max_no_improve": {
         "name": "max_no_improve",
         "label": "Max no improve",
@@ -190,6 +179,7 @@ params_dict = {
         "min_value": 1,
         "max_value": 10000,
         "step": 1,
+        "hidden": True
     },
     "max_trials": {
         "name": "max_trials",
@@ -201,6 +191,7 @@ params_dict = {
         "min_value": 1,
         "max_value": 10000,
         "step": 1,
+        "hidden": True
     },
     "pressure_ratio": {
         "name": "pressure_ratio",
@@ -223,6 +214,7 @@ params_dict = {
         "min_value": 0,
         "max_value": 100,
         "step": 5,
+        "hidden": True
     },
     "generations": {
         "name": "generations",
@@ -236,6 +228,57 @@ params_dict = {
         "step": 1,
         "hidden": True,
     },
+    "prototype_data": {
+        "name": "prototype_data",
+        "label": "Prototype data file",
+        "param_type": ParamType.FILECHOOSER,
+        "file": FILE.CONFIG,
+        "optional": False,
+        "hidden": True,
+    },
+    "n1_element": {
+        "name": "n1_element",
+        "label": "N1 element",
+        "param_type": ParamType.INPUT,
+        "file": FILE.CONFIG,
+        "default": 6,
+        "min_value": 0,
+        "max_value": 100,
+        "step": 1,
+        "optional": False,
+        "hidden": True,
+    },
+    "iteration": {
+        "name": "iteration",
+        "label": "Iterations",
+        "param_type": ParamType.INPUT,
+        "file": FILE.CONFIG,
+        "optional": False,
+        "default": 300,
+        "min_value": 1,
+        "max_value": 10000,
+        "step": 10,
+        "hidden": False
+    },
+    "seed1": {
+        "name": "seed1",
+        "label": "Seed 1",
+        "param_type": ParamType.SELECT,
+        "file": FILE.CONFIG,
+        "values": ["1", "2"],
+        "optional": False,
+        "hidden": False
+    },
+    "seed2": {
+        "name": "seed2",
+        "label": "Seed 2",
+        "param_type": ParamType.SELECT,
+        "file": FILE.CONFIG,
+        "values": ["1", "2"],
+        "optional": False,
+        "hidden": True
+    },
+    # NOTE: seed à mettre éventuellement
 
     # -----------------------------------------------------------
     #               data.dat

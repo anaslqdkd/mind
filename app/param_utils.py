@@ -25,7 +25,6 @@ import inspect
 def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Param:
     optional = kwargs.get("optional", False)
     label = kwargs.get("label", "")
-    debug_print(label, param_type)
     values = kwargs.get("values", [])
     depends_on = kwargs.get("depends_on", {})
     expected_type = kwargs.get("expected_type", str)
@@ -34,10 +33,9 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
     min_value = kwargs.get("min_value")
     max_value = kwargs.get("max_value")
     step = kwargs.get("step")
-    hidden = kwargs.get("hidden")
+    hidden = kwargs.get("hidden", False)
     match param_type:
         case ParamType.INPUT:
-            debug_print(label)
             return ParamInput(
                 name,
                 optional=optional,
@@ -58,13 +56,13 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 file=file,
                 values=values,
                 label = label,
+                hidden=hidden,
                 depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,
                 description=description,
             )
         case ParamType.BOOLEAN:
-            debug_print(label)
             return ParamBoolean(
                 name,
                 file,
@@ -175,6 +173,8 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
             return ParamFileChooser(
                 name,
                 file,
+                label=label,
+                hidden=hidden,
                 depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,

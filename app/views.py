@@ -1,3 +1,4 @@
+import os
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
@@ -168,7 +169,6 @@ class MainWindow(QMainWindow):
             # TODO: see the diff between fixed and variable parser for perm
             perm_param = parser_fixed_permeability_data_simple(file)
             # perm_param = parser_fixed_permeability_data(file, res)
-        debug_print(perm_param)
         # for key, value in perm_param.items():
         #     debug_print(f"the key is {key}, and the value is {value}")
         #     for attr_, value_ in vars(value).items():
@@ -182,10 +182,8 @@ class MainWindow(QMainWindow):
         res = load_coef("data/example_eco.dat")
         for el, value in res.items():
             if f"param {el}" in self.param_registry.keys():
-                debug_print(el)
                 self.param_registry[f"param {el}"].set_value(value)
 
-        debug_print(res)
 
     def _define_pages(self):
         self.pages_names = {
@@ -214,12 +212,7 @@ class MainWindow(QMainWindow):
                 # "capex",
                 "save_log_sol",
             ],
-            "Surfaces": [
-                "num_membranes",
-                "ub_area",
-                "lb_area",
-                "ub_acell"
-                ],
+            "Surfaces": ["num_membranes", "ub_area", "lb_area", "ub_acell"],
             "Membranes": [
                 # "num_membranes",
                 # "ub_area",
@@ -229,12 +222,16 @@ class MainWindow(QMainWindow):
                 "uniform_pup",
                 "vp",
                 "variable_perm",
+                "pressure_ratio",
                 "iteration",
                 "max_no_improve",
                 "max_trials",
-                "pressure_ratio",
-                # "pop_size",
+                "pop_size",
+                "seed1",
+                "seed2",
+                "prototype_data",
                 "generations",
+                "n1_element",
             ],
             "Data": [
                 "set components",
@@ -317,18 +314,18 @@ class MainWindow(QMainWindow):
             self.category_instances[key] = temp_category
 
         self.tab_categories = {
-                "Tab 1": [self.category_instances["General"]],
-                "Tab a": [self.category_instances["Surfaces"]],
-                "Tab 2": [self.category_instances["Membranes"]],
-                "Tab 3": [self.category_instances["Data"]],
-                "Tab 4": [self.category_instances["Data2"]],
-                "Tab 5": [self.category_instances["Perm"]],
-                "Tab 6": [self.category_instances["Eco"]],
-                "Tab 7": [self.category_instances["Eco2"]],
-                }
+            "Tab 1": [self.category_instances["General"]],
+            "Tab a": [self.category_instances["Surfaces"]],
+            "Tab 2": [self.category_instances["Membranes"]],
+            "Tab 3": [self.category_instances["Data"]],
+            "Tab 4": [self.category_instances["Data2"]],
+            "Tab 5": [self.category_instances["Perm"]],
+            "Tab 6": [self.category_instances["Eco"]],
+            "Tab 7": [self.category_instances["Eco2"]],
+        }
         self.tabs_names = {
             "Page 1": ["Tab 1"],
-            "Page 2": ["Tab a", "Tab 2"],
+            "Page 2": ["Tab 2", "Tab a"],
             "Page 3": ["Tab 3", "Tab 4"],
             "Page 4": ["Tab 4"],
             "Page 5": ["Tab 5"],
@@ -337,7 +334,9 @@ class MainWindow(QMainWindow):
         for page, tab_list in self.tabs_names.items():
             self.sidebar.addItem(page)
             page_tabs_categories = self.tab_categories
-            page_temp = PageParameters(self, self.stack, self.sidebar, tab_list, page_tabs_categories)
+            page_temp = PageParameters(
+                self, self.stack, self.sidebar, tab_list, page_tabs_categories
+            )
             self.pages.append(page_temp)
 
         pass
@@ -451,7 +450,7 @@ class MainWindow(QMainWindow):
         target.category.update_category()
 
     def update_fn(self, target: ParamFixedWithInput, source: ParamInput):
-        debug_print(source.get_value())
+        debug_print(f"in the update funtion with target: {target.name} and source: {source.name}")
         target.set_row(int(float(source.get_value())))
         # target.set_row(int(source.get_value()))
         target.category.update_category()
@@ -464,31 +463,72 @@ class MainWindow(QMainWindow):
         if source.last_combo_box != "genetic":
             target.hide()
         else:
-            debug_print("the last combo box is genetic")
             target.show()
         target.category.update_category()
 
     def update_config_algo_params(self, target: ParamInput, source: ParamSelect):
-        debug_print("in update config algo params")
-        # Example: show/hide params based on the selected algorithm
+        var_params = [
+            "iteration",
+            "seed1",
+            "max_trials",
+            "max_no_improve",
+            "seed2",
+            "pop_size",
+            "generations",
+            "prototype_data",
+            "n1_element",
+        ]
+        shown_params = set()
         if source.last_combo_box == "multistart":
-            # Show "iteration" and "seed1" params
-            for param_name in ["iteration", "generations"]:
+            for param_name in ["iteration", "seed1"]:
                 param = self.param_registry.get(param_name)
                 if param:
                     param.show()
-                    if hasattr(param, "category") and param.category:
-                        param.category.update_category()
+                    shown_params.add(param_name)
+                    param.category.update_category()
         if source.last_combo_box == "mbh":
-            # Hide "iteration" and "seed1" params
-            for param_name in ["iteration", "generations"]:
+            for param_name in ["max_trials", "max_no_improve", "seed1", "seed2"]:
                 param = self.param_registry.get(param_name)
                 if param:
+                    shown_params.add(param_name)
                     param.show()
-                    if hasattr(param, "category") and param.category:
-                        param.category.update_category()
-        # Add similar logic for "mbh" and "global_opt" as needed
+                    # if hasattr(param, "category") and param.category:
+                    param.category.update_category()
+        if source.last_combo_box == "global_opt":
+            for param_name in [
+                "max_trials",
+                "max_no_improve",
+                "iteration",
+                "seed1",
+                "seed2",
+            ]:
+                param = self.param_registry.get(param_name)
+                if param:
+                    shown_params.add(param_name)
+                    param.show()
+                    param.category.update_category()
+        if source.last_combo_box == "population":
+            for param_name in ["prototype_data", "n1_element"]:
+                param = self.param_registry.get(param_name)
+                if param:
+                    shown_params.add(param_name)
+                    param.show()
+                    param.category.update_category()
+        if source.last_combo_box == "genetic":
+            for param_name in ["pop_size", "generations"]:
+                param = self.param_registry.get(param_name)
+                if param:
+                    shown_params.add(param_name)
+                    param.show()
+                    param.category.update_category()
+        for param_name in var_params:
+            if param_name not in shown_params:
+                param = self.param_registry.get(param_name)
+                if param:
+                    param.hide()
+                    param.category.update_category()
 
+    # FIXME: hide all other params
 
     def build_command(self):
         self.update_pages()
@@ -544,35 +584,85 @@ class CommandBuilder:
 class ConfigBuilder:
     def __init__(self, params) -> None:
         self.param_registry = params
-
-        self.validated_params = [
-            "num_membranes",
-            "ub_area",
-            "lb_area",
-            "ub_acell",
-            "fixing_var",
-            "uniform_pup",
-            "max_trials",
-            "pop_size",
-            "vp",
-            "variable_perm",
-            "iteration",
-            "max_no_improve",
-            "pressure_ratio"
-            "pop_size",
-            "generations",
-        ]
+        self.tuning_params = [
+                "pressure_ratio",
+                "epsilon",
+                "seed1",
+                "seed2",
+                "iteration",
+                "max_no_improve",
+                "max_trials",
+                "pop_size",
+                "generations",
+                "n1_element"
+                ]
+        self.instance_params = [
+                "data_dir",
+                "log_dir",
+                "num_membranes",
+                "ub_area",
+                "lb_area",
+                "ub_acell",
+                "fixing_var",
+                "fname",
+                "fname_perm",
+                "fname_eco",
+                "fname_mask",
+                "uniform_pup",
+                "prototype_data",
+                "vp",
+                "variable_perm"
+                ]
+        self.config_args = {}
 
     def build_config(self):
-        args = []
-        for param_name in self.validated_params:
-            if param_name in self.param_registry:
+        self.config_args = {"tuning": [], "instance": []}
+        for param_name in self.tuning_params:
+            if param_name in self.param_registry.keys():
                 param = self.param_registry[param_name]
-                if hasattr(param, "file") and param.file == FILE.CONFIG:
+                if param.file == FILE.CONFIG:
                     arg = param.to_config_entry()
-                    if arg:
-                        args.append(arg)
-        return " ".join(args)
+                    if arg is not None:
+                        self.config_args["tuning"].append(arg)
+        for param_name in self.instance_params:
+            debug_print(param_name)
+            if param_name in self.param_registry.keys():
+                param = self.param_registry[param_name]
+                if param.file == FILE.CONFIG:
+                    arg = param.to_config_entry()
+                    if arg is not None:
+                        self.config_args["instance"].append(arg)
+        debug_print(self.config_args)
+        self.write_config_ini()
+
+
+    def write_config_ini(self, filename="test/config.ini"):
+        dir_path = os.path.dirname(filename)
+        if dir_path:
+            os.makedirs(dir_path, exist_ok=True)
+        config = configparser.ConfigParser()
+        config["tuning"] = {}
+        config["instance"] = {}
+
+        for entry in self.config_args.get("tuning", []):
+            # debug_print("the entry is", self.config_args.get("tuning", []))
+            # if "=" not in entry:
+            #     print(f"Malformed config entry (tuning): {entry}")
+            #     continue
+            key, value = entry.split("=", 1)
+            config["tuning"][key.strip()] = value.strip()
+        for entry in self.config_args.get("instance", []):
+            # if "=" not in entry:
+            #     debug_print("the entry is", self.config_args.get("instance", []))
+            #     debug_print(f"Malformed config entry (instance): {entry}")
+            #     continue
+            # debug_print(self.config_args.get("instance", []))
+            key, value = entry.split("=", 1)
+            config["instance"][key.strip()] = value.strip()
+
+        with open(filename, "w") as configfile:
+            config.write(configfile)
+
 
 
 class EcoBuilder:
@@ -586,7 +676,8 @@ class EcoBuilder:
             "ub_acell",
             "fixing_var",
             "uniform_pup",
-            "vp" "variable_perm",
+            "vp",
+            "variable_perm",
             "iteration",
             "max_no_improve",
             "pressure_ratio" "pop_size",
@@ -606,7 +697,9 @@ class EcoBuilder:
 
 
 class PageParameters(QWidget):
-    def __init__(self, main_window, stack, sidebar, tabs_for_page=None, tab_categories=None):
+    def __init__(
+        self, main_window, stack, sidebar, tabs_for_page=None, tab_categories=None
+    ):
         super().__init__()
         self.main_window = main_window
         # self.param_category = param_category
@@ -637,7 +730,6 @@ class PageParameters(QWidget):
                     self.categories.append(cat)
                     tab_layout.addWidget(cat)
 
-                debug_print("scroll area", tab_name)
                 scroll_area = QScrollArea()
                 scroll_area.setWidgetResizable(True)
                 scroll_area.setWidget(tab_widget)
@@ -671,7 +763,7 @@ class PageParameters(QWidget):
             tab_count = self.tab_widget.count()
             if current_tab < tab_count - 1:
                 self.tab_widget.setCurrentIndex(current_tab + 1)
-                return  
+                return
         current_index = self.sidebar.currentRow()
         count = self.sidebar.count()
         next_index = (current_index + 1) % count
