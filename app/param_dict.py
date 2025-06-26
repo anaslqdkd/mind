@@ -2,7 +2,7 @@ from app.param_enums import FILE, ParamType
 
 params_dict = {
     # -----------------------------------------------------------
-                # command params
+    # command params
     "verbose": {
         "name": "verbose",
         "label": "Enable verbose mode",
@@ -97,7 +97,6 @@ params_dict = {
         "optional": True,
         "description": "",
     },
-
     # -----------------------------------------------------------
     #                   config params
     "num_membranes": {
@@ -179,7 +178,7 @@ params_dict = {
         "min_value": 1,
         "max_value": 10000,
         "step": 1,
-        "hidden": True
+        "hidden": True,
     },
     "max_trials": {
         "name": "max_trials",
@@ -191,7 +190,7 @@ params_dict = {
         "min_value": 1,
         "max_value": 10000,
         "step": 1,
-        "hidden": True
+        "hidden": True,
     },
     "pressure_ratio": {
         "name": "pressure_ratio",
@@ -214,7 +213,7 @@ params_dict = {
         "min_value": 0,
         "max_value": 100,
         "step": 5,
-        "hidden": True
+        "hidden": True,
     },
     "generations": {
         "name": "generations",
@@ -258,7 +257,7 @@ params_dict = {
         "min_value": 1,
         "max_value": 10000,
         "step": 10,
-        "hidden": False
+        "hidden": False,
     },
     "seed1": {
         "name": "seed1",
@@ -267,7 +266,7 @@ params_dict = {
         "file": FILE.CONFIG,
         "values": ["1", "2"],
         "optional": False,
-        "hidden": False
+        "hidden": False,
     },
     "seed2": {
         "name": "seed2",
@@ -276,7 +275,7 @@ params_dict = {
         "file": FILE.CONFIG,
         "values": ["1", "2"],
         "optional": False,
-        "hidden": True
+        "hidden": True,
     },
     "fname_mask": {
         "name": "fname_mask",
@@ -284,11 +283,8 @@ params_dict = {
         "param_type": ParamType.FILECHOOSER,
         "file": FILE.CONFIG,
         "optional": False,
-        "hidden": True
+        "hidden": True,
     },
-
-
-
     # -----------------------------------------------------------
     #               data.dat
     "param xin": {
@@ -443,6 +439,7 @@ params_dict = {
     },
     "param lb_press_down": {
         "name": "param lb_press_down",
+        "label": "lower bound pressure down",
         "param_type": ParamType.INPUT,
         "file": FILE.DATA,
         "optional": False,
@@ -462,6 +459,7 @@ params_dict = {
         "max_value": 1,
         "step": 0.05,
     },
+    # FIXME: for bound look in the program code  for defaults
     "param ub_feed_tot": {
         "name": "param ub_feed_tot",
         "label": "Upper bound feed",
@@ -486,6 +484,7 @@ params_dict = {
     },
     "param ub_out_waste": {
         "name": "param ub_out_waste",
+        "label": "Upper bound out waste",
         "param_type": ParamType.INPUT,
         "file": FILE.DATA,
         "optional": False,
@@ -538,7 +537,6 @@ params_dict = {
         "max_value": 100,
         "step": 1,
     },
-
     # -----------------------------------------------------------
     #      perm file
     "set mem_types_set": {
@@ -588,7 +586,7 @@ params_dict = {
         "param_type": ParamType.FIXED_WITH_SELECT,
         "file": FILE.PERM,
         "optional": False,
-        "values": ["RET", "PERM"]
+        "values": ["RET", "PERM"],
     },
     "alpha": {
         "name": "alpha",
@@ -600,19 +598,56 @@ params_dict = {
         "min_value": 0,
         "max_value": 2,
         "step": 1,
+        "hidden": False,
     },
-    "perm_ref": {
-        "name": "perm_ref",
-        "label": "Perm ref",
+    "param Robeson_multi": {
+        "name": "param Robeson_multi",
+        "label": "Robeson_multi",
         "param_type": ParamType.INPUT,
         "file": FILE.PERM,
         "optional": False,
-        "default": 1,
-        "min_value": 0,
-        "max_value": 2,
-        "step": 1,
+        "hidden": False,
     },
-
+    "param Robeson_power": {
+        "name": "param Robeson_power",
+        "label": "Robeson_power",
+        "param_type": ParamType.INPUT,
+        "file": FILE.PERM,
+        "optional": False,
+        "hidden": False,
+    },
+    "param alpha_ub_bounds": {
+        "name": "param alpha_ub_bounds",
+        "label": "alpha_ub_bounds",
+        "param_type": ParamType.INPUT,
+        "file": FILE.PERM,
+        "optional": False,
+        "hidden": False,
+    },
+    "param alpha_lb_bounds": {
+        "name": "param alpha_lb_bounds",
+        "label": "alpha_lb_bounds",
+        "param_type": ParamType.INPUT,
+        "file": FILE.PERM,
+        "optional": False,
+        "hidden": False,
+    },
+    "param lb_permeability": {
+        "name": "param lb_permeability",
+        "label": "lb_permeability",
+        "param_type": ParamType.INPUT,
+        "file": FILE.PERM,
+        "optional": False,
+        "hidden": False,
+    },
+    "param ub_permeability": {
+        "name": "param ub_permeability",
+        "label": "ub_permeability",
+        "param_type": ParamType.INPUT,
+        "file": FILE.PERM,
+        "optional": False,
+        "hidden": False,
+    },
     # -----------------------------------------------------------
     #               eco file
     "param R": {
@@ -807,8 +842,6 @@ params_dict = {
         "optional": False,
         # "default": 0.8746,
     },
-
-#TODO: add fixing variables
-# TODO: add a label for the question label in the param
+    # TODO: add fixing variables
+    # TODO: add a label for the question label in the param
 }
-

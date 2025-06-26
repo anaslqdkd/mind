@@ -185,7 +185,6 @@ class MainWindow(QMainWindow):
             if f"param {el}" in self.param_registry.keys():
                 self.param_registry[f"param {el}"].set_value(value)
 
-
     def _define_pages(self):
         self.pages_names = {
             "Page 1": ["General"],
@@ -233,7 +232,7 @@ class MainWindow(QMainWindow):
                 "prototype_data",
                 "generations",
                 "n1_element",
-                "fname_mask"
+                "fname_mask",
             ],
             "Data": [
                 "set components",
@@ -268,8 +267,16 @@ class MainWindow(QMainWindow):
                 "param mem_product",
                 "param mem_type",
                 "alpha",
-                "perm_ref",
+                # "perm_ref",
             ],
+            "Perm2": [
+                    "param Robeson_multi",
+                    "param Robeson_power",
+                    "param alpha_ub_bounds",
+                    "param alpha_lb_bounds",
+                    "param lb_permeability",
+                    "param ub_permeability",
+                    ],
             "Eco": [
                 "param R",
                 "param phi",
@@ -309,7 +316,6 @@ class MainWindow(QMainWindow):
 
     def _init_pages(self):
         self.param_registry = set_param(params_dict)
-        debug_print("**********", self.param_registry.keys())
         self.category_params = {
             cat: [self.param_registry[name] for name in names]
             for cat, names in self.categories_names.items()
@@ -327,15 +333,16 @@ class MainWindow(QMainWindow):
             "Tab 3": [self.category_instances["Data"]],
             "Tab 4": [self.category_instances["Data2"]],
             "Tab 5": [self.category_instances["Perm"]],
+            "Tab b": [self.category_instances["Perm2"]],
             "Tab 6": [self.category_instances["Eco"]],
             "Tab 7": [self.category_instances["Eco2"]],
         }
         self.tabs_names = {
             "Page 1": ["Tab 1"],
             "Page 2": ["Tab 2", "Tab a"],
-            "Page 3": ["Tab 3", "Tab 4"],
+            "Page 3": ["Tab 3"],
             "Page 4": ["Tab 4"],
-            "Page 5": ["Tab 5"],
+            "Page 5": ["Tab b"],
             "Page 6": ["Tab 6", "Tab 7"],
         }
         for page, tab_list in self.tabs_names.items():
@@ -436,10 +443,10 @@ class MainWindow(QMainWindow):
                 self.update_final_product,
             )
             dependency_manager.add_dependency(
-                    param_registry["fixing_var"],
-                    param_registry["fname_mask"],
-                    self.update_fixing,
-                    )
+                param_registry["fixing_var"],
+                param_registry["fname_mask"],
+                self.update_fixing,
+            )
 
         register_param_dependencies(self.param_registry, dependency_manager)
 
@@ -457,7 +464,6 @@ class MainWindow(QMainWindow):
         target.category.update_category()
 
     def update_fn(self, target: ParamFixedWithInput, source: ParamInput):
-        debug_print(f"in the update funtion with target: {target.name} and source: {source.name}")
         target.set_row(int(float(source.get_value())))
         # target.set_row(int(source.get_value()))
         target.category.update_category()
@@ -604,34 +610,34 @@ class ConfigBuilder:
     def __init__(self, params) -> None:
         self.param_registry = params
         self.tuning_params = [
-                "pressure_ratio",
-                "epsilon",
-                "seed1",
-                "seed2",
-                "iteration",
-                "max_no_improve",
-                "max_trials",
-                "pop_size",
-                "generations",
-                "n1_element"
-                ]
+            "pressure_ratio",
+            "epsilon",
+            "seed1",
+            "seed2",
+            "iteration",
+            "max_no_improve",
+            "max_trials",
+            "pop_size",
+            "generations",
+            "n1_element",
+        ]
         self.instance_params = [
-                "data_dir",
-                "log_dir",
-                "num_membranes",
-                "ub_area",
-                "lb_area",
-                "ub_acell",
-                "fixing_var",
-                "fname",
-                "fname_perm",
-                "fname_eco",
-                "uniform_pup",
-                "prototype_data",
-                "vp",
-                "variable_perm",
-                "fname_mask"
-                ]
+            "data_dir",
+            "log_dir",
+            "num_membranes",
+            "ub_area",
+            "lb_area",
+            "ub_acell",
+            "fixing_var",
+            "fname",
+            "fname_perm",
+            "fname_eco",
+            "uniform_pup",
+            "prototype_data",
+            "vp",
+            "variable_perm",
+            "fname_mask",
+        ]
         self.config_args = {}
 
     def build_config(self):
@@ -644,7 +650,6 @@ class ConfigBuilder:
                     if arg is not None:
                         self.config_args["tuning"].append(arg)
         for param_name in self.instance_params:
-            debug_print(param_name)
             if param_name in self.param_registry.keys():
                 param = self.param_registry[param_name]
                 if param.file == FILE.CONFIG:
@@ -653,7 +658,6 @@ class ConfigBuilder:
                         self.config_args["instance"].append(arg)
         debug_print(self.config_args)
         self.write_config_ini()
-
 
     def write_config_ini(self, filename="test/config.ini"):
         dir_path = os.path.dirname(filename)
@@ -673,24 +677,25 @@ class ConfigBuilder:
         with open(filename, "w") as configfile:
             config.write(configfile)
 
+
 class DataBuilder:
     # TODO: add to_data_entry for param fixed with input
     def __init__(self, params) -> None:
         self.param_registry = params
         self.validated_params = [
-                "set components",
-                "param ub_perc_waste",
-                "param lb_perc_prod",
-                "param normalized_product_qt",
-                "param final_product",
-                "param FEED",
-                "param XIN",
-                "param molarmass",
-                "param ub_press_down",
-                "param lb_press_down",
-                "param lb_press_up",
-                "param ub_press_up",
-                ]
+            "set components",
+            "param ub_perc_waste",
+            "param lb_perc_prod",
+            "param normalized_product_qt",
+            "param final_product",
+            "param FEED",
+            "param XIN",
+            "param molarmass",
+            "param ub_press_down",
+            "param lb_press_down",
+            "param lb_press_up",
+            "param ub_press_up",
+        ]
 
     def build_data(self):
         self.data_args = []
@@ -699,12 +704,10 @@ class DataBuilder:
                 param = self.param_registry[param_name]
                 if param.file == FILE.DATA:
                     arg = param.to_data_entry()
-                    debug_print("++++++++", param.name, arg)
                     if arg is not None:
                         self.data_args.append(arg)
         debug_print(f"---{self.data_args}\n")
         pass
-
 
 
 class EcoBuilder:
@@ -712,47 +715,43 @@ class EcoBuilder:
         self.param_registry = params
 
         self.validated_params = [
-                "param R", 
-                "param phi", 
-                "param T", 
-                "param gamma", 
-                "param C_cp", 
-                "param C_exp", 
-                "param C_vp", 
-                "param eta_cp", 
-                "param K_mr", 
-                "param K_gp", 
-                "param K_m", 
-                "param K_mf", 
-                "param K_el", 
-                "param K_er",
-                "param t_op", 
-                "param MFc", 
-                "param nu", 
-                "param UF_2000", 
-                "param UF_1968", 
-                "param MPFc", 
-                "param i",
-                "param z",
-                "param eta_vp_1", 
-                "param eta_vp_0", 
+            "param R",
+            "param phi",
+            "param T",
+            "param gamma",
+            "param C_cp",
+            "param C_exp",
+            "param C_vp",
+            "param eta_cp",
+            "param K_mr",
+            "param K_gp",
+            "param K_m",
+            "param K_mf",
+            "param K_el",
+            "param K_er",
+            "param t_op",
+            "param MFc",
+            "param nu",
+            "param UF_2000",
+            "param UF_1968",
+            "param MPFc",
+            "param i",
+            "param z",
+            "param eta_vp_1",
+            "param eta_vp_0",
         ]
         self.args = []
 
     def build_eco(self):
         self.args = []
-        debug_print("}}}}}}}}}}}}}}}}}}}}}}", self.param_registry.keys())
-        debug_print(")))))))))))))))))))))", self.validated_params)
         for param_name in self.validated_params:
             if param_name in self.param_registry.keys():
                 self.print_list_diff(self.validated_params, self.param_registry)
-                debug_print("3333",param_name)
                 param = self.param_registry[param_name]
                 if param.file == FILE.ECO:
                     arg = param.to_eco_entry()
                     if arg:
                         self.args.append(arg)
-        debug_print(self.args)
         self.write_eco()
         return self.args
 
@@ -764,15 +763,19 @@ class EcoBuilder:
             for entry in self.args:
                 f.write(f"{entry}\n")
 
-    def print_list_diff(self, list1, list2, label1="Only in self.validated_params", label2="Only in list2"):
+    def print_list_diff(
+        self,
+        list1,
+        list2,
+        label1="Only in self.validated_params",
+        label2="Only in list2",
+    ):
         only_in_1 = set(list1) - set(list2)
         only_in_2 = set(list2) - set(list1)
         if only_in_1:
             print(f"{label1}: {sorted(only_in_1)}")
         # if only_in_2:
         #     print(f"{label2}: {sorted(only_in_2)}")
-
-
 
 
 class PageParameters(QWidget):
