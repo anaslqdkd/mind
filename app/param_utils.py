@@ -76,6 +76,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
             return ParamInputWithUnity(
                 name,
                 file=file,
+                label=label,
                 values=values,
                 depends_on=depends_on,
                 optional=optional,

@@ -278,7 +278,16 @@ params_dict = {
         "optional": False,
         "hidden": True
     },
-    # NOTE: seed à mettre éventuellement
+    "fname_mask": {
+        "name": "fname_mask",
+        "label": "Fixing file",
+        "param_type": ParamType.FILECHOOSER,
+        "file": FILE.CONFIG,
+        "optional": False,
+        "hidden": True
+    },
+
+
 
     # -----------------------------------------------------------
     #               data.dat

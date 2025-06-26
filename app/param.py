@@ -134,6 +134,8 @@ class Param:
         return None
 
     to_config_entry = to_file_entry
+    to_data_entry = to_file_entry
+
 
     def build_header(self, label: str, description: str, optional: bool) -> QWidget:
         header_container = QWidget()
@@ -274,6 +276,14 @@ class ParamInput(Param):
         if self.last_line_edit != "" and self.last_line_edit != None:
             return f"{self.name} = {self.last_line_edit}"
 
+    def to_data_entry(self) -> Optional[str]:
+        if self.last_line_edit != "" and self.last_line_edit != None:
+            return f"{self.name} := {self.last_line_edit}"
+
+    def to_eco_entry(self) -> Optional[str]:
+        if self.last_line_edit != "" and self.last_line_edit != None:
+            return f"{self.name} := {self.last_line_edit}"
+
 # -----------------------------------------------------------
 
 
@@ -358,6 +368,11 @@ class ParamSelect(Param):
         if self.last_combo_box:
             return f"{self.name} = {self.last_combo_box}"
 
+    def to_data_entry(self):
+        if self.last_combo_box:
+            return f"{self.name} := \"{self.last_combo_box}\""
+
+
     def to_file(self) -> str:
         return f"{self.name} := {self.last_combo_box}"
 
@@ -386,6 +401,7 @@ class ParamBoolean(Param):
         self.optional = optional
         self.description = description
         self.label = label
+        self.manager: Optional[DependencyManager] = None
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         container = QWidget()
@@ -406,7 +422,15 @@ class ParamBoolean(Param):
         h_layout.addWidget(header)
         h_layout.addStretch()
 
+        if self.check_box is not None:
+            self.check_box.toggled.connect(self._on_value_changed)
+
         grid_layout.addWidget(container, row, 0, 1, 2)
+
+    def _on_value_changed(self):
+        if self.manager is not None:
+            self.store_value()
+            self.manager.notify_change(self)
 
     def restore_values(self):
         if self.last_check_box:
@@ -448,9 +472,10 @@ class ParamInputWithUnity(Param):
         depends_on: Optional[dict[str, DependencyType]],
         description: str = "",
         optional: bool = False,
+        label: str = "",
         expected_type=str,
     ) -> None:
-        super().__init__(name, file=file, depends_on=depends_on)
+        super().__init__(name, file=file, depends_on=depends_on, description=description, label=label)
         self.question_label = None
         self.line_edit = None
         self.combo_box = None
@@ -502,6 +527,12 @@ class ParamInputWithUnity(Param):
 
     def to_file(self) -> str:
         return f"{self.name} := {self.last_line_edit} #{self.last_combo_box}"
+
+    def to_data_entry(self) -> Optional[str]:
+        debug_print("in the data entry of input with unity", {self.last_line_edit})
+        # TODO: convert unity before assignment
+        if self.last_line_edit != "" and self.last_line_edit is not None:
+            return f"{self.name} := {self.last_line_edit} #{self.last_combo_box}"
 
     def to_command_arg(self):
         return f"--{self.name}"
@@ -1116,6 +1147,14 @@ class ParamComponentSelector(Param):
     def to_file(self) -> str:
         # TODO:
         return f""
+
+    def to_data_entry(self) -> Optional[str]:
+        debug_print("the selected components are", self.selected_components)
+        if len(self.selected_components) > 0:
+            values = ', '.join(f'"{str(x)}"' for x in self.selected_components)
+            return f"{self.name} := {values}"
+        else:
+            return None
 
 
 # -----------------------------------------------------------
