@@ -8,6 +8,8 @@ from app.param import (
     ParamComponent,
     ParamComponentSelector,
     ParamFileChooser,
+    ParamFixedMembrane,
+    ParamFixedPerm,
     ParamFixedWithInput,
     ParamInput,
     ParamInputWithUnity,
@@ -173,6 +175,28 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
             )
         case ParamType.FILECHOOSER:
             return ParamFileChooser(
+                name,
+                file,
+                label=label,
+                hidden=hidden,
+                depends_on=depends_on,
+                optional=optional,
+                expected_type=expected_type,
+                # description=description,
+            )
+        case ParamType.FIXED_PERM:
+            return ParamFixedPerm(
+                name,
+                file,
+                label=label,
+                hidden=hidden,
+                depends_on=depends_on,
+                optional=optional,
+                expected_type=expected_type,
+                # description=description,
+            )
+        case ParamType.FIXED_MEMBRANE:
+            return ParamFixedMembrane(
                 name,
                 file,
                 label=label,

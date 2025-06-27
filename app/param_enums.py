@@ -17,6 +17,8 @@ class ParamType(enum.Enum):
     SPIN_BOX = enum.auto()
     FILECHOOSER = enum.auto()
     FIXED_WITH_SELECT = enum.auto()
+    FIXED_PERM = enum.auto()
+    FIXED_MEMBRANE = enum.auto()
 
 
 # -----------------------------------------------------------

@@ -32,6 +32,8 @@ from app.param import (
     ParamComponent,
     ParamComponentSelector,
     ParamFileChooser,
+    ParamFixedMembrane,
+    ParamFixedPerm,
     ParamFixedWithInput,
     ParamInput,
     ParamSelect,
@@ -291,6 +293,7 @@ class MainWindow(QMainWindow):
         self.config_builder = ConfigBuilder(self.param_registry)
         self.data_builder = DataBuilder(self.param_registry)
         self.eco_builder = EcoBuilder(self.param_registry)
+        self.perm_builder = PermBuilder(self.param_registry)
 
     def _init_pages(self):
         self.param_registry = set_param(params_dict)
@@ -371,23 +374,36 @@ class MainWindow(QMainWindow):
             dependency_manager.add_dependency(
                 param_registry["set components"],
                 param_registry["param Permeability"],
-                self.update_permeability2,
+                # self.update_components,
+                self.update_permeability2
             )
             dependency_manager.add_dependency(
                 param_registry["set mem_types_set"],
                 param_registry["param Permeability"],
-                self.update_permeability2,
+                # self.update_membranes,
+                self.update_permeability2
             )
+            # dependency_manager.add_dependency(
+            #     param_registry["set mem_types_set"],
+            #     param_registry["param Permeability"],
+            #     self.update_permeability2,
+            # )
+            # dependency_manager.add_dependency(
+            #     param_registry["set components"],
+            #     param_registry["param Permeability"],
+            #     self.update_permeability2,
+            # )
             dependency_manager.add_dependency(
                 param_registry["set mem_types_set"],
                 param_registry["param thickness"],
                 self.update_permeability,
             )
-            dependency_manager.add_dependency(
-                param_registry["set components"],
-                param_registry["param mem_type"],
-                self.update_permeability,
-            )
+            # dependency_manager.add_dependency(
+            #     param_registry["set components"],
+            #     param_registry["param mem_type"],
+            #     self.update_components,
+            # )
+
             dependency_manager.add_dependency(
                 param_registry["set mem_types_set"],
                 param_registry["param mem_product"],
@@ -459,6 +475,21 @@ class MainWindow(QMainWindow):
     ):
         target.set_rows_nb(int(source.get_value()), source)
         target.category.update_category()
+
+    def update_components(self, target: ParamFixedPerm, source: ParamComponentSelector):
+        debug_print("in update components")
+        target.set_components(source.get_selected_items())
+        target.category.update_category()
+
+    def update_membranes(self, target: ParamFixedPerm, source: ParamComponent):
+        debug_print("in update membranes")
+        target.set_membranes(source.get_items())
+        target.category.update_category()
+
+    # def update_permeability(self, target: ParamFixedMembrane, source: ParamComponent):
+    #     debug_print("the target name is:", target.name)
+    #     target.set_membranes(source.get_items())
+    #     target.category.update_category()
 
     def update_fn(self, target: ParamFixedWithInput, source: ParamInput):
         target.set_row(int(float(source.get_value())))
@@ -599,10 +630,12 @@ class MainWindow(QMainWindow):
         config = self.config_builder.build_config()
         data = self.data_builder.build_data()
         eco = self.eco_builder.build_eco()
+        perm = self.perm_builder.build_perm()
         debug_print("the command is", command)
         debug_print("the config is", config)
-        debug_print("the config is", data)
-        debug_print("the config is", eco)
+        debug_print("the data is", data)
+        debug_print("the eco is", eco)
+        debug_print("the perm is", perm)
 
 
 # -----------------------------------------------------------
@@ -759,6 +792,47 @@ class DataBuilder:
             f.write(f"data;\n\n")
             for entry in self.data_args:
                 f.write(f"{entry};\n\n")
+
+class PermBuilder:
+    # TODO: add to_data_entry for param fixed with input
+    def __init__(self, params) -> None:
+        self.param_registry = params
+        self.validated_params = [
+            "set mem_types_set",
+            "param Permeability",
+            "param thickness",
+            "param mem_product",
+            "param mem_type",
+
+            "param Robeson_multi",
+            "param ub_alpha",
+            "param lb_permeability",
+            "param ub_permeability",
+        ]
+        self.perm_args = []
+
+    def build_perm(self):
+        self.perm_args = []
+        for param_name in self.validated_params:
+            if param_name in self.param_registry.keys():
+                param = self.param_registry[param_name]
+                if param.file == FILE.DATA:
+                    arg = param.to_perm_entry()
+                    if arg is not None:
+                        self.perm_args.append(arg)
+        # debug_print(f"---{self.data_args}\n")
+        self.write_data()
+        pass
+
+
+    def write_data(self, filename="test/perm.dat"):
+        dir_path = os.path.dirname(filename)
+        if dir_path:
+            os.makedirs(dir_path, exist_ok=True)
+        with open(filename, "w") as f:
+            for entry in self.perm_args:
+                f.write(f"{entry};\n\n")
+
 
 class EcoBuilder:
     def __init__(self, params) -> None:
