@@ -373,7 +373,7 @@ params_dict = {
         "optional": False,
     },
     "param ub_press_down": {
-        "name": "pram ub_press_down",
+        "name": "param ub_press_down",
         "label": "Upper bound pressure down",
         "param_type": ParamType.INPUT,
         "file": FILE.DATA,
@@ -564,6 +564,7 @@ params_dict = {
         "param_type": ParamType.FIXED_WITH_INPUT,
         "file": FILE.PERM,
         "optional": False,
+        # "hidden": True
     },
     "param thickness": {
         "name": "param thickness",
@@ -606,7 +607,7 @@ params_dict = {
         "param_type": ParamType.INPUT,
         "file": FILE.PERM,
         "optional": False,
-        "hidden": False,
+        "hidden": True,
     },
     "param Robeson_power": {
         "name": "param Robeson_power",
@@ -614,39 +615,39 @@ params_dict = {
         "param_type": ParamType.INPUT,
         "file": FILE.PERM,
         "optional": False,
-        "hidden": False,
+        "hidden": True,
     },
-    "param alpha_ub_bounds": {
-        "name": "param alpha_ub_bounds",
-        "label": "alpha_ub_bounds",
+    "param ub_alpha": {
+        "name": "param ub_alpha",
+        "label": "Upper bound alpha",
         "param_type": ParamType.INPUT,
         "file": FILE.PERM,
         "optional": False,
-        "hidden": False,
+        "hidden": True,
     },
-    "param alpha_lb_bounds": {
-        "name": "param alpha_lb_bounds",
-        "label": "alpha_lb_bounds",
+    "param lb_alpha": {
+        "name": "param lb_alpha",
+        "label": "Lower bound alpha",
         "param_type": ParamType.INPUT,
         "file": FILE.PERM,
         "optional": False,
-        "hidden": False,
+        "hidden": True,
     },
     "param lb_permeability": {
         "name": "param lb_permeability",
-        "label": "lb_permeability",
+        "label": "Lower bound permeability",
         "param_type": ParamType.INPUT,
         "file": FILE.PERM,
         "optional": False,
-        "hidden": False,
+        "hidden": True,
     },
     "param ub_permeability": {
         "name": "param ub_permeability",
-        "label": "ub_permeability",
+        "label": "Upper bound permeability",
         "param_type": ParamType.INPUT,
         "file": FILE.PERM,
         "optional": False,
-        "hidden": False,
+        "hidden": True,
     },
     # -----------------------------------------------------------
     #               eco file

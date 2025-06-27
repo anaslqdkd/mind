@@ -9,7 +9,7 @@ class DependencyManager:
         self.params[param.name] = param
         param.manager = self
 
-    def add_dependency(self, source_param, target_param, update_fn):
+    def add_dependency(self, source_param, target_param=None, update_fn=None):
         self.dependencies.setdefault(source_param.name, []).append(
             (target_param, update_fn)
         )

@@ -772,7 +772,9 @@ class ParamComponent(Param):
                 combo = QComboBox()
                 combo.setPlaceholderText("Extra input")
                 combo.addItems(self.values)
+                debug_print(self.last_combo_boxes)
                 combo.setCurrentText(self.last_combo_boxes[i])
+                # combo.setCurrentText(self.last_combo_boxes[i] if i < len(self.last_combo_boxes) else "")
                 combo.setSizePolicy(
                     QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed
                 )
@@ -836,7 +838,9 @@ class ParamComponent(Param):
     def store_value(self):
         self.last_combo_boxes.clear()
         for el in self.combo_boxes:
+            debug_print("the el is", el.currentText())
             if el.currentText() != "":
+                debug_print("the current text is not null")
                 self.last_combo_boxes.append(el.currentText())
 
     def remove_widget_pair(
@@ -878,6 +882,7 @@ class ParamFixedWithInput(Param):
         min_value: Optional[int] = None,
         max_value: Optional[int] = None,
         step: Optional[int] = None,
+        hidden: bool = False,
     ) -> None:
         super().__init__(name, file=file, depends_on=depends_on, label=label)
         self.question_label = None
@@ -902,6 +907,7 @@ class ParamFixedWithInput(Param):
         self.sizes = {k: 0 for k in self.keys}
         self.last_line_edits = []
         self.line_edits = []
+        self.hidden = hidden
         pass
 
     def set_rows_nb(self, rows: int, source: Param):
@@ -920,6 +926,9 @@ class ParamFixedWithInput(Param):
 
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        if self.hidden:
+            debug_print("here in self.hidden")
+            return
         self.row = row
         # self.label = label
         self.grid_layout = grid_layout
@@ -966,6 +975,12 @@ class ParamFixedWithInput(Param):
         for index, value in enumerate(self.last_line_edits):
             if index < len(self.line_edits):
                 self.line_edits[index].setValue(value)
+
+    def hide(self):
+        self.hidden = True
+
+    def show(self):
+        self.hidden = False
 
         # FIXME: adapt to params
 
@@ -1539,12 +1554,14 @@ class ParamFixedWithSelect(Param):
         optional: bool = False,
         description: str = "",
         expected_type=str,
+        label: str = "",
         default: Optional[int] = None,
         min_value: Optional[int] = None,
         max_value: Optional[int] = None,
         step: Optional[int] = None,
+        hidden: bool = False,
     ) -> None:
-        super().__init__(name, file=file, depends_on=depends_on)
+        super().__init__(name, file=file, depends_on=depends_on, description=description, label=label)
         self.question_label = None
         self.line_edit = None
         self.combo_box = None
@@ -1553,7 +1570,7 @@ class ParamFixedWithSelect(Param):
         self.last_line_edit = ""
         self.last_combo_box = ""
 
-        self.row_nb = 0
+        self.row_nb = 1
 
         self.optional = optional
         self.rows = 0
@@ -1566,6 +1583,7 @@ class ParamFixedWithSelect(Param):
         self.sizes = {}
         self.keys = ["set components", "set mem_types_set"]
         self.sizes = {k: 0 for k in self.keys}
+        self.hidden = hidden
         pass
 
     def set_rows_nb(self, rows: int, source: Param):
@@ -1582,6 +1600,8 @@ class ParamFixedWithSelect(Param):
 
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        if self.hidden:
+            return
         self.row = row
         self.label = label
         self.grid_layout = grid_layout
@@ -1619,6 +1639,12 @@ class ParamFixedWithSelect(Param):
         if self.last_line_edit:
             if self.line_edit:
                 self.line_edit.setText(self.last_line_edit)
+
+    def hide(self):
+        self.hidden = True
+
+    def show(self):
+        self.hidden = False
 
     def store_value(self):
         if self.line_edit is not None:

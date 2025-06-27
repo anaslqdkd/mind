@@ -2,6 +2,7 @@ import os
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
+    QAbstractScrollArea,
     QFrame,
     QGroupBox,
     QHBoxLayout,
@@ -123,7 +124,6 @@ class MainWindow(QMainWindow):
         layout.addWidget(end_buttons)
         tab_param_layout.addWidget(self.sidebar)
         tab_param_layout.addWidget(self.stack)
-        tab_param_layout.addStretch()
 
         # FIXME: probably change the passed param
         # self.config_builder = ConfigBuilder(self.all_params)
@@ -186,25 +186,9 @@ class MainWindow(QMainWindow):
                 self.param_registry[f"param {el}"].set_value(value)
 
     def _define_pages(self):
-        self.pages_names = {
-            "Page 1": ["General"],
-            "Page 2": ["Membranes"],
-            "Page 3": ["Data"],
-            "Page 4": ["Data2"],
-            "Page 5": ["Perm"],
-            "Page 6": ["Eco"],
-            "Page 7": ["Eco2"],
-        }
-
         self.categories_names = {
             "General": [
-                "verbose",
-                "debug",
-                "solver",
                 "gams",
-                "maxiter",
-                "maxtime",
-                "algorithm",
                 "no_starting_point",
                 "no_simplified_model",
                 # "visualise",
@@ -212,99 +196,93 @@ class MainWindow(QMainWindow):
                 # "capex",
                 "save_log_sol",
             ],
-            "Surfaces": ["num_membranes", "ub_area", "lb_area", "ub_acell"],
-            "Membranes": [
-                # "num_membranes",
-                # "ub_area",
-                # "lb_area",
-                # "ub_acell",
+            "Algorithm options": [
+                "algorithm",
+                "solver",
+                "maxiter",
+                "maxtime",
+                "verbose",
+                "debug",
+            ],
+            "Membranes design": ["num_membranes", "ub_area", "lb_area", "ub_acell"],
+            "Model options": [
                 "fixing_var",
                 "uniform_pup",
                 "vp",
                 "variable_perm",
+                "fname_mask",
+                "prototype_data",
+            ],
+            "Tuning settings": [
                 "pressure_ratio",
+                "seed1",
+                "seed2",
                 "iteration",
                 "max_no_improve",
                 "max_trials",
                 "pop_size",
-                "seed1",
-                "seed2",
-                "prototype_data",
                 "generations",
                 "n1_element",
-                "fname_mask",
             ],
-            "Data": [
-                "set components",
-                "param xin",
-                "param molarmass",
-                "param pressure_in",
-                "param lb_perc_prod",
-                "param lb_perc_waste",
-                "param FEED",
-                "param normalized_product_qt",
+            "Components": ["set components", "param xin", "param molarmass"],
+            "Product constraints": [
                 "param final_product",
+                "param normalized_product_qt",
+                "param lb_perc_prod",
+                "param ub_perc_waste",
+            ],
+            "Process constraints": [
                 "param ub_press_down",
                 "param lb_press_down",
+                "param lb_press_up",
                 "param ub_press_up",
+                "param FEED",
             ],
-            "Data2": [
-                "param pressure_prod",
-                "param lb_press_down",
-                "param ub_feed",
-                "param ub_out_prod",
-                "param ub_out_waste",
-                "param ub_feed",
-                "param tol_zero",
-                "param n",
-                "states",
-            ],
-            "Perm": [
+            "Membrane Types": [
                 "set mem_types_set",
-                # "param nb_gas",
-                "param Permeability",
                 "param thickness",
                 "param mem_product",
-                "param mem_type",
-                "alpha",
-                # "perm_ref",
+                "param Robeson_multi",
+                "param Robeson_power",
+                "param ub_alpha",
+                "param lb_alpha",
             ],
-            "Perm2": [
-                    "param Robeson_multi",
-                    "param Robeson_power",
-                    "param alpha_ub_bounds",
-                    "param alpha_lb_bounds",
-                    "param lb_permeability",
-                    "param ub_permeability",
-                    ],
-            "Eco": [
+            "Membrane Options": [
+                "param Permeability",
+                "param mem_type",
+                "param lb_permeability",
+                "param ub_permeability",
+            ],
+            "Thermodynamic & Physical Constants": [
                 "param R",
-                "param phi",
-                "param T",
                 "param gamma",
+                "param phi",
+            ],
+            "Equipement costs": [
                 "param C_cp",
                 "param C_exp",
                 "param C_vp",
-                "param eta_cp",
-                "param K_mr",
-                "param K_gp",
                 "param K_m",
                 "param K_mf",
+                "param K_mr",
                 "param K_el",
+                "param K_gp",
                 "param K_er",
-                "param t_op",
             ],
-            "Eco2": [
-                "param MFc",
+            "Operation & Replacement": [
+                "param t_op",
                 "param nu",
-                "param UF_1968",
-                "param UF_2000",
+            ],
+            "Compressor/Expander Factors": [
+                "param MFc",
                 "param MPFc",
-                "param i",
+                "param UF_2000",
+                "param UF_1968",
                 "param i",
                 "param z",
-                "param eta_vp_1",
-                "param eta_vp_0",
+            ],
+            "Vacuum Pump/Expander Efficiency": [
+                "param eta_cp",
             ],
         }
 
@@ -327,23 +305,34 @@ class MainWindow(QMainWindow):
             self.category_instances[key] = temp_category
 
         self.tab_categories = {
-            "Tab 1": [self.category_instances["General"]],
-            "Tab a": [self.category_instances["Surfaces"]],
-            "Tab 2": [self.category_instances["Membranes"]],
-            "Tab 3": [self.category_instances["Data"]],
-            "Tab 4": [self.category_instances["Data2"]],
-            "Tab 5": [self.category_instances["Perm"]],
-            "Tab b": [self.category_instances["Perm2"]],
-            "Tab 6": [self.category_instances["Eco"]],
-            "Tab 7": [self.category_instances["Eco2"]],
+            "Basic": [self.category_instances["Algorithm options"]],
+            "Advanced": [self.category_instances["General"]],
+            "Instance": [
+                self.category_instances["Membranes design"],
+                self.category_instances["Model options"],
+            ],
+            "Tuning": [self.category_instances["Tuning settings"]],
+            "Components": [self.category_instances["Components"]],
+            "Product": [self.category_instances["Product constraints"]],
+            "Process": [self.category_instances["Process constraints"]],
+            "Membrane": [self.category_instances["Membrane Types"]],
+            "Options": [self.category_instances["Membrane Options"]],
+            "Eco": [
+                self.category_instances["Thermodynamic & Physical Constants"],
+                self.category_instances["Operation & Replacement"],
+            ],
+            "Eco2": [self.category_instances["Equipement costs"]],
+            "Eco3": [
+                self.category_instances["Compressor/Expander Factors"],
+                self.category_instances["Vacuum Pump/Expander Efficiency"],
+            ],
         }
         self.tabs_names = {
-            "Page 1": ["Tab 1"],
-            "Page 2": ["Tab 2", "Tab a"],
-            "Page 3": ["Tab 3"],
-            "Page 4": ["Tab 4"],
-            "Page 5": ["Tab b"],
-            "Page 6": ["Tab 6", "Tab 7"],
+            "Program options": ["Basic", "Advanced"],
+            "Configuration": ["Instance", "Tuning"],
+            "General Data": ["Components", "Product", "Process"],
+            "Permeability": ["Membrane", "Options"],
+            "Economics": ["Eco", "Eco2", "Eco3"],
         }
         for page, tab_list in self.tabs_names.items():
             self.sidebar.addItem(page)
@@ -351,6 +340,8 @@ class MainWindow(QMainWindow):
             page_temp = PageParameters(
                 self, self.stack, self.sidebar, tab_list, page_tabs_categories
             )
+            max_width = self.sidebar.sizeHintForColumn(0)
+            self.sidebar.setFixedWidth(max_width + 90)
             self.pages.append(page_temp)
 
         pass
@@ -447,11 +438,17 @@ class MainWindow(QMainWindow):
                 param_registry["fname_mask"],
                 self.update_fixing,
             )
+            dependency_manager.add_dependency(
+                param_registry["variable_perm"],
+                None,
+                self.update_variable_perm,
+            )
 
         register_param_dependencies(self.param_registry, dependency_manager)
 
     def update_final_product(self, target: ParamSelect, source: ParamComponentSelector):
         target.set_values(source.selected_components)
+        target.category.update_category()
 
     def update_permeability(self, target: ParamFixedWithInput, source: ParamComponent):
         target.set_rows(int(source.get_value()), source)
@@ -549,7 +546,52 @@ class MainWindow(QMainWindow):
                     param.hide()
                     param.category.update_category()
 
-    # FIXME: hide all other params
+    def update_variable_perm(self, target: Param, source: ParamBoolean):
+        debug_print("in update variable perm")
+        variable_perm_params = [
+            "param Robeson_multi",
+            "param Robeson_power",
+            "param ub_alpha",
+            "param lb_alpha",
+            "param ub_permeability",
+            "param lb_permeability",
+            # "param thickness",
+            "param mem_product",
+        ]
+        fixed_variable_params = [
+            "set mem_type_set",
+            # "param nb_gas",
+            "param Permeability",
+            # "param thickness",
+            "param mem_product",
+            "param mem_type",
+        ]
+
+        if source.last_check_box:
+            # if perm variable
+            for param_name in variable_perm_params:
+                param = self.param_registry.get(param_name)
+                if param:
+                    param.show()
+                    param.category.update_category()
+            for param_name in fixed_variable_params:
+                debug_print("+++", param_name)
+                param = self.param_registry.get(param_name)
+                if param:
+                    debug_print("the param is ", param.name)
+                    param.hide()
+                    param.category.update_category()
+        else:
+            for param_name in fixed_variable_params:
+                param = self.param_registry.get(param_name)
+                if param:
+                    param.show()
+                    param.category.update_category()
+            for param_name in variable_perm_params:
+                param = self.param_registry.get(param_name)
+                if param:
+                    param.hide()
+                    param.category.update_category()
 
     def build_command(self):
         self.update_pages()
@@ -564,9 +606,6 @@ class MainWindow(QMainWindow):
 
 
 # -----------------------------------------------------------
-
-# TODO: sidebar categories based on the dict pages name
-# TODO: to_command for select, bool with input, spin box
 
 
 class CommandBuilder:
@@ -696,6 +735,7 @@ class DataBuilder:
             "param lb_press_up",
             "param ub_press_up",
         ]
+        self.data_args = []
 
     def build_data(self):
         self.data_args = []
@@ -706,9 +746,19 @@ class DataBuilder:
                     arg = param.to_data_entry()
                     if arg is not None:
                         self.data_args.append(arg)
-        debug_print(f"---{self.data_args}\n")
+        # debug_print(f"---{self.data_args}\n")
+        self.write_data()
         pass
 
+
+    def write_data(self, filename="test/data.dat"):
+        dir_path = os.path.dirname(filename)
+        if dir_path:
+            os.makedirs(dir_path, exist_ok=True)
+        with open(filename, "w") as f:
+            f.write(f"data;\n\n")
+            for entry in self.data_args:
+                f.write(f"{entry};\n\n")
 
 class EcoBuilder:
     def __init__(self, params) -> None:
@@ -803,6 +853,9 @@ class PageParameters(QWidget):
         tab1_layout.setSpacing(0)
         self.tab_widget = QTabWidget()
         self.tab_widget.setTabPosition(QTabWidget.TabPosition.North)
+        self.tab_widget.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+        )
 
         if tabs_for_page and tab_categories:
             for tab_name in tabs_for_page:
@@ -817,10 +870,16 @@ class PageParameters(QWidget):
                 scroll_area.setWidget(tab_widget)
                 # scroll_area.setStyleSheet("background: white;")
                 tab_widget.setStyleSheet("background-color: white;")
+                tab_layout.addStretch()
+                tab_widget.setSizePolicy(
+                    QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+                )
+                scroll_area.setSizePolicy(
+                    QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+                )
                 self.tab_widget.addTab(scroll_area, tab_name)
 
-        main_layout.addWidget(self.tab_widget)
-        self.setLayout(main_layout)
+        main_layout.addWidget(self.tab_widget, stretch=1)
 
         next_button = QPushButton("next")
 

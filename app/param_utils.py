@@ -164,6 +164,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
             return ParamFixedWithSelect(
                 name,
                 file,
+                label=label,
                 values = values,
                 depends_on=depends_on,
                 optional=optional,
