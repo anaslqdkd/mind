@@ -14,6 +14,7 @@ from app.param import (
     ParamFixedWithInput,
     ParamInput,
     ParamInputWithUnity,
+    ParamMemType,
     ParamMembraneSelect,
     ParamRadio,
     ParamSelect,
@@ -226,6 +227,17 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 name,
                 file,
                 values=values,
+                label=label,
+                hidden=hidden,
+                depends_on=depends_on,
+                optional=optional,
+                # description=description,
+            )
+        case ParamType.FIXED_MEM_TYPE:
+            return ParamMemType(
+                name,
+                file,
+                # values=values,
                 label=label,
                 hidden=hidden,
                 depends_on=depends_on,

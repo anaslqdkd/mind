@@ -37,6 +37,7 @@ from app.param import (
     ParamFixedPerm,
     ParamFixedWithInput,
     ParamInput,
+    ParamMemType,
     ParamMembraneSelect,
     ParamSelect,
     debug_print,
@@ -475,6 +476,21 @@ class MainWindow(QMainWindow):
                 param_registry["param nb_gas"],
                 self.update_nb_gas,
             )
+            dependency_manager.add_dependency(
+                param_registry["num_membranes"],
+                param_registry["param mem_type"],
+                self.update_mem_type,
+            )
+            dependency_manager.add_dependency(
+                param_registry["set mem_types_set"],
+                param_registry["param mem_type"],
+                self.update_mem_type_membranes,
+            )
+            # dependency_manager.add_dependency(
+            #     param_registry["param mem_type"],
+            #     param_registry["num_membranes"],
+            #     self.update_mem_type,
+            # )
 
         register_param_dependencies(self.param_registry, dependency_manager)
 
@@ -483,6 +499,16 @@ class MainWindow(QMainWindow):
 
     def update_mem_product(self, target: ParamMembraneSelect, source: ParamComponent):
         target.set_membranes(source.get_items())
+        target.category.update_category()
+
+    def update_mem_type_membranes(self, target: ParamMembraneSelect, source: ParamComponent):
+        debug_print("in update mem type membranes")
+        target.set_membranes(source.get_items())
+        target.category.update_category()
+
+
+    def update_mem_type(self, target: ParamMemType, source: ParamInput):
+        target.set_floors(int(float(source.get_value())))
         target.category.update_category()
 
 
@@ -501,17 +527,14 @@ class MainWindow(QMainWindow):
         target.category.update_category()
 
     def update_components(self, target: ParamFixedPerm, source: ParamComponentSelector):
-        debug_print("in update components")
         target.set_components(source.get_selected_items())
         target.category.update_category()
 
     def update_xin(self, target: ParamFixedComponent, source: ParamComponentSelector):
-        debug_print("in update components")
         target.set_components(source.get_selected_items())
         target.category.update_category()
 
     def update_membranes(self, target: ParamFixedPerm, source: ParamComponent):
-        debug_print("in update membranes")
         target.set_membranes(source.get_items())
         target.category.update_category()
 
@@ -607,7 +630,6 @@ class MainWindow(QMainWindow):
                     param.category.update_category()
 
     def update_variable_perm(self, target: Param, source: ParamBoolean):
-        debug_print("in update variable perm")
         variable_perm_params = [
             "param Robeson_multi",
             "param Robeson_power",
@@ -635,10 +657,8 @@ class MainWindow(QMainWindow):
                     param.show()
                     param.category.update_category()
             for param_name in fixed_variable_params:
-                debug_print("+++", param_name)
                 param = self.param_registry.get(param_name)
                 if param:
-                    debug_print("the param is ", param.name)
                     param.hide()
                     param.category.update_category()
         else:
@@ -660,11 +680,11 @@ class MainWindow(QMainWindow):
         data = self.data_builder.build_data()
         eco = self.eco_builder.build_eco()
         perm = self.perm_builder.build_perm()
-        debug_print("the command is", command)
-        debug_print("the config is", config)
-        debug_print("the data is", data)
-        debug_print("the eco is", eco)
-        debug_print("the perm is", perm)
+        # debug_print("the command is", command)
+        # debug_print("the config is", config)
+        # debug_print("the data is", data)
+        # debug_print("the eco is", eco)
+        # debug_print("the perm is", perm)
 
 
 # -----------------------------------------------------------
@@ -757,7 +777,6 @@ class ConfigBuilder:
                     arg = param.to_config_entry()
                     if arg is not None:
                         self.config_args["instance"].append(arg)
-        debug_print(self.config_args)
         self.write_config_ini()
 
     def write_config_ini(self, filename="test/config.ini"):
@@ -811,7 +830,6 @@ class DataBuilder:
                     arg = param.to_data_entry()
                     if arg is not None:
                         self.data_args.append(arg)
-        # debug_print(f"---{self.data_args}\n")
         self.write_data()
         pass
 
@@ -850,11 +868,8 @@ class PermBuilder:
                 param = self.param_registry[param_name]
                 if param.file == FILE.PERM:
                     arg = param.to_perm_entry()
-                    debug_print("the args is", arg, param_name)
                     if arg is not None:
                         self.perm_args.append(arg)
-        # debug_print(f"---{self.data_args}\n")
-        debug_print("PERM ARRGS", self.perm_args)
         self.write_data()
         pass
 

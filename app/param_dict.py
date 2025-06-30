@@ -578,7 +578,7 @@ params_dict = {
     "param mem_type": {
         "name": "param mem_type",
         "label": "Mem type",
-        "param_type": ParamType.FIXED_WITH_INPUT,
+        "param_type": ParamType.FIXED_MEM_TYPE,
         "file": FILE.PERM,
         "optional": False,
     },

@@ -289,7 +289,6 @@ class ParamInput(Param):
             return f"{self.name} := {self.last_line_edit}"
 
     def to_perm_entry(self) -> Optional[str]:
-        debug_print("!!!!!!", self.last_line_edit)
         if self.last_line_edit != "" and self.last_line_edit != None:
             return f"{self.name} := {self.last_line_edit}"
 
@@ -538,7 +537,6 @@ class ParamInputWithUnity(Param):
         return f"{self.name} := {self.last_line_edit} #{self.last_combo_box}"
 
     def to_data_entry(self) -> Optional[str]:
-        debug_print("in the data entry of input with unity", {self.last_line_edit})
         # TODO: convert unity before assignment
         if self.last_line_edit != "" and self.last_line_edit is not None:
             return f"{self.name} := {self.last_line_edit} #{self.last_combo_box}"
@@ -783,7 +781,6 @@ class ParamComponent(Param):
                 combo.setPlaceholderText("Extra input")
                 available_values = [v for v in self.values if v not in used_values or v == self.last_combo_boxes[i]]
                 combo.addItems(available_values)
-                debug_print(self.last_combo_boxes)
                 if self.last_combo_boxes and i < len(self.last_combo_boxes):
                     combo.setCurrentText(self.last_combo_boxes[i])
                 combo.setSizePolicy(
@@ -850,9 +847,7 @@ class ParamComponent(Param):
     def store_value(self):
         self.last_combo_boxes.clear()
         for el in self.combo_boxes:
-            debug_print("the el is", el.currentText())
             if el.currentText() != "":
-                debug_print("the current text is not null")
                 self.last_combo_boxes.append(el.currentText())
 
     def remove_widget_pair(
@@ -945,7 +940,6 @@ class ParamFixedWithInput(Param):
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         if self.hidden:
-            debug_print("here in self.hidden")
             return
         self.row = row
         # self.label = label
@@ -1142,7 +1136,6 @@ class ParamComponentSelector(Param):
             self.category.update_category()
 
     def _on_value_changed(self):
-        debug_print("in on value changed for component selector")
         if self.manager is not None:
             self.store_value()
             self.manager.notify_change(self)
@@ -1186,7 +1179,6 @@ class ParamComponentSelector(Param):
         return f""
 
     def to_data_entry(self) -> Optional[str]:
-        debug_print("the selected components are", self.selected_components)
         if len(self.selected_components) > 0:
             values = ', '.join(f'"{str(x)}"' for x in self.selected_components)
             return f"{self.name} := {values}"
@@ -1749,7 +1741,6 @@ class ParamFixedPerm(Param):
                 current_row += 1
 
     def _on_value_changed(self):
-        debug_print("in on value changed")
         if self.manager is not None:
             self.store_value()
             self.manager.notify_change(self)
@@ -1870,6 +1861,8 @@ class ParamFixedMembrane(Param):
         self.step = step
         self.decimals = decimals
 
+    # TODO: restore method
+
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(header, row, 0)
@@ -1955,6 +1948,8 @@ class ParamMembraneSelect(Param):
         self.description = description
         self.hidden = hidden
 
+    # TODO: restore method
+
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(header, row, 0)
@@ -1968,11 +1963,116 @@ class ParamMembraneSelect(Param):
             combo.addItems(self.values)
             self.combo_boxes.append(combo)
             grid_layout.addWidget(combo, current_row, 1)
-            combo.currentIndexChanged.connect(self._on_value_changed)
             current_row += 1
+        self.restore_value()
 
     def set_membranes(self, membranes: list[str]):
         self.membranes = membranes
+
+    def _on_value_changed(self):
+        if self.manager is not None:
+            self.store_value()
+            self.manager.notify_change(self)
+
+    def restore_value(self):
+        for idx, combo in enumerate(self.combo_boxes):
+            print(f"Combo {idx} items:", [combo.itemText(i) for i in range(combo.count())])
+        debug_print("BB", self.last_combo_boxes)
+        debug_print("BB", self.combo_boxes)
+        for idx, value in enumerate(self.last_combo_boxes):
+            if idx < len(self.combo_boxes):
+                combo = self.combo_boxes[idx]
+                print(f"Restoring combo {idx}: looking for '{value}' in {[combo.itemText(i) for i in range(combo.count())]}")
+                index = combo.findText(value)
+                if index != -1:
+                    combo.setCurrentIndex(index)
+
+    def get_value(self):
+        return len(self.last_combo_boxes)
+
+    def get_items(self):
+        return self.last_combo_boxes
+
+    def store_value(self):
+        self.last_combo_boxes.clear()
+        for combo in self.combo_boxes:
+            self.last_combo_boxes.append(combo.currentText())
+        debug_print(self.combo_boxes)
+        debug_print(self.last_combo_boxes)
+
+    def row_span(self) -> int:
+        return 2 + len(self.membranes)
+
+    def to_perm_entry(self) -> Optional[str]:
+        if self.hidden:
+            return None
+        if self.last_combo_boxes and self.membranes:
+            lines = [
+                f'{component}  \t{value}'
+                for component, value in zip(self.membranes, self.last_combo_boxes)
+            ]
+            content = "\n".join(lines)
+            return f"{self.name} :=\n{content}\n"
+        return None
+
+    def to_file(self) -> str:
+        value = ""
+        for el in self.last_combo_boxes:
+            value += f'"{el}" '
+        return f"{self.name} := {value}\n"
+
+# -----------------------------------------------------------
+
+class ParamMemType(Param):
+    def __init__(
+        self,
+        name: str,
+        file: FILE,
+        label: str,
+        depends_on: Optional[dict[str, DependencyType]],
+        hidden: bool = False,
+        num_membrane_floors: int = 1,
+        membranes: list[str] = [],
+        optional: bool = False,
+        description: str = "",
+    ) -> None:
+        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
+        self.question_label = None
+        self.combo_boxes = []
+        self.last_combo_boxes = []
+        self.optional = optional
+        self.num_membrane_floors = num_membrane_floors
+        self.membranes = membranes
+        self.manager: Optional[DependencyManager] = None
+        self.description = description
+        self.hidden = hidden
+
+    # TODO: restore method
+
+    def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        header = self.build_header(label, self.description, self.optional)
+        grid_layout.addWidget(header, row, 0)
+        self.combo_boxes = []
+        grid_layout.addWidget(QLabel("Floor"), row + 1, 0)
+        grid_layout.addWidget(QLabel("Membrane Type"), row + 1, 1)
+        current_row = row + 2
+        for i in range(self.num_membrane_floors):
+            grid_layout.addWidget(QLabel(str(i + 1)), current_row, 0)
+            combo = QComboBox()
+            combo.addItems(self.membranes)
+            self.combo_boxes.append(combo)
+            grid_layout.addWidget(combo, current_row, 1)
+            combo.currentIndexChanged.connect(self._on_value_changed)
+            current_row += 1
+
+    def set_num_components(self, num_components: int):
+        self.num_membrane_floors = num_components
+
+    def set_membranes(self, membranes: list[str]):
+        self.membranes = membranes
+
+    def set_floors(self, floors: int):
+        self.num_membrane_floors = floors
 
     def _on_value_changed(self):
         if self.manager is not None:
@@ -1991,15 +2091,15 @@ class ParamMembraneSelect(Param):
             self.last_combo_boxes.append(combo.currentText())
 
     def row_span(self) -> int:
-        return 2 + len(self.membranes)
+        return 2 + self.num_membrane_floors
 
     def to_perm_entry(self) -> Optional[str]:
         if self.hidden:
             return None
-        if self.last_combo_boxes and self.membranes:
+        if self.last_combo_boxes and self.num_membrane_floors:
             lines = [
-                f'{component}  \t{value}'
-                for component, value in zip(self.membranes, self.last_combo_boxes)
+                f"{i+1}\t{value}"
+                for i, value in enumerate(self.last_combo_boxes)
             ]
             content = "\n".join(lines)
             return f"{self.name} :=\n{content}\n"
