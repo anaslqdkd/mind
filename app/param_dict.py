@@ -561,7 +561,7 @@ params_dict = {
     "param Permeability": {
         "name": "param Permeability",
         "label": "Permeability",
-        "param_type": ParamType.FIXED_WITH_INPUT,
+        "param_type": ParamType.FIXED_PERM,
         "file": FILE.PERM,
         "optional": False,
         # "hidden": True

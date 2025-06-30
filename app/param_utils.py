@@ -50,14 +50,14 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 min_value=min_value,
                 max_value=max_value,
                 step=step,
-                hidden=hidden
+                hidden=hidden,
             )
         case ParamType.SELECT:
             return ParamSelect(
                 name,
                 file=file,
                 values=values,
-                label = label,
+                label=label,
                 hidden=hidden,
                 depends_on=depends_on,
                 optional=optional,
@@ -145,7 +145,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
             return ParamComponentSelector(
                 name,
                 file,
-                label = label,
+                label=label,
                 depends_on=depends_on,
                 values=values,
                 optional=optional,
@@ -167,7 +167,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 name,
                 file,
                 label=label,
-                values = values,
+                values=values,
                 depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,
@@ -191,6 +191,8 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 label=label,
                 hidden=hidden,
                 depends_on=depends_on,
+                # membranes=["M1", "M2"],
+                # components=["O2", "H2"],
                 optional=optional,
                 expected_type=expected_type,
                 # description=description,

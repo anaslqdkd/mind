@@ -766,16 +766,18 @@ class ParamComponent(Param):
         grid_layout.addWidget(header, row, 0)
         self.combo_boxes = []
 
+        used_values = set(self.last_combo_boxes)
+
         # update method
-        # FIXME: move this to a restore value function
         if self.extra_rows > 0:
             for i in range(self.extra_rows):
                 combo = QComboBox()
                 combo.setPlaceholderText("Extra input")
-                combo.addItems(self.values)
+                available_values = [v for v in self.values if v not in used_values or v == self.last_combo_boxes[i]]
+                combo.addItems(available_values)
                 debug_print(self.last_combo_boxes)
-                combo.setCurrentText(self.last_combo_boxes[i])
-                # combo.setCurrentText(self.last_combo_boxes[i] if i < len(self.last_combo_boxes) else "")
+                if self.last_combo_boxes and i < len(self.last_combo_boxes):
+                    combo.setCurrentText(self.last_combo_boxes[i])
                 combo.setSizePolicy(
                     QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed
                 )
@@ -789,20 +791,18 @@ class ParamComponent(Param):
                 grid_layout.addWidget(combo, row, 2)
                 grid_layout.addWidget(remove_button, row, 3)
                 self.combo_boxes.append(combo)
-
                 row += 1
 
         extra_combo = QComboBox()
         extra_combo.setPlaceholderText("Extra input")
-        extra_combo.addItems(self.values)
+        available_values = [v for v in self.values if v not in used_values]
+        extra_combo.addItems(available_values)
         self.combo_boxes.append(extra_combo)
         grid_layout.addWidget(extra_combo, row, 2)
         extra_combo.currentIndexChanged.connect(
             lambda: self.add_component_row(row, grid_layout)
         )
         extra_combo.currentIndexChanged.connect(self._on_value_changed)
-
-    # FIXME: cannot add the same component twice
 
 
     def _on_value_changed(self):

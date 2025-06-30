@@ -375,14 +375,15 @@ class MainWindow(QMainWindow):
                 param_registry["set components"],
                 param_registry["param Permeability"],
                 # self.update_components,
-                self.update_permeability2
+                self.update_components,
             )
             dependency_manager.add_dependency(
                 param_registry["set mem_types_set"],
                 param_registry["param Permeability"],
                 # self.update_membranes,
-                self.update_permeability2
+                self.update_membranes,
             )
+
             # dependency_manager.add_dependency(
             #     param_registry["set mem_types_set"],
             #     param_registry["param Permeability"],
@@ -393,6 +394,7 @@ class MainWindow(QMainWindow):
             #     param_registry["param Permeability"],
             #     self.update_permeability2,
             # )
+
             dependency_manager.add_dependency(
                 param_registry["set mem_types_set"],
                 param_registry["param thickness"],
@@ -783,7 +785,6 @@ class DataBuilder:
         self.write_data()
         pass
 
-
     def write_data(self, filename="test/data.dat"):
         dir_path = os.path.dirname(filename)
         if dir_path:
@@ -792,6 +793,7 @@ class DataBuilder:
             f.write(f"data;\n\n")
             for entry in self.data_args:
                 f.write(f"{entry};\n\n")
+
 
 class PermBuilder:
     # TODO: add to_data_entry for param fixed with input
@@ -803,7 +805,6 @@ class PermBuilder:
             "param thickness",
             "param mem_product",
             "param mem_type",
-
             "param Robeson_multi",
             "param ub_alpha",
             "param lb_permeability",
@@ -823,7 +824,6 @@ class PermBuilder:
         # debug_print(f"---{self.data_args}\n")
         self.write_data()
         pass
-
 
     def write_data(self, filename="test/perm.dat"):
         dir_path = os.path.dirname(filename)
