@@ -32,10 +32,12 @@ from app.param import (
     ParamComponent,
     ParamComponentSelector,
     ParamFileChooser,
+    ParamFixedComponent,
     ParamFixedMembrane,
     ParamFixedPerm,
     ParamFixedWithInput,
     ParamInput,
+    ParamMembraneSelect,
     ParamSelect,
     debug_print,
 )
@@ -226,7 +228,7 @@ class MainWindow(QMainWindow):
                 "generations",
                 "n1_element",
             ],
-            "Components": ["set components", "param xin", "param molarmass"],
+            "Components": ["set components", "param XIN", "param molarmass", "param nb_gas"],
             "Product constraints": [
                 "param final_product",
                 "param normalized_product_qt",
@@ -234,6 +236,8 @@ class MainWindow(QMainWindow):
                 "param ub_perc_waste",
             ],
             "Process constraints": [
+                "param pressure_in",
+                "param pressure_prod",
                 "param ub_press_down",
                 "param lb_press_down",
                 "param lb_press_up",
@@ -398,7 +402,7 @@ class MainWindow(QMainWindow):
             dependency_manager.add_dependency(
                 param_registry["set mem_types_set"],
                 param_registry["param thickness"],
-                self.update_permeability,
+                self.update_membranes,
             )
             # dependency_manager.add_dependency(
             #     param_registry["set components"],
@@ -406,20 +410,25 @@ class MainWindow(QMainWindow):
             #     self.update_components,
             # )
 
+            # dependency_manager.add_dependency(
+            #     param_registry["set mem_types_set"],
+            #     param_registry["param mem_product"],
+            #     self.update_permeability,
+            # )
             dependency_manager.add_dependency(
                 param_registry["set mem_types_set"],
                 param_registry["param mem_product"],
-                self.update_permeability,
+                self.update_mem_product,
             )
             dependency_manager.add_dependency(
                 param_registry["set components"],
-                param_registry["param xin"],
-                self.update_permeability,
+                param_registry["param XIN"],
+                self.update_xin,
             )
             dependency_manager.add_dependency(
                 param_registry["set components"],
                 param_registry["param molarmass"],
-                self.update_permeability,
+                self.update_xin,
             )
             dependency_manager.add_dependency(
                 param_registry["set components"],
@@ -461,8 +470,21 @@ class MainWindow(QMainWindow):
                 None,
                 self.update_variable_perm,
             )
+            dependency_manager.add_dependency(
+                param_registry["set components"],
+                param_registry["param nb_gas"],
+                self.update_nb_gas,
+            )
 
         register_param_dependencies(self.param_registry, dependency_manager)
+
+    def update_nb_gas(self, target: ParamInput, source: ParamComponentSelector):
+        target.set_last_line_edit(int(source.get_value()))
+
+    def update_mem_product(self, target: ParamMembraneSelect, source: ParamComponent):
+        target.set_membranes(source.get_items())
+        target.category.update_category()
+
 
     def update_final_product(self, target: ParamSelect, source: ParamComponentSelector):
         target.set_values(source.selected_components)
@@ -479,6 +501,11 @@ class MainWindow(QMainWindow):
         target.category.update_category()
 
     def update_components(self, target: ParamFixedPerm, source: ParamComponentSelector):
+        debug_print("in update components")
+        target.set_components(source.get_selected_items())
+        target.category.update_category()
+
+    def update_xin(self, target: ParamFixedComponent, source: ParamComponentSelector):
         debug_print("in update components")
         target.set_components(source.get_selected_items())
         target.category.update_category()
@@ -758,6 +785,8 @@ class DataBuilder:
         self.param_registry = params
         self.validated_params = [
             "set components",
+            "param pressure_in",
+            "param pressure_prod",
             "param ub_perc_waste",
             "param lb_perc_prod",
             "param normalized_product_qt",
@@ -771,6 +800,7 @@ class DataBuilder:
             "param ub_press_up",
         ]
         self.data_args = []
+    # TODO: see for lb_perc_prod, ub_perc prod, what are the components
 
     def build_data(self):
         self.data_args = []
@@ -801,6 +831,7 @@ class PermBuilder:
         self.param_registry = params
         self.validated_params = [
             "set mem_types_set",
+            "param nb_gas",
             "param Permeability",
             "param thickness",
             "param mem_product",
@@ -817,11 +848,13 @@ class PermBuilder:
         for param_name in self.validated_params:
             if param_name in self.param_registry.keys():
                 param = self.param_registry[param_name]
-                if param.file == FILE.DATA:
+                if param.file == FILE.PERM:
                     arg = param.to_perm_entry()
+                    debug_print("the args is", arg, param_name)
                     if arg is not None:
                         self.perm_args.append(arg)
         # debug_print(f"---{self.data_args}\n")
+        debug_print("PERM ARRGS", self.perm_args)
         self.write_data()
         pass
 
@@ -831,7 +864,7 @@ class PermBuilder:
             os.makedirs(dir_path, exist_ok=True)
         with open(filename, "w") as f:
             for entry in self.perm_args:
-                f.write(f"{entry};\n\n")
+                f.write(f"{entry}\n\n")
 
 
 class EcoBuilder:

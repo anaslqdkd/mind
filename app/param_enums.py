@@ -19,6 +19,8 @@ class ParamType(enum.Enum):
     FIXED_WITH_SELECT = enum.auto()
     FIXED_PERM = enum.auto()
     FIXED_MEMBRANE = enum.auto()
+    FIXED_COMPONENT = enum.auto()
+    FIXED_MEMBRANE_SELECT = enum.auto()
 
 
 # -----------------------------------------------------------

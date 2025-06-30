@@ -287,17 +287,17 @@ params_dict = {
     },
     # -----------------------------------------------------------
     #               data.dat
-    "param xin": {
-        "name": "param xin",
+    "param XIN": {
+        "name": "param XIN",
         "label": "XIN",
-        "param_type": ParamType.FIXED_WITH_INPUT,
+        "param_type": ParamType.FIXED_COMPONENT,
         "file": FILE.DATA,
         "optional": False,
     },
     "param molarmass": {
         "name": "param molarmass",
         "label": "Molarmass",
-        "param_type": ParamType.FIXED_WITH_INPUT,
+        "param_type": ParamType.FIXED_COMPONENT,
         "file": FILE.DATA,
         "optional": False,
     },
@@ -429,7 +429,8 @@ params_dict = {
     "param pressure_prod": {
         "name": "param pressure_prod",
         "label": "Pressure prod",
-        "param_type": ParamType.INPUT,
+        "param_type": ParamType.INPUT_WITH_UNITY,
+        "values": ["Bar", "Pa", "kPa"],
         "file": FILE.DATA,
         "optional": False,
         "default": 10,
@@ -555,8 +556,9 @@ params_dict = {
         "optional": False,
         "default": 1,
         "min_value": 0,
-        "max_value": 2,
+        "max_value": 5,
         "step": 1,
+        "hidden": True,
     },
     "param Permeability": {
         "name": "param Permeability",
@@ -569,7 +571,7 @@ params_dict = {
     "param thickness": {
         "name": "param thickness",
         "label": "Thickness",
-        "param_type": ParamType.FIXED_WITH_INPUT,
+        "param_type": ParamType.FIXED_MEMBRANE,
         "file": FILE.PERM,
         "optional": False,
     },
@@ -584,7 +586,7 @@ params_dict = {
         "name": "param mem_product",
         "label": "Mem product",
         # FIXME: fixed with select
-        "param_type": ParamType.FIXED_WITH_SELECT,
+        "param_type": ParamType.FIXED_MEMBRANE_SELECT,
         "file": FILE.PERM,
         "optional": False,
         "values": ["RET", "PERM"],

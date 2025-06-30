@@ -8,11 +8,13 @@ from app.param import (
     ParamComponent,
     ParamComponentSelector,
     ParamFileChooser,
+    ParamFixedComponent,
     ParamFixedMembrane,
     ParamFixedPerm,
     ParamFixedWithInput,
     ParamInput,
     ParamInputWithUnity,
+    ParamMembraneSelect,
     ParamRadio,
     ParamSelect,
     ParamSpinBoxWithBool,
@@ -206,6 +208,28 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,
+                # description=description,
+            )
+        case ParamType.FIXED_COMPONENT:
+            return ParamFixedComponent(
+                name,
+                file,
+                label=label,
+                hidden=hidden,
+                depends_on=depends_on,
+                optional=optional,
+                expected_type=expected_type,
+                # description=description,
+            )
+        case ParamType.FIXED_MEMBRANE_SELECT:
+            return ParamMembraneSelect(
+                name,
+                file,
+                values=values,
+                label=label,
+                hidden=hidden,
+                depends_on=depends_on,
+                optional=optional,
                 # description=description,
             )
         case _:

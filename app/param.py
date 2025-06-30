@@ -245,6 +245,9 @@ class ParamInput(Param):
             self.line_edit.setMaximum(1e10)
             self.line_edit.setValue(value)
 
+    def set_last_line_edit(self, value):
+        self.last_line_edit = value
+
     def restore_values(self):
         if self.line_edit is not None and self.last_line_edit != "":
             try:
@@ -282,6 +285,11 @@ class ParamInput(Param):
             return f"{self.name} := {self.last_line_edit}"
 
     def to_eco_entry(self) -> Optional[str]:
+        if self.last_line_edit != "" and self.last_line_edit != None:
+            return f"{self.name} := {self.last_line_edit}"
+
+    def to_perm_entry(self) -> Optional[str]:
+        debug_print("!!!!!!", self.last_line_edit)
         if self.last_line_edit != "" and self.last_line_edit != None:
             return f"{self.name} := {self.last_line_edit}"
 
@@ -869,6 +877,12 @@ class ParamComponent(Param):
             value += f'"{el}" '
 
         return f"{self.name} := {value}\n"
+
+    def to_perm_entry(self) -> Optional[str]:
+        if self.last_combo_boxes:
+            values = " ".join(str(x) for x in self.last_combo_boxes)
+            return f"{self.name} := {values}"
+        return None
 
 
 # -----------------------------------------------------------
@@ -1805,6 +1819,14 @@ class ParamFixedPerm(Param):
         if self.last_line_edits:
             return f"{self.name} := {self.last_line_edits}"
 
+    def to_perm_entry(self) -> Optional[str]:
+        if self.last_line_edits:
+            lines = []
+            for (membrane, component), value in self.last_line_edits.items():
+                lines.append(f"{membrane}\t{component}\t{value}")
+            return f"{self.name} :=\n" + "\n".join(lines)
+        return None
+
     def to_eco_entry(self) -> Optional[str]:
         if self.last_line_edits:
             return f"{self.name} := {self.last_line_edits}"
@@ -1889,6 +1911,191 @@ class ParamFixedMembrane(Param):
 
     def row_span(self) -> int:
         return 2 + len(self.membranes)
+
+    def to_perm_entry(self) -> Optional[str]:
+        if self.hidden:
+            return None
+        if self.last_spin_boxes and self.membranes:
+            lines = [
+                    f'{component} :=\t{value}'
+                for component, value in zip(self.membranes, self.last_spin_boxes)
+            ]
+            content = "\n".join(lines)
+            return f"{self.name} :=\n{content}\n"
+        return None
+
+    def to_file(self) -> str:
+        value = ""
+        for el in self.last_spin_boxes:
+            value += f'"{el}" '
+        return f"{self.name} := {value}\n"
+
+# -----------------------------------------------------------
+class ParamMembraneSelect(Param):
+    def __init__(
+        self,
+        name: str,
+        file: FILE,
+        label: str,
+        depends_on: Optional[dict[str, DependencyType]],
+        hidden: bool = False,
+        membranes: list[str] = [],
+        values: Optional[dict[str, list[str]]] = None,
+        optional: bool = False,
+        description: str = "",
+    ) -> None:
+        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
+        self.question_label = None
+        self.combo_boxes = []
+        self.last_combo_boxes = []
+        self.optional = optional
+        self.membranes = membranes
+        self.values = values or {}
+        self.manager: Optional[DependencyManager] = None
+        self.description = description
+        self.hidden = hidden
+
+    def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        header = self.build_header(label, self.description, self.optional)
+        grid_layout.addWidget(header, row, 0)
+        self.combo_boxes = []
+        grid_layout.addWidget(QLabel("Membrane"), row + 1, 0)
+        grid_layout.addWidget(QLabel("Option"), row + 1, 1)
+        current_row = row + 2
+        for membrane in self.membranes:
+            grid_layout.addWidget(QLabel(str(membrane)), current_row, 0)
+            combo = QComboBox()
+            combo.addItems(self.values)
+            self.combo_boxes.append(combo)
+            grid_layout.addWidget(combo, current_row, 1)
+            combo.currentIndexChanged.connect(self._on_value_changed)
+            current_row += 1
+
+    def set_membranes(self, membranes: list[str]):
+        self.membranes = membranes
+
+    def _on_value_changed(self):
+        if self.manager is not None:
+            self.store_value()
+            self.manager.notify_change(self)
+
+    def get_value(self):
+        return len(self.last_combo_boxes)
+
+    def get_items(self):
+        return self.last_combo_boxes
+
+    def store_value(self):
+        self.last_combo_boxes.clear()
+        for combo in self.combo_boxes:
+            self.last_combo_boxes.append(combo.currentText())
+
+    def row_span(self) -> int:
+        return 2 + len(self.membranes)
+
+    def to_perm_entry(self) -> Optional[str]:
+        if self.hidden:
+            return None
+        if self.last_combo_boxes and self.membranes:
+            lines = [
+                f'{component}  \t{value}'
+                for component, value in zip(self.membranes, self.last_combo_boxes)
+            ]
+            content = "\n".join(lines)
+            return f"{self.name} :=\n{content}\n"
+        return None
+
+    def to_file(self) -> str:
+        value = ""
+        for el in self.last_combo_boxes:
+            value += f'"{el}" '
+        return f"{self.name} := {value}\n"
+
+# -----------------------------------------------------------
+class ParamFixedComponent(Param):
+    def __init__(
+        self,
+        name: str,
+        file: FILE,
+        label: str,
+        depends_on: Optional[dict[str, DependencyType]],
+        hidden: bool = False,
+        components: list[str] = [],
+        optional: bool = False,
+        description: str = "",
+        expected_type=str,
+        min_value: float = 0.0,
+        max_value: float = 1e6,
+        step: float = 1.0,
+        decimals: int = 2,
+    ) -> None:
+        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
+        self.question_label = None
+        self.spin_boxes = []
+        self.last_spin_boxes = []
+        self.optional = optional
+        self.components = components
+        self.manager: Optional[DependencyManager] = None
+        self.description = description
+        self.hidden = hidden
+        self.min_value = min_value
+        self.max_value = max_value
+        self.step = step
+        self.decimals = decimals
+
+    def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        header = self.build_header(label, self.description, self.optional)
+        grid_layout.addWidget(header, row, 0)
+        self.spin_boxes = []
+        grid_layout.addWidget(QLabel("Component"), row + 1, 0)
+        grid_layout.addWidget(QLabel("Value"), row + 1, 1)
+        current_row = row + 2
+        for membrane in self.components:
+            grid_layout.addWidget(QLabel(str(membrane)), current_row, 0)
+            spin = QDoubleSpinBox()
+            spin.setMinimum(self.min_value)
+            spin.setMaximum(self.max_value)
+            spin.setSingleStep(self.step)
+            spin.setDecimals(self.decimals)
+            spin.setValue(self.min_value)
+            self.spin_boxes.append(spin)
+            grid_layout.addWidget(spin, current_row, 1)
+            spin.valueChanged.connect(self._on_value_changed)
+            current_row += 1
+
+    def set_components(self, components: list[str]):
+        self.components = components
+
+    def _on_value_changed(self):
+        if self.manager is not None:
+            self.store_value()
+            self.manager.notify_change(self)
+
+    def get_value(self):
+        return len(self.last_spin_boxes)
+
+    def get_items(self):
+        return self.last_spin_boxes
+
+    def store_value(self):
+        self.last_spin_boxes.clear()
+        for el in self.spin_boxes:
+            self.last_spin_boxes.append(str(el.value()))
+
+    def row_span(self) -> int:
+        return 2 + len(self.components)
+
+    def to_data_entry(self) -> Optional[str]:
+        if self.hidden:
+            return None
+        if self.last_spin_boxes and self.components:
+            lines = [
+                f'\t"{component}"\t{value}'
+                for component, value in zip(self.components, self.last_spin_boxes)
+            ]
+            content = "\n".join(lines)
+            return f"{self.name} :=\n{content}\n"
+        return None
 
     def to_file(self) -> str:
         value = ""
