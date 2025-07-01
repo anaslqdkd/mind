@@ -217,6 +217,8 @@ class MainWindow(QMainWindow):
                 "variable_perm",
                 "fname_mask",
                 "prototype_data",
+                "data_dir",
+                "log_dir",
             ],
             "Tuning settings": [
                 "pressure_ratio",
@@ -493,6 +495,7 @@ class MainWindow(QMainWindow):
             # )
 
         register_param_dependencies(self.param_registry, dependency_manager)
+    # TODO: see to update only if not hidden, but pb with nb_gas ?
 
     def update_nb_gas(self, target: ParamInput, source: ParamComponentSelector):
         target.set_last_line_edit(int(source.get_value()))
@@ -793,6 +796,9 @@ class ConfigBuilder:
         for entry in self.config_args.get("instance", []):
             key, value = entry.split("=", 1)
             config["instance"][key.strip()] = value.strip()
+
+        epsilon = "{'At': 0.3, 'press_up_f': 0.2, 'press_down_f': 0.2, 'feed': 0.3, 'perm_ref': 0.1, 'alpha': 0.1, 'delta': 0.1, 'xout': 0.0001}"
+        config["tuning"]["epsilon"] = epsilon
 
         with open(filename, "w") as configfile:
             config.write(configfile)

@@ -39,6 +39,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
     max_value = kwargs.get("max_value")
     step = kwargs.get("step")
     hidden = kwargs.get("hidden", False)
+    select_dir = kwargs.get("select_dir", False)
     match param_type:
         case ParamType.INPUT:
             return ParamInput(
@@ -185,6 +186,8 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,
+                select_dir = select_dir,
+                default = default,
                 # description=description,
             )
         case ParamType.FIXED_PERM:

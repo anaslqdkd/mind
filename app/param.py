@@ -1,6 +1,6 @@
 import enum
 from typing import Optional, Tuple
-from PyQt6.QtCore import QPoint, Qt
+from PyQt6.QtCore import QEvent, QPoint, Qt
 from PyQt6.QtGui import QAction, QTabletEvent
 from PyQt6.QtWidgets import (
     QButtonGroup,
@@ -343,9 +343,9 @@ class ParamSelect(Param):
         spacer = QSpacerItem(
             0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
         )
-        grid_layout.addItem(spacer, row, 1)
+        # grid_layout.addItem(spacer, row, 1)
 
-        grid_layout.addWidget(self.combo_box, row, 2, 1, 2)
+        grid_layout.addWidget(self.combo_box, row, 1)
 
     def hide(self):
         self.hidden = True
@@ -939,6 +939,7 @@ class ParamFixedWithInput(Param):
 
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        self.line_edits.clear()
         if self.hidden:
             return
         self.row = row
@@ -1293,15 +1294,19 @@ class ParamFileChooser(Param):
         optional: bool = False,
         description: str = "",
         expected_type=str,
+        select_dir: bool = False,
+        default: Optional[str] = None
     ) -> None:
         super().__init__(name, file, depends_on=depends_on, description=description, label=label)
         self.question_label = None
         self.line_edit = None
         self.button = None
-        self.last_file_path = ""
+        self.last_path = ""
         self.optional = optional
         self.description = description
         self.hidden = hidden
+        self.select_dir = select_dir
+        self.default = default
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         if self.hidden:
@@ -1309,8 +1314,13 @@ class ParamFileChooser(Param):
         header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(header, row, 0)
 
+
         self.line_edit = QLineEdit()
         self.line_edit.setReadOnly(True)
+
+        if self.default is not None:
+            self.line_edit.setText(self.default)
+
         self.button = QPushButton("Browse")
         self.button.clicked.connect(self.open_file_dialog)
 
@@ -1322,16 +1332,22 @@ class ParamFileChooser(Param):
     def open_file_dialog(self):
         from PyQt6.QtWidgets import QFileDialog
 
-        file_path, _ = QFileDialog.getOpenFileName(
-            None, "Select File", "", "All Files (*)"
-        )
-        if file_path:
-            self.line_edit.setText(file_path)
-            self.last_file_path = file_path
+        if self.select_dir:
+            path = QFileDialog.getExistingDirectory(
+                None, "Select Directory", ""
+            )
+        else:
+            path, _ = QFileDialog.getOpenFileName(
+                None, "Select File", "", "All Files (*)"
+            )
+        if path:
+            if self.line_edit:
+                self.line_edit.setText(path)
+                self.last_path = path
 
     def restore_value(self):
-        if self.last_file_path and self.line_edit:
-            self.line_edit.setText(self.last_file_path)
+        if self.last_path and self.line_edit:
+            self.line_edit.setText(self.last_path)
 
     def hide(self):
         self.hidden = True
@@ -1341,19 +1357,19 @@ class ParamFileChooser(Param):
 
     def store_value(self):
         if self.line_edit is not None:
-            self.last_file_path = self.line_edit.text()
+            self.last_path = self.line_edit.text()
 
     def to_file(self) -> str:
-        return f"{self.name} := {self.last_file_path}"
+        return f"{self.name} := {self.last_path}"
 
     def to_command_arg(self) -> str:
-        if self.last_file_path:
-            return f'--{self.name} "{self.last_file_path}"'
+        if self.last_path:
+            return f'--{self.name} "{self.last_path}"'
         return ""
 
     def to_config_entry(self) -> Optional[str]:
-        if self.last_file_path:
-            return f'{self.name} = {self.last_file_path}'
+        if self.last_path:
+            return f'{self.name} = {self.last_path}'
         return None
 
 
@@ -1710,6 +1726,7 @@ class ParamFixedPerm(Param):
         self.components = components
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        self.line_edits.clear()
         if self.hidden:
             return
         header = self.build_header(label, self.description, self.optional)
@@ -1770,6 +1787,7 @@ class ParamFixedPerm(Param):
     #                 line_edit.setDecimals(0)
     #         line_edit.setMaximum(1e10)
     #         line_edit.setValue(value)
+    # FIXME: variable perm gives an error when checked
 
     def restore_value(self, key):
         if key in self.line_edits and key in self.last_line_edits and self.last_line_edits[key] != "":
@@ -1861,8 +1879,6 @@ class ParamFixedMembrane(Param):
         self.step = step
         self.decimals = decimals
 
-    # TODO: restore method
-
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(header, row, 0)
@@ -1880,8 +1896,8 @@ class ParamFixedMembrane(Param):
             spin.setValue(self.min_value)
             self.spin_boxes.append(spin)
             grid_layout.addWidget(spin, current_row, 1)
-            spin.valueChanged.connect(self._on_value_changed)
             current_row += 1
+        self.restore_value()
 
     def set_membranes(self, membranes: list[str]):
         self.membranes = membranes
@@ -1901,6 +1917,15 @@ class ParamFixedMembrane(Param):
         self.last_spin_boxes.clear()
         for el in self.spin_boxes:
             self.last_spin_boxes.append(str(el.value()))
+
+    def restore_value(self):
+        for idx, value in enumerate(self.last_spin_boxes):
+            if idx < len(self.spin_boxes):
+                try:
+                    val = float(value)
+                    self.spin_boxes[idx].setValue(val)
+                except ValueError:
+                    continue
 
     def row_span(self) -> int:
         return 2 + len(self.membranes)
@@ -1947,8 +1972,6 @@ class ParamMembraneSelect(Param):
         self.manager: Optional[DependencyManager] = None
         self.description = description
         self.hidden = hidden
-
-    # TODO: restore method
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         header = self.build_header(label, self.description, self.optional)
@@ -2047,8 +2070,6 @@ class ParamMemType(Param):
         self.description = description
         self.hidden = hidden
 
-    # TODO: restore method
-
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(header, row, 0)
@@ -2062,8 +2083,17 @@ class ParamMemType(Param):
             combo.addItems(self.membranes)
             self.combo_boxes.append(combo)
             grid_layout.addWidget(combo, current_row, 1)
-            combo.currentIndexChanged.connect(self._on_value_changed)
             current_row += 1
+        self.restore_value()
+
+    def restore_value(self):
+        for idx, value in enumerate(self.last_combo_boxes):
+            if idx < len(self.combo_boxes):
+                combo = self.combo_boxes[idx]
+                index = combo.findText(value)
+                if index != -1:
+                    combo.setCurrentIndex(index)
+
 
     def set_num_components(self, num_components: int):
         self.num_membrane_floors = num_components
@@ -2143,6 +2173,8 @@ class ParamFixedComponent(Param):
         self.step = step
         self.decimals = decimals
 
+    # TODO: restore method
+
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(header, row, 0)
@@ -2160,11 +2192,20 @@ class ParamFixedComponent(Param):
             spin.setValue(self.min_value)
             self.spin_boxes.append(spin)
             grid_layout.addWidget(spin, current_row, 1)
-            spin.valueChanged.connect(self._on_value_changed)
             current_row += 1
+        self.restore_value()
 
     def set_components(self, components: list[str]):
         self.components = components
+
+    def restore_value(self):
+        for idx, value in enumerate(self.last_spin_boxes):
+            if idx < len(self.spin_boxes):
+                try:
+                    val = float(value)
+                    self.spin_boxes[idx].setValue(val)
+                except ValueError:
+                    continue
 
     def _on_value_changed(self):
         if self.manager is not None:
@@ -2314,18 +2355,15 @@ class HelpButtonDemo(QWidget):
         self.description = description
         layout = QHBoxLayout(self)
 
-        help_btn = QToolButton()
-        help_btn.setText("?")
-        help_btn.setToolTip(description)
-        help_btn.setFixedSize(14, 14)
-        help_btn.clicked.connect(self.show_help_tooltip)
+        self.help_btn = QToolButton()
+        self.help_btn.setText("?")
+        self.help_btn.setFixedSize(14, 14)
+        self.help_btn.clicked.connect(self.show_help_tooltip)
 
-        # Round style via stylesheet
-        help_btn.setStyleSheet(
-            """
+        self.help_btn.setStyleSheet("""
             QToolButton {
                 border: 1px solid #888;
-                border-radius: 7px;        /* Half of width/height */
+                border-radius: 7px;
                 background: #f5f5f5;
                 font-weight: bold;
                 font-size: 14px;
@@ -2335,15 +2373,24 @@ class HelpButtonDemo(QWidget):
                 background: #e0eaff;
                 border: 1.5px solid #0057b8;
             }
-        """
-        )
+        """)
 
-        layout.addWidget(help_btn)
+        layout.addWidget(self.help_btn)
+        # Install event filter for hover tooltips
+        self.help_btn.installEventFilter(self)
 
     def show_help_tooltip(self):
-        # Show a tooltip near the button when clicked
+        wrapped_description = f'<div style="max-width: 300px; white-space: pre-wrap;">{self.description}</div>'
         QToolTip.showText(
-            self.mapToGlobal(self.sender().pos()) + QPoint(0, self.sender().height()),
-            self.description,
-            self.sender(),
+            self.help_btn.mapToGlobal(QPoint(0, self.help_btn.height())),
+            wrapped_description,
+            self.help_btn,
         )
+
+    def eventFilter(self, obj, event):
+        if obj == self.help_btn:
+            if event.type() == QEvent.Type.Enter:  # Mouse entered
+                self.show_help_tooltip()
+            elif event.type() == QEvent.Type.Leave:  # Mouse left
+                QToolTip.hideText()
+        return super().eventFilter(obj, event)

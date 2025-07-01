@@ -146,6 +146,7 @@ params_dict = {
         "param_type": ParamType.BOOLEAN,
         "file": FILE.CONFIG,
         "optional": False,
+        "description": "If enabled, fixes variables as specified in fname_mask"
     },
     "uniform_pup": {
         "name": "uniform_pup",
@@ -179,6 +180,7 @@ params_dict = {
         "max_value": 10000,
         "step": 1,
         "hidden": True,
+        "description": "Maximum number of iterations allowed without improvement before stopping. Used in global_opt and mbh"
     },
     "max_trials": {
         "name": "max_trials",
@@ -191,6 +193,7 @@ params_dict = {
         "max_value": 10000,
         "step": 1,
         "hidden": True,
+        "description": "Maximum number of trials for certain search or optimisation steps. Used in mbh and global_opt"
     },
     "pressure_ratio": {
         "name": "pressure_ratio",
@@ -198,10 +201,11 @@ params_dict = {
         "param_type": ParamType.INPUT,
         "file": FILE.CONFIG,
         "optional": False,
-        # "default": 10.0,
+        "default": 0.03,
         "min_value": 0,
         "max_value": 10,
         "step": 0.01,
+        "description": "Threshold value for pressure-related variables in the model (used for contraints or tuning the optimisation)",
     },
     "pop_size": {
         "name": "pop_size",
@@ -214,6 +218,7 @@ params_dict = {
         "max_value": 100,
         "step": 5,
         "hidden": True,
+        "description": "Population size for evolutionary algorithms. Used in genetic algorithm"
     },
     "generations": {
         "name": "generations",
@@ -221,11 +226,12 @@ params_dict = {
         "param_type": ParamType.INPUT,
         "file": FILE.CONFIG,
         "optional": False,
-        # "default": 6,
+        "default": 6,
         "min_value": 0,
         "max_value": 100,
         "step": 1,
         "hidden": True,
+        "description": "Number of generations for evolutionary algorithms. Used in genetic algorithm"
     },
     "prototype_data": {
         "name": "prototype_data",
@@ -234,6 +240,7 @@ params_dict = {
         "file": FILE.CONFIG,
         "optional": False,
         "hidden": True,
+        "description": "Path to a YAML file containing prototype individuals for population initialization. Used in the population algorithm"
     },
     "n1_element": {
         "name": "n1_element",
@@ -246,6 +253,7 @@ params_dict = {
         "step": 1,
         "optional": False,
         "hidden": True,
+        # "description": ""
     },
     "iteration": {
         "name": "iteration",
@@ -258,6 +266,7 @@ params_dict = {
         "max_value": 10000,
         "step": 10,
         "hidden": False,
+        "description": "Number of iterations to run in the multistart or global optimisation algorithm"
     },
     "seed1": {
         "name": "seed1",
@@ -267,6 +276,7 @@ params_dict = {
         "values": ["1", "2"],
         "optional": False,
         "hidden": False,
+        "description": "Random seeds for reproductibility in stochastic parts of the algorithm, used in multistart, mbh and global optimisation"
     },
     "seed2": {
         "name": "seed2",
@@ -276,6 +286,7 @@ params_dict = {
         "values": ["1", "2"],
         "optional": False,
         "hidden": True,
+        "description": "Random seeds for reproductibility in stochastic parts of the algorithm, used in mbh and global optimisation"
     },
     "fname_mask": {
         "name": "fname_mask",
@@ -284,7 +295,35 @@ params_dict = {
         "file": FILE.CONFIG,
         "optional": False,
         "hidden": True,
+        "description": "Path to mask file for fixing variables (used if fixing_var is True)"
     },
+    "log_dir": {
+            "name": "log_dir",
+            "label": "Log Directory",
+            "param_type": ParamType.FILECHOOSER,
+            "file": FILE.CONFIG,
+            "description": "Directory to store log files",
+            "default": "./log",
+            "select_dir": True,
+            },
+    "data_dir": {
+            "name": "data_dir",
+            "label": "Data Directory",
+            "param_type": ParamType.FILECHOOSER,
+            "file": FILE.CONFIG,
+            "description": "Directory to store data files, used if the option --instance is used",
+            "default": "./data",
+            "select_dir": True,
+            },
+    "file_dir": {
+            "name": "file_dir",
+            "label": "File directory",
+            "param_type": ParamType.FILECHOOSER,
+            "file": FILE.CONFIG,
+            "description": "",
+            "default": "./temp",
+            "select_dir": True,
+            },
     # -----------------------------------------------------------
     #               data.dat
     "param XIN": {
