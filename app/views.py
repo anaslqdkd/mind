@@ -217,6 +217,7 @@ class MainWindow(QMainWindow):
                 "variable_perm",
                 "fname_mask",
                 "prototype_data",
+                "file_dir",
                 "data_dir",
                 "log_dir",
             ],
@@ -761,6 +762,7 @@ class ConfigBuilder:
             "vp",
             "variable_perm",
             "fname_mask",
+            "fname",
         ]
         self.config_args = {}
 
@@ -783,6 +785,8 @@ class ConfigBuilder:
         self.write_config_ini()
 
     def write_config_ini(self, filename="test/config.ini"):
+        dir = self.param_registry["file_dir"].get_path()
+        filename = f"{self.param_registry["file_dir"].get_path()}/config.dat"
         dir_path = os.path.dirname(filename)
         if dir_path:
             os.makedirs(dir_path, exist_ok=True)
@@ -799,6 +803,9 @@ class ConfigBuilder:
 
         epsilon = "{'At': 0.3, 'press_up_f': 0.2, 'press_down_f': 0.2, 'feed': 0.3, 'perm_ref': 0.1, 'alpha': 0.1, 'delta': 0.1, 'xout': 0.0001}"
         config["tuning"]["epsilon"] = epsilon
+        config["instance"]["fname"] = f"{dir}/data.dat" 
+        config["instance"]["fname_perm"] = f"{dir}/perm.dat" 
+        config["instance"]["fname_eco"] = f"{dir}/eco.dat" 
 
         with open(filename, "w") as configfile:
             config.write(configfile)
@@ -840,6 +847,7 @@ class DataBuilder:
         pass
 
     def write_data(self, filename="test/data.dat"):
+        filename = f"{self.param_registry["file_dir"].get_path()}/data.dat"
         dir_path = os.path.dirname(filename)
         if dir_path:
             os.makedirs(dir_path, exist_ok=True)
@@ -880,6 +888,7 @@ class PermBuilder:
         pass
 
     def write_data(self, filename="test/perm.dat"):
+        filename = f"{self.param_registry["file_dir"].get_path()}/perm.dat"
         dir_path = os.path.dirname(filename)
         if dir_path:
             os.makedirs(dir_path, exist_ok=True)
@@ -934,6 +943,7 @@ class EcoBuilder:
         return self.args
 
     def write_eco(self, filename="test/eco.dat"):
+        filename = f"{self.param_registry["file_dir"].get_path()}/eco.dat"
         dir_path = os.path.dirname(filename)
         if dir_path:
             os.makedirs(dir_path, exist_ok=True)

@@ -1314,6 +1314,8 @@ class ParamFileChooser(Param):
         header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(header, row, 0)
 
+        if self.default is not None:
+            self.line_edit
 
         self.line_edit = QLineEdit()
         self.line_edit.setReadOnly(True)
@@ -1355,6 +1357,9 @@ class ParamFileChooser(Param):
     def show(self):
         self.hidden = False
 
+    def get_path(self) -> str:
+        return self.last_path
+
     def store_value(self):
         if self.line_edit is not None:
             self.last_path = self.line_edit.text()
@@ -1368,6 +1373,7 @@ class ParamFileChooser(Param):
         return ""
 
     def to_config_entry(self) -> Optional[str]:
+        debug_print(self.name, self.last_path)
         if self.last_path:
             return f'{self.name} = {self.last_path}'
         return None

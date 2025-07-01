@@ -324,6 +324,7 @@ params_dict = {
             "default": "./temp",
             "select_dir": True,
             },
+# TODO: add input types for the spin box
     # -----------------------------------------------------------
     #               data.dat
     "param XIN": {
