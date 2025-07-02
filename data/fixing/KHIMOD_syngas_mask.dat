@@ -1,0 +1,49 @@
+fix area:#1 5
+fix area:#2 5
+fix area:#3 2.79
+
+fix splitFEED_frac:#1 0
+fix splitFEED_frac:#2 1
+fix splitFEED_frac:#3 0
+
+fix pressure_up:#1 60
+fix pressure_up:#2 60
+fix pressure_up:#3 60
+
+fix pressure_down:#1 1
+fix pressure_down:#2 1
+fix pressure_down:#3 1
+
+#fix splitOutPERM_frac:#1 0.203
+fix splitOutPERM_frac:#2 0
+fix splitOutPERM_frac:#3 0
+
+fix splitOutRET_frac:#1 0
+fix splitOutRET_frac:#2 1
+fix splitOutRET_frac:#3 0
+
+fix splitRET_frac:#1,#1 0.000
+fix splitRET_frac:#1,#2 1.000
+fix splitRET_frac:#1,#3 0.000
+
+fix splitRET_frac:#2,#1 0.000
+fix splitRET_frac:#2,#2 0.000
+fix splitRET_frac:#2,#3 0.000
+
+fix splitRET_frac:#3,#1 1.000
+fix splitRET_frac:#3,#2 0.000
+fix splitRET_frac:#3,#3 0.000
+
+#fix splitPERM_frac:#1,#1 0.797
+fix splitPERM_frac:#1,#2 0.000
+fix splitPERM_frac:#1,#3 0.000
+
+fix splitPERM_frac:#2,#1 0.000
+fix splitPERM_frac:#2,#2 0.000
+fix splitPERM_frac:#2,#3 1.000
+
+fix splitPERM_frac:#3,#1 0.000
+#fix splitPERM_frac:#3,#2 0.575
+#fix splitPERM_frac:#3,#3 0.425
+
+

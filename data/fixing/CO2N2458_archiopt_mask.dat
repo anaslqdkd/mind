@@ -1,0 +1,12 @@
+fix splitPERM_frac:#1,#1 0.000
+fix splitPERM_frac:#2,#2 0.000
+fix splitPERM_frac:#3,#3 0.000
+fix splitFEED_frac:#1 1.000
+fix splitOutRET_frac:#1 1.000
+fix splitOutPERM_frac:#3 1.000
+fix splitPERM_frac:#1,#2 1.000
+fix splitRET_frac:#2,#3 1.000
+fix splitPERM_frac:#2,#1 1.000
+fix mem_type:#1 A
+fix mem_type:#2 B
+fix mem_type:#3 A

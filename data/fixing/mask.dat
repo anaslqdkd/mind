@@ -1,0 +1,16 @@
+fix area:#1 1644.51
+fix area:#2 982.35
+fix splitFEED_frac:#1 0
+fix splitFEED_frac:#2 1
+fix pressure_up:#1 49.08
+fix pressure_up:#2 49.08
+fix pressure_down:#1 1
+fix pressure_down:#2 1
+fix splitOutPERM_frac:#1 0
+fix splitOutRET_frac:#2 0
+fix splitRET_frac:#1,#1 0.000
+fix splitRET_frac:#1,#2 0.000
+fix splitRET_frac:#2,#1 1.000
+
+fix splitPERM_frac:#1,#1 0.000
+fix splitPERM_frac:#1,#2 1.000

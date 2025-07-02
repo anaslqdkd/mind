@@ -1,0 +1,131 @@
+ind_1:
+  num_membranes: 3
+  mem_type:
+    1: A
+    2: A
+    3: A
+  lb_area:
+    1: 1
+    2: 1
+    3: 1
+  ub_acell:
+    1: 25
+    2: 25
+    3: 25
+  ub_area:
+    1: 10000
+    2: 10000
+    3: 10000
+  fixing:
+    "area:#1": 1.0000043346765597
+    "area:#2": 4168.177807547639
+    "splitFEED_frac:#2": 0.5
+  ub_bounds:
+    Null
+  lb_bounds:
+    Null
+
+ind_2:
+  num_membranes: 3
+  mem_type:
+    1: A
+    2: B
+    3: A
+  fixing:
+    "area:#1": 1.0000043346765597
+  ub_bounds:
+    "area:#1": 1
+  lb_bounds:
+    "area:#1": 1000
+
+
+ind_3:
+  num_membranes: 3
+  mem_type:
+    1: B
+    2: B
+    3: A
+  fixing:
+    Null
+  ub_bounds:
+    Null
+  lb_bounds:
+    "area:#1": 1000
+
+ind_4:
+  num_membranes: 2
+  mem_type:
+    1: B
+    2: B
+  fixing:
+    "area:#1": 1
+  ub_bounds:
+    Null
+  lb_bounds:
+    "area:#1": 1000
+
+ind_5:
+  num_membranes: 2
+  mem_type:
+    1: B
+    2: A
+  fixing:
+    Null
+  ub_bounds:
+    "area:#1": 200
+  lb_bounds:
+    "area:#1": 1000
+
+ind_6:
+  num_membranes: 1
+  mem_type:
+    1: A
+  lb_area:
+    1: 10
+  ub_acell:
+    1: 20
+  ub_area:
+    1: 10000
+  fixing:
+    Null
+  ub_bounds:
+    Null
+  lb_bounds:
+    Null
+
+ind_7:
+  num_membranes: 2
+  mem_type:
+    1: B
+    2: B
+  fixing:
+    Null
+  ub_bounds:
+    "area:#1": 100
+  lb_bounds:
+    "area:#1": 1000
+
+ind_8:
+  num_membranes: 3
+  mem_type:
+    1: B
+    2: B
+    3: B
+  fixing:
+    Null
+  ub_bounds:
+    Null
+  lb_bounds:
+    "area:#1": 100
+
+ind_9:
+  num_membranes: 2
+  mem_type:
+    1: A
+    2: A
+  fixing:
+    "area:#1": 100
+  ub_bounds:
+    Null
+  lb_bounds:
+    Null

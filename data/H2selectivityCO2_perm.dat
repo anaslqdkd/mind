@@ -1,0 +1,31 @@
+# Set of membranes types
+set mem_types_set := A
+
+# Robeson parameters
+param Robeson_multi :
+A := 4404
+
+param Robeson_power :
+A := 3.322
+
+# alpha bounds
+param ub_alpha :
+A := 0.16
+
+param lb_alpha :
+A := 0.04
+
+# permeability bounds
+param lb_permeability :
+A CO2 0.1
+
+param ub_permeability :
+A CO2 10
+
+# thickness
+param thickness :
+A := 1
+
+# membrane output
+param mem_product :=
+	A PERM

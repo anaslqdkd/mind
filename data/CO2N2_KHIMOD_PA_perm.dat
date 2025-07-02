@@ -1,0 +1,18 @@
+# Set of membranes types
+set mem_types_set := A
+
+# number of gas (components)
+param nb_gas := 2
+
+# permeability values (mem_type component value) PA
+param Permeability :=
+A  N2   28
+A  CO2  930
+
+# thickness
+param thickness :=
+A := 1
+
+# membrane output
+param mem_product :=
+	A	PERM

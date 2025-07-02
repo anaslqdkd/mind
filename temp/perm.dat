@@ -1,0 +1,25 @@
+set mem_types_set := A B
+
+param nb_gas := 2
+
+param Permeability :=
+A	O2	1.0
+A	H2	2.0
+B	O2	2.0
+B	H2	2.0
+
+param thickness :=
+A :=	1.0
+B :=	1.0
+
+
+param mem_product :=
+A  	RET
+B  	RET
+
+
+param mem_type :=
+1	A
+2	B
+
+

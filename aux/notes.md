@@ -205,3 +205,186 @@ MainWindow (QMainWindow)
                  └── QVBoxLayout
                        ├── QStackedWidget (Form Pages)
                        └── Navigation Buttons (QWidget + QHBoxLayout)
+
+
+
+# On building parameters
+
+## in config.ini
+num_membranes = 2
+
+ub_area = [5 , 5]
+lb_area = [0.1, 0.1]
+ub_acell = [0.1, 0.1]
+
+
+3 boolean values
+uniform_pup = False
+vp = false
+variable_perm = False
+
+for the path files, a filechooser, or default value
+
+
+fixing var = True -> generate fixing var config
+
+
+# pour demain
+fix value in all params
+beg writing in files, file attribute in files
+add the versions in the app
+
+| Parameter         | Section     | Optional? | Dependency/Condition                |
+|-------------------|-------------|-----------|-------------------------------------|
+| pressure_ratio    | tuning      | No        |                                     |
+| epsilon           | tuning      | No        |                                     |
+| seed1             | tuning      | No        |                                     |
+| seed2             | tuning      | No        |                                     |
+| iteration         | tuning      | No        |                                     |
+| max_no_improve    | tuning      | No        |                                     |
+| max_trials        | tuning      | No        |                                     |
+| pop_size          | tuning      | No        |                                     |
+| generations       | tuning      | No        |                                     |
+| n1_element        | tuning      | No        |                                     |
+| data_dir          | instance    | No        |                                     |
+| log_dir           | instance    | No        |                                     |
+| num_membranes     | instance    | No        |                                     |
+| ub_area           | instance    | No        |                                     |
+| lb_area           | instance    | No        |                                     |
+| ub_acell          | instance    | No        |                                     |
+| fixing_var        | instance    | No        |                                     |
+| fname             | instance    | No        |                                     |
+| fname_perm        | instance    | No        |                                     |
+| fname_eco         | instance    | No        |                                     |
+| fname_mask        | instance    | Yes       | Required if fixing_var = true       |
+| prototype_data    | instance    | Yes       | Only if prototype individuals used  |
+| uniform_pup       | instance    | No        |                                     |
+| vp                | instance    | No        |                                     |
+| variable_perm     | instance    | No        |                                     |
+
+**ub_area**  
+- **Description:** Upper bound(s) for the area of each membrane in the system.  
+- **Type:** List of floats/ints, one per membrane (e.g., `[5, 5]` for two membranes).  
+- **Purpose:** Sets the maximum allowed area for each membrane during optimization.
+
+---
+
+**lb_area**  
+- **Description:** Lower bound(s) for the area of each membrane in the system.  
+- **Type:** List of floats/ints, one per membrane (e.g., `[0.1, 0.1]`).  
+- **Purpose:** Sets the minimum allowed area for each membrane during optimization.
+
+---
+
+**ub_acell**  
+- **Description:** Upper bound(s) for the area of a single cell (subdivision) within each membrane.  
+- **Type:** List of floats/ints, one per membrane (e.g., `[0.1, 0.1]`).  
+- **Purpose:** Sets the maximum allowed area for a single cell when discretizing the membrane area for numerical modeling.
+
+membranes, up to 3
+
+
+# Parameters
+
+
+## config
+**Parameters:**
+- pressure_ratio
+- epsilon
+- seed1
+- seed2
+- iteration
+- max_no_improve
+- max_trials
+- pop_size
+- generations
+- n1_element
+
+---
+
+### `[instance]` Section
+
+These are set and used in:
+- `launcher.py` (`data_instance()`, `generate_configuration()`, `load_configuration()`)
+- Used to build the model in `builder.py`, `gas.py`, etc.
+
+**Parameters:**
+- data_dir
+- log_dir
+- num_membranes
+- ub_area
+- lb_area
+- ub_acell
+- fixing_var
+- fname
+- fname_perm
+- fname_eco
+- fname_mask (optional, only if fixing_var is true)
+- prototype_data (optional, for population algorithm)
+- uniform_pup
+- vp
+- variable_perm
+
+
+
+
+
+
+## data
+
+| Parameter Name         | Indexed By         | Description                        |
+|-----------------------|--------------------|------------------------------------|
+| ub_press_up           | scalar             | Upper bound for pressure up        |
+| lb_press_up           | scalar             | Lower bound for pressure up        |
+| ub_area               | states             | Upper bound for area               |
+| lb_area               | states             | Lower bound for area               |
+| ub_acell              | states             | Upper bound for cell area          |
+| lb_acell              | states             | Lower bound for cell area          |
+| ub_perc_prod          | components         | Upper bound for product purity     |
+| lb_perc_prod          | components         | Lower bound for product purity     |
+| ub_perc_waste         | components         | Upper bound for waste purity       |
+| lb_perc_waste         | components         | Lower bound for waste purity       |
+| ub_feed_tot           | scalar             | Upper bound for total feed         |
+| pressure_in           | scalar             | Feed pressure                      |
+| pressure_prod         | scalar             | Product pressure                   |
+| pressure_down         | states             | Downstream pressure                |
+| ub_flow_prod          | scalar             | Upper bound for product flow       |
+| lb_flow_prod          | scalar             | Lower bound for product flow       |
+| ub_flow_waste         | scalar             | Upper bound for waste flow         |
+| lb_flow_waste         | scalar             | Lower bound for waste flow         |
+| ub_purity             | components         | Upper bound for purity             |
+| lb_purity             | components         | Lower bound for purity             |
+| ub_recovery           | components         | Upper bound for recovery           |
+| lb_recovery           | components         | Lower bound for recovery           |
+| ub_stage              | scalar             | Upper bound for stage              |
+| lb_stage              | scalar             | Lower bound for stage              |
+| ub_splitRET_frac_full | states x states    | Upper bound for split RET fraction |
+| lb_splitRET_frac_full | states x states    | Lower bound for split RET fraction |
+| ub_splitPERM_frac_full| states x states    | Upper bound for split PERM fraction|
+| lb_splitPERM_frac_full| states x states    | Lower bound for split PERM fraction|
+| molarmass             | components         | Molar mass per component           |
+| final_product         | scalar             | Final product index/name           |
+
+
+# perm file
+
+### For **fixed permeability** files (`parser_fixed_permeability_data`):
+
+- `nb_gas`
+- `Permeability`
+- `thickness`
+- `mem_product`
+- `mem_type` (optional, for mapping membrane index to type)
+
+### For **variable permeability** (tradeoff) files (`parser_variable_permeability_data`):
+
+- `Robeson_multi`
+- `Robeson_power`
+- `alpha_ub_bounds` (parsed as `ub_alpha`)
+- `alpha_lb_bounds` (parsed as `lb_alpha`)
+- `lb_permeability`
+- `ub_permeability`
+- `thickness`
+- `mem_product`
+- `mem_type` (optional, for mapping membrane index to type)
+

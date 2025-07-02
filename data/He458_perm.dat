@@ -1,0 +1,19 @@
+# Set of membranes types
+set mem_types_set := A
+
+# number of gas (components)
+param nb_gas := 3
+
+# permeability values (mem_type component value) #PSF #P84
+param Permeability :=
+A  He  13 #11.29
+A  N2	0.17 #0.05
+A  CO2  5.6 #1.37
+
+# thickness
+param thickness :=
+A := 0.1
+
+# membrane output
+param mem_product :=
+    A	PERM

@@ -1,0 +1,35 @@
+# Set of membranes types
+set mem_types_set := A B
+
+# number of gas (components)
+param nb_gas := 5
+
+# permeability values (mem_type component value) A PI UBE / B PolyActive HZG
+param Permeability :=
+A  H2	425 
+A  CO  5 
+A  CO2  105 
+A  CH4 2.5 
+A  H2O 2500
+B  H2	240 
+B  CO  51 
+B  CO2 1175 
+B  CH4 151 
+B  H2O 2500
+
+# thickness
+param thickness :=
+A := 1 
+B := 1 
+
+
+# membrane output
+param mem_product :=
+A   PERM
+B   RET
+
+param mem_type :=
+1 B
+2 A
+3 B
+

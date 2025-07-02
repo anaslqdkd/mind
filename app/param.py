@@ -254,23 +254,6 @@ class ParamInput(Param):
             else:
                 self.line_edit.setValue(float(value))
 
-    # def set_value(self, value):
-    #     if self.line_edit is not None:
-    #         # For QDoubleSpinBox
-    #         if hasattr(self.line_edit, "setDecimals"):
-    #             # Set decimals based on value precision
-    #             if isinstance(value, float):
-    #                 str_val = str(value)
-    #                 if '.' in str_val:
-    #                     decimals = len(str_val.split('.')[-1].rstrip('0'))
-    #                 else:
-    #                     decimals = 2
-    #                 self.line_edit.setDecimals(decimals)
-    #             else:
-    #                 self.line_edit.setDecimals(0)
-    #         self.line_edit.setMaximum(1e10)
-    #         self.line_edit.setValue(value)
-
     def set_last_line_edit(self, value):
         self.last_line_edit = value
 
@@ -284,17 +267,6 @@ class ParamInput(Param):
             except ValueError:
                 return
             self.line_edit.setValue(value)
-
-    # def restore_values(self):
-    #     if self.line_edit is not None and self.last_line_edit != "":
-    #         try:
-    #             value = int(self.last_line_edit)
-    #         except ValueError:
-    #             try:
-    #                 value = float(self.last_line_edit)
-    #             except ValueError:
-    #                 return
-    #         self.line_edit.setValue(value)
 
     def store_value(self):
         if not self.hidden:
@@ -816,7 +788,6 @@ class ParamComponent(Param):
 
         # update method
         if self.extra_rows > 0:
-            debug_print("here", self.extra_rows)
             for i in range(self.extra_rows):
                 combo = QComboBox()
                 combo.setPlaceholderText("Extra input")
@@ -1104,7 +1075,7 @@ class ParamRadio(Param):
 
     def to_file(self) -> str:
         # TODO:
-        return f"ta mere"
+        return f""
 
 
 # -----------------------------------------------------------
@@ -1411,7 +1382,6 @@ class ParamFileChooser(Param):
         return ""
 
     def to_config_entry(self) -> Optional[str]:
-        debug_print(self.name, self.last_path)
         if self.last_path:
             return f'{self.name} = {self.last_path}'
         return None
@@ -2043,8 +2013,6 @@ class ParamMembraneSelect(Param):
     def restore_value(self):
         for idx, combo in enumerate(self.combo_boxes):
             print(f"Combo {idx} items:", [combo.itemText(i) for i in range(combo.count())])
-        debug_print("BB", self.last_combo_boxes)
-        debug_print("BB", self.combo_boxes)
         for idx, value in enumerate(self.last_combo_boxes):
             if idx < len(self.combo_boxes):
                 combo = self.combo_boxes[idx]
@@ -2063,8 +2031,6 @@ class ParamMembraneSelect(Param):
         self.last_combo_boxes.clear()
         for combo in self.combo_boxes:
             self.last_combo_boxes.append(combo.currentText())
-        debug_print(self.combo_boxes)
-        debug_print(self.last_combo_boxes)
 
     def row_span(self) -> int:
         return 3 + len(self.membranes)

@@ -1,0 +1,38 @@
+data;
+
+param pressure_in := 1;
+
+set components := "O2" "H2";
+
+# param pressure_prod := 0 ;
+
+param normalized_product_qt := 0.95;
+
+param final_product := "O2";
+
+param FEED := 0.02 ;
+
+
+param XIN :=
+	"O2"	1.0
+	"H2"	1.0
+
+;
+
+param molarmass :=
+	"O2"	1.0
+	"H2"	1.0
+
+;
+param ub_feed_tot := 1;
+param ub_feed := 1;
+
+param ub_press_down := 1.0;
+
+param lb_press_down := 1.01;
+
+
+param lb_press_up := 1.0;
+
+param ub_press_up := 2.0;
+

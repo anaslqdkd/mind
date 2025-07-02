@@ -1,0 +1,42 @@
+data;
+
+param pressure_in := 1;
+/* param pressure_prod := 100; */
+
+#set of components of each mixture gaseous
+set components := "O2" "N2";
+
+# molar mass for the components
+param molarmass :=
+"O2" 15.99
+"N2"  28.01
+;
+
+# Attenzione qui la purezza e espressa sul prodotto
+# mentre nella CO2 era espressa in termini di impurita...
+# bisogna rendere la cosa piu chiara
+# e farla sul flusso di prodotto (RET o PERM da parametrizzare nel main!!!)
+# oppure farla direttamente nel main!!
+# e lasciare nel dat solo le cose che valgono per tutti i sotto-casi del case-study corrente
+param lb_perc_prod:=
+"N2" 0.90
+;
+
+param normalized_product_qt := 0.10; #0.9,0.95,0.99
+
+param final_product:= "N2";
+
+param ub_feed_tot := 1;
+param ub_feed := 1;
+
+param FEED := 10.0;
+
+param XIN:=
+	"O2"	0.21
+	"N2"	0.79
+;
+
+param ub_press_down :=  1;
+param lb_press_down := 0.2;
+param lb_press_up := 1;
+param ub_press_up := 100;

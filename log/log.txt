@@ -1,0 +1,6600 @@
+Random generated point
+splitFEED_frac[1] 0.879  
+splitFEED_frac[2] 0.121  
+splitRET_frac[1,1] 0.711  
+splitRET_frac[1,2] 0.122  
+splitOutRET_frac[1] 0.167  
+splitPERM_frac[1,1] 0.490  
+splitPERM_frac[1,2] 0.241  
+splitOutPERM_frac[1] 0.269  
+splitRET_frac[2,1] 0.745  
+splitRET_frac[2,2] 0.229  
+splitOutRET_frac[2] 0.026  
+splitPERM_frac[2,1] 0.995  
+splitPERM_frac[2,2] 0.005  
+splitOutPERM_frac[2] 0.000  
+Area[1]       4.78
+Area[2]       4.74
+pressure_up[1]  1.06
+pressure_up[2]  1.14
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.447  
+splitFEED_frac[2] 0.553  
+splitRET_frac[1,1] 0.650  
+splitRET_frac[1,2] 0.295  
+splitOutRET_frac[1] 0.055  
+splitPERM_frac[1,1] 0.459  
+splitPERM_frac[1,2] 0.540  
+splitOutPERM_frac[1] 0.000  
+splitRET_frac[2,1] 0.614  
+splitRET_frac[2,2] 0.293  
+splitOutRET_frac[2] 0.093  
+splitPERM_frac[2,1] 0.200  
+splitPERM_frac[2,2] 0.731  
+splitOutPERM_frac[2] 0.069  
+Area[1]       0.28
+Area[2]       0.23
+pressure_up[1]  1.46
+pressure_up[2]  1.64
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.994  
+splitFEED_frac[2] 0.006  
+splitRET_frac[1,1] 0.728  
+splitRET_frac[1,2] 0.230  
+splitOutRET_frac[1] 0.042  
+splitPERM_frac[1,1] 0.511  
+splitPERM_frac[1,2] 0.457  
+splitOutPERM_frac[1] 0.033  
+splitRET_frac[2,1] 0.548  
+splitRET_frac[2,2] 0.230  
+splitOutRET_frac[2] 0.222  
+splitPERM_frac[2,1] 0.889  
+splitPERM_frac[2,2] 0.105  
+splitOutPERM_frac[2] 0.005  
+Area[1]       3.84
+Area[2]       3.97
+pressure_up[1]  1.35
+pressure_up[2]  1.99
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.950  
+splitFEED_frac[2] 0.050  
+splitRET_frac[1,1] 0.829  
+splitRET_frac[1,2] 0.049  
+splitOutRET_frac[1] 0.122  
+splitPERM_frac[1,1] 0.546  
+splitPERM_frac[1,2] 0.283  
+splitOutPERM_frac[1] 0.172  
+splitRET_frac[2,1] 0.318  
+splitRET_frac[2,2] 0.661  
+splitOutRET_frac[2] 0.021  
+splitPERM_frac[2,1] 0.813  
+splitPERM_frac[2,2] 0.128  
+splitOutPERM_frac[2] 0.059  
+Area[1]       3.65
+Area[2]       2.48
+pressure_up[1]  1.22
+pressure_up[2]  1.47
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.982  
+splitFEED_frac[2] 0.018  
+splitRET_frac[1,1] 0.778  
+splitRET_frac[1,2] 0.019  
+splitOutRET_frac[1] 0.203  
+splitPERM_frac[1,1] 0.159  
+splitPERM_frac[1,2] 0.472  
+splitOutPERM_frac[1] 0.369  
+splitRET_frac[2,1] 0.343  
+splitRET_frac[2,2] 0.165  
+splitOutRET_frac[2] 0.492  
+splitPERM_frac[2,1] 0.316  
+splitPERM_frac[2,2] 0.159  
+splitOutPERM_frac[2] 0.525  
+Area[1]       3.15
+Area[2]       0.47
+pressure_up[1]  1.82
+pressure_up[2]  1.95
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.125  
+splitFEED_frac[2] 0.875  
+splitRET_frac[1,1] 0.282  
+splitRET_frac[1,2] 0.713  
+splitOutRET_frac[1] 0.006  
+splitPERM_frac[1,1] 0.324  
+splitPERM_frac[1,2] 0.577  
+splitOutPERM_frac[1] 0.099  
+splitRET_frac[2,1] 0.373  
+splitRET_frac[2,2] 0.605  
+splitOutRET_frac[2] 0.022  
+splitPERM_frac[2,1] 0.099  
+splitPERM_frac[2,2] 0.891  
+splitOutPERM_frac[2] 0.010  
+Area[1]       0.26
+Area[2]       1.88
+pressure_up[1]  1.17
+pressure_up[2]  1.73
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.565  
+splitFEED_frac[2] 0.435  
+splitRET_frac[1,1] 0.697  
+splitRET_frac[1,2] 0.230  
+splitOutRET_frac[1] 0.073  
+splitPERM_frac[1,1] 0.576  
+splitPERM_frac[1,2] 0.130  
+splitOutPERM_frac[1] 0.294  
+splitRET_frac[2,1] 0.766  
+splitRET_frac[2,2] 0.211  
+splitOutRET_frac[2] 0.024  
+splitPERM_frac[2,1] 0.655  
+splitPERM_frac[2,2] 0.070  
+splitOutPERM_frac[2] 0.275  
+Area[1]       3.11
+Area[2]       3.74
+pressure_up[1]  1.11
+pressure_up[2]  1.41
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.990  
+splitFEED_frac[2] 0.010  
+splitRET_frac[1,1] 0.804  
+splitRET_frac[1,2] 0.191  
+splitOutRET_frac[1] 0.005  
+splitPERM_frac[1,1] 0.766  
+splitPERM_frac[1,2] 0.156  
+splitOutPERM_frac[1] 0.078  
+splitRET_frac[2,1] 0.916  
+splitRET_frac[2,2] 0.062  
+splitOutRET_frac[2] 0.022  
+splitPERM_frac[2,1] 0.638  
+splitPERM_frac[2,2] 0.185  
+splitOutPERM_frac[2] 0.176  
+Area[1]       2.97
+Area[2]       2.03
+pressure_up[1]  1.51
+pressure_up[2]  1.58
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.699  
+splitFEED_frac[2] 0.301  
+splitRET_frac[1,1] 0.794  
+splitRET_frac[1,2] 0.093  
+splitOutRET_frac[1] 0.114  
+splitPERM_frac[1,1] 0.523  
+splitPERM_frac[1,2] 0.070  
+splitOutPERM_frac[1] 0.407  
+splitRET_frac[2,1] 0.981  
+splitRET_frac[2,2] 0.002  
+splitOutRET_frac[2] 0.017  
+splitPERM_frac[2,1] 0.800  
+splitPERM_frac[2,2] 0.076  
+splitOutPERM_frac[2] 0.124  
+Area[1]       1.24
+Area[2]       2.28
+pressure_up[1]  1.25
+pressure_up[2]  1.69
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.286  
+splitFEED_frac[2] 0.714  
+splitRET_frac[1,1] 0.887  
+splitRET_frac[1,2] 0.097  
+splitOutRET_frac[1] 0.016  
+splitPERM_frac[1,1] 0.619  
+splitPERM_frac[1,2] 0.328  
+splitOutPERM_frac[1] 0.054  
+splitRET_frac[2,1] 0.706  
+splitRET_frac[2,2] 0.284  
+splitOutRET_frac[2] 0.010  
+splitPERM_frac[2,1] 0.210  
+splitPERM_frac[2,2] 0.722  
+splitOutPERM_frac[2] 0.067  
+Area[1]       2.65
+Area[2]       2.38
+pressure_up[1]  1.31
+pressure_up[2]  1.75
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.328  
+splitFEED_frac[2] 0.672  
+splitRET_frac[1,1] 0.192  
+splitRET_frac[1,2] 0.278  
+splitOutRET_frac[1] 0.530  
+splitPERM_frac[1,1] 0.626  
+splitPERM_frac[1,2] 0.306  
+splitOutPERM_frac[1] 0.067  
+splitRET_frac[2,1] 0.849  
+splitRET_frac[2,2] 0.005  
+splitOutRET_frac[2] 0.145  
+splitPERM_frac[2,1] 0.861  
+splitPERM_frac[2,2] 0.030  
+splitOutPERM_frac[2] 0.108  
+Area[1]       3.09
+Area[2]       1.52
+pressure_up[1]  1.98
+pressure_up[2]  1.99
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.718  
+splitFEED_frac[2] 0.282  
+splitRET_frac[1,1] 0.849  
+splitRET_frac[1,2] 0.127  
+splitOutRET_frac[1] 0.024  
+splitPERM_frac[1,1] 0.582  
+splitPERM_frac[1,2] 0.406  
+splitOutPERM_frac[1] 0.012  
+splitRET_frac[2,1] 0.243  
+splitRET_frac[2,2] 0.071  
+splitOutRET_frac[2] 0.686  
+splitPERM_frac[2,1] 0.110  
+splitPERM_frac[2,2] 0.593  
+splitOutPERM_frac[2] 0.297  
+Area[1]       0.48
+Area[2]       3.80
+pressure_up[1]  1.19
+pressure_up[2]  1.65
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.774  
+splitFEED_frac[2] 0.226  
+splitRET_frac[1,1] 0.861  
+splitRET_frac[1,2] 0.113  
+splitOutRET_frac[1] 0.026  
+splitPERM_frac[1,1] 0.677  
+splitPERM_frac[1,2] 0.145  
+splitOutPERM_frac[1] 0.177  
+splitRET_frac[2,1] 0.925  
+splitRET_frac[2,2] 0.049  
+splitOutRET_frac[2] 0.027  
+splitPERM_frac[2,1] 0.690  
+splitPERM_frac[2,2] 0.295  
+splitOutPERM_frac[2] 0.015  
+Area[1]       1.85
+Area[2]       2.34
+pressure_up[1]  1.80
+pressure_up[2]  1.85
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.920  
+splitFEED_frac[2] 0.080  
+splitRET_frac[1,1] 0.807  
+splitRET_frac[1,2] 0.192  
+splitOutRET_frac[1] 0.001  
+splitPERM_frac[1,1] 0.675  
+splitPERM_frac[1,2] 0.270  
+splitOutPERM_frac[1] 0.055  
+splitRET_frac[2,1] 0.600  
+splitRET_frac[2,2] 0.258  
+splitOutRET_frac[2] 0.142  
+splitPERM_frac[2,1] 0.718  
+splitPERM_frac[2,2] 0.053  
+splitOutPERM_frac[2] 0.229  
+Area[1]       1.84
+Area[2]       4.99
+pressure_up[1]  1.15
+pressure_up[2]  1.50
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.952  
+splitFEED_frac[2] 0.048  
+splitRET_frac[1,1] 0.634  
+splitRET_frac[1,2] 0.148  
+splitOutRET_frac[1] 0.218  
+splitPERM_frac[1,1] 0.634  
+splitPERM_frac[1,2] 0.018  
+splitOutPERM_frac[1] 0.348  
+splitRET_frac[2,1] 0.862  
+splitRET_frac[2,2] 0.125  
+splitOutRET_frac[2] 0.013  
+splitPERM_frac[2,1] 0.929  
+splitPERM_frac[2,2] 0.021  
+splitOutPERM_frac[2] 0.049  
+Area[1]       0.57
+Area[2]       2.63
+pressure_up[1]  1.72
+pressure_up[2]  1.79
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.987  
+splitFEED_frac[2] 0.013  
+splitRET_frac[1,1] 0.698  
+splitRET_frac[1,2] 0.217  
+splitOutRET_frac[1] 0.086  
+splitPERM_frac[1,1] 0.367  
+splitPERM_frac[1,2] 0.425  
+splitOutPERM_frac[1] 0.207  
+splitRET_frac[2,1] 0.895  
+splitRET_frac[2,2] 0.033  
+splitOutRET_frac[2] 0.071  
+splitPERM_frac[2,1] 0.828  
+splitPERM_frac[2,2] 0.004  
+splitOutPERM_frac[2] 0.168  
+Area[1]       3.58
+Area[2]       4.69
+pressure_up[1]  1.71
+pressure_up[2]  1.84
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.836  
+splitFEED_frac[2] 0.164  
+splitRET_frac[1,1] 0.834  
+splitRET_frac[1,2] 0.164  
+splitOutRET_frac[1] 0.002  
+splitPERM_frac[1,1] 0.780  
+splitPERM_frac[1,2] 0.194  
+splitOutPERM_frac[1] 0.026  
+splitRET_frac[2,1] 0.850  
+splitRET_frac[2,2] 0.141  
+splitOutRET_frac[2] 0.009  
+splitPERM_frac[2,1] 0.870  
+splitPERM_frac[2,2] 0.027  
+splitOutPERM_frac[2] 0.103  
+Area[1]       3.29
+Area[2]       4.10
+pressure_up[1]  1.02
+pressure_up[2]  1.94
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.997  
+splitFEED_frac[2] 0.003  
+splitRET_frac[1,1] 0.468  
+splitRET_frac[1,2] 0.471  
+splitOutRET_frac[1] 0.060  
+splitPERM_frac[1,1] 0.556  
+splitPERM_frac[1,2] 0.186  
+splitOutPERM_frac[1] 0.258  
+splitRET_frac[2,1] 0.796  
+splitRET_frac[2,2] 0.119  
+splitOutRET_frac[2] 0.085  
+splitPERM_frac[2,1] 0.249  
+splitPERM_frac[2,2] 0.072  
+splitOutPERM_frac[2] 0.679  
+Area[1]       2.87
+Area[2]       2.39
+pressure_up[1]  1.20
+pressure_up[2]  1.97
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.982  
+splitFEED_frac[2] 0.018  
+splitRET_frac[1,1] 0.429  
+splitRET_frac[1,2] 0.326  
+splitOutRET_frac[1] 0.245  
+splitPERM_frac[1,1] 0.908  
+splitPERM_frac[1,2] 0.048  
+splitOutPERM_frac[1] 0.044  
+splitRET_frac[2,1] 0.604  
+splitRET_frac[2,2] 0.007  
+splitOutRET_frac[2] 0.389  
+splitPERM_frac[2,1] 0.427  
+splitPERM_frac[2,2] 0.274  
+splitOutPERM_frac[2] 0.300  
+Area[1]       3.94
+Area[2]       2.08
+pressure_up[1]  1.67
+pressure_up[2]  1.93
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.947  
+splitFEED_frac[2] 0.053  
+splitRET_frac[1,1] 0.611  
+splitRET_frac[1,2] 0.333  
+splitOutRET_frac[1] 0.056  
+splitPERM_frac[1,1] 0.693  
+splitPERM_frac[1,2] 0.168  
+splitOutPERM_frac[1] 0.139  
+splitRET_frac[2,1] 0.481  
+splitRET_frac[2,2] 0.510  
+splitOutRET_frac[2] 0.009  
+splitPERM_frac[2,1] 0.862  
+splitPERM_frac[2,2] 0.119  
+splitOutPERM_frac[2] 0.019  
+Area[1]       2.47
+Area[2]       2.74
+pressure_up[1]  1.91
+pressure_up[2]  1.92
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.273  
+splitFEED_frac[2] 0.727  
+splitRET_frac[1,1] 0.627  
+splitRET_frac[1,2] 0.240  
+splitOutRET_frac[1] 0.133  
+splitPERM_frac[1,1] 0.443  
+splitPERM_frac[1,2] 0.176  
+splitOutPERM_frac[1] 0.381  
+splitRET_frac[2,1] 0.503  
+splitRET_frac[2,2] 0.412  
+splitOutRET_frac[2] 0.085  
+splitPERM_frac[2,1] 0.937  
+splitPERM_frac[2,2] 0.035  
+splitOutPERM_frac[2] 0.028  
+Area[1]       2.34
+Area[2]       1.24
+pressure_up[1]  1.28
+pressure_up[2]  1.97
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.777  
+splitFEED_frac[2] 0.223  
+splitRET_frac[1,1] 0.757  
+splitRET_frac[1,2] 0.066  
+splitOutRET_frac[1] 0.176  
+splitPERM_frac[1,1] 0.314  
+splitPERM_frac[1,2] 0.608  
+splitOutPERM_frac[1] 0.078  
+splitRET_frac[2,1] 0.672  
+splitRET_frac[2,2] 0.147  
+splitOutRET_frac[2] 0.181  
+splitPERM_frac[2,1] 0.511  
+splitPERM_frac[2,2] 0.343  
+splitOutPERM_frac[2] 0.146  
+Area[1]       0.59
+Area[2]       1.27
+pressure_up[1]  1.19
+pressure_up[2]  1.74
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.559  
+splitFEED_frac[2] 0.441  
+splitRET_frac[1,1] 0.755  
+splitRET_frac[1,2] 0.146  
+splitOutRET_frac[1] 0.099  
+splitPERM_frac[1,1] 0.478  
+splitPERM_frac[1,2] 0.510  
+splitOutPERM_frac[1] 0.011  
+splitRET_frac[2,1] 0.197  
+splitRET_frac[2,2] 0.790  
+splitOutRET_frac[2] 0.012  
+splitPERM_frac[2,1] 0.994  
+splitPERM_frac[2,2] 0.005  
+splitOutPERM_frac[2] 0.001  
+Area[1]       4.36
+Area[2]       4.68
+pressure_up[1]  1.75
+pressure_up[2]  1.99
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.892  
+splitFEED_frac[2] 0.108  
+splitRET_frac[1,1] 0.859  
+splitRET_frac[1,2] 0.097  
+splitOutRET_frac[1] 0.043  
+splitPERM_frac[1,1] 0.963  
+splitPERM_frac[1,2] 0.016  
+splitOutPERM_frac[1] 0.021  
+splitRET_frac[2,1] 0.848  
+splitRET_frac[2,2] 0.055  
+splitOutRET_frac[2] 0.097  
+splitPERM_frac[2,1] 0.550  
+splitPERM_frac[2,2] 0.200  
+splitOutPERM_frac[2] 0.251  
+Area[1]       4.60
+Area[2]       4.43
+pressure_up[1]  1.76
+pressure_up[2]  1.87
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.518  
+splitFEED_frac[2] 0.482  
+splitRET_frac[1,1] 0.176  
+splitRET_frac[1,2] 0.136  
+splitOutRET_frac[1] 0.688  
+splitPERM_frac[1,1] 0.525  
+splitPERM_frac[1,2] 0.447  
+splitOutPERM_frac[1] 0.028  
+splitRET_frac[2,1] 0.539  
+splitRET_frac[2,2] 0.444  
+splitOutRET_frac[2] 0.017  
+splitPERM_frac[2,1] 0.823  
+splitPERM_frac[2,2] 0.141  
+splitOutPERM_frac[2] 0.036  
+Area[1]       1.31
+Area[2]       1.28
+pressure_up[1]  1.61
+pressure_up[2]  1.74
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.763  
+splitFEED_frac[2] 0.237  
+splitRET_frac[1,1] 0.485  
+splitRET_frac[1,2] 0.508  
+splitOutRET_frac[1] 0.008  
+splitPERM_frac[1,1] 0.921  
+splitPERM_frac[1,2] 0.024  
+splitOutPERM_frac[1] 0.054  
+splitRET_frac[2,1] 0.892  
+splitRET_frac[2,2] 0.072  
+splitOutRET_frac[2] 0.036  
+splitPERM_frac[2,1] 0.996  
+splitPERM_frac[2,2] 0.001  
+splitOutPERM_frac[2] 0.004  
+Area[1]       2.42
+Area[2]       3.14
+pressure_up[1]  1.32
+pressure_up[2]  1.89
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.687  
+splitFEED_frac[2] 0.313  
+splitRET_frac[1,1] 0.394  
+splitRET_frac[1,2] 0.124  
+splitOutRET_frac[1] 0.482  
+splitPERM_frac[1,1] 0.118  
+splitPERM_frac[1,2] 0.858  
+splitOutPERM_frac[1] 0.023  
+splitRET_frac[2,1] 0.104  
+splitRET_frac[2,2] 0.874  
+splitOutRET_frac[2] 0.022  
+splitPERM_frac[2,1] 0.679  
+splitPERM_frac[2,2] 0.290  
+splitOutPERM_frac[2] 0.032  
+Area[1]       0.48
+Area[2]       1.60
+pressure_up[1]  1.80
+pressure_up[2]  1.80
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.721  
+splitFEED_frac[2] 0.279  
+splitRET_frac[1,1] 0.511  
+splitRET_frac[1,2] 0.430  
+splitOutRET_frac[1] 0.058  
+splitPERM_frac[1,1] 0.512  
+splitPERM_frac[1,2] 0.205  
+splitOutPERM_frac[1] 0.283  
+splitRET_frac[2,1] 0.738  
+splitRET_frac[2,2] 0.096  
+splitOutRET_frac[2] 0.167  
+splitPERM_frac[2,1] 0.628  
+splitPERM_frac[2,2] 0.324  
+splitOutPERM_frac[2] 0.048  
+Area[1]       1.08
+Area[2]       4.60
+pressure_up[1]  1.82
+pressure_up[2]  1.92
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.922  
+splitFEED_frac[2] 0.078  
+splitRET_frac[1,1] 0.604  
+splitRET_frac[1,2] 0.196  
+splitOutRET_frac[1] 0.200  
+splitPERM_frac[1,1] 0.793  
+splitPERM_frac[1,2] 0.152  
+splitOutPERM_frac[1] 0.056  
+splitRET_frac[2,1] 0.497  
+splitRET_frac[2,2] 0.228  
+splitOutRET_frac[2] 0.275  
+splitPERM_frac[2,1] 0.287  
+splitPERM_frac[2,2] 0.548  
+splitOutPERM_frac[2] 0.166  
+Area[1]       4.59
+Area[2]       0.90
+pressure_up[1]  1.11
+pressure_up[2]  1.84
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.845  
+splitFEED_frac[2] 0.155  
+splitRET_frac[1,1] 0.585  
+splitRET_frac[1,2] 0.308  
+splitOutRET_frac[1] 0.106  
+splitPERM_frac[1,1] 0.082  
+splitPERM_frac[1,2] 0.739  
+splitOutPERM_frac[1] 0.179  
+splitRET_frac[2,1] 0.782  
+splitRET_frac[2,2] 0.181  
+splitOutRET_frac[2] 0.036  
+splitPERM_frac[2,1] 0.899  
+splitPERM_frac[2,2] 0.098  
+splitOutPERM_frac[2] 0.003  
+Area[1]       3.53
+Area[2]       3.33
+pressure_up[1]  1.03
+pressure_up[2]  1.57
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.980  
+splitFEED_frac[2] 0.020  
+splitRET_frac[1,1] 0.744  
+splitRET_frac[1,2] 0.170  
+splitOutRET_frac[1] 0.086  
+splitPERM_frac[1,1] 0.860  
+splitPERM_frac[1,2] 0.107  
+splitOutPERM_frac[1] 0.033  
+splitRET_frac[2,1] 0.862  
+splitRET_frac[2,2] 0.123  
+splitOutRET_frac[2] 0.015  
+splitPERM_frac[2,1] 0.504  
+splitPERM_frac[2,2] 0.421  
+splitOutPERM_frac[2] 0.074  
+Area[1]       3.22
+Area[2]       2.77
+pressure_up[1]  1.19
+pressure_up[2]  1.96
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.641  
+splitFEED_frac[2] 0.359  
+splitRET_frac[1,1] 0.377  
+splitRET_frac[1,2] 0.340  
+splitOutRET_frac[1] 0.284  
+splitPERM_frac[1,1] 0.796  
+splitPERM_frac[1,2] 0.131  
+splitOutPERM_frac[1] 0.073  
+splitRET_frac[2,1] 0.257  
+splitRET_frac[2,2] 0.617  
+splitOutRET_frac[2] 0.126  
+splitPERM_frac[2,1] 0.603  
+splitPERM_frac[2,2] 0.310  
+splitOutPERM_frac[2] 0.088  
+Area[1]       3.54
+Area[2]       1.43
+pressure_up[1]  1.91
+pressure_up[2]  1.93
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.498  
+splitFEED_frac[2] 0.502  
+splitRET_frac[1,1] 0.842  
+splitRET_frac[1,2] 0.050  
+splitOutRET_frac[1] 0.108  
+splitPERM_frac[1,1] 0.371  
+splitPERM_frac[1,2] 0.150  
+splitOutPERM_frac[1] 0.480  
+splitRET_frac[2,1] 0.671  
+splitRET_frac[2,2] 0.302  
+splitOutRET_frac[2] 0.027  
+splitPERM_frac[2,1] 0.389  
+splitPERM_frac[2,2] 0.009  
+splitOutPERM_frac[2] 0.602  
+Area[1]       1.04
+Area[2]       2.40
+pressure_up[1]  1.57
+pressure_up[2]  1.71
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.765  
+splitFEED_frac[2] 0.235  
+splitRET_frac[1,1] 0.853  
+splitRET_frac[1,2] 0.005  
+splitOutRET_frac[1] 0.142  
+splitPERM_frac[1,1] 0.593  
+splitPERM_frac[1,2] 0.043  
+splitOutPERM_frac[1] 0.364  
+splitRET_frac[2,1] 0.422  
+splitRET_frac[2,2] 0.131  
+splitOutRET_frac[2] 0.448  
+splitPERM_frac[2,1] 0.930  
+splitPERM_frac[2,2] 0.055  
+splitOutPERM_frac[2] 0.015  
+Area[1]       1.66
+Area[2]       1.35
+pressure_up[1]  1.72
+pressure_up[2]  1.82
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.439  
+splitFEED_frac[2] 0.561  
+splitRET_frac[1,1] 0.813  
+splitRET_frac[1,2] 0.126  
+splitOutRET_frac[1] 0.061  
+splitPERM_frac[1,1] 0.328  
+splitPERM_frac[1,2] 0.629  
+splitOutPERM_frac[1] 0.044  
+splitRET_frac[2,1] 0.811  
+splitRET_frac[2,2] 0.112  
+splitOutRET_frac[2] 0.078  
+splitPERM_frac[2,1] 0.751  
+splitPERM_frac[2,2] 0.148  
+splitOutPERM_frac[2] 0.101  
+Area[1]       0.84
+Area[2]       1.57
+pressure_up[1]  1.96
+pressure_up[2]  2.00
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.618  
+splitFEED_frac[2] 0.382  
+splitRET_frac[1,1] 0.098  
+splitRET_frac[1,2] 0.869  
+splitOutRET_frac[1] 0.034  
+splitPERM_frac[1,1] 0.700  
+splitPERM_frac[1,2] 0.054  
+splitOutPERM_frac[1] 0.246  
+splitRET_frac[2,1] 0.239  
+splitRET_frac[2,2] 0.636  
+splitOutRET_frac[2] 0.124  
+splitPERM_frac[2,1] 0.564  
+splitPERM_frac[2,2] 0.376  
+splitOutPERM_frac[2] 0.061  
+Area[1]       2.43
+Area[2]       1.96
+pressure_up[1]  1.22
+pressure_up[2]  1.39
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.724  
+splitFEED_frac[2] 0.276  
+splitRET_frac[1,1] 0.554  
+splitRET_frac[1,2] 0.318  
+splitOutRET_frac[1] 0.128  
+splitPERM_frac[1,1] 0.249  
+splitPERM_frac[1,2] 0.618  
+splitOutPERM_frac[1] 0.133  
+splitRET_frac[2,1] 0.965  
+splitRET_frac[2,2] 0.006  
+splitOutRET_frac[2] 0.029  
+splitPERM_frac[2,1] 0.341  
+splitPERM_frac[2,2] 0.267  
+splitOutPERM_frac[2] 0.392  
+Area[1]       1.18
+Area[2]       0.22
+pressure_up[1]  1.48
+pressure_up[2]  1.55
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.300  
+splitFEED_frac[2] 0.700  
+splitRET_frac[1,1] 0.340  
+splitRET_frac[1,2] 0.638  
+splitOutRET_frac[1] 0.022  
+splitPERM_frac[1,1] 0.954  
+splitPERM_frac[1,2] 0.003  
+splitOutPERM_frac[1] 0.043  
+splitRET_frac[2,1] 0.815  
+splitRET_frac[2,2] 0.175  
+splitOutRET_frac[2] 0.010  
+splitPERM_frac[2,1] 0.890  
+splitPERM_frac[2,2] 0.001  
+splitOutPERM_frac[2] 0.108  
+Area[1]       1.84
+Area[2]       1.77
+pressure_up[1]  1.92
+pressure_up[2]  1.97
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.763  
+splitFEED_frac[2] 0.237  
+splitRET_frac[1,1] 0.942  
+splitRET_frac[1,2] 0.047  
+splitOutRET_frac[1] 0.011  
+splitPERM_frac[1,1] 0.632  
+splitPERM_frac[1,2] 0.116  
+splitOutPERM_frac[1] 0.251  
+splitRET_frac[2,1] 0.595  
+splitRET_frac[2,2] 0.393  
+splitOutRET_frac[2] 0.011  
+splitPERM_frac[2,1] 0.197  
+splitPERM_frac[2,2] 0.222  
+splitOutPERM_frac[2] 0.581  
+Area[1]       4.32
+Area[2]       0.48
+pressure_up[1]  1.54
+pressure_up[2]  1.82
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.854  
+splitFEED_frac[2] 0.146  
+splitRET_frac[1,1] 0.301  
+splitRET_frac[1,2] 0.403  
+splitOutRET_frac[1] 0.296  
+splitPERM_frac[1,1] 0.616  
+splitPERM_frac[1,2] 0.282  
+splitOutPERM_frac[1] 0.102  
+splitRET_frac[2,1] 0.518  
+splitRET_frac[2,2] 0.469  
+splitOutRET_frac[2] 0.013  
+splitPERM_frac[2,1] 0.957  
+splitPERM_frac[2,2] 0.011  
+splitOutPERM_frac[2] 0.032  
+Area[1]       4.55
+Area[2]       0.64
+pressure_up[1]  1.60
+pressure_up[2]  1.62
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.465  
+splitFEED_frac[2] 0.535  
+splitRET_frac[1,1] 0.802  
+splitRET_frac[1,2] 0.182  
+splitOutRET_frac[1] 0.016  
+splitPERM_frac[1,1] 0.027  
+splitPERM_frac[1,2] 0.691  
+splitOutPERM_frac[1] 0.282  
+splitRET_frac[2,1] 0.824  
+splitRET_frac[2,2] 0.052  
+splitOutRET_frac[2] 0.124  
+splitPERM_frac[2,1] 0.755  
+splitPERM_frac[2,2] 0.206  
+splitOutPERM_frac[2] 0.039  
+Area[1]       4.87
+Area[2]       2.90
+pressure_up[1]  1.52
+pressure_up[2]  1.73
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.961  
+splitFEED_frac[2] 0.039  
+splitRET_frac[1,1] 0.858  
+splitRET_frac[1,2] 0.012  
+splitOutRET_frac[1] 0.129  
+splitPERM_frac[1,1] 0.627  
+splitPERM_frac[1,2] 0.335  
+splitOutPERM_frac[1] 0.038  
+splitRET_frac[2,1] 0.842  
+splitRET_frac[2,2] 0.156  
+splitOutRET_frac[2] 0.002  
+splitPERM_frac[2,1] 0.740  
+splitPERM_frac[2,2] 0.105  
+splitOutPERM_frac[2] 0.155  
+Area[1]       2.17
+Area[2]       1.42
+pressure_up[1]  1.22
+pressure_up[2]  1.81
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.897  
+splitFEED_frac[2] 0.103  
+splitRET_frac[1,1] 0.469  
+splitRET_frac[1,2] 0.489  
+splitOutRET_frac[1] 0.042  
+splitPERM_frac[1,1] 0.633  
+splitPERM_frac[1,2] 0.288  
+splitOutPERM_frac[1] 0.079  
+splitRET_frac[2,1] 0.666  
+splitRET_frac[2,2] 0.333  
+splitOutRET_frac[2] 0.002  
+splitPERM_frac[2,1] 0.964  
+splitPERM_frac[2,2] 0.036  
+splitOutPERM_frac[2] 0.000  
+Area[1]       2.82
+Area[2]       2.72
+pressure_up[1]  1.46
+pressure_up[2]  1.97
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.433  
+splitFEED_frac[2] 0.567  
+splitRET_frac[1,1] 0.708  
+splitRET_frac[1,2] 0.170  
+splitOutRET_frac[1] 0.123  
+splitPERM_frac[1,1] 0.866  
+splitPERM_frac[1,2] 0.102  
+splitOutPERM_frac[1] 0.031  
+splitRET_frac[2,1] 0.989  
+splitRET_frac[2,2] 0.010  
+splitOutRET_frac[2] 0.001  
+splitPERM_frac[2,1] 0.655  
+splitPERM_frac[2,2] 0.277  
+splitOutPERM_frac[2] 0.069  
+Area[1]       3.51
+Area[2]       1.88
+pressure_up[1]  1.80
+pressure_up[2]  1.87
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.979  
+splitFEED_frac[2] 0.021  
+splitRET_frac[1,1] 0.644  
+splitRET_frac[1,2] 0.334  
+splitOutRET_frac[1] 0.022  
+splitPERM_frac[1,1] 0.562  
+splitPERM_frac[1,2] 0.185  
+splitOutPERM_frac[1] 0.253  
+splitRET_frac[2,1] 0.937  
+splitRET_frac[2,2] 0.054  
+splitOutRET_frac[2] 0.009  
+splitPERM_frac[2,1] 0.938  
+splitPERM_frac[2,2] 0.052  
+splitOutPERM_frac[2] 0.009  
+Area[1]       2.06
+Area[2]       0.30
+pressure_up[1]  1.45
+pressure_up[2]  1.52
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.901  
+splitFEED_frac[2] 0.099  
+splitRET_frac[1,1] 0.820  
+splitRET_frac[1,2] 0.136  
+splitOutRET_frac[1] 0.044  
+splitPERM_frac[1,1] 0.326  
+splitPERM_frac[1,2] 0.604  
+splitOutPERM_frac[1] 0.070  
+splitRET_frac[2,1] 0.474  
+splitRET_frac[2,2] 0.476  
+splitOutRET_frac[2] 0.050  
+splitPERM_frac[2,1] 0.832  
+splitPERM_frac[2,2] 0.127  
+splitOutPERM_frac[2] 0.041  
+Area[1]       3.60
+Area[2]       0.35
+pressure_up[1]  1.33
+pressure_up[2]  1.65
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.385  
+splitFEED_frac[2] 0.615  
+splitRET_frac[1,1] 0.762  
+splitRET_frac[1,2] 0.079  
+splitOutRET_frac[1] 0.159  
+splitPERM_frac[1,1] 0.729  
+splitPERM_frac[1,2] 0.087  
+splitOutPERM_frac[1] 0.184  
+splitRET_frac[2,1] 0.281  
+splitRET_frac[2,2] 0.657  
+splitOutRET_frac[2] 0.061  
+splitPERM_frac[2,1] 0.749  
+splitPERM_frac[2,2] 0.191  
+splitOutPERM_frac[2] 0.061  
+Area[1]       1.28
+Area[2]       4.24
+pressure_up[1]  1.98
+pressure_up[2]  1.98
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.818  
+splitFEED_frac[2] 0.182  
+splitRET_frac[1,1] 0.969  
+splitRET_frac[1,2] 0.001  
+splitOutRET_frac[1] 0.031  
+splitPERM_frac[1,1] 0.460  
+splitPERM_frac[1,2] 0.539  
+splitOutPERM_frac[1] 0.001  
+splitRET_frac[2,1] 0.924  
+splitRET_frac[2,2] 0.044  
+splitOutRET_frac[2] 0.033  
+splitPERM_frac[2,1] 0.914  
+splitPERM_frac[2,2] 0.037  
+splitOutPERM_frac[2] 0.049  
+Area[1]       4.63
+Area[2]       4.24
+pressure_up[1]  1.62
+pressure_up[2]  1.92
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.476  
+splitFEED_frac[2] 0.524  
+splitRET_frac[1,1] 0.472  
+splitRET_frac[1,2] 0.139  
+splitOutRET_frac[1] 0.389  
+splitPERM_frac[1,1] 0.914  
+splitPERM_frac[1,2] 0.081  
+splitOutPERM_frac[1] 0.005  
+splitRET_frac[2,1] 0.169  
+splitRET_frac[2,2] 0.727  
+splitOutRET_frac[2] 0.104  
+splitPERM_frac[2,1] 0.941  
+splitPERM_frac[2,2] 0.023  
+splitOutPERM_frac[2] 0.036  
+Area[1]       4.80
+Area[2]       0.96
+pressure_up[1]  1.80
+pressure_up[2]  1.98
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.967  
+splitFEED_frac[2] 0.033  
+splitRET_frac[1,1] 0.316  
+splitRET_frac[1,2] 0.491  
+splitOutRET_frac[1] 0.192  
+splitPERM_frac[1,1] 0.205  
+splitPERM_frac[1,2] 0.793  
+splitOutPERM_frac[1] 0.002  
+splitRET_frac[2,1] 0.815  
+splitRET_frac[2,2] 0.126  
+splitOutRET_frac[2] 0.059  
+splitPERM_frac[2,1] 0.297  
+splitPERM_frac[2,2] 0.091  
+splitOutPERM_frac[2] 0.612  
+Area[1]       2.37
+Area[2]       1.07
+pressure_up[1]  1.04
+pressure_up[2]  1.36
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.969  
+splitFEED_frac[2] 0.031  
+splitRET_frac[1,1] 0.537  
+splitRET_frac[1,2] 0.456  
+splitOutRET_frac[1] 0.007  
+splitPERM_frac[1,1] 0.823  
+splitPERM_frac[1,2] 0.169  
+splitOutPERM_frac[1] 0.008  
+splitRET_frac[2,1] 0.132  
+splitRET_frac[2,2] 0.575  
+splitOutRET_frac[2] 0.293  
+splitPERM_frac[2,1] 0.740  
+splitPERM_frac[2,2] 0.257  
+splitOutPERM_frac[2] 0.003  
+Area[1]       4.88
+Area[2]       4.77
+pressure_up[1]  1.61
+pressure_up[2]  1.75
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.839  
+splitFEED_frac[2] 0.161  
+splitRET_frac[1,1] 0.406  
+splitRET_frac[1,2] 0.578  
+splitOutRET_frac[1] 0.016  
+splitPERM_frac[1,1] 0.515  
+splitPERM_frac[1,2] 0.046  
+splitOutPERM_frac[1] 0.439  
+splitRET_frac[2,1] 0.337  
+splitRET_frac[2,2] 0.396  
+splitOutRET_frac[2] 0.267  
+splitPERM_frac[2,1] 0.645  
+splitPERM_frac[2,2] 0.334  
+splitOutPERM_frac[2] 0.022  
+Area[1]       0.41
+Area[2]       3.16
+pressure_up[1]  1.96
+pressure_up[2]  1.97
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.944  
+splitFEED_frac[2] 0.056  
+splitRET_frac[1,1] 0.871  
+splitRET_frac[1,2] 0.109  
+splitOutRET_frac[1] 0.020  
+splitPERM_frac[1,1] 0.227  
+splitPERM_frac[1,2] 0.658  
+splitOutPERM_frac[1] 0.115  
+splitRET_frac[2,1] 0.197  
+splitRET_frac[2,2] 0.779  
+splitOutRET_frac[2] 0.024  
+splitPERM_frac[2,1] 0.527  
+splitPERM_frac[2,2] 0.443  
+splitOutPERM_frac[2] 0.030  
+Area[1]       1.02
+Area[2]       2.24
+pressure_up[1]  1.41
+pressure_up[2]  1.80
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.456  
+splitFEED_frac[2] 0.544  
+splitRET_frac[1,1] 0.618  
+splitRET_frac[1,2] 0.313  
+splitOutRET_frac[1] 0.069  
+splitPERM_frac[1,1] 0.723  
+splitPERM_frac[1,2] 0.240  
+splitOutPERM_frac[1] 0.037  
+splitRET_frac[2,1] 0.574  
+splitRET_frac[2,2] 0.345  
+splitOutRET_frac[2] 0.081  
+splitPERM_frac[2,1] 0.537  
+splitPERM_frac[2,2] 0.264  
+splitOutPERM_frac[2] 0.198  
+Area[1]       4.53
+Area[2]       0.52
+pressure_up[1]  1.83
+pressure_up[2]  1.95
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.174  
+splitFEED_frac[2] 0.826  
+splitRET_frac[1,1] 0.862  
+splitRET_frac[1,2] 0.134  
+splitOutRET_frac[1] 0.005  
+splitPERM_frac[1,1] 0.737  
+splitPERM_frac[1,2] 0.005  
+splitOutPERM_frac[1] 0.258  
+splitRET_frac[2,1] 0.683  
+splitRET_frac[2,2] 0.089  
+splitOutRET_frac[2] 0.228  
+splitPERM_frac[2,1] 0.731  
+splitPERM_frac[2,2] 0.259  
+splitOutPERM_frac[2] 0.010  
+Area[1]       1.37
+Area[2]       2.82
+pressure_up[1]  1.34
+pressure_up[2]  1.49
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.811  
+splitFEED_frac[2] 0.189  
+splitRET_frac[1,1] 0.281  
+splitRET_frac[1,2] 0.409  
+splitOutRET_frac[1] 0.310  
+splitPERM_frac[1,1] 0.759  
+splitPERM_frac[1,2] 0.185  
+splitOutPERM_frac[1] 0.056  
+splitRET_frac[2,1] 0.517  
+splitRET_frac[2,2] 0.288  
+splitOutRET_frac[2] 0.195  
+splitPERM_frac[2,1] 0.287  
+splitPERM_frac[2,2] 0.666  
+splitOutPERM_frac[2] 0.047  
+Area[1]       1.96
+Area[2]       1.64
+pressure_up[1]  1.15
+pressure_up[2]  1.38
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.936  
+splitFEED_frac[2] 0.064  
+splitRET_frac[1,1] 0.500  
+splitRET_frac[1,2] 0.053  
+splitOutRET_frac[1] 0.447  
+splitPERM_frac[1,1] 0.266  
+splitPERM_frac[1,2] 0.188  
+splitOutPERM_frac[1] 0.546  
+splitRET_frac[2,1] 0.597  
+splitRET_frac[2,2] 0.234  
+splitOutRET_frac[2] 0.169  
+splitPERM_frac[2,1] 0.737  
+splitPERM_frac[2,2] 0.261  
+splitOutPERM_frac[2] 0.002  
+Area[1]       2.92
+Area[2]       1.68
+pressure_up[1]  1.07
+pressure_up[2]  1.08
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.974  
+splitFEED_frac[2] 0.026  
+splitRET_frac[1,1] 0.509  
+splitRET_frac[1,2] 0.395  
+splitOutRET_frac[1] 0.096  
+splitPERM_frac[1,1] 0.529  
+splitPERM_frac[1,2] 0.444  
+splitOutPERM_frac[1] 0.028  
+splitRET_frac[2,1] 0.379  
+splitRET_frac[2,2] 0.614  
+splitOutRET_frac[2] 0.007  
+splitPERM_frac[2,1] 0.303  
+splitPERM_frac[2,2] 0.696  
+splitOutPERM_frac[2] 0.001  
+Area[1]       2.59
+Area[2]       4.47
+pressure_up[1]  1.16
+pressure_up[2]  1.22
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.793  
+splitFEED_frac[2] 0.207  
+splitRET_frac[1,1] 0.519  
+splitRET_frac[1,2] 0.020  
+splitOutRET_frac[1] 0.462  
+splitPERM_frac[1,1] 0.865  
+splitPERM_frac[1,2] 0.058  
+splitOutPERM_frac[1] 0.077  
+splitRET_frac[2,1] 0.451  
+splitRET_frac[2,2] 0.546  
+splitOutRET_frac[2] 0.003  
+splitPERM_frac[2,1] 0.303  
+splitPERM_frac[2,2] 0.677  
+splitOutPERM_frac[2] 0.020  
+Area[1]       4.68
+Area[2]       2.91
+pressure_up[1]  1.82
+pressure_up[2]  1.91
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.714  
+splitFEED_frac[2] 0.286  
+splitRET_frac[1,1] 0.421  
+splitRET_frac[1,2] 0.307  
+splitOutRET_frac[1] 0.272  
+splitPERM_frac[1,1] 0.310  
+splitPERM_frac[1,2] 0.610  
+splitOutPERM_frac[1] 0.080  
+splitRET_frac[2,1] 0.378  
+splitRET_frac[2,2] 0.296  
+splitOutRET_frac[2] 0.325  
+splitPERM_frac[2,1] 0.717  
+splitPERM_frac[2,2] 0.060  
+splitOutPERM_frac[2] 0.224  
+Area[1]       0.33
+Area[2]       1.90
+pressure_up[1]  1.97
+pressure_up[2]  1.99
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.984  
+splitFEED_frac[2] 0.016  
+splitRET_frac[1,1] 0.693  
+splitRET_frac[1,2] 0.151  
+splitOutRET_frac[1] 0.156  
+splitPERM_frac[1,1] 0.808  
+splitPERM_frac[1,2] 0.007  
+splitOutPERM_frac[1] 0.185  
+splitRET_frac[2,1] 0.922  
+splitRET_frac[2,2] 0.057  
+splitOutRET_frac[2] 0.021  
+splitPERM_frac[2,1] 0.731  
+splitPERM_frac[2,2] 0.237  
+splitOutPERM_frac[2] 0.033  
+Area[1]       4.84
+Area[2]       2.95
+pressure_up[1]  1.02
+pressure_up[2]  1.38
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.937  
+splitFEED_frac[2] 0.063  
+splitRET_frac[1,1] 0.196  
+splitRET_frac[1,2] 0.601  
+splitOutRET_frac[1] 0.204  
+splitPERM_frac[1,1] 0.803  
+splitPERM_frac[1,2] 0.183  
+splitOutPERM_frac[1] 0.014  
+splitRET_frac[2,1] 0.811  
+splitRET_frac[2,2] 0.141  
+splitOutRET_frac[2] 0.048  
+splitPERM_frac[2,1] 0.863  
+splitPERM_frac[2,2] 0.015  
+splitOutPERM_frac[2] 0.122  
+Area[1]       0.24
+Area[2]       1.35
+pressure_up[1]  1.02
+pressure_up[2]  1.59
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 1.000  
+splitFEED_frac[2] 0.000  
+splitRET_frac[1,1] 0.881  
+splitRET_frac[1,2] 0.082  
+splitOutRET_frac[1] 0.038  
+splitPERM_frac[1,1] 0.335  
+splitPERM_frac[1,2] 0.107  
+splitOutPERM_frac[1] 0.558  
+splitRET_frac[2,1] 0.309  
+splitRET_frac[2,2] 0.497  
+splitOutRET_frac[2] 0.194  
+splitPERM_frac[2,1] 0.590  
+splitPERM_frac[2,2] 0.079  
+splitOutPERM_frac[2] 0.330  
+Area[1]       1.16
+Area[2]       3.37
+pressure_up[1]  1.68
+pressure_up[2]  1.74
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.899  
+splitFEED_frac[2] 0.101  
+splitRET_frac[1,1] 0.698  
+splitRET_frac[1,2] 0.291  
+splitOutRET_frac[1] 0.012  
+splitPERM_frac[1,1] 0.504  
+splitPERM_frac[1,2] 0.377  
+splitOutPERM_frac[1] 0.119  
+splitRET_frac[2,1] 0.660  
+splitRET_frac[2,2] 0.279  
+splitOutRET_frac[2] 0.061  
+splitPERM_frac[2,1] 0.363  
+splitPERM_frac[2,2] 0.622  
+splitOutPERM_frac[2] 0.015  
+Area[1]       1.49
+Area[2]       0.51
+pressure_up[1]  1.82
+pressure_up[2]  1.92
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.521  
+splitFEED_frac[2] 0.479  
+splitRET_frac[1,1] 0.305  
+splitRET_frac[1,2] 0.407  
+splitOutRET_frac[1] 0.288  
+splitPERM_frac[1,1] 0.468  
+splitPERM_frac[1,2] 0.432  
+splitOutPERM_frac[1] 0.100  
+splitRET_frac[2,1] 0.837  
+splitRET_frac[2,2] 0.079  
+splitOutRET_frac[2] 0.084  
+splitPERM_frac[2,1] 0.567  
+splitPERM_frac[2,2] 0.270  
+splitOutPERM_frac[2] 0.163  
+Area[1]       3.26
+Area[2]       0.59
+pressure_up[1]  1.54
+pressure_up[2]  1.84
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.890  
+splitFEED_frac[2] 0.110  
+splitRET_frac[1,1] 0.274  
+splitRET_frac[1,2] 0.581  
+splitOutRET_frac[1] 0.145  
+splitPERM_frac[1,1] 0.795  
+splitPERM_frac[1,2] 0.109  
+splitOutPERM_frac[1] 0.096  
+splitRET_frac[2,1] 0.790  
+splitRET_frac[2,2] 0.050  
+splitOutRET_frac[2] 0.160  
+splitPERM_frac[2,1] 0.630  
+splitPERM_frac[2,2] 0.259  
+splitOutPERM_frac[2] 0.111  
+Area[1]       2.41
+Area[2]       1.70
+pressure_up[1]  1.00
+pressure_up[2]  1.91
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.986  
+splitFEED_frac[2] 0.014  
+splitRET_frac[1,1] 0.722  
+splitRET_frac[1,2] 0.186  
+splitOutRET_frac[1] 0.092  
+splitPERM_frac[1,1] 0.749  
+splitPERM_frac[1,2] 0.093  
+splitOutPERM_frac[1] 0.158  
+splitRET_frac[2,1] 0.300  
+splitRET_frac[2,2] 0.566  
+splitOutRET_frac[2] 0.134  
+splitPERM_frac[2,1] 0.378  
+splitPERM_frac[2,2] 0.613  
+splitOutPERM_frac[2] 0.009  
+Area[1]       3.74
+Area[2]       0.95
+pressure_up[1]  1.91
+pressure_up[2]  1.99
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.652  
+splitFEED_frac[2] 0.348  
+splitRET_frac[1,1] 0.888  
+splitRET_frac[1,2] 0.104  
+splitOutRET_frac[1] 0.008  
+splitPERM_frac[1,1] 0.718  
+splitPERM_frac[1,2] 0.274  
+splitOutPERM_frac[1] 0.007  
+splitRET_frac[2,1] 0.161  
+splitRET_frac[2,2] 0.804  
+splitOutRET_frac[2] 0.035  
+splitPERM_frac[2,1] 0.266  
+splitPERM_frac[2,2] 0.341  
+splitOutPERM_frac[2] 0.393  
+Area[1]       3.30
+Area[2]       4.92
+pressure_up[1]  1.47
+pressure_up[2]  1.81
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.907  
+splitFEED_frac[2] 0.093  
+splitRET_frac[1,1] 0.837  
+splitRET_frac[1,2] 0.101  
+splitOutRET_frac[1] 0.062  
+splitPERM_frac[1,1] 0.505  
+splitPERM_frac[1,2] 0.252  
+splitOutPERM_frac[1] 0.243  
+splitRET_frac[2,1] 0.700  
+splitRET_frac[2,2] 0.110  
+splitOutRET_frac[2] 0.190  
+splitPERM_frac[2,1] 0.679  
+splitPERM_frac[2,2] 0.236  
+splitOutPERM_frac[2] 0.085  
+Area[1]       1.44
+Area[2]       3.15
+pressure_up[1]  1.87
+pressure_up[2]  1.92
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.809  
+splitFEED_frac[2] 0.191  
+splitRET_frac[1,1] 0.266  
+splitRET_frac[1,2] 0.257  
+splitOutRET_frac[1] 0.477  
+splitPERM_frac[1,1] 0.822  
+splitPERM_frac[1,2] 0.172  
+splitOutPERM_frac[1] 0.006  
+splitRET_frac[2,1] 0.885  
+splitRET_frac[2,2] 0.114  
+splitOutRET_frac[2] 0.001  
+splitPERM_frac[2,1] 0.700  
+splitPERM_frac[2,2] 0.269  
+splitOutPERM_frac[2] 0.030  
+Area[1]       3.25
+Area[2]       4.33
+pressure_up[1]  1.06
+pressure_up[2]  1.68
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.446  
+splitFEED_frac[2] 0.554  
+splitRET_frac[1,1] 0.185  
+splitRET_frac[1,2] 0.196  
+splitOutRET_frac[1] 0.619  
+splitPERM_frac[1,1] 0.438  
+splitPERM_frac[1,2] 0.416  
+splitOutPERM_frac[1] 0.146  
+splitRET_frac[2,1] 0.928  
+splitRET_frac[2,2] 0.022  
+splitOutRET_frac[2] 0.050  
+splitPERM_frac[2,1] 0.320  
+splitPERM_frac[2,2] 0.390  
+splitOutPERM_frac[2] 0.290  
+Area[1]       2.01
+Area[2]       2.22
+pressure_up[1]  1.73
+pressure_up[2]  1.91
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.831  
+splitFEED_frac[2] 0.169  
+splitRET_frac[1,1] 0.392  
+splitRET_frac[1,2] 0.389  
+splitOutRET_frac[1] 0.219  
+splitPERM_frac[1,1] 0.304  
+splitPERM_frac[1,2] 0.394  
+splitOutPERM_frac[1] 0.302  
+splitRET_frac[2,1] 0.492  
+splitRET_frac[2,2] 0.488  
+splitOutRET_frac[2] 0.020  
+splitPERM_frac[2,1] 0.680  
+splitPERM_frac[2,2] 0.186  
+splitOutPERM_frac[2] 0.135  
+Area[1]       1.51
+Area[2]       0.12
+pressure_up[1]  1.21
+pressure_up[2]  1.42
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.534  
+splitFEED_frac[2] 0.466  
+splitRET_frac[1,1] 0.593  
+splitRET_frac[1,2] 0.166  
+splitOutRET_frac[1] 0.241  
+splitPERM_frac[1,1] 0.571  
+splitPERM_frac[1,2] 0.173  
+splitOutPERM_frac[1] 0.256  
+splitRET_frac[2,1] 0.816  
+splitRET_frac[2,2] 0.133  
+splitOutRET_frac[2] 0.051  
+splitPERM_frac[2,1] 0.735  
+splitPERM_frac[2,2] 0.254  
+splitOutPERM_frac[2] 0.010  
+Area[1]       4.17
+Area[2]       0.94
+pressure_up[1]  1.17
+pressure_up[2]  1.68
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.531  
+splitFEED_frac[2] 0.469  
+splitRET_frac[1,1] 0.349  
+splitRET_frac[1,2] 0.051  
+splitOutRET_frac[1] 0.600  
+splitPERM_frac[1,1] 0.719  
+splitPERM_frac[1,2] 0.194  
+splitOutPERM_frac[1] 0.087  
+splitRET_frac[2,1] 0.546  
+splitRET_frac[2,2] 0.311  
+splitOutRET_frac[2] 0.143  
+splitPERM_frac[2,1] 0.791  
+splitPERM_frac[2,2] 0.116  
+splitOutPERM_frac[2] 0.093  
+Area[1]       4.78
+Area[2]       3.55
+pressure_up[1]  1.05
+pressure_up[2]  1.82
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.998  
+splitFEED_frac[2] 0.002  
+splitRET_frac[1,1] 0.779  
+splitRET_frac[1,2] 0.177  
+splitOutRET_frac[1] 0.044  
+splitPERM_frac[1,1] 0.593  
+splitPERM_frac[1,2] 0.391  
+splitOutPERM_frac[1] 0.016  
+splitRET_frac[2,1] 0.947  
+splitRET_frac[2,2] 0.033  
+splitOutRET_frac[2] 0.020  
+splitPERM_frac[2,1] 0.766  
+splitPERM_frac[2,2] 0.231  
+splitOutPERM_frac[2] 0.003  
+Area[1]       3.63
+Area[2]       3.43
+pressure_up[1]  1.47
+pressure_up[2]  1.89
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.963  
+splitFEED_frac[2] 0.037  
+splitRET_frac[1,1] 0.929  
+splitRET_frac[1,2] 0.058  
+splitOutRET_frac[1] 0.013  
+splitPERM_frac[1,1] 0.839  
+splitPERM_frac[1,2] 0.067  
+splitOutPERM_frac[1] 0.095  
+splitRET_frac[2,1] 0.689  
+splitRET_frac[2,2] 0.097  
+splitOutRET_frac[2] 0.214  
+splitPERM_frac[2,1] 0.626  
+splitPERM_frac[2,2] 0.348  
+splitOutPERM_frac[2] 0.027  
+Area[1]       3.26
+Area[2]       1.16
+pressure_up[1]  1.95
+pressure_up[2]  1.95
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.398  
+splitFEED_frac[2] 0.602  
+splitRET_frac[1,1] 0.757  
+splitRET_frac[1,2] 0.056  
+splitOutRET_frac[1] 0.186  
+splitPERM_frac[1,1] 0.425  
+splitPERM_frac[1,2] 0.284  
+splitOutPERM_frac[1] 0.291  
+splitRET_frac[2,1] 0.834  
+splitRET_frac[2,2] 0.160  
+splitOutRET_frac[2] 0.006  
+splitPERM_frac[2,1] 0.279  
+splitPERM_frac[2,2] 0.671  
+splitOutPERM_frac[2] 0.050  
+Area[1]       2.98
+Area[2]       2.82
+pressure_up[1]  1.43
+pressure_up[2]  1.65
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.998  
+splitFEED_frac[2] 0.002  
+splitRET_frac[1,1] 0.930  
+splitRET_frac[1,2] 0.065  
+splitOutRET_frac[1] 0.005  
+splitPERM_frac[1,1] 0.836  
+splitPERM_frac[1,2] 0.119  
+splitOutPERM_frac[1] 0.045  
+splitRET_frac[2,1] 0.815  
+splitRET_frac[2,2] 0.182  
+splitOutRET_frac[2] 0.004  
+splitPERM_frac[2,1] 0.712  
+splitPERM_frac[2,2] 0.271  
+splitOutPERM_frac[2] 0.017  
+Area[1]       2.71
+Area[2]       3.19
+pressure_up[1]  1.89
+pressure_up[2]  1.91
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.360  
+splitFEED_frac[2] 0.640  
+splitRET_frac[1,1] 0.549  
+splitRET_frac[1,2] 0.369  
+splitOutRET_frac[1] 0.082  
+splitPERM_frac[1,1] 0.563  
+splitPERM_frac[1,2] 0.374  
+splitOutPERM_frac[1] 0.063  
+splitRET_frac[2,1] 0.933  
+splitRET_frac[2,2] 0.066  
+splitOutRET_frac[2] 0.001  
+splitPERM_frac[2,1] 0.318  
+splitPERM_frac[2,2] 0.189  
+splitOutPERM_frac[2] 0.492  
+Area[1]       1.40
+Area[2]       4.34
+pressure_up[1]  1.01
+pressure_up[2]  1.03
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.544  
+splitFEED_frac[2] 0.456  
+splitRET_frac[1,1] 0.781  
+splitRET_frac[1,2] 0.106  
+splitOutRET_frac[1] 0.112  
+splitPERM_frac[1,1] 0.257  
+splitPERM_frac[1,2] 0.700  
+splitOutPERM_frac[1] 0.043  
+splitRET_frac[2,1] 0.824  
+splitRET_frac[2,2] 0.170  
+splitOutRET_frac[2] 0.007  
+splitPERM_frac[2,1] 0.304  
+splitPERM_frac[2,2] 0.497  
+splitOutPERM_frac[2] 0.199  
+Area[1]       2.16
+Area[2]       2.12
+pressure_up[1]  1.07
+pressure_up[2]  1.49
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.949  
+splitFEED_frac[2] 0.051  
+splitRET_frac[1,1] 0.750  
+splitRET_frac[1,2] 0.090  
+splitOutRET_frac[1] 0.160  
+splitPERM_frac[1,1] 0.239  
+splitPERM_frac[1,2] 0.156  
+splitOutPERM_frac[1] 0.605  
+splitRET_frac[2,1] 0.972  
+splitRET_frac[2,2] 0.011  
+splitOutRET_frac[2] 0.017  
+splitPERM_frac[2,1] 0.298  
+splitPERM_frac[2,2] 0.451  
+splitOutPERM_frac[2] 0.251  
+Area[1]       1.40
+Area[2]       1.33
+pressure_up[1]  1.30
+pressure_up[2]  1.45
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.671  
+splitFEED_frac[2] 0.329  
+splitRET_frac[1,1] 0.709  
+splitRET_frac[1,2] 0.103  
+splitOutRET_frac[1] 0.188  
+splitPERM_frac[1,1] 0.528  
+splitPERM_frac[1,2] 0.096  
+splitOutPERM_frac[1] 0.376  
+splitRET_frac[2,1] 0.762  
+splitRET_frac[2,2] 0.016  
+splitOutRET_frac[2] 0.223  
+splitPERM_frac[2,1] 0.735  
+splitPERM_frac[2,2] 0.210  
+splitOutPERM_frac[2] 0.055  
+Area[1]       4.29
+Area[2]       1.22
+pressure_up[1]  1.30
+pressure_up[2]  1.64
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.846  
+splitFEED_frac[2] 0.154  
+splitRET_frac[1,1] 0.641  
+splitRET_frac[1,2] 0.202  
+splitOutRET_frac[1] 0.157  
+splitPERM_frac[1,1] 0.520  
+splitPERM_frac[1,2] 0.411  
+splitOutPERM_frac[1] 0.069  
+splitRET_frac[2,1] 0.971  
+splitRET_frac[2,2] 0.022  
+splitOutRET_frac[2] 0.007  
+splitPERM_frac[2,1] 0.838  
+splitPERM_frac[2,2] 0.069  
+splitOutPERM_frac[2] 0.093  
+Area[1]       3.24
+Area[2]       3.45
+pressure_up[1]  1.68
+pressure_up[2]  1.69
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.551  
+splitFEED_frac[2] 0.449  
+splitRET_frac[1,1] 0.542  
+splitRET_frac[1,2] 0.010  
+splitOutRET_frac[1] 0.448  
+splitPERM_frac[1,1] 0.710  
+splitPERM_frac[1,2] 0.276  
+splitOutPERM_frac[1] 0.014  
+splitRET_frac[2,1] 0.503  
+splitRET_frac[2,2] 0.260  
+splitOutRET_frac[2] 0.238  
+splitPERM_frac[2,1] 0.631  
+splitPERM_frac[2,2] 0.263  
+splitOutPERM_frac[2] 0.106  
+Area[1]       0.17
+Area[2]       2.72
+pressure_up[1]  1.73
+pressure_up[2]  1.98
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.451  
+splitFEED_frac[2] 0.549  
+splitRET_frac[1,1] 0.767  
+splitRET_frac[1,2] 0.202  
+splitOutRET_frac[1] 0.030  
+splitPERM_frac[1,1] 0.812  
+splitPERM_frac[1,2] 0.075  
+splitOutPERM_frac[1] 0.113  
+splitRET_frac[2,1] 0.691  
+splitRET_frac[2,2] 0.241  
+splitOutRET_frac[2] 0.068  
+splitPERM_frac[2,1] 0.452  
+splitPERM_frac[2,2] 0.408  
+splitOutPERM_frac[2] 0.140  
+Area[1]       4.07
+Area[2]       0.20
+pressure_up[1]  1.79
+pressure_up[2]  1.82
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.459  
+splitFEED_frac[2] 0.541  
+splitRET_frac[1,1] 0.722  
+splitRET_frac[1,2] 0.190  
+splitOutRET_frac[1] 0.088  
+splitPERM_frac[1,1] 0.860  
+splitPERM_frac[1,2] 0.007  
+splitOutPERM_frac[1] 0.133  
+splitRET_frac[2,1] 0.810  
+splitRET_frac[2,2] 0.124  
+splitOutRET_frac[2] 0.066  
+splitPERM_frac[2,1] 0.416  
+splitPERM_frac[2,2] 0.164  
+splitOutPERM_frac[2] 0.421  
+Area[1]       0.77
+Area[2]       2.84
+pressure_up[1]  1.37
+pressure_up[2]  1.83
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.686  
+splitFEED_frac[2] 0.314  
+splitRET_frac[1,1] 0.902  
+splitRET_frac[1,2] 0.096  
+splitOutRET_frac[1] 0.001  
+splitPERM_frac[1,1] 0.544  
+splitPERM_frac[1,2] 0.357  
+splitOutPERM_frac[1] 0.099  
+splitRET_frac[2,1] 0.991  
+splitRET_frac[2,2] 0.004  
+splitOutRET_frac[2] 0.005  
+splitPERM_frac[2,1] 0.339  
+splitPERM_frac[2,2] 0.367  
+splitOutPERM_frac[2] 0.294  
+Area[1]       2.23
+Area[2]       0.78
+pressure_up[1]  1.31
+pressure_up[2]  1.31
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.860  
+splitFEED_frac[2] 0.140  
+splitRET_frac[1,1] 0.899  
+splitRET_frac[1,2] 0.089  
+splitOutRET_frac[1] 0.012  
+splitPERM_frac[1,1] 0.568  
+splitPERM_frac[1,2] 0.351  
+splitOutPERM_frac[1] 0.082  
+splitRET_frac[2,1] 0.861  
+splitRET_frac[2,2] 0.101  
+splitOutRET_frac[2] 0.038  
+splitPERM_frac[2,1] 0.525  
+splitPERM_frac[2,2] 0.427  
+splitOutPERM_frac[2] 0.049  
+Area[1]       3.75
+Area[2]       0.52
+pressure_up[1]  1.47
+pressure_up[2]  1.84
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.964  
+splitFEED_frac[2] 0.036  
+splitRET_frac[1,1] 0.445  
+splitRET_frac[1,2] 0.250  
+splitOutRET_frac[1] 0.305  
+splitPERM_frac[1,1] 0.511  
+splitPERM_frac[1,2] 0.404  
+splitOutPERM_frac[1] 0.085  
+splitRET_frac[2,1] 0.291  
+splitRET_frac[2,2] 0.312  
+splitOutRET_frac[2] 0.397  
+splitPERM_frac[2,1] 0.909  
+splitPERM_frac[2,2] 0.069  
+splitOutPERM_frac[2] 0.023  
+Area[1]       2.70
+Area[2]       0.83
+pressure_up[1]  1.91
+pressure_up[2]  1.93
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.300  
+splitFEED_frac[2] 0.700  
+splitRET_frac[1,1] 0.781  
+splitRET_frac[1,2] 0.169  
+splitOutRET_frac[1] 0.050  
+splitPERM_frac[1,1] 0.499  
+splitPERM_frac[1,2] 0.500  
+splitOutPERM_frac[1] 0.001  
+splitRET_frac[2,1] 0.279  
+splitRET_frac[2,2] 0.644  
+splitOutRET_frac[2] 0.077  
+splitPERM_frac[2,1] 0.770  
+splitPERM_frac[2,2] 0.137  
+splitOutPERM_frac[2] 0.094  
+Area[1]       3.54
+Area[2]       0.67
+pressure_up[1]  1.04
+pressure_up[2]  1.27
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.689  
+splitFEED_frac[2] 0.311  
+splitRET_frac[1,1] 0.634  
+splitRET_frac[1,2] 0.352  
+splitOutRET_frac[1] 0.013  
+splitPERM_frac[1,1] 0.225  
+splitPERM_frac[1,2] 0.622  
+splitOutPERM_frac[1] 0.154  
+splitRET_frac[2,1] 0.507  
+splitRET_frac[2,2] 0.383  
+splitOutRET_frac[2] 0.110  
+splitPERM_frac[2,1] 0.785  
+splitPERM_frac[2,2] 0.190  
+splitOutPERM_frac[2] 0.026  
+Area[1]       2.65
+Area[2]       0.26
+pressure_up[1]  1.82
+pressure_up[2]  1.86
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.886  
+splitFEED_frac[2] 0.114  
+splitRET_frac[1,1] 0.849  
+splitRET_frac[1,2] 0.143  
+splitOutRET_frac[1] 0.008  
+splitPERM_frac[1,1] 0.900  
+splitPERM_frac[1,2] 0.074  
+splitOutPERM_frac[1] 0.026  
+splitRET_frac[2,1] 0.237  
+splitRET_frac[2,2] 0.021  
+splitOutRET_frac[2] 0.742  
+splitPERM_frac[2,1] 0.794  
+splitPERM_frac[2,2] 0.045  
+splitOutPERM_frac[2] 0.160  
+Area[1]       1.65
+Area[2]       2.24
+pressure_up[1]  1.45
+pressure_up[2]  1.62
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.945  
+splitFEED_frac[2] 0.055  
+splitRET_frac[1,1] 0.511  
+splitRET_frac[1,2] 0.489  
+splitOutRET_frac[1] 0.000  
+splitPERM_frac[1,1] 0.605  
+splitPERM_frac[1,2] 0.340  
+splitOutPERM_frac[1] 0.054  
+splitRET_frac[2,1] 0.951  
+splitRET_frac[2,2] 0.035  
+splitOutRET_frac[2] 0.014  
+splitPERM_frac[2,1] 0.723  
+splitPERM_frac[2,2] 0.231  
+splitOutPERM_frac[2] 0.046  
+Area[1]       1.80
+Area[2]       3.31
+pressure_up[1]  1.14
+pressure_up[2]  1.37
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.958  
+splitFEED_frac[2] 0.042  
+splitRET_frac[1,1] 0.927  
+splitRET_frac[1,2] 0.066  
+splitOutRET_frac[1] 0.006  
+splitPERM_frac[1,1] 0.554  
+splitPERM_frac[1,2] 0.059  
+splitOutPERM_frac[1] 0.387  
+splitRET_frac[2,1] 0.928  
+splitRET_frac[2,2] 0.024  
+splitOutRET_frac[2] 0.049  
+splitPERM_frac[2,1] 0.602  
+splitPERM_frac[2,2] 0.304  
+splitOutPERM_frac[2] 0.094  
+Area[1]       3.82
+Area[2]       1.28
+pressure_up[1]  1.72
+pressure_up[2]  1.92
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.928  
+splitFEED_frac[2] 0.072  
+splitRET_frac[1,1] 0.418  
+splitRET_frac[1,2] 0.205  
+splitOutRET_frac[1] 0.377  
+splitPERM_frac[1,1] 0.877  
+splitPERM_frac[1,2] 0.026  
+splitOutPERM_frac[1] 0.096  
+splitRET_frac[2,1] 0.384  
+splitRET_frac[2,2] 0.375  
+splitOutRET_frac[2] 0.242  
+splitPERM_frac[2,1] 0.815  
+splitPERM_frac[2,2] 0.077  
+splitOutPERM_frac[2] 0.107  
+Area[1]       2.62
+Area[2]       0.81
+pressure_up[1]  1.58
+pressure_up[2]  1.73
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.711  
+splitFEED_frac[2] 0.289  
+splitRET_frac[1,1] 0.588  
+splitRET_frac[1,2] 0.104  
+splitOutRET_frac[1] 0.308  
+splitPERM_frac[1,1] 0.485  
+splitPERM_frac[1,2] 0.452  
+splitOutPERM_frac[1] 0.063  
+splitRET_frac[2,1] 0.956  
+splitRET_frac[2,2] 0.037  
+splitOutRET_frac[2] 0.008  
+splitPERM_frac[2,1] 0.720  
+splitPERM_frac[2,2] 0.277  
+splitOutPERM_frac[2] 0.003  
+Area[1]       1.60
+Area[2]       1.48
+pressure_up[1]  1.07
+pressure_up[2]  1.79
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.669  
+splitFEED_frac[2] 0.331  
+splitRET_frac[1,1] 0.877  
+splitRET_frac[1,2] 0.100  
+splitOutRET_frac[1] 0.023  
+splitPERM_frac[1,1] 0.745  
+splitPERM_frac[1,2] 0.088  
+splitOutPERM_frac[1] 0.167  
+splitRET_frac[2,1] 0.678  
+splitRET_frac[2,2] 0.190  
+splitOutRET_frac[2] 0.132  
+splitPERM_frac[2,1] 0.181  
+splitPERM_frac[2,2] 0.453  
+splitOutPERM_frac[2] 0.366  
+Area[1]       2.31
+Area[2]       2.50
+pressure_up[1]  1.02
+pressure_up[2]  1.82
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.554  
+splitFEED_frac[2] 0.446  
+splitRET_frac[1,1] 0.844  
+splitRET_frac[1,2] 0.111  
+splitOutRET_frac[1] 0.045  
+splitPERM_frac[1,1] 0.827  
+splitPERM_frac[1,2] 0.076  
+splitOutPERM_frac[1] 0.097  
+splitRET_frac[2,1] 0.468  
+splitRET_frac[2,2] 0.311  
+splitOutRET_frac[2] 0.221  
+splitPERM_frac[2,1] 0.808  
+splitPERM_frac[2,2] 0.165  
+splitOutPERM_frac[2] 0.027  
+Area[1]       2.47
+Area[2]       3.68
+pressure_up[1]  1.15
+pressure_up[2]  1.19
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.828  
+splitFEED_frac[2] 0.172  
+splitRET_frac[1,1] 0.909  
+splitRET_frac[1,2] 0.048  
+splitOutRET_frac[1] 0.043  
+splitPERM_frac[1,1] 0.564  
+splitPERM_frac[1,2] 0.109  
+splitOutPERM_frac[1] 0.327  
+splitRET_frac[2,1] 0.801  
+splitRET_frac[2,2] 0.069  
+splitOutRET_frac[2] 0.130  
+splitPERM_frac[2,1] 0.783  
+splitPERM_frac[2,2] 0.134  
+splitOutPERM_frac[2] 0.083  
+Area[1]       2.59
+Area[2]       2.30
+pressure_up[1]  1.77
+pressure_up[2]  1.87
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.308  
+splitFEED_frac[2] 0.692  
+splitRET_frac[1,1] 0.773  
+splitRET_frac[1,2] 0.118  
+splitOutRET_frac[1] 0.109  
+splitPERM_frac[1,1] 0.913  
+splitPERM_frac[1,2] 0.072  
+splitOutPERM_frac[1] 0.015  
+splitRET_frac[2,1] 0.718  
+splitRET_frac[2,2] 0.029  
+splitOutRET_frac[2] 0.253  
+splitPERM_frac[2,1] 0.290  
+splitPERM_frac[2,2] 0.474  
+splitOutPERM_frac[2] 0.236  
+Area[1]       3.58
+Area[2]       2.16
+pressure_up[1]  1.55
+pressure_up[2]  1.68
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.932  
+splitFEED_frac[2] 0.068  
+splitRET_frac[1,1] 0.832  
+splitRET_frac[1,2] 0.114  
+splitOutRET_frac[1] 0.055  
+splitPERM_frac[1,1] 0.934  
+splitPERM_frac[1,2] 0.051  
+splitOutPERM_frac[1] 0.015  
+splitRET_frac[2,1] 0.639  
+splitRET_frac[2,2] 0.349  
+splitOutRET_frac[2] 0.013  
+splitPERM_frac[2,1] 0.394  
+splitPERM_frac[2,2] 0.364  
+splitOutPERM_frac[2] 0.242  
+Area[1]       1.42
+Area[2]       0.61
+pressure_up[1]  1.97
+pressure_up[2]  1.99
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.917  
+splitFEED_frac[2] 0.083  
+splitRET_frac[1,1] 0.694  
+splitRET_frac[1,2] 0.065  
+splitOutRET_frac[1] 0.241  
+splitPERM_frac[1,1] 0.684  
+splitPERM_frac[1,2] 0.072  
+splitOutPERM_frac[1] 0.244  
+splitRET_frac[2,1] 0.456  
+splitRET_frac[2,2] 0.528  
+splitOutRET_frac[2] 0.016  
+splitPERM_frac[2,1] 0.994  
+splitPERM_frac[2,2] 0.001  
+splitOutPERM_frac[2] 0.005  
+Area[1]       4.83
+Area[2]       2.09
+pressure_up[1]  1.01
+pressure_up[2]  1.53
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.978  
+splitFEED_frac[2] 0.022  
+splitRET_frac[1,1] 0.200  
+splitRET_frac[1,2] 0.502  
+splitOutRET_frac[1] 0.298  
+splitPERM_frac[1,1] 0.338  
+splitPERM_frac[1,2] 0.262  
+splitOutPERM_frac[1] 0.400  
+splitRET_frac[2,1] 0.959  
+splitRET_frac[2,2] 0.009  
+splitOutRET_frac[2] 0.031  
+splitPERM_frac[2,1] 0.699  
+splitPERM_frac[2,2] 0.273  
+splitOutPERM_frac[2] 0.028  
+Area[1]       4.34
+Area[2]       4.57
+pressure_up[1]  1.77
+pressure_up[2]  1.86
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.774  
+splitFEED_frac[2] 0.226  
+splitRET_frac[1,1] 0.798  
+splitRET_frac[1,2] 0.192  
+splitOutRET_frac[1] 0.009  
+splitPERM_frac[1,1] 0.730  
+splitPERM_frac[1,2] 0.254  
+splitOutPERM_frac[1] 0.015  
+splitRET_frac[2,1] 0.920  
+splitRET_frac[2,2] 0.076  
+splitOutRET_frac[2] 0.004  
+splitPERM_frac[2,1] 0.765  
+splitPERM_frac[2,2] 0.154  
+splitOutPERM_frac[2] 0.081  
+Area[1]       1.19
+Area[2]       3.82
+pressure_up[1]  1.58
+pressure_up[2]  1.85
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.776  
+splitFEED_frac[2] 0.224  
+splitRET_frac[1,1] 0.270  
+splitRET_frac[1,2] 0.509  
+splitOutRET_frac[1] 0.221  
+splitPERM_frac[1,1] 0.611  
+splitPERM_frac[1,2] 0.312  
+splitOutPERM_frac[1] 0.076  
+splitRET_frac[2,1] 0.808  
+splitRET_frac[2,2] 0.179  
+splitOutRET_frac[2] 0.014  
+splitPERM_frac[2,1] 0.044  
+splitPERM_frac[2,2] 0.656  
+splitOutPERM_frac[2] 0.300  
+Area[1]       3.30
+Area[2]       3.32
+pressure_up[1]  1.19
+pressure_up[2]  1.81
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.540  
+splitFEED_frac[2] 0.460  
+splitRET_frac[1,1] 0.525  
+splitRET_frac[1,2] 0.234  
+splitOutRET_frac[1] 0.240  
+splitPERM_frac[1,1] 0.668  
+splitPERM_frac[1,2] 0.302  
+splitOutPERM_frac[1] 0.030  
+splitRET_frac[2,1] 0.437  
+splitRET_frac[2,2] 0.242  
+splitOutRET_frac[2] 0.320  
+splitPERM_frac[2,1] 0.565  
+splitPERM_frac[2,2] 0.357  
+splitOutPERM_frac[2] 0.079  
+Area[1]       0.35
+Area[2]       2.96
+pressure_up[1]  1.40
+pressure_up[2]  1.78
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.401  
+splitFEED_frac[2] 0.599  
+splitRET_frac[1,1] 0.283  
+splitRET_frac[1,2] 0.228  
+splitOutRET_frac[1] 0.488  
+splitPERM_frac[1,1] 0.723  
+splitPERM_frac[1,2] 0.173  
+splitOutPERM_frac[1] 0.103  
+splitRET_frac[2,1] 0.909  
+splitRET_frac[2,2] 0.075  
+splitOutRET_frac[2] 0.017  
+splitPERM_frac[2,1] 0.208  
+splitPERM_frac[2,2] 0.755  
+splitOutPERM_frac[2] 0.038  
+Area[1]       1.92
+Area[2]       4.37
+pressure_up[1]  1.98
+pressure_up[2]  2.00
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.870  
+splitFEED_frac[2] 0.130  
+splitRET_frac[1,1] 0.941  
+splitRET_frac[1,2] 0.009  
+splitOutRET_frac[1] 0.050  
+splitPERM_frac[1,1] 0.879  
+splitPERM_frac[1,2] 0.107  
+splitOutPERM_frac[1] 0.014  
+splitRET_frac[2,1] 0.376  
+splitRET_frac[2,2] 0.261  
+splitOutRET_frac[2] 0.363  
+splitPERM_frac[2,1] 0.801  
+splitPERM_frac[2,2] 0.191  
+splitOutPERM_frac[2] 0.007  
+Area[1]       3.77
+Area[2]       3.65
+pressure_up[1]  1.25
+pressure_up[2]  1.65
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.926  
+splitFEED_frac[2] 0.074  
+splitRET_frac[1,1] 0.444  
+splitRET_frac[1,2] 0.429  
+splitOutRET_frac[1] 0.128  
+splitPERM_frac[1,1] 0.151  
+splitPERM_frac[1,2] 0.605  
+splitOutPERM_frac[1] 0.243  
+splitRET_frac[2,1] 0.198  
+splitRET_frac[2,2] 0.734  
+splitOutRET_frac[2] 0.068  
+splitPERM_frac[2,1] 0.957  
+splitPERM_frac[2,2] 0.036  
+splitOutPERM_frac[2] 0.007  
+Area[1]       0.91
+Area[2]       2.28
+pressure_up[1]  1.37
+pressure_up[2]  1.91
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.935  
+splitFEED_frac[2] 0.065  
+splitRET_frac[1,1] 0.495  
+splitRET_frac[1,2] 0.456  
+splitOutRET_frac[1] 0.049  
+splitPERM_frac[1,1] 0.215  
+splitPERM_frac[1,2] 0.341  
+splitOutPERM_frac[1] 0.444  
+splitRET_frac[2,1] 0.727  
+splitRET_frac[2,2] 0.021  
+splitOutRET_frac[2] 0.252  
+splitPERM_frac[2,1] 0.814  
+splitPERM_frac[2,2] 0.041  
+splitOutPERM_frac[2] 0.145  
+Area[1]       0.15
+Area[2]       2.84
+pressure_up[1]  1.08
+pressure_up[2]  1.52
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.363  
+splitFEED_frac[2] 0.637  
+splitRET_frac[1,1] 0.565  
+splitRET_frac[1,2] 0.374  
+splitOutRET_frac[1] 0.061  
+splitPERM_frac[1,1] 0.811  
+splitPERM_frac[1,2] 0.061  
+splitOutPERM_frac[1] 0.128  
+splitRET_frac[2,1] 0.076  
+splitRET_frac[2,2] 0.885  
+splitOutRET_frac[2] 0.039  
+splitPERM_frac[2,1] 0.240  
+splitPERM_frac[2,2] 0.758  
+splitOutPERM_frac[2] 0.001  
+Area[1]       1.47
+Area[2]       0.95
+pressure_up[1]  1.99
+pressure_up[2]  1.99
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.724  
+splitFEED_frac[2] 0.276  
+splitRET_frac[1,1] 0.882  
+splitRET_frac[1,2] 0.099  
+splitOutRET_frac[1] 0.019  
+splitPERM_frac[1,1] 0.449  
+splitPERM_frac[1,2] 0.542  
+splitOutPERM_frac[1] 0.009  
+splitRET_frac[2,1] 0.893  
+splitRET_frac[2,2] 0.091  
+splitOutRET_frac[2] 0.016  
+splitPERM_frac[2,1] 0.974  
+splitPERM_frac[2,2] 0.022  
+splitOutPERM_frac[2] 0.004  
+Area[1]       1.07
+Area[2]       1.51
+pressure_up[1]  1.18
+pressure_up[2]  1.20
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.646  
+splitFEED_frac[2] 0.354  
+splitRET_frac[1,1] 0.260  
+splitRET_frac[1,2] 0.723  
+splitOutRET_frac[1] 0.017  
+splitPERM_frac[1,1] 0.254  
+splitPERM_frac[1,2] 0.249  
+splitOutPERM_frac[1] 0.496  
+splitRET_frac[2,1] 0.355  
+splitRET_frac[2,2] 0.395  
+splitOutRET_frac[2] 0.249  
+splitPERM_frac[2,1] 0.621  
+splitPERM_frac[2,2] 0.296  
+splitOutPERM_frac[2] 0.082  
+Area[1]       3.87
+Area[2]       0.83
+pressure_up[1]  1.52
+pressure_up[2]  1.92
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.337  
+splitFEED_frac[2] 0.663  
+splitRET_frac[1,1] 0.884  
+splitRET_frac[1,2] 0.113  
+splitOutRET_frac[1] 0.003  
+splitPERM_frac[1,1] 0.690  
+splitPERM_frac[1,2] 0.278  
+splitOutPERM_frac[1] 0.033  
+splitRET_frac[2,1] 0.302  
+splitRET_frac[2,2] 0.665  
+splitOutRET_frac[2] 0.033  
+splitPERM_frac[2,1] 0.884  
+splitPERM_frac[2,2] 0.057  
+splitOutPERM_frac[2] 0.059  
+Area[1]       1.96
+Area[2]       4.97
+pressure_up[1]  1.89
+pressure_up[2]  1.92
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.815  
+splitFEED_frac[2] 0.185  
+splitRET_frac[1,1] 0.285  
+splitRET_frac[1,2] 0.284  
+splitOutRET_frac[1] 0.432  
+splitPERM_frac[1,1] 0.662  
+splitPERM_frac[1,2] 0.328  
+splitOutPERM_frac[1] 0.010  
+splitRET_frac[2,1] 0.788  
+splitRET_frac[2,2] 0.166  
+splitOutRET_frac[2] 0.046  
+splitPERM_frac[2,1] 0.184  
+splitPERM_frac[2,2] 0.646  
+splitOutPERM_frac[2] 0.170  
+Area[1]       4.37
+Area[2]       4.91
+pressure_up[1]  1.71
+pressure_up[2]  1.98
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.358  
+splitFEED_frac[2] 0.642  
+splitRET_frac[1,1] 0.590  
+splitRET_frac[1,2] 0.206  
+splitOutRET_frac[1] 0.205  
+splitPERM_frac[1,1] 0.767  
+splitPERM_frac[1,2] 0.214  
+splitOutPERM_frac[1] 0.018  
+splitRET_frac[2,1] 0.270  
+splitRET_frac[2,2] 0.417  
+splitOutRET_frac[2] 0.314  
+splitPERM_frac[2,1] 0.704  
+splitPERM_frac[2,2] 0.277  
+splitOutPERM_frac[2] 0.019  
+Area[1]       1.93
+Area[2]       2.72
+pressure_up[1]  1.66
+pressure_up[2]  1.97
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.363  
+splitFEED_frac[2] 0.637  
+splitRET_frac[1,1] 0.246  
+splitRET_frac[1,2] 0.668  
+splitOutRET_frac[1] 0.086  
+splitPERM_frac[1,1] 0.373  
+splitPERM_frac[1,2] 0.438  
+splitOutPERM_frac[1] 0.189  
+splitRET_frac[2,1] 0.758  
+splitRET_frac[2,2] 0.038  
+splitOutRET_frac[2] 0.204  
+splitPERM_frac[2,1] 0.760  
+splitPERM_frac[2,2] 0.061  
+splitOutPERM_frac[2] 0.178  
+Area[1]       2.49
+Area[2]       3.03
+pressure_up[1]  1.95
+pressure_up[2]  1.95
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.910  
+splitFEED_frac[2] 0.090  
+splitRET_frac[1,1] 0.506  
+splitRET_frac[1,2] 0.475  
+splitOutRET_frac[1] 0.019  
+splitPERM_frac[1,1] 0.707  
+splitPERM_frac[1,2] 0.155  
+splitOutPERM_frac[1] 0.138  
+splitRET_frac[2,1] 0.811  
+splitRET_frac[2,2] 0.149  
+splitOutRET_frac[2] 0.039  
+splitPERM_frac[2,1] 0.653  
+splitPERM_frac[2,2] 0.331  
+splitOutPERM_frac[2] 0.016  
+Area[1]       3.52
+Area[2]       1.18
+pressure_up[1]  1.30
+pressure_up[2]  1.68
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.322  
+splitFEED_frac[2] 0.678  
+splitRET_frac[1,1] 0.809  
+splitRET_frac[1,2] 0.124  
+splitOutRET_frac[1] 0.066  
+splitPERM_frac[1,1] 0.707  
+splitPERM_frac[1,2] 0.277  
+splitOutPERM_frac[1] 0.016  
+splitRET_frac[2,1] 0.814  
+splitRET_frac[2,2] 0.156  
+splitOutRET_frac[2] 0.030  
+splitPERM_frac[2,1] 0.909  
+splitPERM_frac[2,2] 0.051  
+splitOutPERM_frac[2] 0.040  
+Area[1]       1.02
+Area[2]       4.56
+pressure_up[1]  1.27
+pressure_up[2]  1.89
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.939  
+splitFEED_frac[2] 0.061  
+splitRET_frac[1,1] 0.184  
+splitRET_frac[1,2] 0.782  
+splitOutRET_frac[1] 0.034  
+splitPERM_frac[1,1] 0.914  
+splitPERM_frac[1,2] 0.006  
+splitOutPERM_frac[1] 0.081  
+splitRET_frac[2,1] 0.480  
+splitRET_frac[2,2] 0.481  
+splitOutRET_frac[2] 0.039  
+splitPERM_frac[2,1] 0.128  
+splitPERM_frac[2,2] 0.868  
+splitOutPERM_frac[2] 0.004  
+Area[1]       3.97
+Area[2]       4.00
+pressure_up[1]  1.21
+pressure_up[2]  1.52
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.985  
+splitFEED_frac[2] 0.015  
+splitRET_frac[1,1] 0.754  
+splitRET_frac[1,2] 0.002  
+splitOutRET_frac[1] 0.245  
+splitPERM_frac[1,1] 0.837  
+splitPERM_frac[1,2] 0.081  
+splitOutPERM_frac[1] 0.082  
+splitRET_frac[2,1] 0.700  
+splitRET_frac[2,2] 0.263  
+splitOutRET_frac[2] 0.037  
+splitPERM_frac[2,1] 0.112  
+splitPERM_frac[2,2] 0.606  
+splitOutPERM_frac[2] 0.282  
+Area[1]       3.93
+Area[2]       3.61
+pressure_up[1]  1.53
+pressure_up[2]  1.95
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.512  
+splitFEED_frac[2] 0.488  
+splitRET_frac[1,1] 0.674  
+splitRET_frac[1,2] 0.304  
+splitOutRET_frac[1] 0.022  
+splitPERM_frac[1,1] 0.739  
+splitPERM_frac[1,2] 0.248  
+splitOutPERM_frac[1] 0.013  
+splitRET_frac[2,1] 0.764  
+splitRET_frac[2,2] 0.209  
+splitOutRET_frac[2] 0.027  
+splitPERM_frac[2,1] 0.469  
+splitPERM_frac[2,2] 0.270  
+splitOutPERM_frac[2] 0.261  
+Area[1]       2.89
+Area[2]       2.82
+pressure_up[1]  1.83
+pressure_up[2]  1.86
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.848  
+splitFEED_frac[2] 0.152  
+splitRET_frac[1,1] 0.827  
+splitRET_frac[1,2] 0.017  
+splitOutRET_frac[1] 0.156  
+splitPERM_frac[1,1] 0.675  
+splitPERM_frac[1,2] 0.282  
+splitOutPERM_frac[1] 0.044  
+splitRET_frac[2,1] 0.305  
+splitRET_frac[2,2] 0.658  
+splitOutRET_frac[2] 0.037  
+splitPERM_frac[2,1] 0.530  
+splitPERM_frac[2,2] 0.376  
+splitOutPERM_frac[2] 0.094  
+Area[1]       4.63
+Area[2]       3.87
+pressure_up[1]  1.41
+pressure_up[2]  1.51
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.907  
+splitFEED_frac[2] 0.093  
+splitRET_frac[1,1] 0.854  
+splitRET_frac[1,2] 0.146  
+splitOutRET_frac[1] 0.000  
+splitPERM_frac[1,1] 0.276  
+splitPERM_frac[1,2] 0.689  
+splitOutPERM_frac[1] 0.035  
+splitRET_frac[2,1] 0.394  
+splitRET_frac[2,2] 0.065  
+splitOutRET_frac[2] 0.541  
+splitPERM_frac[2,1] 0.259  
+splitPERM_frac[2,2] 0.259  
+splitOutPERM_frac[2] 0.482  
+Area[1]       2.91
+Area[2]       1.67
+pressure_up[1]  1.44
+pressure_up[2]  1.94
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.855  
+splitFEED_frac[2] 0.145  
+splitRET_frac[1,1] 0.315  
+splitRET_frac[1,2] 0.103  
+splitOutRET_frac[1] 0.582  
+splitPERM_frac[1,1] 0.916  
+splitPERM_frac[1,2] 0.053  
+splitOutPERM_frac[1] 0.030  
+splitRET_frac[2,1] 0.470  
+splitRET_frac[2,2] 0.196  
+splitOutRET_frac[2] 0.334  
+splitPERM_frac[2,1] 0.373  
+splitPERM_frac[2,2] 0.300  
+splitOutPERM_frac[2] 0.327  
+Area[1]       3.93
+Area[2]       1.37
+pressure_up[1]  1.58
+pressure_up[2]  1.78
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.920  
+splitFEED_frac[2] 0.080  
+splitRET_frac[1,1] 0.233  
+splitRET_frac[1,2] 0.751  
+splitOutRET_frac[1] 0.016  
+splitPERM_frac[1,1] 0.490  
+splitPERM_frac[1,2] 0.507  
+splitOutPERM_frac[1] 0.003  
+splitRET_frac[2,1] 0.646  
+splitRET_frac[2,2] 0.318  
+splitOutRET_frac[2] 0.036  
+splitPERM_frac[2,1] 0.982  
+splitPERM_frac[2,2] 0.013  
+splitOutPERM_frac[2] 0.005  
+Area[1]       1.64
+Area[2]       1.77
+pressure_up[1]  1.45
+pressure_up[2]  1.89
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.460  
+splitFEED_frac[2] 0.540  
+splitRET_frac[1,1] 0.728  
+splitRET_frac[1,2] 0.203  
+splitOutRET_frac[1] 0.069  
+splitPERM_frac[1,1] 0.406  
+splitPERM_frac[1,2] 0.582  
+splitOutPERM_frac[1] 0.012  
+splitRET_frac[2,1] 0.564  
+splitRET_frac[2,2] 0.080  
+splitOutRET_frac[2] 0.355  
+splitPERM_frac[2,1] 0.364  
+splitPERM_frac[2,2] 0.301  
+splitOutPERM_frac[2] 0.335  
+Area[1]       1.74
+Area[2]       3.83
+pressure_up[1]  1.30
+pressure_up[2]  1.82
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.866  
+splitFEED_frac[2] 0.134  
+splitRET_frac[1,1] 0.869  
+splitRET_frac[1,2] 0.082  
+splitOutRET_frac[1] 0.048  
+splitPERM_frac[1,1] 0.669  
+splitPERM_frac[1,2] 0.321  
+splitOutPERM_frac[1] 0.010  
+splitRET_frac[2,1] 0.688  
+splitRET_frac[2,2] 0.038  
+splitOutRET_frac[2] 0.274  
+splitPERM_frac[2,1] 0.693  
+splitPERM_frac[2,2] 0.108  
+splitOutPERM_frac[2] 0.199  
+Area[1]       1.35
+Area[2]       0.49
+pressure_up[1]  1.67
+pressure_up[2]  1.70
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.369  
+splitFEED_frac[2] 0.631  
+splitRET_frac[1,1] 0.548  
+splitRET_frac[1,2] 0.115  
+splitOutRET_frac[1] 0.337  
+splitPERM_frac[1,1] 0.860  
+splitPERM_frac[1,2] 0.124  
+splitOutPERM_frac[1] 0.016  
+splitRET_frac[2,1] 0.105  
+splitRET_frac[2,2] 0.795  
+splitOutRET_frac[2] 0.100  
+splitPERM_frac[2,1] 0.664  
+splitPERM_frac[2,2] 0.113  
+splitOutPERM_frac[2] 0.224  
+Area[1]       2.40
+Area[2]       2.86
+pressure_up[1]  1.42
+pressure_up[2]  1.66
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.414  
+splitFEED_frac[2] 0.586  
+splitRET_frac[1,1] 0.835  
+splitRET_frac[1,2] 0.081  
+splitOutRET_frac[1] 0.085  
+splitPERM_frac[1,1] 0.222  
+splitPERM_frac[1,2] 0.642  
+splitOutPERM_frac[1] 0.136  
+splitRET_frac[2,1] 0.263  
+splitRET_frac[2,2] 0.701  
+splitOutRET_frac[2] 0.036  
+splitPERM_frac[2,1] 0.852  
+splitPERM_frac[2,2] 0.041  
+splitOutPERM_frac[2] 0.107  
+Area[1]       3.99
+Area[2]       2.85
+pressure_up[1]  1.35
+pressure_up[2]  1.79
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.788  
+splitFEED_frac[2] 0.212  
+splitRET_frac[1,1] 0.661  
+splitRET_frac[1,2] 0.317  
+splitOutRET_frac[1] 0.021  
+splitPERM_frac[1,1] 0.707  
+splitPERM_frac[1,2] 0.021  
+splitOutPERM_frac[1] 0.272  
+splitRET_frac[2,1] 0.321  
+splitRET_frac[2,2] 0.580  
+splitOutRET_frac[2] 0.099  
+splitPERM_frac[2,1] 0.630  
+splitPERM_frac[2,2] 0.187  
+splitOutPERM_frac[2] 0.182  
+Area[1]       2.59
+Area[2]       3.41
+pressure_up[1]  1.12
+pressure_up[2]  1.24
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.723  
+splitFEED_frac[2] 0.277  
+splitRET_frac[1,1] 0.775  
+splitRET_frac[1,2] 0.142  
+splitOutRET_frac[1] 0.083  
+splitPERM_frac[1,1] 0.607  
+splitPERM_frac[1,2] 0.189  
+splitOutPERM_frac[1] 0.203  
+splitRET_frac[2,1] 0.846  
+splitRET_frac[2,2] 0.142  
+splitOutRET_frac[2] 0.012  
+splitPERM_frac[2,1] 0.364  
+splitPERM_frac[2,2] 0.270  
+splitOutPERM_frac[2] 0.366  
+Area[1]       1.63
+Area[2]       0.58
+pressure_up[1]  1.42
+pressure_up[2]  1.88
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.637  
+splitFEED_frac[2] 0.363  
+splitRET_frac[1,1] 0.560  
+splitRET_frac[1,2] 0.439  
+splitOutRET_frac[1] 0.001  
+splitPERM_frac[1,1] 0.900  
+splitPERM_frac[1,2] 0.099  
+splitOutPERM_frac[1] 0.001  
+splitRET_frac[2,1] 0.795  
+splitRET_frac[2,2] 0.023  
+splitOutRET_frac[2] 0.183  
+splitPERM_frac[2,1] 0.315  
+splitPERM_frac[2,2] 0.342  
+splitOutPERM_frac[2] 0.343  
+Area[1]       2.38
+Area[2]       0.10
+pressure_up[1]  1.49
+pressure_up[2]  1.93
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.796  
+splitFEED_frac[2] 0.204  
+splitRET_frac[1,1] 0.318  
+splitRET_frac[1,2] 0.031  
+splitOutRET_frac[1] 0.651  
+splitPERM_frac[1,1] 0.207  
+splitPERM_frac[1,2] 0.243  
+splitOutPERM_frac[1] 0.551  
+splitRET_frac[2,1] 0.632  
+splitRET_frac[2,2] 0.327  
+splitOutRET_frac[2] 0.041  
+splitPERM_frac[2,1] 0.564  
+splitPERM_frac[2,2] 0.350  
+splitOutPERM_frac[2] 0.086  
+Area[1]       3.76
+Area[2]       3.70
+pressure_up[1]  1.98
+pressure_up[2]  1.99
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.616  
+splitFEED_frac[2] 0.384  
+splitRET_frac[1,1] 0.393  
+splitRET_frac[1,2] 0.588  
+splitOutRET_frac[1] 0.020  
+splitPERM_frac[1,1] 0.116  
+splitPERM_frac[1,2] 0.882  
+splitOutPERM_frac[1] 0.002  
+splitRET_frac[2,1] 0.805  
+splitRET_frac[2,2] 0.052  
+splitOutRET_frac[2] 0.143  
+splitPERM_frac[2,1] 0.851  
+splitPERM_frac[2,2] 0.026  
+splitOutPERM_frac[2] 0.123  
+Area[1]       0.46
+Area[2]       1.21
+pressure_up[1]  1.39
+pressure_up[2]  1.95
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.597  
+splitFEED_frac[2] 0.403  
+splitRET_frac[1,1] 0.753  
+splitRET_frac[1,2] 0.137  
+splitOutRET_frac[1] 0.111  
+splitPERM_frac[1,1] 0.753  
+splitPERM_frac[1,2] 0.240  
+splitOutPERM_frac[1] 0.007  
+splitRET_frac[2,1] 0.749  
+splitRET_frac[2,2] 0.234  
+splitOutRET_frac[2] 0.017  
+splitPERM_frac[2,1] 0.149  
+splitPERM_frac[2,2] 0.832  
+splitOutPERM_frac[2] 0.019  
+Area[1]       2.95
+Area[2]       3.63
+pressure_up[1]  1.19
+pressure_up[2]  1.67
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.557  
+splitFEED_frac[2] 0.443  
+splitRET_frac[1,1] 0.265  
+splitRET_frac[1,2] 0.546  
+splitOutRET_frac[1] 0.189  
+splitPERM_frac[1,1] 0.747  
+splitPERM_frac[1,2] 0.113  
+splitOutPERM_frac[1] 0.139  
+splitRET_frac[2,1] 0.926  
+splitRET_frac[2,2] 0.065  
+splitOutRET_frac[2] 0.009  
+splitPERM_frac[2,1] 0.629  
+splitPERM_frac[2,2] 0.315  
+splitOutPERM_frac[2] 0.056  
+Area[1]       2.55
+Area[2]       2.30
+pressure_up[1]  1.07
+pressure_up[2]  1.40
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.755  
+splitFEED_frac[2] 0.245  
+splitRET_frac[1,1] 0.818  
+splitRET_frac[1,2] 0.180  
+splitOutRET_frac[1] 0.002  
+splitPERM_frac[1,1] 0.143  
+splitPERM_frac[1,2] 0.661  
+splitOutPERM_frac[1] 0.196  
+splitRET_frac[2,1] 0.345  
+splitRET_frac[2,2] 0.106  
+splitOutRET_frac[2] 0.549  
+splitPERM_frac[2,1] 0.999  
+splitPERM_frac[2,2] 0.001  
+splitOutPERM_frac[2] 0.000  
+Area[1]       0.17
+Area[2]       4.67
+pressure_up[1]  1.49
+pressure_up[2]  1.75
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.828  
+splitFEED_frac[2] 0.172  
+splitRET_frac[1,1] 0.696  
+splitRET_frac[1,2] 0.244  
+splitOutRET_frac[1] 0.061  
+splitPERM_frac[1,1] 0.519  
+splitPERM_frac[1,2] 0.064  
+splitOutPERM_frac[1] 0.417  
+splitRET_frac[2,1] 0.512  
+splitRET_frac[2,2] 0.220  
+splitOutRET_frac[2] 0.267  
+splitPERM_frac[2,1] 0.790  
+splitPERM_frac[2,2] 0.014  
+splitOutPERM_frac[2] 0.196  
+Area[1]       4.23
+Area[2]       2.58
+pressure_up[1]  1.97
+pressure_up[2]  1.99
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.860  
+splitFEED_frac[2] 0.140  
+splitRET_frac[1,1] 0.514  
+splitRET_frac[1,2] 0.274  
+splitOutRET_frac[1] 0.213  
+splitPERM_frac[1,1] 0.167  
+splitPERM_frac[1,2] 0.818  
+splitOutPERM_frac[1] 0.015  
+splitRET_frac[2,1] 0.595  
+splitRET_frac[2,2] 0.361  
+splitOutRET_frac[2] 0.044  
+splitPERM_frac[2,1] 0.641  
+splitPERM_frac[2,2] 0.290  
+splitOutPERM_frac[2] 0.069  
+Area[1]       3.89
+Area[2]       0.19
+pressure_up[1]  1.21
+pressure_up[2]  1.59
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.666  
+splitFEED_frac[2] 0.334  
+splitRET_frac[1,1] 0.422  
+splitRET_frac[1,2] 0.163  
+splitOutRET_frac[1] 0.415  
+splitPERM_frac[1,1] 0.578  
+splitPERM_frac[1,2] 0.407  
+splitOutPERM_frac[1] 0.015  
+splitRET_frac[2,1] 0.924  
+splitRET_frac[2,2] 0.053  
+splitOutRET_frac[2] 0.023  
+splitPERM_frac[2,1] 0.481  
+splitPERM_frac[2,2] 0.508  
+splitOutPERM_frac[2] 0.011  
+Area[1]       2.25
+Area[2]       0.49
+pressure_up[1]  1.54
+pressure_up[2]  1.74
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.895  
+splitFEED_frac[2] 0.105  
+splitRET_frac[1,1] 0.712  
+splitRET_frac[1,2] 0.219  
+splitOutRET_frac[1] 0.069  
+splitPERM_frac[1,1] 0.957  
+splitPERM_frac[1,2] 0.041  
+splitOutPERM_frac[1] 0.002  
+splitRET_frac[2,1] 0.178  
+splitRET_frac[2,2] 0.239  
+splitOutRET_frac[2] 0.583  
+splitPERM_frac[2,1] 0.528  
+splitPERM_frac[2,2] 0.458  
+splitOutPERM_frac[2] 0.014  
+Area[1]       0.95
+Area[2]       2.24
+pressure_up[1]  1.02
+pressure_up[2]  1.45
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.727  
+splitFEED_frac[2] 0.273  
+splitRET_frac[1,1] 0.811  
+splitRET_frac[1,2] 0.174  
+splitOutRET_frac[1] 0.014  
+splitPERM_frac[1,1] 0.359  
+splitPERM_frac[1,2] 0.445  
+splitOutPERM_frac[1] 0.196  
+splitRET_frac[2,1] 0.202  
+splitRET_frac[2,2] 0.774  
+splitOutRET_frac[2] 0.023  
+splitPERM_frac[2,1] 0.567  
+splitPERM_frac[2,2] 0.359  
+splitOutPERM_frac[2] 0.074  
+Area[1]       1.42
+Area[2]       0.48
+pressure_up[1]  1.28
+pressure_up[2]  1.67
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.813  
+splitFEED_frac[2] 0.187  
+splitRET_frac[1,1] 0.556  
+splitRET_frac[1,2] 0.320  
+splitOutRET_frac[1] 0.124  
+splitPERM_frac[1,1] 0.831  
+splitPERM_frac[1,2] 0.002  
+splitOutPERM_frac[1] 0.167  
+splitRET_frac[2,1] 0.371  
+splitRET_frac[2,2] 0.626  
+splitOutRET_frac[2] 0.003  
+splitPERM_frac[2,1] 0.840  
+splitPERM_frac[2,2] 0.096  
+splitOutPERM_frac[2] 0.065  
+Area[1]       1.16
+Area[2]       2.75
+pressure_up[1]  1.62
+pressure_up[2]  1.68
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.377  
+splitFEED_frac[2] 0.623  
+splitRET_frac[1,1] 0.818  
+splitRET_frac[1,2] 0.136  
+splitOutRET_frac[1] 0.045  
+splitPERM_frac[1,1] 0.845  
+splitPERM_frac[1,2] 0.066  
+splitOutPERM_frac[1] 0.090  
+splitRET_frac[2,1] 0.645  
+splitRET_frac[2,2] 0.332  
+splitOutRET_frac[2] 0.022  
+splitPERM_frac[2,1] 0.822  
+splitPERM_frac[2,2] 0.023  
+splitOutPERM_frac[2] 0.155  
+Area[1]       4.75
+Area[2]       4.33
+pressure_up[1]  1.21
+pressure_up[2]  1.70
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.987  
+splitFEED_frac[2] 0.013  
+splitRET_frac[1,1] 0.527  
+splitRET_frac[1,2] 0.388  
+splitOutRET_frac[1] 0.085  
+splitPERM_frac[1,1] 0.449  
+splitPERM_frac[1,2] 0.282  
+splitOutPERM_frac[1] 0.269  
+splitRET_frac[2,1] 0.534  
+splitRET_frac[2,2] 0.456  
+splitOutRET_frac[2] 0.010  
+splitPERM_frac[2,1] 0.401  
+splitPERM_frac[2,2] 0.163  
+splitOutPERM_frac[2] 0.436  
+Area[1]       4.84
+Area[2]       0.30
+pressure_up[1]  1.58
+pressure_up[2]  1.86
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.685  
+splitFEED_frac[2] 0.315  
+splitRET_frac[1,1] 0.347  
+splitRET_frac[1,2] 0.492  
+splitOutRET_frac[1] 0.161  
+splitPERM_frac[1,1] 0.017  
+splitPERM_frac[1,2] 0.751  
+splitOutPERM_frac[1] 0.233  
+splitRET_frac[2,1] 0.645  
+splitRET_frac[2,2] 0.138  
+splitOutRET_frac[2] 0.217  
+splitPERM_frac[2,1] 0.478  
+splitPERM_frac[2,2] 0.492  
+splitOutPERM_frac[2] 0.030  
+Area[1]       3.76
+Area[2]       1.66
+pressure_up[1]  1.86
+pressure_up[2]  1.98
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.258  
+splitFEED_frac[2] 0.742  
+splitRET_frac[1,1] 0.591  
+splitRET_frac[1,2] 0.231  
+splitOutRET_frac[1] 0.178  
+splitPERM_frac[1,1] 0.512  
+splitPERM_frac[1,2] 0.473  
+splitOutPERM_frac[1] 0.015  
+splitRET_frac[2,1] 0.664  
+splitRET_frac[2,2] 0.333  
+splitOutRET_frac[2] 0.003  
+splitPERM_frac[2,1] 0.948  
+splitPERM_frac[2,2] 0.030  
+splitOutPERM_frac[2] 0.022  
+Area[1]       0.53
+Area[2]       1.02
+pressure_up[1]  1.16
+pressure_up[2]  1.29
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.448  
+splitFEED_frac[2] 0.552  
+splitRET_frac[1,1] 0.703  
+splitRET_frac[1,2] 0.257  
+splitOutRET_frac[1] 0.041  
+splitPERM_frac[1,1] 0.777  
+splitPERM_frac[1,2] 0.221  
+splitOutPERM_frac[1] 0.002  
+splitRET_frac[2,1] 0.408  
+splitRET_frac[2,2] 0.474  
+splitOutRET_frac[2] 0.118  
+splitPERM_frac[2,1] 0.837  
+splitPERM_frac[2,2] 0.107  
+splitOutPERM_frac[2] 0.056  
+Area[1]       1.82
+Area[2]       3.56
+pressure_up[1]  1.85
+pressure_up[2]  1.93
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.980  
+splitFEED_frac[2] 0.020  
+splitRET_frac[1,1] 0.666  
+splitRET_frac[1,2] 0.206  
+splitOutRET_frac[1] 0.128  
+splitPERM_frac[1,1] 0.834  
+splitPERM_frac[1,2] 0.165  
+splitOutPERM_frac[1] 0.000  
+splitRET_frac[2,1] 0.644  
+splitRET_frac[2,2] 0.335  
+splitOutRET_frac[2] 0.021  
+splitPERM_frac[2,1] 0.794  
+splitPERM_frac[2,2] 0.178  
+splitOutPERM_frac[2] 0.028  
+Area[1]       0.56
+Area[2]       4.72
+pressure_up[1]  1.92
+pressure_up[2]  1.95
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.603  
+splitFEED_frac[2] 0.397  
+splitRET_frac[1,1] 0.750  
+splitRET_frac[1,2] 0.136  
+splitOutRET_frac[1] 0.113  
+splitPERM_frac[1,1] 0.616  
+splitPERM_frac[1,2] 0.350  
+splitOutPERM_frac[1] 0.034  
+splitRET_frac[2,1] 0.882  
+splitRET_frac[2,2] 0.081  
+splitOutRET_frac[2] 0.037  
+splitPERM_frac[2,1] 0.949  
+splitPERM_frac[2,2] 0.041  
+splitOutPERM_frac[2] 0.010  
+Area[1]       3.85
+Area[2]       2.97
+pressure_up[1]  1.30
+pressure_up[2]  1.76
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.734  
+splitFEED_frac[2] 0.266  
+splitRET_frac[1,1] 0.613  
+splitRET_frac[1,2] 0.205  
+splitOutRET_frac[1] 0.182  
+splitPERM_frac[1,1] 0.494  
+splitPERM_frac[1,2] 0.436  
+splitOutPERM_frac[1] 0.070  
+splitRET_frac[2,1] 0.986  
+splitRET_frac[2,2] 0.006  
+splitOutRET_frac[2] 0.008  
+splitPERM_frac[2,1] 0.802  
+splitPERM_frac[2,2] 0.197  
+splitOutPERM_frac[2] 0.001  
+Area[1]       1.72
+Area[2]       3.13
+pressure_up[1]  1.34
+pressure_up[2]  1.48
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.836  
+splitFEED_frac[2] 0.164  
+splitRET_frac[1,1] 0.782  
+splitRET_frac[1,2] 0.114  
+splitOutRET_frac[1] 0.104  
+splitPERM_frac[1,1] 0.609  
+splitPERM_frac[1,2] 0.349  
+splitOutPERM_frac[1] 0.042  
+splitRET_frac[2,1] 0.024  
+splitRET_frac[2,2] 0.452  
+splitOutRET_frac[2] 0.524  
+splitPERM_frac[2,1] 0.875  
+splitPERM_frac[2,2] 0.082  
+splitOutPERM_frac[2] 0.043  
+Area[1]       3.46
+Area[2]       3.49
+pressure_up[1]  1.16
+pressure_up[2]  1.81
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.734  
+splitFEED_frac[2] 0.266  
+splitRET_frac[1,1] 0.645  
+splitRET_frac[1,2] 0.319  
+splitOutRET_frac[1] 0.036  
+splitPERM_frac[1,1] 0.541  
+splitPERM_frac[1,2] 0.341  
+splitOutPERM_frac[1] 0.119  
+splitRET_frac[2,1] 0.582  
+splitRET_frac[2,2] 0.258  
+splitOutRET_frac[2] 0.161  
+splitPERM_frac[2,1] 0.997  
+splitPERM_frac[2,2] 0.001  
+splitOutPERM_frac[2] 0.002  
+Area[1]       2.92
+Area[2]       3.60
+pressure_up[1]  1.14
+pressure_up[2]  1.75
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.447  
+splitFEED_frac[2] 0.553  
+splitRET_frac[1,1] 0.635  
+splitRET_frac[1,2] 0.156  
+splitOutRET_frac[1] 0.208  
+splitPERM_frac[1,1] 0.784  
+splitPERM_frac[1,2] 0.201  
+splitOutPERM_frac[1] 0.014  
+splitRET_frac[2,1] 0.220  
+splitRET_frac[2,2] 0.586  
+splitOutRET_frac[2] 0.193  
+splitPERM_frac[2,1] 0.948  
+splitPERM_frac[2,2] 0.046  
+splitOutPERM_frac[2] 0.006  
+Area[1]       0.95
+Area[2]       1.36
+pressure_up[1]  1.70
+pressure_up[2]  1.89
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.943  
+splitFEED_frac[2] 0.057  
+splitRET_frac[1,1] 0.682  
+splitRET_frac[1,2] 0.308  
+splitOutRET_frac[1] 0.010  
+splitPERM_frac[1,1] 0.231  
+splitPERM_frac[1,2] 0.034  
+splitOutPERM_frac[1] 0.735  
+splitRET_frac[2,1] 0.491  
+splitRET_frac[2,2] 0.468  
+splitOutRET_frac[2] 0.041  
+splitPERM_frac[2,1] 0.893  
+splitPERM_frac[2,2] 0.061  
+splitOutPERM_frac[2] 0.046  
+Area[1]       1.65
+Area[2]       2.48
+pressure_up[1]  1.60
+pressure_up[2]  1.69
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.950  
+splitFEED_frac[2] 0.050  
+splitRET_frac[1,1] 0.208  
+splitRET_frac[1,2] 0.680  
+splitOutRET_frac[1] 0.112  
+splitPERM_frac[1,1] 0.389  
+splitPERM_frac[1,2] 0.470  
+splitOutPERM_frac[1] 0.141  
+splitRET_frac[2,1] 0.875  
+splitRET_frac[2,2] 0.102  
+splitOutRET_frac[2] 0.023  
+splitPERM_frac[2,1] 0.751  
+splitPERM_frac[2,2] 0.064  
+splitOutPERM_frac[2] 0.185  
+Area[1]       1.75
+Area[2]       1.99
+pressure_up[1]  1.26
+pressure_up[2]  1.78
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.995  
+splitFEED_frac[2] 0.005  
+splitRET_frac[1,1] 0.216  
+splitRET_frac[1,2] 0.767  
+splitOutRET_frac[1] 0.017  
+splitPERM_frac[1,1] 0.865  
+splitPERM_frac[1,2] 0.021  
+splitOutPERM_frac[1] 0.114  
+splitRET_frac[2,1] 0.162  
+splitRET_frac[2,2] 0.514  
+splitOutRET_frac[2] 0.324  
+splitPERM_frac[2,1] 0.257  
+splitPERM_frac[2,2] 0.569  
+splitOutPERM_frac[2] 0.174  
+Area[1]       1.99
+Area[2]       1.05
+pressure_up[1]  1.45
+pressure_up[2]  1.87
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.502  
+splitFEED_frac[2] 0.498  
+splitRET_frac[1,1] 0.445  
+splitRET_frac[1,2] 0.352  
+splitOutRET_frac[1] 0.203  
+splitPERM_frac[1,1] 0.673  
+splitPERM_frac[1,2] 0.227  
+splitOutPERM_frac[1] 0.100  
+splitRET_frac[2,1] 0.842  
+splitRET_frac[2,2] 0.107  
+splitOutRET_frac[2] 0.051  
+splitPERM_frac[2,1] 0.592  
+splitPERM_frac[2,2] 0.375  
+splitOutPERM_frac[2] 0.032  
+Area[1]       2.15
+Area[2]       3.57
+pressure_up[1]  1.99
+pressure_up[2]  1.99
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.880  
+splitFEED_frac[2] 0.120  
+splitRET_frac[1,1] 0.270  
+splitRET_frac[1,2] 0.505  
+splitOutRET_frac[1] 0.225  
+splitPERM_frac[1,1] 0.788  
+splitPERM_frac[1,2] 0.210  
+splitOutPERM_frac[1] 0.002  
+splitRET_frac[2,1] 0.336  
+splitRET_frac[2,2] 0.659  
+splitOutRET_frac[2] 0.005  
+splitPERM_frac[2,1] 0.952  
+splitPERM_frac[2,2] 0.047  
+splitOutPERM_frac[2] 0.001  
+Area[1]       2.16
+Area[2]       0.34
+pressure_up[1]  1.83
+pressure_up[2]  1.93
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.568  
+splitFEED_frac[2] 0.432  
+splitRET_frac[1,1] 0.745  
+splitRET_frac[1,2] 0.195  
+splitOutRET_frac[1] 0.061  
+splitPERM_frac[1,1] 0.739  
+splitPERM_frac[1,2] 0.190  
+splitOutPERM_frac[1] 0.071  
+splitRET_frac[2,1] 0.741  
+splitRET_frac[2,2] 0.069  
+splitOutRET_frac[2] 0.190  
+splitPERM_frac[2,1] 0.624  
+splitPERM_frac[2,2] 0.328  
+splitOutPERM_frac[2] 0.048  
+Area[1]       0.40
+Area[2]       4.10
+pressure_up[1]  1.01
+pressure_up[2]  1.63
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.563  
+splitFEED_frac[2] 0.437  
+splitRET_frac[1,1] 0.075  
+splitRET_frac[1,2] 0.821  
+splitOutRET_frac[1] 0.104  
+splitPERM_frac[1,1] 0.693  
+splitPERM_frac[1,2] 0.061  
+splitOutPERM_frac[1] 0.245  
+splitRET_frac[2,1] 0.966  
+splitRET_frac[2,2] 0.026  
+splitOutRET_frac[2] 0.008  
+splitPERM_frac[2,1] 0.417  
+splitPERM_frac[2,2] 0.576  
+splitOutPERM_frac[2] 0.007  
+Area[1]       3.91
+Area[2]       2.85
+pressure_up[1]  1.72
+pressure_up[2]  1.93
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.800  
+splitFEED_frac[2] 0.200  
+splitRET_frac[1,1] 0.841  
+splitRET_frac[1,2] 0.152  
+splitOutRET_frac[1] 0.007  
+splitPERM_frac[1,1] 0.498  
+splitPERM_frac[1,2] 0.392  
+splitOutPERM_frac[1] 0.110  
+splitRET_frac[2,1] 0.742  
+splitRET_frac[2,2] 0.097  
+splitOutRET_frac[2] 0.162  
+splitPERM_frac[2,1] 0.969  
+splitPERM_frac[2,2] 0.005  
+splitOutPERM_frac[2] 0.027  
+Area[1]       0.47
+Area[2]       3.67
+pressure_up[1]  1.39
+pressure_up[2]  1.74
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.997  
+splitFEED_frac[2] 0.003  
+splitRET_frac[1,1] 0.491  
+splitRET_frac[1,2] 0.470  
+splitOutRET_frac[1] 0.039  
+splitPERM_frac[1,1] 0.194  
+splitPERM_frac[1,2] 0.718  
+splitOutPERM_frac[1] 0.088  
+splitRET_frac[2,1] 0.193  
+splitRET_frac[2,2] 0.806  
+splitOutRET_frac[2] 0.001  
+splitPERM_frac[2,1] 0.987  
+splitPERM_frac[2,2] 0.002  
+splitOutPERM_frac[2] 0.011  
+Area[1]       2.44
+Area[2]       3.19
+pressure_up[1]  1.15
+pressure_up[2]  1.39
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.854  
+splitFEED_frac[2] 0.146  
+splitRET_frac[1,1] 0.693  
+splitRET_frac[1,2] 0.274  
+splitOutRET_frac[1] 0.033  
+splitPERM_frac[1,1] 0.826  
+splitPERM_frac[1,2] 0.050  
+splitOutPERM_frac[1] 0.124  
+splitRET_frac[2,1] 0.196  
+splitRET_frac[2,2] 0.210  
+splitOutRET_frac[2] 0.593  
+splitPERM_frac[2,1] 0.403  
+splitPERM_frac[2,2] 0.564  
+splitOutPERM_frac[2] 0.033  
+Area[1]       0.88
+Area[2]       3.90
+pressure_up[1]  1.91
+pressure_up[2]  1.98
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.550  
+splitFEED_frac[2] 0.450  
+splitRET_frac[1,1] 0.727  
+splitRET_frac[1,2] 0.249  
+splitOutRET_frac[1] 0.024  
+splitPERM_frac[1,1] 0.436  
+splitPERM_frac[1,2] 0.415  
+splitOutPERM_frac[1] 0.149  
+splitRET_frac[2,1] 0.799  
+splitRET_frac[2,2] 0.201  
+splitOutRET_frac[2] 0.001  
+splitPERM_frac[2,1] 0.878  
+splitPERM_frac[2,2] 0.061  
+splitOutPERM_frac[2] 0.061  
+Area[1]       3.71
+Area[2]       3.45
+pressure_up[1]  1.66
+pressure_up[2]  1.94
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.666  
+splitFEED_frac[2] 0.334  
+splitRET_frac[1,1] 0.086  
+splitRET_frac[1,2] 0.912  
+splitOutRET_frac[1] 0.002  
+splitPERM_frac[1,1] 0.718  
+splitPERM_frac[1,2] 0.281  
+splitOutPERM_frac[1] 0.001  
+splitRET_frac[2,1] 0.363  
+splitRET_frac[2,2] 0.449  
+splitOutRET_frac[2] 0.187  
+splitPERM_frac[2,1] 0.976  
+splitPERM_frac[2,2] 0.004  
+splitOutPERM_frac[2] 0.020  
+Area[1]       0.68
+Area[2]       0.18
+pressure_up[1]  1.86
+pressure_up[2]  1.86
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.958  
+splitFEED_frac[2] 0.042  
+splitRET_frac[1,1] 0.612  
+splitRET_frac[1,2] 0.119  
+splitOutRET_frac[1] 0.268  
+splitPERM_frac[1,1] 0.816  
+splitPERM_frac[1,2] 0.171  
+splitOutPERM_frac[1] 0.013  
+splitRET_frac[2,1] 0.278  
+splitRET_frac[2,2] 0.596  
+splitOutRET_frac[2] 0.126  
+splitPERM_frac[2,1] 0.993  
+splitPERM_frac[2,2] 0.006  
+splitOutPERM_frac[2] 0.001  
+Area[1]       0.49
+Area[2]       4.03
+pressure_up[1]  1.32
+pressure_up[2]  1.56
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.960  
+splitFEED_frac[2] 0.040  
+splitRET_frac[1,1] 0.715  
+splitRET_frac[1,2] 0.079  
+splitOutRET_frac[1] 0.205  
+splitPERM_frac[1,1] 0.624  
+splitPERM_frac[1,2] 0.048  
+splitOutPERM_frac[1] 0.329  
+splitRET_frac[2,1] 0.706  
+splitRET_frac[2,2] 0.078  
+splitOutRET_frac[2] 0.216  
+splitPERM_frac[2,1] 0.928  
+splitPERM_frac[2,2] 0.065  
+splitOutPERM_frac[2] 0.007  
+Area[1]       2.71
+Area[2]       3.58
+pressure_up[1]  1.06
+pressure_up[2]  1.69
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.710  
+splitFEED_frac[2] 0.290  
+splitRET_frac[1,1] 0.366  
+splitRET_frac[1,2] 0.572  
+splitOutRET_frac[1] 0.062  
+splitPERM_frac[1,1] 0.184  
+splitPERM_frac[1,2] 0.815  
+splitOutPERM_frac[1] 0.001  
+splitRET_frac[2,1] 0.722  
+splitRET_frac[2,2] 0.225  
+splitOutRET_frac[2] 0.053  
+splitPERM_frac[2,1] 0.438  
+splitPERM_frac[2,2] 0.088  
+splitOutPERM_frac[2] 0.474  
+Area[1]       4.69
+Area[2]       2.30
+pressure_up[1]  1.49
+pressure_up[2]  1.63
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.933  
+splitFEED_frac[2] 0.067  
+splitRET_frac[1,1] 0.737  
+splitRET_frac[1,2] 0.156  
+splitOutRET_frac[1] 0.107  
+splitPERM_frac[1,1] 0.901  
+splitPERM_frac[1,2] 0.048  
+splitOutPERM_frac[1] 0.051  
+splitRET_frac[2,1] 0.850  
+splitRET_frac[2,2] 0.000  
+splitOutRET_frac[2] 0.150  
+splitPERM_frac[2,1] 0.848  
+splitPERM_frac[2,2] 0.103  
+splitOutPERM_frac[2] 0.049  
+Area[1]       0.93
+Area[2]       0.53
+pressure_up[1]  1.01
+pressure_up[2]  1.32
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.896  
+splitFEED_frac[2] 0.104  
+splitRET_frac[1,1] 0.478  
+splitRET_frac[1,2] 0.502  
+splitOutRET_frac[1] 0.020  
+splitPERM_frac[1,1] 0.675  
+splitPERM_frac[1,2] 0.240  
+splitOutPERM_frac[1] 0.085  
+splitRET_frac[2,1] 0.780  
+splitRET_frac[2,2] 0.097  
+splitOutRET_frac[2] 0.123  
+splitPERM_frac[2,1] 0.064  
+splitPERM_frac[2,2] 0.717  
+splitOutPERM_frac[2] 0.219  
+Area[1]       1.24
+Area[2]       2.44
+pressure_up[1]  1.06
+pressure_up[2]  1.10
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.269  
+splitFEED_frac[2] 0.731  
+splitRET_frac[1,1] 0.740  
+splitRET_frac[1,2] 0.015  
+splitOutRET_frac[1] 0.245  
+splitPERM_frac[1,1] 0.926  
+splitPERM_frac[1,2] 0.053  
+splitOutPERM_frac[1] 0.021  
+splitRET_frac[2,1] 0.712  
+splitRET_frac[2,2] 0.017  
+splitOutRET_frac[2] 0.272  
+splitPERM_frac[2,1] 0.088  
+splitPERM_frac[2,2] 0.689  
+splitOutPERM_frac[2] 0.223  
+Area[1]       3.54
+Area[2]       3.04
+pressure_up[1]  1.27
+pressure_up[2]  1.60
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.943  
+splitFEED_frac[2] 0.057  
+splitRET_frac[1,1] 0.602  
+splitRET_frac[1,2] 0.070  
+splitOutRET_frac[1] 0.327  
+splitPERM_frac[1,1] 0.560  
+splitPERM_frac[1,2] 0.282  
+splitOutPERM_frac[1] 0.158  
+splitRET_frac[2,1] 0.507  
+splitRET_frac[2,2] 0.470  
+splitOutRET_frac[2] 0.023  
+splitPERM_frac[2,1] 0.933  
+splitPERM_frac[2,2] 0.065  
+splitOutPERM_frac[2] 0.002  
+Area[1]       2.08
+Area[2]       4.00
+pressure_up[1]  1.32
+pressure_up[2]  1.72
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.973  
+splitFEED_frac[2] 0.027  
+splitRET_frac[1,1] 0.949  
+splitRET_frac[1,2] 0.049  
+splitOutRET_frac[1] 0.002  
+splitPERM_frac[1,1] 0.614  
+splitPERM_frac[1,2] 0.347  
+splitOutPERM_frac[1] 0.038  
+splitRET_frac[2,1] 0.932  
+splitRET_frac[2,2] 0.065  
+splitOutRET_frac[2] 0.003  
+splitPERM_frac[2,1] 0.686  
+splitPERM_frac[2,2] 0.314  
+splitOutPERM_frac[2] 0.001  
+Area[1]       0.85
+Area[2]       1.77
+pressure_up[1]  1.47
+pressure_up[2]  1.60
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.651  
+splitFEED_frac[2] 0.349  
+splitRET_frac[1,1] 0.607  
+splitRET_frac[1,2] 0.377  
+splitOutRET_frac[1] 0.016  
+splitPERM_frac[1,1] 0.706  
+splitPERM_frac[1,2] 0.159  
+splitOutPERM_frac[1] 0.135  
+splitRET_frac[2,1] 0.885  
+splitRET_frac[2,2] 0.071  
+splitOutRET_frac[2] 0.044  
+splitPERM_frac[2,1] 0.910  
+splitPERM_frac[2,2] 0.071  
+splitOutPERM_frac[2] 0.019  
+Area[1]       1.53
+Area[2]       4.19
+pressure_up[1]  1.09
+pressure_up[2]  1.71
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.970  
+splitFEED_frac[2] 0.030  
+splitRET_frac[1,1] 0.676  
+splitRET_frac[1,2] 0.267  
+splitOutRET_frac[1] 0.057  
+splitPERM_frac[1,1] 0.584  
+splitPERM_frac[1,2] 0.053  
+splitOutPERM_frac[1] 0.363  
+splitRET_frac[2,1] 0.732  
+splitRET_frac[2,2] 0.203  
+splitOutRET_frac[2] 0.065  
+splitPERM_frac[2,1] 0.400  
+splitPERM_frac[2,2] 0.219  
+splitOutPERM_frac[2] 0.381  
+Area[1]       1.75
+Area[2]       1.67
+pressure_up[1]  1.68
+pressure_up[2]  1.98
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.478  
+splitFEED_frac[2] 0.522  
+splitRET_frac[1,1] 0.439  
+splitRET_frac[1,2] 0.302  
+splitOutRET_frac[1] 0.259  
+splitPERM_frac[1,1] 0.296  
+splitPERM_frac[1,2] 0.447  
+splitOutPERM_frac[1] 0.256  
+splitRET_frac[2,1] 0.982  
+splitRET_frac[2,2] 0.013  
+splitOutRET_frac[2] 0.004  
+splitPERM_frac[2,1] 0.296  
+splitPERM_frac[2,2] 0.702  
+splitOutPERM_frac[2] 0.002  
+Area[1]       3.95
+Area[2]       3.75
+pressure_up[1]  1.96
+pressure_up[2]  1.99
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.975  
+splitFEED_frac[2] 0.025  
+splitRET_frac[1,1] 0.285  
+splitRET_frac[1,2] 0.593  
+splitOutRET_frac[1] 0.122  
+splitPERM_frac[1,1] 0.793  
+splitPERM_frac[1,2] 0.187  
+splitOutPERM_frac[1] 0.020  
+splitRET_frac[2,1] 0.566  
+splitRET_frac[2,2] 0.095  
+splitOutRET_frac[2] 0.339  
+splitPERM_frac[2,1] 0.949  
+splitPERM_frac[2,2] 0.014  
+splitOutPERM_frac[2] 0.036  
+Area[1]       1.76
+Area[2]       0.23
+pressure_up[1]  1.43
+pressure_up[2]  1.49
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.653  
+splitFEED_frac[2] 0.347  
+splitRET_frac[1,1] 0.740  
+splitRET_frac[1,2] 0.240  
+splitOutRET_frac[1] 0.021  
+splitPERM_frac[1,1] 0.940  
+splitPERM_frac[1,2] 0.027  
+splitOutPERM_frac[1] 0.033  
+splitRET_frac[2,1] 0.382  
+splitRET_frac[2,2] 0.146  
+splitOutRET_frac[2] 0.472  
+splitPERM_frac[2,1] 0.671  
+splitPERM_frac[2,2] 0.054  
+splitOutPERM_frac[2] 0.274  
+Area[1]       3.60
+Area[2]       2.60
+pressure_up[1]  1.25
+pressure_up[2]  1.64
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.759  
+splitFEED_frac[2] 0.241  
+splitRET_frac[1,1] 0.669  
+splitRET_frac[1,2] 0.331  
+splitOutRET_frac[1] 0.001  
+splitPERM_frac[1,1] 0.692  
+splitPERM_frac[1,2] 0.204  
+splitOutPERM_frac[1] 0.104  
+splitRET_frac[2,1] 0.204  
+splitRET_frac[2,2] 0.784  
+splitOutRET_frac[2] 0.012  
+splitPERM_frac[2,1] 0.860  
+splitPERM_frac[2,2] 0.060  
+splitOutPERM_frac[2] 0.080  
+Area[1]       1.53
+Area[2]       3.41
+pressure_up[1]  1.94
+pressure_up[2]  1.95
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.852  
+splitFEED_frac[2] 0.148  
+splitRET_frac[1,1] 0.829  
+splitRET_frac[1,2] 0.059  
+splitOutRET_frac[1] 0.112  
+splitPERM_frac[1,1] 0.519  
+splitPERM_frac[1,2] 0.159  
+splitOutPERM_frac[1] 0.321  
+splitRET_frac[2,1] 0.972  
+splitRET_frac[2,2] 0.014  
+splitOutRET_frac[2] 0.015  
+splitPERM_frac[2,1] 0.145  
+splitPERM_frac[2,2] 0.579  
+splitOutPERM_frac[2] 0.276  
+Area[1]       1.92
+Area[2]       0.75
+pressure_up[1]  1.64
+pressure_up[2]  1.88
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.740  
+splitFEED_frac[2] 0.260  
+splitRET_frac[1,1] 0.388  
+splitRET_frac[1,2] 0.212  
+splitOutRET_frac[1] 0.400  
+splitPERM_frac[1,1] 0.618  
+splitPERM_frac[1,2] 0.263  
+splitOutPERM_frac[1] 0.120  
+splitRET_frac[2,1] 0.715  
+splitRET_frac[2,2] 0.165  
+splitOutRET_frac[2] 0.119  
+splitPERM_frac[2,1] 0.936  
+splitPERM_frac[2,2] 0.064  
+splitOutPERM_frac[2] 0.000  
+Area[1]       3.11
+Area[2]       1.63
+pressure_up[1]  1.66
+pressure_up[2]  1.68
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.947  
+splitFEED_frac[2] 0.053  
+splitRET_frac[1,1] 0.702  
+splitRET_frac[1,2] 0.277  
+splitOutRET_frac[1] 0.021  
+splitPERM_frac[1,1] 0.119  
+splitPERM_frac[1,2] 0.631  
+splitOutPERM_frac[1] 0.250  
+splitRET_frac[2,1] 0.315  
+splitRET_frac[2,2] 0.270  
+splitOutRET_frac[2] 0.415  
+splitPERM_frac[2,1] 0.495  
+splitPERM_frac[2,2] 0.170  
+splitOutPERM_frac[2] 0.335  
+Area[1]       0.72
+Area[2]       1.40
+pressure_up[1]  1.18
+pressure_up[2]  1.50
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.987  
+splitFEED_frac[2] 0.013  
+splitRET_frac[1,1] 0.859  
+splitRET_frac[1,2] 0.108  
+splitOutRET_frac[1] 0.033  
+splitPERM_frac[1,1] 0.727  
+splitPERM_frac[1,2] 0.201  
+splitOutPERM_frac[1] 0.072  
+splitRET_frac[2,1] 0.622  
+splitRET_frac[2,2] 0.245  
+splitOutRET_frac[2] 0.132  
+splitPERM_frac[2,1] 0.247  
+splitPERM_frac[2,2] 0.480  
+splitOutPERM_frac[2] 0.273  
+Area[1]       0.39
+Area[2]       2.17
+pressure_up[1]  1.40
+pressure_up[2]  1.48
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.901  
+splitFEED_frac[2] 0.099  
+splitRET_frac[1,1] 0.707  
+splitRET_frac[1,2] 0.289  
+splitOutRET_frac[1] 0.005  
+splitPERM_frac[1,1] 0.642  
+splitPERM_frac[1,2] 0.356  
+splitOutPERM_frac[1] 0.002  
+splitRET_frac[2,1] 0.845  
+splitRET_frac[2,2] 0.153  
+splitOutRET_frac[2] 0.002  
+splitPERM_frac[2,1] 0.783  
+splitPERM_frac[2,2] 0.104  
+splitOutPERM_frac[2] 0.112  
+Area[1]       3.42
+Area[2]       1.79
+pressure_up[1]  1.64
+pressure_up[2]  1.67
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.873  
+splitFEED_frac[2] 0.127  
+splitRET_frac[1,1] 0.509  
+splitRET_frac[1,2] 0.281  
+splitOutRET_frac[1] 0.210  
+splitPERM_frac[1,1] 0.440  
+splitPERM_frac[1,2] 0.557  
+splitOutPERM_frac[1] 0.003  
+splitRET_frac[2,1] 0.763  
+splitRET_frac[2,2] 0.235  
+splitOutRET_frac[2] 0.002  
+splitPERM_frac[2,1] 0.720  
+splitPERM_frac[2,2] 0.243  
+splitOutPERM_frac[2] 0.036  
+Area[1]       4.48
+Area[2]       1.45
+pressure_up[1]  1.41
+pressure_up[2]  1.49
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.462  
+splitFEED_frac[2] 0.538  
+splitRET_frac[1,1] 0.149  
+splitRET_frac[1,2] 0.749  
+splitOutRET_frac[1] 0.103  
+splitPERM_frac[1,1] 0.519  
+splitPERM_frac[1,2] 0.249  
+splitOutPERM_frac[1] 0.232  
+splitRET_frac[2,1] 0.771  
+splitRET_frac[2,2] 0.194  
+splitOutRET_frac[2] 0.036  
+splitPERM_frac[2,1] 0.432  
+splitPERM_frac[2,2] 0.032  
+splitOutPERM_frac[2] 0.536  
+Area[1]       4.68
+Area[2]       2.03
+pressure_up[1]  1.48
+pressure_up[2]  1.64
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.933  
+splitFEED_frac[2] 0.067  
+splitRET_frac[1,1] 0.681  
+splitRET_frac[1,2] 0.063  
+splitOutRET_frac[1] 0.256  
+splitPERM_frac[1,1] 0.738  
+splitPERM_frac[1,2] 0.118  
+splitOutPERM_frac[1] 0.144  
+splitRET_frac[2,1] 0.965  
+splitRET_frac[2,2] 0.021  
+splitOutRET_frac[2] 0.014  
+splitPERM_frac[2,1] 0.416  
+splitPERM_frac[2,2] 0.558  
+splitOutPERM_frac[2] 0.026  
+Area[1]       1.01
+Area[2]       3.40
+pressure_up[1]  1.86
+pressure_up[2]  1.92
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.641  
+splitFEED_frac[2] 0.359  
+splitRET_frac[1,1] 0.899  
+splitRET_frac[1,2] 0.068  
+splitOutRET_frac[1] 0.032  
+splitPERM_frac[1,1] 0.309  
+splitPERM_frac[1,2] 0.677  
+splitOutPERM_frac[1] 0.014  
+splitRET_frac[2,1] 0.692  
+splitRET_frac[2,2] 0.099  
+splitOutRET_frac[2] 0.209  
+splitPERM_frac[2,1] 0.560  
+splitPERM_frac[2,2] 0.153  
+splitOutPERM_frac[2] 0.287  
+Area[1]       2.91
+Area[2]       4.04
+pressure_up[1]  1.85
+pressure_up[2]  1.96
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.990  
+splitFEED_frac[2] 0.010  
+splitRET_frac[1,1] 0.919  
+splitRET_frac[1,2] 0.081  
+splitOutRET_frac[1] 0.000  
+splitPERM_frac[1,1] 0.197  
+splitPERM_frac[1,2] 0.737  
+splitOutPERM_frac[1] 0.066  
+splitRET_frac[2,1] 0.052  
+splitRET_frac[2,2] 0.145  
+splitOutRET_frac[2] 0.802  
+splitPERM_frac[2,1] 0.950  
+splitPERM_frac[2,2] 0.044  
+splitOutPERM_frac[2] 0.006  
+Area[1]       4.34
+Area[2]       3.11
+pressure_up[1]  1.20
+pressure_up[2]  1.91
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.889  
+splitFEED_frac[2] 0.111  
+splitRET_frac[1,1] 0.406  
+splitRET_frac[1,2] 0.330  
+splitOutRET_frac[1] 0.263  
+splitPERM_frac[1,1] 0.237  
+splitPERM_frac[1,2] 0.465  
+splitOutPERM_frac[1] 0.297  
+splitRET_frac[2,1] 0.051  
+splitRET_frac[2,2] 0.874  
+splitOutRET_frac[2] 0.075  
+splitPERM_frac[2,1] 0.736  
+splitPERM_frac[2,2] 0.062  
+splitOutPERM_frac[2] 0.202  
+Area[1]       1.77
+Area[2]       1.80
+pressure_up[1]  1.78
+pressure_up[2]  1.87
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.934  
+splitFEED_frac[2] 0.066  
+splitRET_frac[1,1] 0.592  
+splitRET_frac[1,2] 0.291  
+splitOutRET_frac[1] 0.117  
+splitPERM_frac[1,1] 0.748  
+splitPERM_frac[1,2] 0.049  
+splitOutPERM_frac[1] 0.204  
+splitRET_frac[2,1] 0.492  
+splitRET_frac[2,2] 0.375  
+splitOutRET_frac[2] 0.133  
+splitPERM_frac[2,1] 0.958  
+splitPERM_frac[2,2] 0.031  
+splitOutPERM_frac[2] 0.011  
+Area[1]       2.75
+Area[2]       0.61
+pressure_up[1]  1.69
+pressure_up[2]  1.98
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.830  
+splitFEED_frac[2] 0.170  
+splitRET_frac[1,1] 0.441  
+splitRET_frac[1,2] 0.467  
+splitOutRET_frac[1] 0.092  
+splitPERM_frac[1,1] 0.669  
+splitPERM_frac[1,2] 0.293  
+splitOutPERM_frac[1] 0.038  
+splitRET_frac[2,1] 0.835  
+splitRET_frac[2,2] 0.020  
+splitOutRET_frac[2] 0.144  
+splitPERM_frac[2,1] 0.514  
+splitPERM_frac[2,2] 0.463  
+splitOutPERM_frac[2] 0.023  
+Area[1]       3.14
+Area[2]       2.65
+pressure_up[1]  1.18
+pressure_up[2]  1.56
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.883  
+splitFEED_frac[2] 0.117  
+splitRET_frac[1,1] 0.386  
+splitRET_frac[1,2] 0.566  
+splitOutRET_frac[1] 0.049  
+splitPERM_frac[1,1] 0.748  
+splitPERM_frac[1,2] 0.125  
+splitOutPERM_frac[1] 0.127  
+splitRET_frac[2,1] 0.540  
+splitRET_frac[2,2] 0.393  
+splitOutRET_frac[2] 0.068  
+splitPERM_frac[2,1] 0.624  
+splitPERM_frac[2,2] 0.065  
+splitOutPERM_frac[2] 0.311  
+Area[1]       1.49
+Area[2]       2.86
+pressure_up[1]  1.13
+pressure_up[2]  1.54
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.499  
+splitFEED_frac[2] 0.501  
+splitRET_frac[1,1] 0.229  
+splitRET_frac[1,2] 0.761  
+splitOutRET_frac[1] 0.010  
+splitPERM_frac[1,1] 0.507  
+splitPERM_frac[1,2] 0.467  
+splitOutPERM_frac[1] 0.026  
+splitRET_frac[2,1] 0.504  
+splitRET_frac[2,2] 0.149  
+splitOutRET_frac[2] 0.347  
+splitPERM_frac[2,1] 0.912  
+splitPERM_frac[2,2] 0.084  
+splitOutPERM_frac[2] 0.004  
+Area[1]       0.26
+Area[2]       4.56
+pressure_up[1]  1.66
+pressure_up[2]  1.85
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.664  
+splitFEED_frac[2] 0.336  
+splitRET_frac[1,1] 0.685  
+splitRET_frac[1,2] 0.119  
+splitOutRET_frac[1] 0.196  
+splitPERM_frac[1,1] 0.710  
+splitPERM_frac[1,2] 0.243  
+splitOutPERM_frac[1] 0.047  
+splitRET_frac[2,1] 0.868  
+splitRET_frac[2,2] 0.090  
+splitOutRET_frac[2] 0.041  
+splitPERM_frac[2,1] 0.865  
+splitPERM_frac[2,2] 0.109  
+splitOutPERM_frac[2] 0.026  
+Area[1]       0.76
+Area[2]       2.11
+pressure_up[1]  1.86
+pressure_up[2]  1.87
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.683  
+splitFEED_frac[2] 0.317  
+splitRET_frac[1,1] 0.266  
+splitRET_frac[1,2] 0.358  
+splitOutRET_frac[1] 0.375  
+splitPERM_frac[1,1] 0.465  
+splitPERM_frac[1,2] 0.035  
+splitOutPERM_frac[1] 0.500  
+splitRET_frac[2,1] 0.940  
+splitRET_frac[2,2] 0.059  
+splitOutRET_frac[2] 0.000  
+splitPERM_frac[2,1] 0.689  
+splitPERM_frac[2,2] 0.258  
+splitOutPERM_frac[2] 0.053  
+Area[1]       3.71
+Area[2]       3.76
+pressure_up[1]  1.61
+pressure_up[2]  1.84
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.668  
+splitFEED_frac[2] 0.332  
+splitRET_frac[1,1] 0.337  
+splitRET_frac[1,2] 0.353  
+splitOutRET_frac[1] 0.310  
+splitPERM_frac[1,1] 0.258  
+splitPERM_frac[1,2] 0.698  
+splitOutPERM_frac[1] 0.044  
+splitRET_frac[2,1] 0.537  
+splitRET_frac[2,2] 0.425  
+splitOutRET_frac[2] 0.038  
+splitPERM_frac[2,1] 0.908  
+splitPERM_frac[2,2] 0.019  
+splitOutPERM_frac[2] 0.073  
+Area[1]       4.08
+Area[2]       1.10
+pressure_up[1]  1.76
+pressure_up[2]  1.79
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+
+Random generated point
+splitFEED_frac[1] 0.877  
+splitFEED_frac[2] 0.123  
+splitRET_frac[1,1] 0.649  
+splitRET_frac[1,2] 0.307  
+splitOutRET_frac[1] 0.044  
+splitPERM_frac[1,1] 0.410  
+splitPERM_frac[1,2] 0.392  
+splitOutPERM_frac[1] 0.198  
+splitRET_frac[2,1] 0.604  
+splitRET_frac[2,2] 0.260  
+splitOutRET_frac[2] 0.137  
+splitPERM_frac[2,1] 0.247  
+splitPERM_frac[2,2] 0.710  
+splitOutPERM_frac[2] 0.043  
+Area[1]       4.49
+Area[2]       0.42
+pressure_up[1]  1.30
+pressure_up[2]  1.38
+pressure_down[1]  1.01
+pressure_down[2]  1.01
+Permeability is constant
+Perm[O2 of type A]  1.000000
+Perm[H2 of type A]  2.000000
+Perm[O2 of type B]  2.000000
+Perm[H2 of type B]  2.000000
+output prod 0.0001
+composition (O2) in output prod 0.0 <= 0.0001 <= 1.0
+composition (H2) in output prod 0.0 <= 0.0001 <= 1.0
+output waste 0.0001
+composition (O2) in output waste 0.0 <= 0.0001 <= 1.0
+composition (H2) in output waste 0.0 <= 0.0001 <= 1.0
+

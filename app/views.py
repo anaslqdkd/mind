@@ -1,4 +1,5 @@
 import os
+import subprocess
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
@@ -502,7 +503,6 @@ class MainWindow(QMainWindow):
         target.category.update_category()
 
     def update_mem_type_membranes(self, target: ParamMembraneSelect, source: ParamComponent):
-        debug_print("in update mem type membranes")
         target.set_membranes(source.get_items())
         target.category.update_category()
 
@@ -728,8 +728,6 @@ class CommandBuilder:
         self.write_command_script()
 
     def write_command_script(self, filename="run_command.sh"):
-        debug_print(self.args)
-        debug_print(self.command)
         filename = f"{self.param_registry["file_dir"].get_path()}/command.sh"
         dir_path = os.path.dirname(filename)
         if dir_path:
@@ -1030,12 +1028,15 @@ class PageParameters(QWidget):
 
         next_button = QPushButton("next")
 
+        command_button = CommandLauncherButton("/home/ash/mind/temp/command.sh")
+
         end_button_widget = QWidget()
         end_button_layout = QHBoxLayout(end_button_widget)
         end_button_layout.addStretch()
         next_button.clicked.connect(self.go_to_next_page)
         end_button_layout.addWidget(next_button)
         main_layout.addWidget(end_button_widget)
+        main_layout.addWidget(command_button)
 
         main_layout.addStretch()
 
@@ -1663,3 +1664,20 @@ def load_coef(filename):
                 economic[line[1]] = float(line[-1])
 
     return economic
+
+
+class CommandLauncherButton(QPushButton):
+    def __init__(self, script_path, terminal_cmd="alacritty", parent=None):
+        super().__init__("Run Command", parent)
+        self.script_path = script_path
+        self.terminal_cmd = terminal_cmd
+        self.clicked.connect(self.launch_terminal)
+
+    def launch_terminal(self):
+        # subprocess.Popen([self.terminal_cmd, "-e", f"bash {self.script_path}"])
+        # subprocess.Popen([self.terminal_cmd, "-e", "bash", self.script_path])
+        # subprocess.Popen(["alacritty", "-e", "bash", "/home/ash/mind/temp/command.sh"])
+        subprocess.Popen([
+        "alacritty", "-e", "bash", "-c",
+        f"{self.script_path}; read -p 'Done. Press enter...'"
+])

@@ -1,0 +1,28 @@
+# Set of membranes types
+set mem_types_set := A
+
+# number of gas (components)
+param nb_gas := 3
+
+# permeability values (mem_type component value) A PolyActive HZG 
+param Permeability :=
+A  N2	21.8
+A  CO2  1000
+A  O2   59.5 
+
+
+
+# thickness
+param thickness :=
+A := 1 
+
+
+# membrane output
+param mem_product :=
+A   PERM
+
+
+#param mem_type :=
+#1 A
+#2 A
+#3 B

@@ -1,0 +1,22 @@
+# Set of membranes types
+set mem_types_set := A
+
+# number of gas (components)
+param nb_gas := 5
+
+# permeability values (mem_type component value) UBE-H
+param Permeability :=
+A  CH4  69
+A  H2   138
+A  CO2  930
+A  CO   28
+A  H2O  5000
+
+
+# thickness
+param thickness :=
+A := 1
+
+# membrane output
+param mem_product :=
+A   RET
