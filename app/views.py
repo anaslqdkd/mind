@@ -48,7 +48,6 @@ from app.param_dict import params_dict
 from app.dependency_manager import DependencyManager
 
 # TODO: close button verification before quitting, to abort modifs
-# TODO: advanced button to unlock more "unusual" settings
 
 
 class MainWindow(QMainWindow):
@@ -157,7 +156,6 @@ class MainWindow(QMainWindow):
             if el in self.param_registry.keys():
                 self.param_registry[el].set_value(int(value))
 
-        # TODO: manage all other params
 
         for el, value in instance.items():
             if el in self.param_registry.keys():
@@ -172,7 +170,6 @@ class MainWindow(QMainWindow):
         res = {}
         filepath = "data/example_perm.dat"
         with open(filepath, "r") as file:
-            # TODO: see the diff between fixed and variable parser for perm
             perm_param = parser_fixed_permeability_data_simple(file)
             # perm_param = parser_fixed_permeability_data(file, res)
         # for key, value in perm_param.items():
@@ -496,7 +493,6 @@ class MainWindow(QMainWindow):
             # )
 
         register_param_dependencies(self.param_registry, dependency_manager)
-    # TODO: see to update only if not hidden, but pb with nb_gas ?
 
     def update_nb_gas(self, target: ParamInput, source: ParamComponentSelector):
         target.set_last_line_edit(int(source.get_value()))
@@ -720,15 +716,29 @@ class CommandBuilder:
         ]
 
     def build_command(self):
-        args = []
+        self.args = []
         for param_name in self.validated_params:
             if param_name in self.param_registry:
                 param = self.param_registry[param_name]
-                if hasattr(param, "file") and param.file == FILE.COMMAND:
+                if param.file == FILE.COMMAND:
                     arg = param.to_command_arg()
-                    if arg:
-                        args.append(arg)
-        return " ".join(args)
+                    if arg is not None and arg != "":
+                        self.args.append(arg)
+        self.command = " ".join(self.args)
+        self.write_command_script()
+
+    def write_command_script(self, filename="run_command.sh"):
+        debug_print(self.args)
+        debug_print(self.command)
+        filename = f"{self.param_registry["file_dir"].get_path()}/command.sh"
+        dir_path = os.path.dirname(filename)
+        if dir_path:
+            os.makedirs(dir_path, exist_ok=True)
+        with open(filename, "w") as f:
+            f.write("#!/bin/bash\n")
+            f.write(f"python3 -m mind.launcher {self.command}\n")
+# TODO: assert lb pressure <= ub pressure etc
+# TODO: parmeability varaible autorised only for bi-components
 
 
 class ConfigBuilder:
@@ -812,7 +822,6 @@ class ConfigBuilder:
 
 
 class DataBuilder:
-    # TODO: add to_data_entry for param fixed with input
     def __init__(self, params) -> None:
         self.param_registry = params
         self.validated_params = [

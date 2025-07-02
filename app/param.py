@@ -197,21 +197,29 @@ class ParamInput(Param):
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         if self.hidden:
-            # self.hide()
             return
-        # if type(self.default) == int:
-        #     line_edit = QSpinBox()
-        # else:
-        line_edit = QDoubleSpinBox()
+        # line_edit = QDoubleSpinBox()
+        if self.expected_type == int:
+            line_edit = QSpinBox()
+            if self.min_value is not None:
+                line_edit.setMinimum(int(self.min_value))
+            if self.max_value is not None:
+                line_edit.setMaximum(int(self.max_value))
+            if self.default is not None:
+                line_edit.setValue(int(self.default))
+            if self.step is not None:
+                line_edit.setSingleStep(int(self.step))
+        else:
+            line_edit = QDoubleSpinBox()
+            if self.min_value is not None:
+                line_edit.setMinimum(self.min_value)
+            if self.max_value is not None:
+                line_edit.setMaximum(self.max_value)
+            if self.default is not None:
+                line_edit.setValue(self.default)
+            if self.step is not None:
+                line_edit.setSingleStep(self.step)
 
-        if self.min_value is not None:
-            line_edit.setMinimum(self.min_value)
-        if self.max_value is not None:
-            line_edit.setMaximum(self.max_value)
-        if self.default is not None:
-            line_edit.setValue(self.default)
-        if self.step is not None:
-            line_edit.setSingleStep(self.step)
         header = self.build_header(label, self.description, self.optional)
         self.header = header
         grid_layout.addWidget(self.header, row, 0)
@@ -230,9 +238,7 @@ class ParamInput(Param):
 
     def set_value(self, value):
         if self.line_edit is not None:
-            # For QDoubleSpinBox
             if hasattr(self.line_edit, "setDecimals"):
-                # Set decimals based on value precision
                 if isinstance(value, float):
                     str_val = str(value)
                     if '.' in str_val:
@@ -243,7 +249,27 @@ class ParamInput(Param):
                 else:
                     self.line_edit.setDecimals(0)
             self.line_edit.setMaximum(1e10)
-            self.line_edit.setValue(value)
+            if self.expected_type == int:
+                self.line_edit.setValue(int(value))
+            else:
+                self.line_edit.setValue(float(value))
+
+    # def set_value(self, value):
+    #     if self.line_edit is not None:
+    #         # For QDoubleSpinBox
+    #         if hasattr(self.line_edit, "setDecimals"):
+    #             # Set decimals based on value precision
+    #             if isinstance(value, float):
+    #                 str_val = str(value)
+    #                 if '.' in str_val:
+    #                     decimals = len(str_val.split('.')[-1].rstrip('0'))
+    #                 else:
+    #                     decimals = 2
+    #                 self.line_edit.setDecimals(decimals)
+    #             else:
+    #                 self.line_edit.setDecimals(0)
+    #         self.line_edit.setMaximum(1e10)
+    #         self.line_edit.setValue(value)
 
     def set_last_line_edit(self, value):
         self.last_line_edit = value
@@ -251,13 +277,24 @@ class ParamInput(Param):
     def restore_values(self):
         if self.line_edit is not None and self.last_line_edit != "":
             try:
-                value = int(self.last_line_edit)
-            except ValueError:
-                try:
+                if self.expected_type == int:
+                    value = int(float(self.last_line_edit))
+                else:
                     value = float(self.last_line_edit)
-                except ValueError:
-                    return
+            except ValueError:
+                return
             self.line_edit.setValue(value)
+
+    # def restore_values(self):
+    #     if self.line_edit is not None and self.last_line_edit != "":
+    #         try:
+    #             value = int(self.last_line_edit)
+    #         except ValueError:
+    #             try:
+    #                 value = float(self.last_line_edit)
+    #             except ValueError:
+    #                 return
+    #         self.line_edit.setValue(value)
 
     def store_value(self):
         if not self.hidden:
@@ -502,18 +539,21 @@ class ParamInputWithUnity(Param):
         line_edit = QSpinBox()
         combo_box = QComboBox()
         combo_box.addItems(self.values)
-        grid_layout.addItem(
-            QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum),
-            row,
-            1,
-        )
+        # grid_layout.addItem(
+        #     QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum),
+        #     row,
+        #     1,
+        # )
         self.line_edit = line_edit
         self.combo_box = combo_box
 
         self.restore_value()
 
-        grid_layout.addWidget(self.line_edit, row, 2)
-        grid_layout.addWidget(self.combo_box, row, 3)
+        grid_layout.addWidget(self.line_edit, row, 1)
+        grid_layout.addWidget(self.combo_box, row, 2)
+
+    # TODO: add float/int separation here
+    # TODO: add default values everywhere
 
     def restore_value(self):
         if self.last_combo_box:
@@ -776,6 +816,7 @@ class ParamComponent(Param):
 
         # update method
         if self.extra_rows > 0:
+            debug_print("here", self.extra_rows)
             for i in range(self.extra_rows):
                 combo = QComboBox()
                 combo.setPlaceholderText("Extra input")
@@ -783,9 +824,6 @@ class ParamComponent(Param):
                 combo.addItems(available_values)
                 if self.last_combo_boxes and i < len(self.last_combo_boxes):
                     combo.setCurrentText(self.last_combo_boxes[i])
-                combo.setSizePolicy(
-                    QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed
-                )
                 remove_button = QPushButton("✕")
                 remove_button.setFixedWidth(30)
                 remove_button.clicked.connect(
@@ -793,8 +831,8 @@ class ParamComponent(Param):
                         c, b, grid_layout
                     )
                 )
-                grid_layout.addWidget(combo, row, 2)
-                grid_layout.addWidget(remove_button, row, 3)
+                grid_layout.addWidget(combo, row, 1)
+                grid_layout.addWidget(remove_button, row, 2)
                 self.combo_boxes.append(combo)
                 row += 1
 
@@ -803,7 +841,7 @@ class ParamComponent(Param):
         available_values = [v for v in self.values if v not in used_values]
         extra_combo.addItems(available_values)
         self.combo_boxes.append(extra_combo)
-        grid_layout.addWidget(extra_combo, row, 2)
+        grid_layout.addWidget(extra_combo, row, 1)
         extra_combo.currentIndexChanged.connect(
             lambda: self.add_component_row(row, grid_layout)
         )
@@ -1851,7 +1889,6 @@ class ParamFixedPerm(Param):
 
 # TODO: search filter
 # TODO: restore the size after the collapsable menu were disabled
-# TODO: solve the problem with dynamic resizing of grid fields
 
 # -----------------------------------------------------------
 class ParamFixedMembrane(Param):
@@ -2030,7 +2067,7 @@ class ParamMembraneSelect(Param):
         debug_print(self.last_combo_boxes)
 
     def row_span(self) -> int:
-        return 2 + len(self.membranes)
+        return 3 + len(self.membranes)
 
     def to_perm_entry(self) -> Optional[str]:
         if self.hidden:
@@ -2178,8 +2215,8 @@ class ParamFixedComponent(Param):
         self.max_value = max_value
         self.step = step
         self.decimals = decimals
+        self.expected_type = expected_type
 
-    # TODO: restore method
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         header = self.build_header(label, self.description, self.optional)
