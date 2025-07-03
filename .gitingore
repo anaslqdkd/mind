@@ -1,3 +1,5 @@
 app/__pycache__/
+mind/__pycache__/
 *.pyc
+mind/env/
 

@@ -92,19 +92,14 @@ class SolverObject:
             if self.is_gams_model:
                 self.options.append(f'option ResLim={self.maxtime};')
                 self.options.append('option SysOut = On;')
+            elif self.the_solver.name == "ipopt":
+                self.the_solver.options['max_cpu_time'] = self.maxtime
             else:
                 # For knitro initialize options before solve
-                if self.solver_name.lower() == "knitroampl":
-                    self.the_solver.options['presolve'] = 0
-                    self.the_solver.options['outlev'] = 3
-                    self.the_solver.options['outmode'] = 1
-                    self.the_solver.options['maxtime_cpu'] = self.maxtime
-                elif self.solver_name.lower() == "ipopt":
-                    self.the_solver.options['max_cpu_time'] = self.maxtime
-                # self.the_solver.options['presolve'] = 0
-                # self.the_solver.options['outlev'] = 3
-                # self.the_solver.options['outmode'] = 1
-                # self.the_solver.options['maxtime_cpu'] = self.maxtime
+                self.the_solver.options['presolve'] = 0
+                self.the_solver.options['outlev'] = 3
+                self.the_solver.options['outmode'] = 1
+                self.the_solver.options['maxtime_cpu'] = self.maxtime
                 # self.the_solver.options['feastol'] = 1.0e-5 #added for test
 
     def call_solver(

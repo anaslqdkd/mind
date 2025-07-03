@@ -1,4 +1,4 @@
-#!/home/ash/doc/mind/doc2/mind/env/bin/python3.11
+#!/home/ash/mind/mind/env/bin/python3.11
 # -*- coding: utf-8 -*-
 import re
 import sys
