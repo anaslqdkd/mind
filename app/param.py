@@ -2452,122 +2452,191 @@ class ParamGrid(Param):
         file: FILE,
         label: str,
         depends_on: Optional[dict[str, DependencyType]],
-        hidden: bool = False,
-        nb_components: int = 0,
         optional: bool = False,
         description: str = "",
-        expected_type=float,
-        min_value: float = 0.0,
-        max_value: float = 1e6,
-        step: float = 1.0,
-        decimals: int = 2,
+        expected_type=str,
+        hidden: bool = False,
     ) -> None:
         super().__init__(name, file, depends_on=depends_on, description=description, label=label)
-        self.nb_components = nb_components
         self.checkbox = None
-        self.grid_widgets = []
+        self.combo_boxes = []
+        self.combo_boxes2 = []
+        self.extra_rows = 0
+        self.last_combo_boxes = []
+        self.last_combo_boxes2 = []
         self.spin_boxes = []
-        self.last_matrix = [
-            [str(min_value) for _ in range(nb_components)]
-            for _ in range(nb_components)
-        ]
-        self.min_value = min_value
-        self.max_value = max_value
-        self.step = step
+        self.last_spin_boxes: list[str] = []
+        self.hidden = hidden
+        self.values = []
+        self.manager = None
 
-    def build_widget(self, row: int, label: str, grid_layout):
-
+    def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         self.checkbox = QCheckBox(label)
-        self.checkbox.setChecked(False)
+        self.checkbox.setChecked(True)
         self.checkbox.stateChanged.connect(self._on_checkbox_changed)
-        grid_layout.addWidget(self.checkbox, row, 0, 1, self.nb_components + 1)
+        grid_layout.addWidget(self.checkbox, row, 0, 1, 2)
+        self._build_component_grid(row + 1, grid_layout)
+        self._set_grid_visible(True)
+
+    def _build_component_grid(self, row: int, grid_layout: QGridLayout):
         self.grid_widgets = []
-        self._build_matrix_grid(row + 1, grid_layout)
-        self._set_grid_visible(False)
-
-    def _build_matrix_grid(self, row: int, grid_layout):
-
-        # Header row
-        grid_layout.addWidget(QLabel(""), row, 0)
-        for j in range(self.nb_components):
-            header = QLabel(f"#{j+1}")
-            grid_layout.addWidget(header, row, j + 1)
-            self.grid_widgets.append(header)
-        # Matrix rows
+        self.combo_boxes = []
+        self.combo_boxes2 = []
         self.spin_boxes = []
-        for i in range(self.nb_components):
-            row_label = QLabel(f"#{i+1}")
-            grid_layout.addWidget(row_label, row + i + 1, 0)
-            self.grid_widgets.append(row_label)
-            row_spin = []
-            for j in range(self.nb_components):
-                spin = QDoubleSpinBox()
-                spin.setMinimum(self.min_value)
-                spin.setMaximum(self.max_value)
-                spin.setSingleStep(self.step)
-                # spin.setDecimals(self.decimals)
-                spin.setValue(float(self.last_matrix[i][j]))
-                grid_layout.addWidget(spin, row + i + 1, j + 1)
-                self.grid_widgets.append(spin)
-                row_spin.append(spin)
-            self.spin_boxes.append(row_spin)
-        # self.restore_value()
+
+        if self.extra_rows > 0:
+            for i in range(self.extra_rows):
+                combo = QComboBox()
+                combo2 = QComboBox()
+                spin_box = QSpinBox()
+                combo.setPlaceholderText("Extra input 1")
+                combo.addItems(self.values)
+                combo2.addItems(self.values)
+                if self.last_combo_boxes and i < len(self.last_combo_boxes):
+                    combo.setCurrentText(self.last_combo_boxes[i])
+                if self.last_combo_boxes2 and i < len(self.last_combo_boxes2):
+                    combo2.setCurrentText(self.last_combo_boxes2[i])
+                if self.last_spin_boxes and i < len(self.last_spin_boxes):
+                    spin_box.setValue(int(self.last_spin_boxes[i]))
+                remove_button = QPushButton("✕")
+                remove_button.setFixedWidth(30)
+                remove_button.clicked.connect(
+                    lambda _, c=combo, c2=combo2, b=remove_button, a=spin_box: self.remove_widget_pair(
+                        c, c2, b, grid_layout, a
+                    )
+                )
+                grid_layout.addWidget(QLabel(self.name), row, 1)
+                grid_layout.addWidget(combo, row, 2)
+                grid_layout.addWidget(combo2, row, 3)
+                grid_layout.addWidget(spin_box, row, 4)
+                grid_layout.addWidget(remove_button, row, 5)
+                self.combo_boxes.append(combo)
+                self.combo_boxes2.append(combo2)
+                self.spin_boxes.append(spin_box)
+                self.grid_widgets.extend([combo, combo2, spin_box, remove_button])
+                row += 1
+
+        extra_combo = QComboBox()
+        extra_combo.setPlaceholderText("Extra input ")
+        extra_combo.addItems(self.values)
+        self.combo_boxes.append(extra_combo)
+        grid_layout.addWidget(extra_combo, row, 2)
+        extra_combo.currentIndexChanged.connect(
+            lambda: self.add_component_row(row, grid_layout)
+        )
+
+    def remove_widget_pair(
+            self, widget1: QWidget, widget2: QWidget, widget3: QWidget, layout: QGridLayout, widget4: Optional[QWidget] = None, 
+    ):
+        layout.removeWidget(widget1)
+        layout.removeWidget(widget2)
+        layout.removeWidget(widget3)
+        layout.removeWidget(widget4)
+        widget1.deleteLater()
+        widget2.deleteLater()
+        widget3.deleteLater()
+        if widget4 is not None:
+            widget4.deleteLater()
+        if widget1 in self.combo_boxes:
+            self.combo_boxes.remove(widget1)
+        if widget2 in self.combo_boxes2:
+            self.combo_boxes2.remove(widget2)
+        if widget4 in self.spin_boxes:
+            self.spin_boxes.remove(widget4)
+
+        self.extra_rows = max(0, self.extra_rows - 1)
+        value = widget1.currentText()
+        value2 = widget2.currentText()
+        if value in self.last_combo_boxes:
+            self.last_combo_boxes.remove(value)
+        if value2 in self.last_combo_boxes2:
+            self.last_combo_boxes2.remove(value2)
+        self.category.update_category()
+
+    def add_component_row(self, row: int, grid_layout: QGridLayout):
+        self.component_base_row = row
+        self.extra_rows += 1
+
+        combo = QComboBox()
+        combo.setPlaceholderText("BB input 1")
+        combo.addItems(self.values)
+        combo2 = QComboBox()
+        combo2.setPlaceholderText("BB input 2")
+        combo2.addItems(self.values)
+        combo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        combo2.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        self.combo_boxes.append(combo)
+        self.combo_boxes2.append(combo2)
+
+        remove_button = QPushButton("✕")
+        remove_button.setFixedWidth(30)
+        remove_button.clicked.connect(
+            lambda _, c=combo, c2=combo2, b=remove_button: self.remove_widget_pair(
+                c, c2, b, grid_layout
+            )
+        )
+
+        grid_layout.addWidget(combo, row + 1, 2)
+        grid_layout.addWidget(combo2, row + 1, 3)
+        grid_layout.addWidget(remove_button, row + 1, 4)
+
+        combo.currentIndexChanged.connect(
+            lambda: self.add_component_row(row + 1, grid_layout)
+        )
+        combo2.currentIndexChanged.connect(
+            lambda: self.add_component_row(row + 1, grid_layout)
+        )
+
+        self.category.update_category()
+
+    def set_values(self, values: list[str]):
+        self.values = values
+
+    def store_value(self):
+        self.last_combo_boxes.clear()
+        self.last_combo_boxes2.clear()
+        self.last_spin_boxes.clear()
+        for combo in self.combo_boxes:
+            if combo.currentText() != "":
+                self.last_combo_boxes.append(combo.currentText())
+        for combo2 in self.combo_boxes2:
+            if combo2.currentText() != "":
+                self.last_combo_boxes2.append(combo2.currentText())
+        for spin_box in self.spin_boxes:
+            self.last_spin_boxes.append(spin_box.value())
 
     def _set_grid_visible(self, visible: bool):
-        for widget in self.grid_widgets:
+        for widget in getattr(self, "grid_widgets", []):
             widget.setVisible(visible)
 
     def _on_checkbox_changed(self, state):
         self._set_grid_visible(bool(state))
         if not state:
-            self.last_matrix = [
-                [str(self.min_value) for _ in range(self.nb_components)]
-                for _ in range(self.nb_components)
-            ]
-        # else:
-        #     self.restore_value()
+            self.last_combo_boxes.clear()
+            self.last_combo_boxes2.clear()
+        else:
+            self.store_value()
 
     def row_span(self) -> int:
-        return 3 + self.nb_components
-
-    def set_components(self, nb_components: int):
-        self.nb_components  = nb_components
-
-    def get_value(self):
-        if self.checkbox and self.checkbox.isChecked():
-            matrix = []
-            for i in range(self.nb_components):
-                row = []
-                for j in range(self.nb_components):
-                    row.append(self.spin_boxes[i][j].value())
-                matrix.append(row)
-            return matrix
-        return [
-            [self.min_value for _ in range(self.nb_components)]
-            for _ in range(self.nb_components)
-        ]
+        return 3 + self.extra_rows
 
     def to_data_entry(self) -> Optional[str]:
         if self.checkbox and self.checkbox.isChecked():
-            lines = []
-            for i in range(self.nb_components):
-                for j in range(self.nb_components):
-                    lines.append(
-                        f"{self.name}:#{i+1},#{j+1} {self.spin_boxes[i][j].value():.{self.decimals}f}"
-                    )
-            return "\n".join(lines)
+            return super().to_data_entry()
         return None
 
-    def store_value(self):
-        pass
-
-    def to_mask_entry(self):
-        pass
+    def to_mask_entry(self) -> str:
+        lines = []
+        for i, value in enumerate(self.last_spin_boxes):
+            lines.append(f"{self.name}:#{self.last_combo_boxes[i]},#{self.last_combo_boxes2[i]} {value}")
+        return "\n".join(lines)
 
     def to_file(self) -> str:
         if self.checkbox and self.checkbox.isChecked():
-            return self.to_data_entry()
+            return super().to_file()
         return ""
+    
+    
 # -----------------------------------------------------------
 class CollapsibleGroupBox(QGroupBox):
     def __init__(self, title, parent=None):

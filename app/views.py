@@ -526,16 +526,16 @@ class MainWindow(QMainWindow):
                 param_registry["fix pressure_down"],
                 self.update_fix_area,
             )
-            # dependency_manager.add_dependency(
-            #     param_registry["num_membranes"],
-            #     param_registry["fix splitRET_frac"],
-            #     self.update_fix_matrix,
-            # )
-            # dependency_manager.add_dependency(
-            #     param_registry["num_membranes"],
-            #     param_registry["fix splitPERM_frac"],
-            #     self.update_fix_matrix,
-            # )
+            dependency_manager.add_dependency(
+                param_registry["num_membranes"],
+                param_registry["fix splitRET_frac"],
+                self.update_fix_matrix,
+            )
+            dependency_manager.add_dependency(
+                param_registry["num_membranes"],
+                param_registry["fix splitPERM_frac"],
+                self.update_fix_matrix,
+            )
 
         register_param_dependencies(self.param_registry, dependency_manager)
 
@@ -620,7 +620,7 @@ class MainWindow(QMainWindow):
 
     def update_fix_matrix(self, target: ParamGrid, source: ParamInput):
         debug_print("in update fix matrix")
-        target.set_components(int(source.get_value()))
+        target.set_values([str(i) for i in range(1, int(source.get_value()) + 1)])
         target.category.update_category()
 
     def store_value(self):
@@ -903,7 +903,7 @@ class MaskBuilder:
                 param = self.param_registry[param_name]
                 if param.file == FILE.MASK:
                     arg = param.to_mask_entry()
-                    if arg is not None:
+                    if arg is not None and arg != "":
                         self.mask_args.append(arg)
         self.write_data()
         pass

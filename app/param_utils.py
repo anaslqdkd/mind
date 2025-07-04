@@ -266,7 +266,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
             return ParamGrid(
                 name,
                 file,
-                nb_components=3,
+                # nb_components=3,
                 # values=values,
                 # components=["buu", "gaga"],
                 label=label,
