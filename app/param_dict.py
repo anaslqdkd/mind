@@ -898,6 +898,66 @@ params_dict = {
         "optional": False,
         "default": 0.8746,
     },
+
+    # -----------------------------------------------------------
+    "fix area": {
+        "name": "fix area",
+        "label": "Fix membrane module area (fix area)",
+        "param_type": ParamType.FIXED_COMPONENT_WITH_CHECKBOX,
+        "file": FILE.MASK,
+        "optional": False,
+    },
+    "fix splitFEED_frac": {
+        "name": "fix splitFEED_frac ",
+        "label": "Fix feed distribution to modules (fix splitFEED_frac)",
+        "param_type": ParamType.FIXED_COMPONENT_WITH_CHECKBOX,
+        "file": FILE.MASK,
+        "optional": False,
+    },
+    "fix pressure_up": {
+        "name": "fix pressure_up",
+        "label": "Fix module pressures upstream (fix pressure_up)",
+        "param_type": ParamType.FIXED_COMPONENT_WITH_CHECKBOX,
+        "file": FILE.MASK,
+        "optional": False,
+    },
+    "fix pressure_down": {
+        "name": "fix pressure_down",
+        "label": "Fix module pressures downstream (fix pressure_down)",
+        "param_type": ParamType.FIXED_COMPONENT_WITH_CHECKBOX,
+        "file": FILE.MASK,
+        "optional": False,
+    },
+    "fix splitRET_frac": {
+        "name": "fix splitRET_frac",
+        "label": "Fix inter-stage split ret (fix splitRET_frac)",
+        "param_type": ParamType.FIXED_COMPONENT_WITH_CHECKBOX_MATRIX,
+        "file": FILE.MASK,
+        "optional": False,
+    },
+    "fix splitPERM_frac": {
+        "name": "fix splitPERM_frac",
+        "label": "Fix inter-stage split perm (fix splitPERM_frac)",
+        "param_type": ParamType.FIXED_COMPONENT_WITH_CHECKBOX_MATRIX,
+        "file": FILE.MASK,
+        "optional": False,
+        "description": "Set the fraction of retentate/permeate from stage i entering stage j"
+    },
+    "fix splitOutPERM_frac": {
+        "name": "fix splitOutPERM_frac",
+        "label": "Fix output perm (fix splitOutPERM_frac)",
+        "param_type": ParamType.FIXED_COMPONENT_WITH_CHECKBOX,
+        "file": FILE.MASK,
+        "optional": False,
+    },
+    "fix splitOutRET_frac": {
+        "name": "fix splitOutRET_frac",
+        "label": "Fix output ret (fix splitOutRET_frac)",
+        "param_type": ParamType.FIXED_COMPONENT_WITH_CHECKBOX,
+        "file": FILE.MASK,
+        "optional": False,
+    },
+    # ----------fixing var --------------------------------------
     # TODO: add fixing variables
     # TODO: add descritions everywhere, especially the eco params
     # TODO: add proper labels for the eco params

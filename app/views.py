@@ -34,9 +34,11 @@ from app.param import (
     ParamComponentSelector,
     ParamFileChooser,
     ParamFixedComponent,
+    ParamFixedComponentWithCheckbox,
     ParamFixedMembrane,
     ParamFixedPerm,
     ParamFixedWithInput,
+    ParamGrid,
     ParamInput,
     ParamMemType,
     ParamMembraneSelect,
@@ -157,7 +159,6 @@ class MainWindow(QMainWindow):
             if el in self.param_registry.keys():
                 self.param_registry[el].set_value(int(value))
 
-
         for el, value in instance.items():
             if el in self.param_registry.keys():
                 if isinstance(self.param_registry[el], ParamBoolean):
@@ -230,7 +231,12 @@ class MainWindow(QMainWindow):
                 "generations",
                 "n1_element",
             ],
-            "Components": ["set components", "param XIN", "param molarmass", "param nb_gas"],
+            "Components": [
+                "set components",
+                "param XIN",
+                "param molarmass",
+                "param nb_gas",
+            ],
             "Product constraints": [
                 "param final_product",
                 "param normalized_product_qt",
@@ -292,6 +298,16 @@ class MainWindow(QMainWindow):
             "Vacuum Pump/Expander Efficiency": [
                 "param eta_cp",
             ],
+            "Fixing": [
+                "fix area",
+                "fix splitFEED_frac",
+                "fix pressure_up",
+                "fix pressure_down",
+                "fix splitRET_frac",
+                "fix splitPERM_frac",
+                "fix splitOutPERM_frac",
+                "fix splitOutRET_frac",
+            ],
         }
 
     def _build_builders(self):
@@ -335,6 +351,7 @@ class MainWindow(QMainWindow):
                 self.category_instances["Compressor/Expander Factors"],
                 self.category_instances["Vacuum Pump/Expander Efficiency"],
             ],
+            "Fixing": [self.category_instances["Fixing"]]
         }
         self.tabs_names = {
             "Program options": ["Basic", "Advanced"],
@@ -342,6 +359,7 @@ class MainWindow(QMainWindow):
             "General Data": ["Components", "Product", "Process"],
             "Permeability": ["Membrane", "Options"],
             "Economics": ["Eco", "Eco2", "Eco3"],
+            "Fixing": ["Fixing"],
         }
         for page, tab_list in self.tabs_names.items():
             self.sidebar.addItem(page)
@@ -487,11 +505,36 @@ class MainWindow(QMainWindow):
                 param_registry["param mem_type"],
                 self.update_mem_type_membranes,
             )
-            # dependency_manager.add_dependency(
-            #     param_registry["param mem_type"],
-            #     param_registry["num_membranes"],
-            #     self.update_mem_type,
-            # )
+            dependency_manager.add_dependency(
+                param_registry["num_membranes"],
+                param_registry["fix area"],
+                self.update_fix_area,
+            )
+            dependency_manager.add_dependency(
+                param_registry["num_membranes"],
+                param_registry["fix splitFEED_frac"],
+                self.update_fix_area,
+            )
+            dependency_manager.add_dependency(
+                param_registry["num_membranes"],
+                param_registry["fix pressure_up"],
+                self.update_fix_area,
+            )
+            dependency_manager.add_dependency(
+                param_registry["num_membranes"],
+                param_registry["fix pressure_down"],
+                self.update_fix_area,
+            )
+            dependency_manager.add_dependency(
+                param_registry["num_membranes"],
+                param_registry["fix splitRET_frac"],
+                self.update_fix_matrix,
+            )
+            dependency_manager.add_dependency(
+                param_registry["num_membranes"],
+                param_registry["fix splitPERM_frac"],
+                self.update_fix_matrix,
+            )
 
         register_param_dependencies(self.param_registry, dependency_manager)
 
@@ -502,15 +545,15 @@ class MainWindow(QMainWindow):
         target.set_membranes(source.get_items())
         target.category.update_category()
 
-    def update_mem_type_membranes(self, target: ParamMembraneSelect, source: ParamComponent):
+    def update_mem_type_membranes(
+        self, target: ParamMembraneSelect, source: ParamComponent
+    ):
         target.set_membranes(source.get_items())
         target.category.update_category()
-
 
     def update_mem_type(self, target: ParamMemType, source: ParamInput):
         target.set_floors(int(float(source.get_value())))
         target.category.update_category()
-
 
     def update_final_product(self, target: ParamSelect, source: ParamComponentSelector):
         target.set_values(source.selected_components)
@@ -566,6 +609,18 @@ class MainWindow(QMainWindow):
         else:
             target.hide()
             target.category.update_category()
+
+    def update_fix_area(self, target: ParamFixedComponentWithCheckbox, source: ParamInput):
+        target.set_components([str(i) for i in range(1, int(source.get_value()) + 1)])
+        target.category.update_category()
+
+    def update_fix_matrix(self, target: ParamGrid, source: ParamInput):
+        debug_print("in update fix matrix")
+        target.set_components(int(source.get_value()))
+        target.category.update_category()
+
+    def store_value(self):
+        pass
 
     def update_config_algo_params(self, target: ParamInput, source: ParamSelect):
         var_params = [
@@ -735,6 +790,8 @@ class CommandBuilder:
         with open(filename, "w") as f:
             f.write("#!/bin/bash\n")
             f.write(f"python3 -m mind.launcher {self.command}\n")
+
+
 # TODO: assert lb pressure <= ub pressure etc
 # TODO: parmeability varaible autorised only for bi-components
 
@@ -811,9 +868,9 @@ class ConfigBuilder:
 
         epsilon = "{'At': 0.3, 'press_up_f': 0.2, 'press_down_f': 0.2, 'feed': 0.3, 'perm_ref': 0.1, 'alpha': 0.1, 'delta': 0.1, 'xout': 0.0001}"
         config["tuning"]["epsilon"] = epsilon
-        config["instance"]["fname"] = f"{dir}/data.dat" 
-        config["instance"]["fname_perm"] = f"{dir}/perm.dat" 
-        config["instance"]["fname_eco"] = f"{dir}/eco.dat" 
+        config["instance"]["fname"] = f"{dir}/data.dat"
+        config["instance"]["fname_perm"] = f"{dir}/perm.dat"
+        config["instance"]["fname_eco"] = f"{dir}/eco.dat"
 
         with open(filename, "w") as configfile:
             config.write(configfile)
@@ -839,6 +896,7 @@ class DataBuilder:
             "param ub_press_up",
         ]
         self.data_args = []
+
     # TODO: see for lb_perc_prod, ub_perc prod, what are the components
 
     def build_data(self):
@@ -1677,7 +1735,12 @@ class CommandLauncherButton(QPushButton):
         # subprocess.Popen([self.terminal_cmd, "-e", f"bash {self.script_path}"])
         # subprocess.Popen([self.terminal_cmd, "-e", "bash", self.script_path])
         # subprocess.Popen(["alacritty", "-e", "bash", "/home/ash/mind/temp/command.sh"])
-        subprocess.Popen([
-        "alacritty", "-e", "bash", "-c",
-        f"{self.script_path}; read -p 'Done. Press enter...'"
-])
+        subprocess.Popen(
+            [
+                "alacritty",
+                "-e",
+                "bash",
+                "-c",
+                f"{self.script_path}; read -p 'Done. Press enter...'",
+            ]
+        )

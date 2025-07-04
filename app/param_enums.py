@@ -23,6 +23,7 @@ class ParamType(enum.Enum):
     FIXED_MEMBRANE_SELECT = enum.auto()
     FIXED_MEM_TYPE = enum.auto()
     FIXED_COMPONENT_WITH_CHECKBOX = enum.auto()
+    FIXED_COMPONENT_WITH_CHECKBOX_MATRIX = enum.auto()
 
 
 # -----------------------------------------------------------
@@ -43,3 +44,4 @@ class FILE(enum.Enum):
     PERM = enum.auto()
     ECO = enum.auto()
     COMMAND = enum.auto()
+    MASK = enum.auto()

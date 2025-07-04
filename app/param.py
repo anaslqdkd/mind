@@ -2285,7 +2285,6 @@ class ParamFixedComponentWithCheckbox(ParamFixedComponent):
         self.grid_widgets = []
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
-        from PyQt5.QtWidgets import QCheckBox
         self.checkbox = QCheckBox(label)
         self.checkbox.setChecked(False)
         self.checkbox.stateChanged.connect(self._on_checkbox_changed)
@@ -2295,10 +2294,7 @@ class ParamFixedComponentWithCheckbox(ParamFixedComponent):
         self._set_grid_visible(False)
 
     def _build_components_grid(self, row: int, grid_layout: QGridLayout):
-        from PyQt5.QtWidgets import QLabel, QDoubleSpinBox
-        header = self.build_header(self.label, self.description, self.optional)
-        grid_layout.addWidget(header, row, 0)
-        self.grid_widgets.append(header)
+        # FIXME: add a way to show description (build_header with checkbox ?)
         grid_layout.addWidget(QLabel("Component"), row + 1, 0)
         grid_layout.addWidget(QLabel("Value"), row + 1, 1)
         self.grid_widgets.extend([grid_layout.itemAtPosition(row + 1, 0).widget(),
@@ -2330,6 +2326,11 @@ class ParamFixedComponentWithCheckbox(ParamFixedComponent):
             self.last_spin_boxes.clear()
         else:
             self.restore_value()
+    def row_span(self) -> int:
+        return 3 + len(self.components)
+
+    def store_value(self):
+        pass
 
     def get_value(self):
         if self.checkbox and self.checkbox.isChecked():
@@ -2349,6 +2350,128 @@ class ParamFixedComponentWithCheckbox(ParamFixedComponent):
     def to_file(self) -> str:
         if self.checkbox and self.checkbox.isChecked():
             return super().to_file()
+        return ""
+# -----------------------------------------------------------
+class ParamGrid(Param):
+    def __init__(
+        self,
+        name: str,
+        file: FILE,
+        label: str,
+        depends_on: Optional[dict[str, DependencyType]],
+        hidden: bool = False,
+        nb_components: int = 0,
+        optional: bool = False,
+        description: str = "",
+        expected_type=float,
+        min_value: float = 0.0,
+        max_value: float = 1e6,
+        step: float = 1.0,
+        decimals: int = 2,
+    ) -> None:
+        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
+        self.nb_components = nb_components
+        self.checkbox = None
+        self.grid_widgets = []
+        self.spin_boxes = []
+        self.last_matrix = [
+            [str(min_value) for _ in range(nb_components)]
+            for _ in range(nb_components)
+        ]
+        self.min_value = min_value
+        self.max_value = max_value
+        self.step = step
+
+    def build_widget(self, row: int, label: str, grid_layout):
+
+        self.checkbox = QCheckBox(label)
+        self.checkbox.setChecked(False)
+        self.checkbox.stateChanged.connect(self._on_checkbox_changed)
+        grid_layout.addWidget(self.checkbox, row, 0, 1, self.nb_components + 1)
+        self.grid_widgets = []
+        self._build_matrix_grid(row + 1, grid_layout)
+        self._set_grid_visible(False)
+
+    def _build_matrix_grid(self, row: int, grid_layout):
+
+        # Header row
+        grid_layout.addWidget(QLabel(""), row, 0)
+        for j in range(self.nb_components):
+            header = QLabel(f"#{j+1}")
+            grid_layout.addWidget(header, row, j + 1)
+            self.grid_widgets.append(header)
+        # Matrix rows
+        self.spin_boxes = []
+        for i in range(self.nb_components):
+            row_label = QLabel(f"#{i+1}")
+            grid_layout.addWidget(row_label, row + i + 1, 0)
+            self.grid_widgets.append(row_label)
+            row_spin = []
+            for j in range(self.nb_components):
+                spin = QDoubleSpinBox()
+                spin.setMinimum(self.min_value)
+                spin.setMaximum(self.max_value)
+                spin.setSingleStep(self.step)
+                # spin.setDecimals(self.decimals)
+                spin.setValue(float(self.last_matrix[i][j]))
+                grid_layout.addWidget(spin, row + i + 1, j + 1)
+                self.grid_widgets.append(spin)
+                row_spin.append(spin)
+            self.spin_boxes.append(row_spin)
+        # self.restore_value()
+
+    def _set_grid_visible(self, visible: bool):
+        for widget in self.grid_widgets:
+            widget.setVisible(visible)
+
+    def _on_checkbox_changed(self, state):
+        self._set_grid_visible(bool(state))
+        if not state:
+            self.last_matrix = [
+                [str(self.min_value) for _ in range(self.nb_components)]
+                for _ in range(self.nb_components)
+            ]
+        # else:
+        #     self.restore_value()
+
+    def row_span(self) -> int:
+        return 3 + self.nb_components
+
+    def set_components(self, nb_components: int):
+        self.nb_components  = nb_components
+
+    def get_value(self):
+        if self.checkbox and self.checkbox.isChecked():
+            matrix = []
+            for i in range(self.nb_components):
+                row = []
+                for j in range(self.nb_components):
+                    row.append(self.spin_boxes[i][j].value())
+                matrix.append(row)
+            return matrix
+        return [
+            [self.min_value for _ in range(self.nb_components)]
+            for _ in range(self.nb_components)
+        ]
+
+    def to_data_entry(self) -> Optional[str]:
+        if self.checkbox and self.checkbox.isChecked():
+            lines = []
+            for i in range(self.nb_components):
+                for j in range(self.nb_components):
+                    lines.append(
+                        f"{self.name}:#{i+1},#{j+1} {self.spin_boxes[i][j].value():.{self.decimals}f}"
+                    )
+            return "\n".join(lines)
+        return None
+
+    def store_value(self):
+        pass
+
+
+    def to_file(self) -> str:
+        if self.checkbox and self.checkbox.isChecked():
+            return self.to_data_entry()
         return ""
 # -----------------------------------------------------------
 class CollapsibleGroupBox(QGroupBox):
