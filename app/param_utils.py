@@ -9,6 +9,7 @@ from app.param import (
     ParamComponentSelector,
     ParamFileChooser,
     ParamFixedComponent,
+    ParamFixedComponentWithCheckbox,
     ParamFixedMembrane,
     ParamFixedPerm,
     ParamFixedWithInput,
@@ -241,6 +242,18 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 name,
                 file,
                 # values=values,
+                label=label,
+                hidden=hidden,
+                depends_on=depends_on,
+                optional=optional,
+                # description=description,
+            )
+        case ParamType.FIXED_COMPONENT_WITH_CHECKBOX:
+            return ParamFixedComponentWithCheckbox(
+                name,
+                file,
+                # values=values,
+                components=["buu", "gaga"],
                 label=label,
                 hidden=hidden,
                 depends_on=depends_on,

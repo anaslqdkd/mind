@@ -27,7 +27,7 @@ param molarmass :=
 param ub_feed_tot := 1;
 param ub_feed := 1;
 
-param ub_press_down := 1.0;
+param ub_press_down := 2.0;
 
 param lb_press_down := 1.01;
 

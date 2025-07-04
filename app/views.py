@@ -794,7 +794,7 @@ class ConfigBuilder:
 
     def write_config_ini(self, filename="test/config.ini"):
         dir = self.param_registry["file_dir"].get_path()
-        filename = f"{self.param_registry["file_dir"].get_path()}/config.dat"
+        filename = f"{self.param_registry["file_dir"].get_path()}/config.ini"
         dir_path = os.path.dirname(filename)
         if dir_path:
             os.makedirs(dir_path, exist_ok=True)

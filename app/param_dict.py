@@ -216,7 +216,7 @@ params_dict = {
         "param_type": ParamType.INPUT,
         "file": FILE.CONFIG,
         "optional": False,
-        # "default": 31,
+        "default": 30,
         "min_value": 0,
         "max_value": 100,
         "step": 5,
@@ -311,7 +311,7 @@ params_dict = {
         "param_type": ParamType.FILECHOOSER,
         "file": FILE.CONFIG,
         "description": "Directory to store log files",
-        "default": "./log",
+        "default": "../mind/log/",
         "select_dir": True,
     },
     "data_dir": {
@@ -320,7 +320,7 @@ params_dict = {
         "param_type": ParamType.FILECHOOSER,
         "file": FILE.CONFIG,
         "description": "Directory to store data files, used if the option --instance is used",
-        "default": "./data",
+        "default": "../mind/data/",
         "select_dir": True,
     },
     "file_dir": {
@@ -329,7 +329,7 @@ params_dict = {
         "param_type": ParamType.FILECHOOSER,
         "file": FILE.CONFIG,
         "description": "",
-        "default": "./temp",
+        "default": "./test",
         "select_dir": True,
     },
     # TODO: add input types for the spin box

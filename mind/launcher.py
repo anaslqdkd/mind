@@ -340,10 +340,10 @@ def data_instance(case_study):
         instance['variable_perm'] = False
  
         
-    else:
-        assert False
-        logger.exception("Given instance ('{}') is not defined".format(case_study))
-        raise ValueError("Given instance ('{}') is not defined".format(case_study))
+    # else:
+    #     assert False
+        # logger.exception("Given instance ('{}') is not defined".format(case_study))
+        # raise ValueError("Given instance ('{}') is not defined".format(case_study))
     return instance
 
 

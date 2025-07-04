@@ -286,8 +286,12 @@ class ParamInput(Param):
         return f"{self.name} := {self.last_line_edit}"
 
     def to_config_entry(self) -> Optional[str]:
+        debug_print(self.name, self.last_line_edit)
         if self.last_line_edit != "" and self.last_line_edit != None:
             return f"{self.name} = {self.last_line_edit}"
+        if self.hidden and self.default is not None:
+            return f"{self.name} = {self.default}"
+
 
     def to_data_entry(self) -> Optional[str]:
         if self.last_line_edit != "" and self.last_line_edit != None:
@@ -384,6 +388,8 @@ class ParamSelect(Param):
     def to_config_entry(self):
         if self.last_combo_box:
             return f"{self.name} = {self.last_combo_box}"
+        if self.hidden:
+            return f"{self.name} = {self.values[0]}"
 
     def to_data_entry(self):
         if self.last_combo_box:
@@ -2253,6 +2259,97 @@ class ParamFixedComponent(Param):
             value += f'"{el}" '
         return f"{self.name} := {value}\n"
 
+# -----------------------------------------------------------
+class ParamFixedComponentWithCheckbox(ParamFixedComponent):
+    def __init__(
+        self,
+        name: str,
+        file: FILE,
+        label: str,
+        depends_on: Optional[dict[str, DependencyType]],
+        hidden: bool = False,
+        components: list[str] = [],
+        optional: bool = False,
+        description: str = "",
+        expected_type=str,
+        min_value: float = 0.0,
+        max_value: float = 1e6,
+        step: float = 1.0,
+        decimals: int = 2,
+    ) -> None:
+        super().__init__(
+            name, file, label, depends_on, hidden, components,
+            optional, description, expected_type, min_value, max_value, step, decimals
+        )
+        self.checkbox = None
+        self.grid_widgets = []
+
+    def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        from PyQt5.QtWidgets import QCheckBox
+        self.checkbox = QCheckBox(label)
+        self.checkbox.setChecked(False)
+        self.checkbox.stateChanged.connect(self._on_checkbox_changed)
+        grid_layout.addWidget(self.checkbox, row, 0, 1, 2)
+        self.grid_widgets = []
+        self._build_components_grid(row + 1, grid_layout)
+        self._set_grid_visible(False)
+
+    def _build_components_grid(self, row: int, grid_layout: QGridLayout):
+        from PyQt5.QtWidgets import QLabel, QDoubleSpinBox
+        header = self.build_header(self.label, self.description, self.optional)
+        grid_layout.addWidget(header, row, 0)
+        self.grid_widgets.append(header)
+        grid_layout.addWidget(QLabel("Component"), row + 1, 0)
+        grid_layout.addWidget(QLabel("Value"), row + 1, 1)
+        self.grid_widgets.extend([grid_layout.itemAtPosition(row + 1, 0).widget(),
+                                 grid_layout.itemAtPosition(row + 1, 1).widget()])
+        current_row = row + 2
+        self.spin_boxes = []
+        for membrane in self.components:
+            label_widget = QLabel(str(membrane))
+            spin = QDoubleSpinBox()
+            spin.setMinimum(self.min_value)
+            spin.setMaximum(self.max_value)
+            spin.setSingleStep(self.step)
+            spin.setDecimals(self.decimals)
+            spin.setValue(self.min_value)
+            self.spin_boxes.append(spin)
+            grid_layout.addWidget(label_widget, current_row, 0)
+            grid_layout.addWidget(spin, current_row, 1)
+            self.grid_widgets.extend([label_widget, spin])
+            current_row += 1
+        self.restore_value()
+
+    def _set_grid_visible(self, visible: bool):
+        for widget in self.grid_widgets:
+            widget.setVisible(visible)
+
+    def _on_checkbox_changed(self, state):
+        self._set_grid_visible(bool(state))
+        if not state:
+            self.last_spin_boxes.clear()
+        else:
+            self.restore_value()
+
+    def get_value(self):
+        if self.checkbox and self.checkbox.isChecked():
+            return super().get_value()
+        return 0
+
+    def get_items(self):
+        if self.checkbox and self.checkbox.isChecked():
+            return super().get_items()
+        return []
+
+    def to_data_entry(self) -> Optional[str]:
+        if self.checkbox and self.checkbox.isChecked():
+            return super().to_data_entry()
+        return None
+
+    def to_file(self) -> str:
+        if self.checkbox and self.checkbox.isChecked():
+            return super().to_file()
+        return ""
 # -----------------------------------------------------------
 class CollapsibleGroupBox(QGroupBox):
     def __init__(self, title, parent=None):
