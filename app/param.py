@@ -286,7 +286,6 @@ class ParamInput(Param):
         return f"{self.name} := {self.last_line_edit}"
 
     def to_config_entry(self) -> Optional[str]:
-        debug_print(self.name, self.last_line_edit)
         if self.last_line_edit != "" and self.last_line_edit != None:
             return f"{self.name} = {self.last_line_edit}"
         if self.hidden and self.default is not None:
@@ -2266,7 +2265,7 @@ class ParamFixedComponentWithCheckbox(Param):
         name: str,
         file: FILE,
         label: str,
-        values: list[str],
+        # values: list[str],
         depends_on: Optional[dict[str, DependencyType]],
         optional: bool = False,
         description: str = "",
@@ -2278,8 +2277,11 @@ class ParamFixedComponentWithCheckbox(Param):
         self.combo_boxes = []
         self.extra_rows = 0
         self.last_combo_boxes = []
+        self.spin_boxes = []
+        self.last_spin_boxes: list[str] = []
         self.hidden = hidden
-        self.values = values
+        self.values = []
+        self.manager = None
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
 
@@ -2291,13 +2293,9 @@ class ParamFixedComponentWithCheckbox(Param):
         self._set_grid_visible(True)
 
     def _build_component_grid(self, row: int, grid_layout: QGridLayout):
-        # Use the same logic as ParamComponent's build_widget, but as a sublayout
         self.grid_widgets = []
         self.combo_boxes = []
-
-        # header = self.build_header(self.label, self.description, self.optional)
-        # grid_layout.addWidget(header, row, 0)
-        # self.grid_widgets.append(header)
+        self.spin_boxes = []
 
         used_values = set(self.last_combo_boxes)
 
@@ -2310,11 +2308,13 @@ class ParamFixedComponentWithCheckbox(Param):
                 combo.addItems(available_values)
                 if self.last_combo_boxes and i < len(self.last_combo_boxes):
                     combo.setCurrentText(self.last_combo_boxes[i])
+                if self.last_spin_boxes and i < len(self.last_spin_boxes):
+                    spin_box.setValue(int(self.last_spin_boxes[i]))
                 remove_button = QPushButton("✕")
                 remove_button.setFixedWidth(30)
                 remove_button.clicked.connect(
-                    lambda _, c=combo, b=remove_button: self.remove_widget_pair(
-                        c, b, grid_layout
+                        lambda _, c=combo, b=remove_button, a=spin_box: self.remove_widget_pair(
+                        c, b, grid_layout, a
                     )
                 )
                 grid_layout.addWidget(QLabel(self.name), row, 1)
@@ -2322,6 +2322,7 @@ class ParamFixedComponentWithCheckbox(Param):
                 grid_layout.addWidget(spin_box, row, 3)
                 grid_layout.addWidget(remove_button, row, 4)
                 self.combo_boxes.append(combo)
+                self.spin_boxes.append(spin_box)
                 self.grid_widgets.extend([combo, remove_button])
                 row += 1
 
@@ -2334,21 +2335,27 @@ class ParamFixedComponentWithCheckbox(Param):
         extra_combo.currentIndexChanged.connect(
             lambda: self.add_component_row(row, grid_layout)
         )
-        # extra_combo.currentIndexChanged.connect(self._on_value_changed)
         self.grid_widgets.append(extra_combo)
 
     def remove_widget_pair(
-        self, widget1: QWidget, widget2: QWidget, layout: QGridLayout
+            self, widget1: QWidget, widget2: QWidget, layout: QGridLayout,widget3: Optional[QWidget] = None, 
     ):
-        # self._on_value_changed()
         layout.removeWidget(widget1)
         layout.removeWidget(widget2)
+        layout.removeWidget(widget3)
         widget1.deleteLater()
         widget2.deleteLater()
+        if widget3 is not None:
+            widget3.deleteLater()
+        if widget1 in self.combo_boxes:
+            self.combo_boxes.remove(widget1)
 
         self.extra_rows = max(0, self.extra_rows - 1)
+        # self.store_value()
+        value = widget1.currentText()
+        if value in self.last_combo_boxes:
+            self.last_combo_boxes.remove(value)
         self.category.update_category()
-        # self._on_value_changed()
 
     def add_component_row(self, row: int, grid_layout: QGridLayout):
         self.component_base_row = row
@@ -2362,6 +2369,11 @@ class ParamFixedComponentWithCheckbox(Param):
 
         remove_button = QPushButton("✕")
         remove_button.setFixedWidth(30)
+        remove_button.clicked.connect(
+                lambda _, c=combo, b=remove_button: self.remove_widget_pair(
+                c, b, grid_layout 
+            )
+        )
 
         grid_layout.addWidget(combo, row + 1, 2)
         grid_layout.addWidget(remove_button, row + 1, 3)
@@ -2371,9 +2383,24 @@ class ParamFixedComponentWithCheckbox(Param):
         )
 
         self.category.update_category()
-    def store_value(self):
-        pass
 
+    def set_values(self, values: list[str]):
+        self.values = values
+
+    def store_value(self):
+        self.last_combo_boxes.clear()
+        self.last_spin_boxes.clear()
+        for combo in self.combo_boxes:
+            if combo.currentText() != "":
+                self.last_combo_boxes.append(combo.currentText())
+        for spin_box in self.spin_boxes:
+            self.last_spin_boxes.append(spin_box.value())
+
+    # def restore_value(self):
+    #     for i, combo in enumerate(self.combo_boxes):
+    #         if i < len(self.last_combo_boxes):
+    #             combo.setCurrentText(self.last_combo_boxes[i])
+    #
 
     def _set_grid_visible(self, visible: bool):
         for widget in getattr(self, "grid_widgets", []):
@@ -2390,6 +2417,7 @@ class ParamFixedComponentWithCheckbox(Param):
         if self.checkbox and self.checkbox.isChecked():
             return super().get_value()
         return 0
+
     def row_span(self) -> int:
         return 3 + self.extra_rows
 
@@ -2402,6 +2430,14 @@ class ParamFixedComponentWithCheckbox(Param):
         if self.checkbox and self.checkbox.isChecked():
             return super().to_data_entry()
         return None
+
+    def to_mask_entry(self) -> str:
+        debug_print("in to_mask_entry")
+        lines = []
+        for i, value in enumerate(self.last_spin_boxes):
+            debug_print("in i, value enumerate")
+            lines.append(f"{self.name}:#{i+1} {value}")
+        return "\n".join(lines)
 
     def to_file(self) -> str:
         if self.checkbox and self.checkbox.isChecked():
@@ -2525,6 +2561,8 @@ class ParamGrid(Param):
     def store_value(self):
         pass
 
+    def to_mask_entry(self):
+        pass
 
     def to_file(self) -> str:
         if self.checkbox and self.checkbox.isChecked():

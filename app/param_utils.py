@@ -255,7 +255,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 file,
                 # values=values,
                 # components=["buu", "gaga"],
-                values = ["value 1", "value 2"],
+                # values = ["value 1", "value 2"],
                 label=label,
                 hidden=hidden,
                 depends_on=depends_on,

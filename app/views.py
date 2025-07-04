@@ -316,6 +316,7 @@ class MainWindow(QMainWindow):
         self.data_builder = DataBuilder(self.param_registry)
         self.eco_builder = EcoBuilder(self.param_registry)
         self.perm_builder = PermBuilder(self.param_registry)
+        self.mask_builder = MaskBuilder(self.param_registry)
 
     def _init_pages(self):
         self.param_registry = set_param(params_dict)
@@ -505,26 +506,26 @@ class MainWindow(QMainWindow):
                 param_registry["param mem_type"],
                 self.update_mem_type_membranes,
             )
-            # dependency_manager.add_dependency(
-            #     param_registry["num_membranes"],
-            #     param_registry["fix area"],
-            #     self.update_fix_area,
-            # )
-            # dependency_manager.add_dependency(
-            #     param_registry["num_membranes"],
-            #     param_registry["fix splitFEED_frac"],
-            #     self.update_fix_area,
-            # )
-            # dependency_manager.add_dependency(
-            #     param_registry["num_membranes"],
-            #     param_registry["fix pressure_up"],
-            #     self.update_fix_area,
-            # )
-            # dependency_manager.add_dependency(
-            #     param_registry["num_membranes"],
-            #     param_registry["fix pressure_down"],
-            #     self.update_fix_area,
-            # )
+            dependency_manager.add_dependency(
+                param_registry["num_membranes"],
+                param_registry["fix area"],
+                self.update_fix_area,
+            )
+            dependency_manager.add_dependency(
+                param_registry["num_membranes"],
+                param_registry["fix splitFEED_frac"],
+                self.update_fix_area,
+            )
+            dependency_manager.add_dependency(
+                param_registry["num_membranes"],
+                param_registry["fix pressure_up"],
+                self.update_fix_area,
+            )
+            dependency_manager.add_dependency(
+                param_registry["num_membranes"],
+                param_registry["fix pressure_down"],
+                self.update_fix_area,
+            )
             # dependency_manager.add_dependency(
             #     param_registry["num_membranes"],
             #     param_registry["fix splitRET_frac"],
@@ -610,8 +611,11 @@ class MainWindow(QMainWindow):
             target.hide()
             target.category.update_category()
 
+    # def update_fix_area(self, target: ParamFixedComponentWithCheckbox, source: ParamInput):
+    #     target.set_components([str(i) for i in range(1, int(source.get_value()) + 1)])
+    #     target.category.update_category()
     def update_fix_area(self, target: ParamFixedComponentWithCheckbox, source: ParamInput):
-        target.set_components([str(i) for i in range(1, int(source.get_value()) + 1)])
+        target.set_values([str(i) for i in range(1, int(source.get_value()) + 1)])
         target.category.update_category()
 
     def update_fix_matrix(self, target: ParamGrid, source: ParamInput):
@@ -735,6 +739,7 @@ class MainWindow(QMainWindow):
         data = self.data_builder.build_data()
         eco = self.eco_builder.build_eco()
         perm = self.perm_builder.build_perm()
+        mask = self.mask_builder.build_mask()
         # debug_print("the command is", command)
         # debug_print("the config is", config)
         # debug_print("the data is", data)
@@ -875,7 +880,44 @@ class ConfigBuilder:
         with open(filename, "w") as configfile:
             config.write(configfile)
 
+# -----------------------------------------------------------
+class MaskBuilder:
+    def __init__(self, params) -> None:
+        self.param_registry = params
+        self.validated_params = [
+            "fix area",
+            "fix splitFEED_frac",
+            "fix pressure_up",
+            "fix pressure_down",
+            "fix splitPERM_frac",
+            "fix splitRET_frac",
+            "fix splitOutPERM_frac",
+            "fix splitOutRET_frac",
+        ]
+        self.mask_args = {}
 
+    def build_mask(self):
+        self.mask_args = []
+        for param_name in self.validated_params:
+            if param_name in self.param_registry.keys():
+                param = self.param_registry[param_name]
+                if param.file == FILE.MASK:
+                    arg = param.to_mask_entry()
+                    if arg is not None:
+                        self.mask_args.append(arg)
+        self.write_data()
+        pass
+
+    def write_data(self, filename="test/perm.dat"):
+        filename = f"{self.param_registry["file_dir"].get_path()}/mask.dat"
+        dir_path = os.path.dirname(filename)
+        if dir_path:
+            os.makedirs(dir_path, exist_ok=True)
+        with open(filename, "w") as f:
+            for entry in self.mask_args:
+                f.write(f"{entry}\n\n")
+
+# -----------------------------------------------------------
 class DataBuilder:
     def __init__(self, params) -> None:
         self.param_registry = params
