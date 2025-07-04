@@ -2260,82 +2260,138 @@ class ParamFixedComponent(Param):
         return f"{self.name} := {value}\n"
 
 # -----------------------------------------------------------
-class ParamFixedComponentWithCheckbox(ParamFixedComponent):
+class ParamFixedComponentWithCheckbox(Param):
     def __init__(
         self,
         name: str,
         file: FILE,
         label: str,
+        values: list[str],
         depends_on: Optional[dict[str, DependencyType]],
-        hidden: bool = False,
-        components: list[str] = [],
         optional: bool = False,
         description: str = "",
         expected_type=str,
-        min_value: float = 0.0,
-        max_value: float = 1e6,
-        step: float = 1.0,
-        decimals: int = 2,
+        hidden: bool = False,
     ) -> None:
-        super().__init__(
-            name, file, label, depends_on, hidden, components,
-            optional, description, expected_type, min_value, max_value, step, decimals
-        )
+        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
         self.checkbox = None
-        self.grid_widgets = []
+        self.combo_boxes = []
+        self.extra_rows = 0
+        self.last_combo_boxes = []
+        self.hidden = hidden
+        self.values = values
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+
         self.checkbox = QCheckBox(label)
-        self.checkbox.setChecked(False)
+        self.checkbox.setChecked(True)
         self.checkbox.stateChanged.connect(self._on_checkbox_changed)
         grid_layout.addWidget(self.checkbox, row, 0, 1, 2)
-        self.grid_widgets = []
-        self._build_components_grid(row + 1, grid_layout)
-        self._set_grid_visible(False)
+        self._build_component_grid(row + 1, grid_layout)
+        self._set_grid_visible(True)
 
-    def _build_components_grid(self, row: int, grid_layout: QGridLayout):
-        # FIXME: add a way to show description (build_header with checkbox ?)
-        grid_layout.addWidget(QLabel("Component"), row + 1, 0)
-        grid_layout.addWidget(QLabel("Value"), row + 1, 1)
-        self.grid_widgets.extend([grid_layout.itemAtPosition(row + 1, 0).widget(),
-                                 grid_layout.itemAtPosition(row + 1, 1).widget()])
-        current_row = row + 2
-        self.spin_boxes = []
-        for membrane in self.components:
-            label_widget = QLabel(str(membrane))
-            spin = QDoubleSpinBox()
-            spin.setMinimum(self.min_value)
-            spin.setMaximum(self.max_value)
-            spin.setSingleStep(self.step)
-            spin.setDecimals(self.decimals)
-            spin.setValue(self.min_value)
-            self.spin_boxes.append(spin)
-            grid_layout.addWidget(label_widget, current_row, 0)
-            grid_layout.addWidget(spin, current_row, 1)
-            self.grid_widgets.extend([label_widget, spin])
-            current_row += 1
-        self.restore_value()
+    def _build_component_grid(self, row: int, grid_layout: QGridLayout):
+        # Use the same logic as ParamComponent's build_widget, but as a sublayout
+        self.grid_widgets = []
+        self.combo_boxes = []
+
+        # header = self.build_header(self.label, self.description, self.optional)
+        # grid_layout.addWidget(header, row, 0)
+        # self.grid_widgets.append(header)
+
+        used_values = set(self.last_combo_boxes)
+
+        if self.extra_rows > 0:
+            for i in range(self.extra_rows):
+                combo = QComboBox()
+                spin_box = QSpinBox()
+                combo.setPlaceholderText("Extra input")
+                available_values = [v for v in self.values if v not in used_values or v == self.last_combo_boxes[i]]
+                combo.addItems(available_values)
+                if self.last_combo_boxes and i < len(self.last_combo_boxes):
+                    combo.setCurrentText(self.last_combo_boxes[i])
+                remove_button = QPushButton("✕")
+                remove_button.setFixedWidth(30)
+                remove_button.clicked.connect(
+                    lambda _, c=combo, b=remove_button: self.remove_widget_pair(
+                        c, b, grid_layout
+                    )
+                )
+                grid_layout.addWidget(QLabel(self.name), row, 1)
+                grid_layout.addWidget(combo, row, 2)
+                grid_layout.addWidget(spin_box, row, 3)
+                grid_layout.addWidget(remove_button, row, 4)
+                self.combo_boxes.append(combo)
+                self.grid_widgets.extend([combo, remove_button])
+                row += 1
+
+        extra_combo = QComboBox()
+        extra_combo.setPlaceholderText("Extra input")
+        available_values = [v for v in self.values if v not in used_values]
+        extra_combo.addItems(available_values)
+        self.combo_boxes.append(extra_combo)
+        grid_layout.addWidget(extra_combo, row, 2)
+        extra_combo.currentIndexChanged.connect(
+            lambda: self.add_component_row(row, grid_layout)
+        )
+        # extra_combo.currentIndexChanged.connect(self._on_value_changed)
+        self.grid_widgets.append(extra_combo)
+
+    def remove_widget_pair(
+        self, widget1: QWidget, widget2: QWidget, layout: QGridLayout
+    ):
+        # self._on_value_changed()
+        layout.removeWidget(widget1)
+        layout.removeWidget(widget2)
+        widget1.deleteLater()
+        widget2.deleteLater()
+
+        self.extra_rows = max(0, self.extra_rows - 1)
+        self.category.update_category()
+        # self._on_value_changed()
+
+    def add_component_row(self, row: int, grid_layout: QGridLayout):
+        self.component_base_row = row
+        self.extra_rows += 1
+
+        combo = QComboBox()
+        combo.setPlaceholderText("BB input")
+        combo.addItems(["Item 1", "Item 2", "Item 3"])
+        combo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        self.combo_boxes.append(combo)
+
+        remove_button = QPushButton("✕")
+        remove_button.setFixedWidth(30)
+
+        grid_layout.addWidget(combo, row + 1, 2)
+        grid_layout.addWidget(remove_button, row + 1, 3)
+
+        combo.currentIndexChanged.connect(
+            lambda: self.add_component_row(row + 1, grid_layout)
+        )
+
+        self.category.update_category()
+    def store_value(self):
+        pass
+
 
     def _set_grid_visible(self, visible: bool):
-        for widget in self.grid_widgets:
+        for widget in getattr(self, "grid_widgets", []):
             widget.setVisible(visible)
 
     def _on_checkbox_changed(self, state):
         self._set_grid_visible(bool(state))
         if not state:
-            self.last_spin_boxes.clear()
+            self.last_combo_boxes.clear()
         else:
-            self.restore_value()
-    def row_span(self) -> int:
-        return 3 + len(self.components)
-
-    def store_value(self):
-        pass
+            self.store_value()
 
     def get_value(self):
         if self.checkbox and self.checkbox.isChecked():
             return super().get_value()
         return 0
+    def row_span(self) -> int:
+        return 3 + self.extra_rows
 
     def get_items(self):
         if self.checkbox and self.checkbox.isChecked():
@@ -2351,6 +2407,7 @@ class ParamFixedComponentWithCheckbox(ParamFixedComponent):
         if self.checkbox and self.checkbox.isChecked():
             return super().to_file()
         return ""
+    
 # -----------------------------------------------------------
 class ParamGrid(Param):
     def __init__(

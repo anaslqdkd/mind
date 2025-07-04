@@ -505,36 +505,36 @@ class MainWindow(QMainWindow):
                 param_registry["param mem_type"],
                 self.update_mem_type_membranes,
             )
-            dependency_manager.add_dependency(
-                param_registry["num_membranes"],
-                param_registry["fix area"],
-                self.update_fix_area,
-            )
-            dependency_manager.add_dependency(
-                param_registry["num_membranes"],
-                param_registry["fix splitFEED_frac"],
-                self.update_fix_area,
-            )
-            dependency_manager.add_dependency(
-                param_registry["num_membranes"],
-                param_registry["fix pressure_up"],
-                self.update_fix_area,
-            )
-            dependency_manager.add_dependency(
-                param_registry["num_membranes"],
-                param_registry["fix pressure_down"],
-                self.update_fix_area,
-            )
-            dependency_manager.add_dependency(
-                param_registry["num_membranes"],
-                param_registry["fix splitRET_frac"],
-                self.update_fix_matrix,
-            )
-            dependency_manager.add_dependency(
-                param_registry["num_membranes"],
-                param_registry["fix splitPERM_frac"],
-                self.update_fix_matrix,
-            )
+            # dependency_manager.add_dependency(
+            #     param_registry["num_membranes"],
+            #     param_registry["fix area"],
+            #     self.update_fix_area,
+            # )
+            # dependency_manager.add_dependency(
+            #     param_registry["num_membranes"],
+            #     param_registry["fix splitFEED_frac"],
+            #     self.update_fix_area,
+            # )
+            # dependency_manager.add_dependency(
+            #     param_registry["num_membranes"],
+            #     param_registry["fix pressure_up"],
+            #     self.update_fix_area,
+            # )
+            # dependency_manager.add_dependency(
+            #     param_registry["num_membranes"],
+            #     param_registry["fix pressure_down"],
+            #     self.update_fix_area,
+            # )
+            # dependency_manager.add_dependency(
+            #     param_registry["num_membranes"],
+            #     param_registry["fix splitRET_frac"],
+            #     self.update_fix_matrix,
+            # )
+            # dependency_manager.add_dependency(
+            #     param_registry["num_membranes"],
+            #     param_registry["fix splitPERM_frac"],
+            #     self.update_fix_matrix,
+            # )
 
         register_param_dependencies(self.param_registry, dependency_manager)
 
