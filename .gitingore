@@ -1,9 +1,0 @@
-app/__pycache__/
-mind/__pycache__/
-__pycache__/
-*.pyc
-mind/env/
-env/
-venv/
-*.py[cod]
-
