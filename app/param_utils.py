@@ -14,6 +14,7 @@ from app.param import (
     ParamFixedPerm,
     ParamFixedWithInput,
     ParamGrid,
+    ParamGrid2,
     ParamInput,
     ParamInputWithUnity,
     ParamMemType,
@@ -264,6 +265,19 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
             )
         case ParamType.FIXED_COMPONENT_WITH_CHECKBOX_MATRIX:
             return ParamGrid(
+                name,
+                file,
+                # nb_components=3,
+                # values=values,
+                # components=["buu", "gaga"],
+                label=label,
+                hidden=hidden,
+                depends_on=depends_on,
+                optional=optional,
+                # description=description,
+            )
+        case ParamType.FIXED_MATRIX:
+            return ParamGrid2(
                 name,
                 file,
                 # nb_components=3,

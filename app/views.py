@@ -39,6 +39,7 @@ from app.param import (
     ParamFixedPerm,
     ParamFixedWithInput,
     ParamGrid,
+    ParamGrid2,
     ParamInput,
     ParamMemType,
     ParamMembraneSelect,
@@ -444,6 +445,26 @@ class MainWindow(QMainWindow):
                 param_registry["param lb_alpha"],
                 self.update_membranes,
             )
+            dependency_manager.add_dependency(
+                param_registry["set mem_types_set"],
+                param_registry["param lb_permeability"],
+                self.update_membranes_grid,
+            )
+            dependency_manager.add_dependency(
+                param_registry["set mem_types_set"],
+                param_registry["param ub_permeability"],
+                self.update_membranes_grid,
+            )
+            dependency_manager.add_dependency(
+                param_registry["set components"],
+                param_registry["param ub_permeability"],
+                self.update_components_grid,
+            )
+            dependency_manager.add_dependency(
+                param_registry["set components"],
+                param_registry["param lb_permeability"],
+                self.update_components_grid,
+            )
             # dependency_manager.add_dependency(
             #     param_registry["set components"],
             #     param_registry["param mem_type"],
@@ -638,12 +659,18 @@ class MainWindow(QMainWindow):
         target.category.update_category()
 
     def update_fix_matrix(self, target: ParamGrid, source: ParamInput):
-        debug_print("in update fix matrix")
         target.set_values([str(i) for i in range(1, int(source.get_value()) + 1)])
         target.category.update_category()
 
     def store_value(self):
         pass
+    
+    def update_membranes_grid(self, target: ParamGrid2, source: ParamComponent):
+        target.set_membranes(source.get_items())
+        target.category.update_category()
+
+    def update_components_grid(self, target: ParamGrid2, source: ParamComponentSelector):
+        target.set_components(source.get_selected_items())
 
     def update_config_algo_params(self, target: ParamInput, source: ParamSelect):
         var_params = [
@@ -729,11 +756,9 @@ class MainWindow(QMainWindow):
 
         if source.last_check_box:
             # if perm variable
-            debug_print("the perm is variable")
             for param_name in variable_perm_params:
                 param = self.param_registry.get(param_name)
                 if param:
-                    debug_print("var perm:", param.name)
                     param.show()
                     param.category.update_category()
             for param_name in fixed_variable_params:
@@ -742,7 +767,6 @@ class MainWindow(QMainWindow):
                     param.hide()
                     param.category.update_category()
         else:
-            debug_print("the perm is fixed")
             for param_name in fixed_variable_params:
                 param = self.param_registry.get(param_name)
                 if param:

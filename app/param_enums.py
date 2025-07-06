@@ -24,6 +24,7 @@ class ParamType(enum.Enum):
     FIXED_MEM_TYPE = enum.auto()
     FIXED_COMPONENT_WITH_CHECKBOX = enum.auto()
     FIXED_COMPONENT_WITH_CHECKBOX_MATRIX = enum.auto()
+    FIXED_MATRIX = enum.auto()
 
 
 # -----------------------------------------------------------

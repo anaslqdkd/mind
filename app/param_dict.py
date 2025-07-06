@@ -687,7 +687,7 @@ params_dict = {
     "param lb_permeability": {
         "name": "param lb_permeability",
         "label": "Lower bound permeability",
-        "param_type": ParamType.FIXED_COMPONENT_WITH_CHECKBOX_MATRIX,
+        "param_type": ParamType.FIXED_MATRIX,
         "file": FILE.PERM,
         "optional": False,
         "hidden": True,
@@ -696,7 +696,7 @@ params_dict = {
     "param ub_permeability": {
         "name": "param ub_permeability",
         "label": "Upper bound permeability",
-        "param_type": ParamType.FIXED_COMPONENT_WITH_CHECKBOX_MATRIX,
+        "param_type": ParamType.FIXED_MATRIX,
         "file": FILE.PERM,
         "optional": False,
         "hidden": True,
