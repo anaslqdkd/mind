@@ -187,7 +187,6 @@ class ParamInput(Param):
         self.min_value = min_value
         self.max_value = max_value
         self.step = step
-        # FIXME: take from the constructor
         self.expected_value = ["population", "genetic"]
         self.header = None
         self.hidden = hidden
@@ -1806,7 +1805,6 @@ class ParamFixedPerm(Param):
     #                 line_edit.setDecimals(0)
     #         line_edit.setMaximum(1e10)
     #         line_edit.setValue(value)
-    # FIXME: variable perm gives an error when checked
 
     def restore_value(self, key):
         if key in self.line_edits and key in self.last_line_edits and self.last_line_edits[key] != "":
@@ -2282,15 +2280,22 @@ class ParamFixedComponentWithCheckbox(Param):
         self.hidden = hidden
         self.values = []
         self.manager = None
+        self.last_check_box = None
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
 
         self.checkbox = QCheckBox(label)
-        self.checkbox.setChecked(True)
+        self._build_component_grid(row + 1, grid_layout)
+        if self.last_check_box is not None:
+            self.checkbox.setChecked(self.last_check_box)
+            self._set_grid_visible(self.last_check_box)
+        else:
+            self.checkbox.setChecked(False)
+            self._set_grid_visible(False)
+        # self.checkbox.setChecked(False)
         self.checkbox.stateChanged.connect(self._on_checkbox_changed)
         grid_layout.addWidget(self.checkbox, row, 0, 1, 2)
-        self._build_component_grid(row + 1, grid_layout)
-        self._set_grid_visible(True)
+        # self._set_grid_visible(False)
 
     def _build_component_grid(self, row: int, grid_layout: QGridLayout):
         self.grid_widgets = []
@@ -2317,13 +2322,14 @@ class ParamFixedComponentWithCheckbox(Param):
                         c, b, grid_layout, a
                     )
                 )
-                grid_layout.addWidget(QLabel(self.name), row, 1)
+                label = QLabel(self.name)
+                grid_layout.addWidget(label, row, 1)
                 grid_layout.addWidget(combo, row, 2)
                 grid_layout.addWidget(spin_box, row, 3)
                 grid_layout.addWidget(remove_button, row, 4)
                 self.combo_boxes.append(combo)
                 self.spin_boxes.append(spin_box)
-                self.grid_widgets.extend([combo, remove_button])
+                self.grid_widgets.extend([label, combo, remove_button, spin_box])
                 row += 1
 
         extra_combo = QComboBox()
@@ -2395,12 +2401,9 @@ class ParamFixedComponentWithCheckbox(Param):
                 self.last_combo_boxes.append(combo.currentText())
         for spin_box in self.spin_boxes:
             self.last_spin_boxes.append(spin_box.value())
+        if self.checkbox is not None:
+            self.last_check_box = self.checkbox.isChecked()
 
-    # def restore_value(self):
-    #     for i, combo in enumerate(self.combo_boxes):
-    #         if i < len(self.last_combo_boxes):
-    #             combo.setCurrentText(self.last_combo_boxes[i])
-    #
 
     def _set_grid_visible(self, visible: bool):
         for widget in getattr(self, "grid_widgets", []):
@@ -2432,10 +2435,8 @@ class ParamFixedComponentWithCheckbox(Param):
         return None
 
     def to_mask_entry(self) -> str:
-        debug_print("in to_mask_entry")
         lines = []
         for i, value in enumerate(self.last_spin_boxes):
-            debug_print("in i, value enumerate")
             lines.append(f"{self.name}:#{i+1} {value}")
         return "\n".join(lines)
 
