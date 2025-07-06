@@ -2410,6 +2410,7 @@ class ParamFixedComponentWithCheckbox(Param):
             widget.setVisible(visible)
 
     def _on_checkbox_changed(self, state):
+        debug_print(state)
         self._set_grid_visible(bool(state))
         if not state:
             self.last_combo_boxes.clear()
@@ -2470,14 +2471,21 @@ class ParamGrid(Param):
         self.hidden = hidden
         self.values = []
         self.manager = None
+        self.last_check_box = None
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         self.checkbox = QCheckBox(label)
-        self.checkbox.setChecked(True)
+        self._build_component_grid(row + 1, grid_layout)
+
+        if self.last_check_box is not None:
+            self.checkbox.setChecked(self.last_check_box)
+            self._set_grid_visible(self.last_check_box)
+        else:
+            self.checkbox.setChecked(False)
+            self._set_grid_visible(False)
+
         self.checkbox.stateChanged.connect(self._on_checkbox_changed)
         grid_layout.addWidget(self.checkbox, row, 0, 1, 2)
-        self._build_component_grid(row + 1, grid_layout)
-        self._set_grid_visible(True)
 
     def _build_component_grid(self, row: int, grid_layout: QGridLayout):
         self.grid_widgets = []
@@ -2506,7 +2514,8 @@ class ParamGrid(Param):
                         c, c2, b, grid_layout, a
                     )
                 )
-                grid_layout.addWidget(QLabel(self.name), row, 1)
+                label = QLabel(self.name)
+                grid_layout.addWidget(label, row, 1)
                 grid_layout.addWidget(combo, row, 2)
                 grid_layout.addWidget(combo2, row, 3)
                 grid_layout.addWidget(spin_box, row, 4)
@@ -2514,7 +2523,7 @@ class ParamGrid(Param):
                 self.combo_boxes.append(combo)
                 self.combo_boxes2.append(combo2)
                 self.spin_boxes.append(spin_box)
-                self.grid_widgets.extend([combo, combo2, spin_box, remove_button])
+                self.grid_widgets.extend([label, combo, combo2, spin_box, remove_button])
                 row += 1
 
         extra_combo = QComboBox()
@@ -2525,6 +2534,7 @@ class ParamGrid(Param):
         extra_combo.currentIndexChanged.connect(
             lambda: self.add_component_row(row, grid_layout)
         )
+        self.grid_widgets.append(extra_combo)
 
     def remove_widget_pair(
             self, widget1: QWidget, widget2: QWidget, widget3: QWidget, layout: QGridLayout, widget4: Optional[QWidget] = None, 
@@ -2605,12 +2615,17 @@ class ParamGrid(Param):
                 self.last_combo_boxes2.append(combo2.currentText())
         for spin_box in self.spin_boxes:
             self.last_spin_boxes.append(spin_box.value())
+        if self.checkbox:
+            self.last_check_box = self.checkbox.isChecked()
 
     def _set_grid_visible(self, visible: bool):
+        debug_print("in set grid visible")
         for widget in getattr(self, "grid_widgets", []):
+            debug_print(widget)
             widget.setVisible(visible)
 
     def _on_checkbox_changed(self, state):
+        debug_print("in _on_checkbox changed", state)
         self._set_grid_visible(bool(state))
         if not state:
             self.last_combo_boxes.clear()
