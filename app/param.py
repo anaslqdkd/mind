@@ -1896,6 +1896,9 @@ class ParamFixedMembrane(Param):
         self.decimals = decimals
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        if self.hidden:
+            self.spin_boxes.clear()
+            return
         header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(header, row, 0)
         self.spin_boxes = []
@@ -1918,10 +1921,10 @@ class ParamFixedMembrane(Param):
     def set_membranes(self, membranes: list[str]):
         self.membranes = membranes
 
-    def _on_value_changed(self):
-        if self.manager is not None:
-            self.store_value()
-            self.manager.notify_change(self)
+    # def _on_value_changed(self):
+    #     if self.manager is not None:
+    #         self.store_value()
+    #         self.manager.notify_change(self)
 
     def get_value(self):
         return len(self.last_spin_boxes)
@@ -1931,8 +1934,9 @@ class ParamFixedMembrane(Param):
 
     def store_value(self):
         self.last_spin_boxes.clear()
-        for el in self.spin_boxes:
-            self.last_spin_boxes.append(str(el.value()))
+        if not self.hidden:
+            for el in self.spin_boxes:
+                self.last_spin_boxes.append(str(el.value()))
 
     def restore_value(self):
         for idx, value in enumerate(self.last_spin_boxes):
@@ -1942,6 +1946,12 @@ class ParamFixedMembrane(Param):
                     self.spin_boxes[idx].setValue(val)
                 except ValueError:
                     continue
+
+    def hide(self):
+        self.hidden = True
+
+    def show(self):
+        self.hidden = False
 
     def row_span(self) -> int:
         return 2 + len(self.membranes)
@@ -2032,8 +2042,10 @@ class ParamMembraneSelect(Param):
 
     def store_value(self):
         self.last_combo_boxes.clear()
-        for combo in self.combo_boxes:
-            self.last_combo_boxes.append(combo.currentText())
+        debug_print(self.combo_boxes)
+        if not self.hidden:
+            for combo in self.combo_boxes:
+                self.last_combo_boxes.append(combo.currentText())
 
     def row_span(self) -> int:
         return 3 + len(self.membranes)
@@ -2410,7 +2422,6 @@ class ParamFixedComponentWithCheckbox(Param):
             widget.setVisible(visible)
 
     def _on_checkbox_changed(self, state):
-        debug_print(state)
         self._set_grid_visible(bool(state))
         if not state:
             self.last_combo_boxes.clear()
@@ -2619,13 +2630,10 @@ class ParamGrid(Param):
             self.last_check_box = self.checkbox.isChecked()
 
     def _set_grid_visible(self, visible: bool):
-        debug_print("in set grid visible")
         for widget in getattr(self, "grid_widgets", []):
-            debug_print(widget)
             widget.setVisible(visible)
 
     def _on_checkbox_changed(self, state):
-        debug_print("in _on_checkbox changed", state)
         self._set_grid_visible(bool(state))
         if not state:
             self.last_combo_boxes.clear()

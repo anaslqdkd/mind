@@ -655,20 +655,18 @@ params_dict = {
     "param Robeson_multi": {
         "name": "param Robeson_multi",
         "label": "Robeson_multi",
-        "param_type": ParamType.INPUT,
+        "param_type": ParamType.FIXED_MEMBRANE,
         "file": FILE.PERM,
         "optional": False,
         "hidden": True,
-        # FIXME: revoir le param type
     },
     "param Robeson_power": {
         "name": "param Robeson_power",
         "label": "Robeson_power",
-        "param_type": ParamType.INPUT,
+        "param_type": ParamType.FIXED_MEMBRANE,
         "file": FILE.PERM,
         "optional": False,
         "hidden": True,
-        # FIXME: revoir le param type, valeur négative?
     },
     "param ub_alpha": {
         "name": "param ub_alpha",
@@ -689,7 +687,7 @@ params_dict = {
     "param lb_permeability": {
         "name": "param lb_permeability",
         "label": "Lower bound permeability",
-        "param_type": ParamType.INPUT,
+        "param_type": ParamType.FIXED_COMPONENT_WITH_CHECKBOX_MATRIX,
         "file": FILE.PERM,
         "optional": False,
         "hidden": True,
@@ -698,7 +696,7 @@ params_dict = {
     "param ub_permeability": {
         "name": "param ub_permeability",
         "label": "Upper bound permeability",
-        "param_type": ParamType.INPUT,
+        "param_type": ParamType.FIXED_COMPONENT_WITH_CHECKBOX_MATRIX,
         "file": FILE.PERM,
         "optional": False,
         "hidden": True,

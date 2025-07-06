@@ -132,7 +132,6 @@ class MainWindow(QMainWindow):
         tab_param_layout.addWidget(self.sidebar)
         tab_param_layout.addWidget(self.stack)
 
-        # FIXME: probably change the passed param
         # self.config_builder = ConfigBuilder(self.all_params)
 
         # add pages to the stack
@@ -425,6 +424,26 @@ class MainWindow(QMainWindow):
                 param_registry["param thickness"],
                 self.update_membranes,
             )
+            dependency_manager.add_dependency(
+                param_registry["set mem_types_set"],
+                param_registry["param Robeson_multi"],
+                self.update_membranes,
+            )
+            dependency_manager.add_dependency(
+                param_registry["set mem_types_set"],
+                param_registry["param Robeson_power"],
+                self.update_membranes,
+            )
+            dependency_manager.add_dependency(
+                param_registry["set mem_types_set"],
+                param_registry["param ub_alpha"],
+                self.update_membranes,
+            )
+            dependency_manager.add_dependency(
+                param_registry["set mem_types_set"],
+                param_registry["param lb_alpha"],
+                self.update_membranes,
+            )
             # dependency_manager.add_dependency(
             #     param_registry["set components"],
             #     param_registry["param mem_type"],
@@ -710,9 +729,11 @@ class MainWindow(QMainWindow):
 
         if source.last_check_box:
             # if perm variable
+            debug_print("the perm is variable")
             for param_name in variable_perm_params:
                 param = self.param_registry.get(param_name)
                 if param:
+                    debug_print("var perm:", param.name)
                     param.show()
                     param.category.update_category()
             for param_name in fixed_variable_params:
@@ -721,6 +742,7 @@ class MainWindow(QMainWindow):
                     param.hide()
                     param.category.update_category()
         else:
+            debug_print("the perm is fixed")
             for param_name in fixed_variable_params:
                 param = self.param_registry.get(param_name)
                 if param:
@@ -1261,7 +1283,6 @@ def load_configuration():
     tuning = dict(config.items("tuning"))
     instance = dict(config.items("instance"))
     # convert instances
-    # FIXME: replace with the actual parameters with param_registry["ub_area"]
     instance["ub_area"] = convert_list(float, instance["ub_area"])
     instance["lb_area"] = convert_list(float, instance["lb_area"])
     instance["ub_acell"] = convert_list(float, instance["ub_acell"])
