@@ -2330,7 +2330,7 @@ class ParamFixedComponentWithCheckbox(Param):
         self.spin_boxes = []
         self.last_spin_boxes: list[str] = []
         self.hidden = hidden
-        self.values = []
+        self.values = ["1"]
         self.manager = None
         self.last_check_box = None
 
@@ -2520,7 +2520,7 @@ class ParamGrid(Param):
         self.spin_boxes = []
         self.last_spin_boxes: list[str] = []
         self.hidden = hidden
-        self.values = []
+        self.values = ["1"]
         self.manager = None
         self.last_check_box = None
 

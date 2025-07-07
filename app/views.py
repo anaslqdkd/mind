@@ -611,6 +611,16 @@ class MainWindow(QMainWindow):
                 param_registry["fix splitPERM_frac"],
                 self.update_fix_matrix,
             )
+            dependency_manager.add_dependency(
+                param_registry["num_membranes"],
+                param_registry["fix splitOutPERM_frac"],
+                self.update_fix_area,
+            )
+            dependency_manager.add_dependency(
+                param_registry["num_membranes"],
+                param_registry["fix splitOutRET_frac"],
+                self.update_fix_area,
+            )
 
         register_param_dependencies(self.param_registry, dependency_manager)
 
@@ -907,7 +917,8 @@ class CommandBuilder:
             os.makedirs(dir_path, exist_ok=True)
         with open(filename, "w") as f:
             f.write("#!/bin/bash\n")
-            f.write(f"python3 -m mind.launcher {self.command}\n")
+            f.write("source mind/env/bin/activate\n")
+            f.write(f"python3.11 -m mind.launcher {self.command} --exec\n")
 
 
 # TODO: assert lb pressure <= ub pressure etc
@@ -1244,7 +1255,9 @@ class PageParameters(QWidget):
 
         next_button = QPushButton("next")
 
-        command_button = CommandLauncherButton("/home/ash/mind/temp/command.sh", incoherence_manager=self.main_window.incoherence_manager)
+        # command_path = ""
+        print(os.getcwd())
+        command_button = CommandLauncherButton("test/command.sh", incoherence_manager=self.main_window.incoherence_manager)
         self.command_button = command_button
 
         end_button_widget = QWidget()
@@ -1258,6 +1271,11 @@ class PageParameters(QWidget):
         main_layout.addStretch()
 
         self.setLayout(main_layout)
+
+        # TODO: see for command to have execution permissions
+        # TODO: remove nb_gas for variable perm
+        # TODO: remove mem_type for perm variable
+        # TODO: forgot lb_alpha
 
     def update_param_page(self):
         for category in self.categories:
