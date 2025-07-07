@@ -24,6 +24,8 @@ from PyQt6.QtWidgets import (
 )
 import configparser
 
+from numpy import fix
+
 from app import dependency_manager,  param_dict
 from app.param import (
     Param,
@@ -105,7 +107,7 @@ class MainWindow(QMainWindow):
         self.tab_buttons.setLayout(tab_buttons_layout)
 
         self.all_params: list[Param] = []
-        self.pages: list[PageParameters] = []
+        self.pages: dict[str, PageParameters] = {}
 
         self.main_area = QWidget()
         header = QLabel("Main Area Header")
@@ -140,13 +142,15 @@ class MainWindow(QMainWindow):
         self._define_pages()
         self._init_pages()
         self._build_builders()
-        for el in self.pages:
-            self.stack.addWidget(el)
+
+        for page_name, page in self.pages.items():
+            if page_name != "Fixing":
+                self.stack.addWidget(page)
 
         self._set_dependencies()
         self._set_incoherences()
 
-        for el in self.pages:
+        for el in self.pages.values():
             el.command_button.set_incoherence_manager(self.incoherence_manager)
 
         self.sidebar.currentRowChanged.connect(self.stack.setCurrentIndex)
@@ -363,7 +367,8 @@ class MainWindow(QMainWindow):
             ],
             "Fixing": [self.category_instances["Fixing"]]
         }
-        self.tabs_names = {
+        self.fixing_page_added = False
+        self.page_names = {
             "Program options": ["Basic", "Advanced"],
             "Configuration": ["Instance", "Tuning"],
             "General Data": ["Components", "Product", "Process"],
@@ -371,16 +376,47 @@ class MainWindow(QMainWindow):
             "Economics": ["Eco", "Eco2", "Eco3"],
             "Fixing": ["Fixing"],
         }
-        for page, tab_list in self.tabs_names.items():
-            self.sidebar.addItem(page)
+
+        fixing_param = self.param_registry.get("fixing_var")
+        if fixing_param:
+            fixing_param.check_box.stateChanged.connect(self.toggle_fixing_page)
+        for page, tab_list in self.page_names.items():
+            debug_print(page, tab_list)
             page_tabs_categories = self.tab_categories
             page_temp = PageParameters(
-                self, self.stack, self.sidebar, tab_list, page_tabs_categories
+                self, self.stack, self.sidebar, page, tab_list, page_tabs_categories
             )
             max_width = self.sidebar.sizeHintForColumn(0)
             self.sidebar.setFixedWidth(max_width + 90)
-            self.pages.append(page_temp)
+            self.pages[page] = page_temp
+            if page != "Fixing":
+                self.sidebar.addItem(page)
 
+    def toggle_fixing_page(self, state):
+        current_index = self.stack.currentIndex()
+        sidebar_index = self.sidebar.currentRow()
+        if state and not self.fixing_page_added:
+            self.stack.addWidget(self.pages["Fixing"])
+            self.sidebar.addItem("Fixing")
+            self.fixing_page_added = True
+        elif not state and self.fixing_page_added:
+            debug_print("in toggle false")
+            self.fixing_page_added = False
+            for i in range(self.sidebar.count()):
+                if self.sidebar.item(i).text() == "Fixing":
+                    self.sidebar.takeItem(i)
+                    self.stack.removeWidget(self.pages["Fixing"])
+        fixing_param = self.param_registry.get("fixing_var")
+        if fixing_param and hasattr(fixing_param, "check_box"):
+            fixing_param.check_box.stateChanged.connect(self.toggle_fixing_page)
+        if 0 <= current_index < self.stack.count():
+            self.stack.setCurrentIndex(current_index)
+        else:
+            self.stack.setCurrentIndex(0)  # fallback to first page
+        if 0 <= sidebar_index < self.sidebar.count():
+            self.sidebar.setCurrentRow(sidebar_index)
+        else:
+            self.sidebar.setCurrentRow(0)
         pass
 
     def _set_incoherences(self):
@@ -1204,10 +1240,11 @@ class EcoBuilder:
 
 class PageParameters(QWidget):
     def __init__(
-        self, main_window, stack, sidebar, tabs_for_page=None, tab_categories=None
+            self, main_window, stack, sidebar, name: str, tabs_for_page=None, tab_categories=None
     ):
         super().__init__()
         self.main_window = main_window
+        self.name = name
         # self.param_category = param_category
         self.stack = stack
         self.sidebar = sidebar

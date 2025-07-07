@@ -1023,7 +1023,6 @@ params_dict = {
         "optional": False,
     },
     # ----------fixing var --------------------------------------
-    # TODO: add fixing variables
     # TODO: add descritions everywhere, especially the eco params
     # TODO: add proper labels for the eco params
 }
