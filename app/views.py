@@ -5,6 +5,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
     QAbstractScrollArea,
+    QFileDialog,
     QFrame,
     QGroupBox,
     QHBoxLayout,
@@ -162,21 +163,27 @@ class MainWindow(QMainWindow):
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
 
-    # TODO: add spin_box everywhere
     def load_config(self):
+        # file_path, _ = QFileDialog.getOpenFileName(self, "Open Configuration File", "", "INI files (*.ini);;All Files (*)")
         tuning, instance = load_configuration()
         for el, value in tuning.items():
             if el in self.param_registry.keys():
-                self.param_registry[el].set_value(int(value))
-
-        for el, value in instance.items():
-            if el in self.param_registry.keys():
-                if isinstance(self.param_registry[el], ParamBoolean):
-                    self.param_registry[el].set_value(bool(value))
+                debug_print(el, self.param_registry[el])
                 if isinstance(self.param_registry[el], ParamInput):
-                    self.param_registry[el].set_value(int(value))
+                    debug_print(el)
+                    self.param_registry[el].set_value(value)
+                # self.param_registry[el].set_value(int(value))
+
+        # for el, value in instance.items():
+        #     if el in self.param_registry.keys():
+        #         if isinstance(self.param_registry[el], ParamBoolean):
+        #             self.param_registry[el].set_value(bool(value))
+        #         if isinstance(self.param_registry[el], ParamInput):
+        #             self.param_registry[el].set_value(int(value))
 
                 pass
+
+    # TODO: in the eco importer put a specific method for params for clarity (not "set value")
 
     def load_perm(self):
         res = {}
@@ -194,10 +201,12 @@ class MainWindow(QMainWindow):
         #             debug_print("component item", value_)
 
     def load_eco(self):
-        res = load_coef("data/example_eco.dat")
-        for el, value in res.items():
-            if f"param {el}" in self.param_registry.keys():
-                self.param_registry[f"param {el}"].set_value(value)
+        file_path, _ = QFileDialog.getOpenFileName(self, "Open Eco File", "", "Data files (*.dat);;All Files (*)")
+        if file_path:
+            res = load_coef(file_path)
+            for el, value in res.items():
+                if f"param {el}" in self.param_registry.keys():
+                    self.param_registry[f"param {el}"].set_value(value)
 
     def _define_pages(self):
         self.categories_names = {
@@ -230,6 +239,11 @@ class MainWindow(QMainWindow):
                 "data_dir",
                 "log_dir",
             ],
+            "File paths": [
+                "fname",
+                "fname_perm",
+                "fname_eco",
+                ],
             "Tuning settings": [
                 "pressure_ratio",
                 "seed1",
@@ -365,11 +379,12 @@ class MainWindow(QMainWindow):
                 self.category_instances["Compressor/Expander Factors"],
                 self.category_instances["Vacuum Pump/Expander Efficiency"],
             ],
-            "Fixing": [self.category_instances["Fixing"]]
+            "Fixing": [self.category_instances["Fixing"]],
+            "Files": [self.category_instances["File paths"]]
         }
         self.fixing_page_added = False
         self.page_names = {
-            "Program options": ["Basic", "Advanced"],
+            "Program options": ["Basic", "Advanced", "Files"],
             "Configuration": ["Instance", "Tuning"],
             "General Data": ["Components", "Product", "Process"],
             "Permeability": ["Membrane", "Options"],
@@ -715,7 +730,7 @@ class MainWindow(QMainWindow):
         target.category.update_category()
 
     def update_pages(self):
-        for page in self.pages:
+        for page in self.pages.values():
             page.update_param_page()
 
     def update_generations(self, target: Param, source: Param):
@@ -829,7 +844,7 @@ class MainWindow(QMainWindow):
         ]
         fixed_variable_params = [
             "set mem_type_set",
-            # "param nb_gas",
+            "param nb_gas",
             "param Permeability",
             # "param thickness",
             "param mem_product",
@@ -1033,9 +1048,17 @@ class ConfigBuilder:
 
         epsilon = "{'At': 0.3, 'press_up_f': 0.2, 'press_down_f': 0.2, 'feed': 0.3, 'perm_ref': 0.1, 'alpha': 0.1, 'delta': 0.1, 'xout': 0.0001}"
         config["tuning"]["epsilon"] = epsilon
-        config["instance"]["fname"] = f"{dir}/data.dat"
-        config["instance"]["fname_perm"] = f"{dir}/perm.dat"
-        config["instance"]["fname_eco"] = f"{dir}/eco.dat"
+        if "fname" not in config["instance"]:
+            config["instance"]["fname"] = f"{dir}/data.dat"
+        if "fname_perm" not in config["instance"]:
+            config["instance"]["fname_perm"] = f"{dir}/perm.dat"
+        if "fname_eco" not in config["instance"]:
+            config["instance"]["fname_eco"] = f"{dir}/eco.dat"
+
+        if self.param_registry["fixing_var"].get_value():
+            if "fname_mask" not in config["instance"]:
+                config["instance"]["fname_mask"] = f"{dir}/mask.dat"
+
 
         with open(filename, "w") as configfile:
             config.write(configfile)
@@ -1130,9 +1153,10 @@ class PermBuilder:
     # TODO: add to_data_entry for param fixed with input
     def __init__(self, params) -> None:
         self.param_registry = params
+        # FIXME: do not build nb_gas for variable perm
         self.validated_params = [
             "set mem_types_set",
-            # "param nb_gas",
+            "param nb_gas",
             "param Robeson_multi",
             "param Robeson_power",
             "param ub_alpha",
@@ -1372,7 +1396,7 @@ class CollapsibleSection(QWidget):
 # -----------------------------------------------------------
 
 
-def load_configuration():
+def load_configuration(filepath: str = "/home/ash/mind/temp/config.ini"):
     tuning_params = [
         "seed1",
         "seed2",
@@ -1401,7 +1425,7 @@ def load_configuration():
     ]
     config = configparser.ConfigParser()
     try:
-        config.read("data/config.ini")
+        config.read(filepath)
         if not ("tuning" in config.sections() and "instance" in config.sections()):
             raise ValueError(
                 f"Errror: config.ini is not set correctly, generate new one with option (--config)"

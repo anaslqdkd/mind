@@ -237,6 +237,7 @@ class ParamInput(Param):
             self.manager.notify_change(self)
 
     def set_value(self, value):
+        # FIXME: redo this function
         if self.line_edit is not None:
             if hasattr(self.line_edit, "setDecimals"):
                 if isinstance(value, float):
@@ -253,6 +254,9 @@ class ParamInput(Param):
                 self.line_edit.setValue(int(value))
             else:
                 self.line_edit.setValue(float(value))
+
+    def set_value_from_import(self, value):
+        self.set_value(value)
 
     def set_last_line_edit(self, value):
         self.last_line_edit = value
