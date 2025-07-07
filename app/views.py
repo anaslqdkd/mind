@@ -1096,15 +1096,17 @@ class PermBuilder:
         self.param_registry = params
         self.validated_params = [
             "set mem_types_set",
-            "param nb_gas",
+            # "param nb_gas",
+            "param Robeson_multi",
+            "param Robeson_power",
+            "param ub_alpha",
+            "param lb_alpha",
+            "param lb_permeability",
+            "param ub_permeability",
             "param Permeability",
             "param thickness",
             "param mem_product",
             "param mem_type",
-            "param Robeson_multi",
-            "param ub_alpha",
-            "param lb_permeability",
-            "param ub_permeability",
         ]
         self.perm_args = []
 

@@ -218,6 +218,8 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 optional=optional,
                 expected_type=expected_type,
                 default=default,
+                min_value = min_value,
+                max_value = max_value,
                 # description=description,
             )
         case ParamType.FIXED_COMPONENT:
@@ -291,6 +293,10 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 hidden=hidden,
                 depends_on=depends_on,
                 optional=optional,
+                max_value = max_value,
+                min_value = min_value,
+                default = default,
+                step = step,
                 # description=description,
             )
         case _:

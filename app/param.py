@@ -1909,8 +1909,8 @@ class ParamFixedMembrane(Param):
         optional: bool = False,
         description: str = "",
         expected_type=str,
-        min_value: float = 0.0,
-        max_value: float = 1e6,
+        min_value: Optional[int] = None,
+        max_value: Optional[int] = None,
         step: float = 1.0,
         decimals: int = 2,
         default: Optional[int] = None,
@@ -1929,6 +1929,7 @@ class ParamFixedMembrane(Param):
         self.step = step
         self.decimals = decimals
         self.default = default
+        self.expected_type = expected_type
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         if self.hidden:
@@ -1942,14 +1943,28 @@ class ParamFixedMembrane(Param):
         current_row = row + 2
         for membrane in self.membranes:
             grid_layout.addWidget(QLabel(str(membrane)), current_row, 0)
-            spin = QDoubleSpinBox()
-            spin.setMinimum(self.min_value)
-            spin.setMaximum(self.max_value)
-            spin.setSingleStep(self.step)
-            spin.setDecimals(self.decimals)
-            spin.setValue(self.min_value)
-            if self.default is not None:
-                spin.setValue(self.default)
+            if self.expected_type == int:
+                spin = QSpinBox()
+                if self.min_value is not None:
+                    spin.setMinimum(int(self.min_value))
+                if self.max_value is not None:
+                    spin.setMaximum(int(self.max_value))
+                if self.step is not None:
+                    spin.setSingleStep(int(self.step))
+                if self.default is not None:
+                    spin.setValue(int(self.default))
+            else:
+                spin = QDoubleSpinBox()
+                if self.min_value is not None:
+                    spin.setMinimum(float(self.min_value))
+                if self.max_value is not None:
+                    spin.setMaximum(float(self.max_value))
+                if self.step is not None:
+                    spin.setSingleStep(float(self.step))
+                if hasattr(spin, "setDecimals") and self.decimals is not None:
+                    spin.setDecimals(self.decimals)
+                if self.default is not None:
+                    spin.setValue(float(self.default))
             self.spin_boxes.append(spin)
             grid_layout.addWidget(spin, current_row, 1)
             current_row += 1
@@ -1979,7 +1994,10 @@ class ParamFixedMembrane(Param):
         for idx, value in enumerate(self.last_spin_boxes):
             if idx < len(self.spin_boxes):
                 try:
-                    val = float(value)
+                    if self.expected_type == int:
+                        val = int(value)
+                    else:
+                        val = float(value)
                     self.spin_boxes[idx].setValue(val)
                 except ValueError:
                     continue
@@ -2712,6 +2730,10 @@ class ParamGrid2(Param):
         description: str = "",
         expected_type=str,
         hidden: bool = False,
+        default: Optional[int] = None,
+        min_value: Optional[int] = None,
+        max_value: Optional[int] = None,
+        step: Optional[int] = None,
     ) -> None:
         super().__init__(name, file, depends_on=depends_on, description=description, label=label)
         self.checkbox = None
@@ -2727,6 +2749,11 @@ class ParamGrid2(Param):
         self.components = []
         self.manager = None
         self.last_check_box = None
+        self.expected_type = expected_type
+        self.default = default
+        self.min_value = min_value
+        self.max_value = max_value
+        self.step = step
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         self.checkbox = QCheckBox(label)
@@ -2746,7 +2773,27 @@ class ParamGrid2(Param):
             for i in range(self.extra_rows):
                 combo = QComboBox()
                 combo2 = QComboBox()
-                spin_box = QSpinBox()
+                # spin_box = QSpinBox()
+                if self.expected_type == int:
+                    spin_box = QSpinBox()
+                    if self.min_value is not None:
+                        spin_box.setMinimum(int(self.min_value))
+                    if self.max_value is not None:
+                        spin_box.setMaximum(int(self.max_value))
+                    if self.default is not None:
+                        spin_box.setValue(int(self.default))
+                    if self.step is not None:
+                        spin_box.setSingleStep(int(self.step))
+                else:
+                    spin_box = QDoubleSpinBox()
+                    if self.min_value is not None:
+                        spin_box.setMinimum(float(self.min_value))
+                    if self.max_value is not None:
+                        spin_box.setMaximum(float(self.max_value))
+                    if self.default is not None:
+                        spin_box.setValue(float(self.default))
+                    if self.step is not None:
+                        spin_box.setSingleStep(float(self.step))
                 combo.setPlaceholderText("Extra input 1")
                 combo.addItems(self.membranes)
                 combo2.addItems(self.components)
@@ -2755,7 +2802,11 @@ class ParamGrid2(Param):
                 if self.last_combo_boxes2 and i < len(self.last_combo_boxes2):
                     combo2.setCurrentText(self.last_combo_boxes2[i])
                 if self.last_spin_boxes and i < len(self.last_spin_boxes):
-                    spin_box.setValue(int(self.last_spin_boxes[i]))
+                    if isinstance(spin_box, QSpinBox):
+                        spin_box.setValue(int(self.last_spin_boxes[i]))
+                    else:
+                        spin_box.setValue(float(self.last_spin_boxes[i]))
+
                 remove_button = QPushButton("✕")
                 remove_button.setFixedWidth(30)
                 remove_button.clicked.connect(
@@ -2911,6 +2962,15 @@ class ParamGrid2(Param):
         lines = []
         for i, value in enumerate(self.last_spin_boxes):
             lines.append(f"{self.name}:#{self.last_combo_boxes[i]},#{self.last_combo_boxes2[i]} {value}")
+        return "\n".join(lines)
+
+    def to_perm_entry(self) -> Optional[str]:
+        lines = [f"param {self.name} :="]
+        for i in range(len(self.last_spin_boxes)):
+            membrane = self.last_combo_boxes[i] if i < len(self.last_combo_boxes) else None
+            component = self.last_combo_boxes2[i] if i < len(self.last_combo_boxes2) else None
+            value = self.last_spin_boxes[i]
+            lines.append(f"{membrane} {component} {value}")
         return "\n".join(lines)
 
     def to_file(self) -> str:

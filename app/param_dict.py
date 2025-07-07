@@ -642,6 +642,10 @@ params_dict = {
         "file": FILE.PERM,
         "optional": False,
         "hidden": True,
+        "default": 1396000,
+        "min_value": 0,
+        "max_value": 2000000,
+        "expected_type": int,
     },
     "param Robeson_power": {
         "name": "param Robeson_power",
@@ -650,6 +654,8 @@ params_dict = {
         "file": FILE.PERM,
         "optional": False,
         "hidden": True,
+        "min_value": -10,
+        "default": -5.666
     },
     "param ub_alpha": {
         "name": "param ub_alpha",
@@ -658,6 +664,7 @@ params_dict = {
         "file": FILE.PERM,
         "optional": False,
         "hidden": True,
+        "default": 15,
     },
     "param lb_alpha": {
         "name": "param lb_alpha",
@@ -666,6 +673,7 @@ params_dict = {
         "file": FILE.PERM,
         "optional": False,
         "hidden": True,
+        "default": 1.5,
     },
     "param lb_permeability": {
         "name": "param lb_permeability",
@@ -674,8 +682,10 @@ params_dict = {
         "file": FILE.PERM,
         "optional": False,
         "hidden": True,
-        "default": 1,
-        # FIXME: à revoir le param type
+        "default": 0.1,
+        # "max_value": 100,
+        # "min_value": 0,
+        "step": 0.1,
     },
     "param ub_permeability": {
         "name": "param ub_permeability",
@@ -684,7 +694,9 @@ params_dict = {
         "file": FILE.PERM,
         "optional": False,
         "hidden": True,
-        # FIXME: à revoir le param type
+        "default": 10000,
+        "max_value": 20000, 
+        "step": 1000,
     },
     # -----------------------------------------------------------
     #               eco file
