@@ -341,6 +341,7 @@ params_dict = {
         "param_type": ParamType.FIXED_COMPONENT,
         "file": FILE.DATA,
         "optional": False,
+        "default": 0.5,
     },
     "param molarmass": {
         "name": "param molarmass",
@@ -348,6 +349,7 @@ params_dict = {
         "param_type": ParamType.FIXED_COMPONENT,
         "file": FILE.DATA,
         "optional": False,
+        "default": 2
     },
     "param pressure_in": {
         "name": "param pressure_in",
@@ -437,17 +439,7 @@ params_dict = {
         "param_type": ParamType.INPUT,
         "file": FILE.DATA,
         "optional": False,
-        "default": 0.01,
-        "min_value": 0,
-        "max_value": 1,
-        "step": 0.05,
-    },
-    "param lb_press_down": {
-        "name": "param lb_press_down",
-        "param_type": ParamType.INPUT,
-        "file": FILE.DATA,
-        "optional": False,
-        "default": 0.01,
+        "default": 1.01,
         "min_value": 0,
         "max_value": 1,
         "step": 0.05,
@@ -485,17 +477,6 @@ params_dict = {
         "min_value": 0,
         "max_value": 100,
         "step": 10,
-    },
-    "param lb_press_down": {
-        "name": "param lb_press_down",
-        "label": "lower bound pressure down",
-        "param_type": ParamType.INPUT,
-        "file": FILE.DATA,
-        "optional": False,
-        "default": 0.01,
-        "min_value": 0,
-        "max_value": 1,
-        "step": 0.05,
     },
     "param ub_feed": {
         "name": "param ub_feed",
@@ -593,7 +574,7 @@ params_dict = {
         "label": "Mem types set",
         "param_type": ParamType.COMPONENT,
         "file": FILE.PERM,
-        "values": ["M1", "M2", "M3"],
+        "values": ["A", "B", "C"],
         "optional": False,
     },
     "param nb_gas": {
@@ -614,6 +595,7 @@ params_dict = {
         "param_type": ParamType.FIXED_PERM,
         "file": FILE.PERM,
         "optional": False,
+        "default": 1,
         # "hidden": True
     },
     "param thickness": {
@@ -622,6 +604,7 @@ params_dict = {
         "param_type": ParamType.FIXED_MEMBRANE,
         "file": FILE.PERM,
         "optional": False,
+        "default": 1,
     },
     "param mem_type": {
         "name": "param mem_type",
@@ -691,6 +674,7 @@ params_dict = {
         "file": FILE.PERM,
         "optional": False,
         "hidden": True,
+        "default": 1,
         # FIXME: à revoir le param type
     },
     "param ub_permeability": {
@@ -711,6 +695,9 @@ params_dict = {
         "file": FILE.ECO,
         "optional": False,
         "default": 8.3144659848,
+        "min_value": 0.0,
+        "max_value": 100.0,
+        "step": 0.0001,
     },
     "param phi": {
         "name": "param phi",
@@ -719,6 +706,9 @@ params_dict = {
         "file": FILE.ECO,
         "optional": False,
         "default": 0.95,
+        "min_value": 0.0,
+        "max_value": 1.0,
+        "step": 0.01,
     },
     "param T": {
         "name": "param T",
@@ -727,6 +717,9 @@ params_dict = {
         "file": FILE.ECO,
         "optional": False,
         "default": 298.15,
+        "min_value": 0.0,
+        "max_value": 2000.0,
+        "step": 0.01,
     },
     "param gamma": {
         "name": "param gamma",
@@ -735,6 +728,9 @@ params_dict = {
         "file": FILE.ECO,
         "optional": False,
         "default": 1.36,
+        "min_value": 1.0,
+        "max_value": 2.0,
+        "step": 0.01,
     },
     "param C_cp": {
         "name": "param C_cp",
@@ -743,6 +739,9 @@ params_dict = {
         "file": FILE.ECO,
         "optional": False,
         "default": 23000,
+        "min_value": 0,
+        "max_value": 1000000,
+        "step": 100,
     },
     "param C_exp": {
         "name": "param C_exp",
@@ -751,6 +750,9 @@ params_dict = {
         "file": FILE.ECO,
         "optional": False,
         "default": 420,
+        "min_value": 0,
+        "max_value": 1000000,
+        "step": 10,
     },
     "param C_vp": {
         "name": "param C_vp",
@@ -759,6 +761,9 @@ params_dict = {
         "file": FILE.ECO,
         "optional": False,
         "default": 1000,
+        "min_value": 0,
+        "max_value": 1000000,
+        "step": 10,
     },
     "param eta_cp": {
         "name": "param eta_cp",
@@ -767,6 +772,9 @@ params_dict = {
         "file": FILE.ECO,
         "optional": False,
         "default": 0.85,
+        "min_value": 0.0,
+        "max_value": 1.0,
+        "step": 0.01,
     },
     "param K_mr": {
         "name": "param K_mr",
@@ -775,6 +783,9 @@ params_dict = {
         "file": FILE.ECO,
         "optional": False,
         "default": 25,
+        "min_value": 0,
+        "max_value": 10000,
+        "step": 1,
     },
     "param K_gp": {
         "name": "param K_gp",
@@ -783,6 +794,9 @@ params_dict = {
         "file": FILE.ECO,
         "optional": False,
         "default": 0,
+        "min_value": 0,
+        "max_value": 10000,
+        "step": 1,
     },
     "param K_m": {
         "name": "param K_m",
@@ -791,6 +805,9 @@ params_dict = {
         "file": FILE.ECO,
         "optional": False,
         "default": 50,
+        "min_value": 0,
+        "max_value": 10000,
+        "step": 1,
     },
     "param K_mf": {
         "name": "param K_mf",
@@ -799,6 +816,9 @@ params_dict = {
         "file": FILE.ECO,
         "optional": False,
         "default": 286000,
+        "min_value": 0,
+        "max_value": 1000000,
+        "step": 100,
     },
     "param K_el": {
         "name": "param K_el",
@@ -807,6 +827,9 @@ params_dict = {
         "file": FILE.ECO,
         "optional": False,
         "default": 0.08,
+        "min_value": 0.0,
+        "max_value": 10.0,
+        "step": 0.01,
     },
     "param K_er": {
         "name": "param K_er",
@@ -815,6 +838,9 @@ params_dict = {
         "file": FILE.ECO,
         "optional": False,
         "default": 0.9,
+        "min_value": 0.0,
+        "max_value": 10.0,
+        "step": 0.01,
     },
     "param t_op": {
         "name": "param t_op",
@@ -823,6 +849,9 @@ params_dict = {
         "file": FILE.ECO,
         "optional": False,
         "default": 8322,
+        "min_value": 0,
+        "max_value": 8760,
+        "step": 1,
     },
     "param MFc": {
         "name": "param MFc",
@@ -831,6 +860,9 @@ params_dict = {
         "file": FILE.ECO,
         "optional": False,
         "default": 5.11,
+        "min_value": 0.0,
+        "max_value": 100.0,
+        "step": 0.01,
     },
     "param nu": {
         "name": "param nu",
@@ -839,6 +871,9 @@ params_dict = {
         "file": FILE.ECO,
         "optional": False,
         "default": 0.25,
+        "min_value": 0.0,
+        "max_value": 1.0,
+        "step": 0.01,
     },
     "param UF_2000": {
         "name": "param UF_2000",
@@ -847,6 +882,9 @@ params_dict = {
         "file": FILE.ECO,
         "optional": False,
         "default": 1.42,
+        "min_value": 0.0,
+        "max_value": 10.0,
+        "step": 0.01,
     },
     "param UF_1968": {
         "name": "param UF_1968",
@@ -855,6 +893,9 @@ params_dict = {
         "file": FILE.ECO,
         "optional": False,
         "default": 4.99,
+        "min_value": 0.0,
+        "max_value": 10.0,
+        "step": 0.01,
     },
     "param MPFc": {
         "name": "param MPFc",
@@ -863,6 +904,9 @@ params_dict = {
         "file": FILE.ECO,
         "optional": False,
         "default": 2.72,
+        "min_value": 0.0,
+        "max_value": 100.0,
+        "step": 0.01,
     },
     "param i": {
         "name": "param i",
@@ -871,6 +915,9 @@ params_dict = {
         "file": FILE.ECO,
         "optional": False,
         "default": 0.08,
+        "min_value": 0.0,
+        "max_value": 1.0,
+        "step": 0.01,
     },
     "param z": {
         "name": "param z",
@@ -879,6 +926,9 @@ params_dict = {
         "file": FILE.ECO,
         "optional": False,
         "default": 15,
+        "min_value": 0,
+        "max_value": 100,
+        "step": 1,
     },
     "param eta_vp_1": {
         "name": "param eta_vp_1",
@@ -887,6 +937,9 @@ params_dict = {
         "file": FILE.ECO,
         "optional": False,
         "default": 0.1058,
+        "min_value": 0.0,
+        "max_value": 1.0,
+        "step": 0.0001,
     },
     "param eta_vp_0": {
         "name": "param eta_vp_0",
@@ -895,8 +948,10 @@ params_dict = {
         "file": FILE.ECO,
         "optional": False,
         "default": 0.8746,
+        "min_value": 0.0,
+        "max_value": 1.0,
+        "step": 0.0001,
     },
-
     # -----------------------------------------------------------
     "fix area": {
         "name": "fix area",

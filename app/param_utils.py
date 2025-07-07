@@ -90,6 +90,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,
+                default=default,
                 # description=description,
             )
         case ParamType.BOOLEAN_WITH_INPUT:
@@ -204,6 +205,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 # components=["O2", "H2"],
                 optional=optional,
                 expected_type=expected_type,
+                default = default,
                 # description=description,
             )
         case ParamType.FIXED_MEMBRANE:
@@ -215,6 +217,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,
+                default=default,
                 # description=description,
             )
         case ParamType.FIXED_COMPONENT:
@@ -226,6 +229,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,
+                default=default
                 # description=description,
             )
         case ParamType.FIXED_MEMBRANE_SELECT:

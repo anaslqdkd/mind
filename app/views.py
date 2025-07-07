@@ -1,5 +1,6 @@
 import os
 import subprocess
+from typing import Optional
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
@@ -23,10 +24,8 @@ from PyQt6.QtWidgets import (
 )
 import configparser
 
-from app import dependency_manager, param_dict
+from app import dependency_manager,  param_dict
 from app.param import (
-    GridOptions,
-    MembraneOptions,
     Param,
     ParamBoolean,
     ParamCategory,
@@ -54,11 +53,13 @@ from app.dependency_manager import DependencyManager
 # TODO: close button verification before quitting, to abort modifs
 
 
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("App")
         self.resize(700, 600)
+        self.incoherence_manager: Optional[IncoherenceManager] = None
 
         # stack
         self.stack = QStackedWidget()
@@ -143,6 +144,11 @@ class MainWindow(QMainWindow):
             self.stack.addWidget(el)
 
         self._set_dependencies()
+        self._set_incoherences()
+
+        for el in self.pages:
+            el.command_button.set_incoherence_manager(self.incoherence_manager)
+
         self.sidebar.currentRowChanged.connect(self.stack.setCurrentIndex)
         self.apply_button.clicked.connect(self.build_command)
         end_buttons_layout.addWidget(self.apply_button)
@@ -269,6 +275,7 @@ class MainWindow(QMainWindow):
             ],
             "Thermodynamic & Physical Constants": [
                 "param R",
+                "param T",
                 "param gamma",
                 "param phi",
             ],
@@ -297,6 +304,8 @@ class MainWindow(QMainWindow):
             ],
             "Vacuum Pump/Expander Efficiency": [
                 "param eta_cp",
+                "param eta_vp_1",
+                "param eta_vp_0",
             ],
             "Fixing": [
                 "fix area",
@@ -373,6 +382,32 @@ class MainWindow(QMainWindow):
             self.pages.append(page_temp)
 
         pass
+
+    def _set_incoherences(self):
+        debug_print("in set incoherences")
+        self.incoherence_manager = IncoherenceManager(self)
+        self.incoherence_manager.params = self.param_registry
+        self.incoherence_manager.test()
+        for param in self.param_registry.values():
+            param.incoherence_manager = self.incoherence_manager
+        param_registry = self.param_registry
+
+        # TODO: add all incoherences
+        self.incoherence_manager.add_incoherence(
+                # param1, param2, check_fn, message
+                param_registry["vp"],
+                param_registry["param lb_press_down"],
+                self.check_vp_lb_press_down,
+                "Incoherence between pressure down and Vacuum pump"
+                )
+
+        pass
+    def check_vp_lb_press_down(self, vp: ParamBoolean, lb_press_down: ParamInput) -> bool:
+        debug_print(vp.get_value(), lb_press_down.get_value_float)
+        if (vp.get_value() and lb_press_down.get_value_float() > 1.0) or (not vp.get_value() and lb_press_down.get_value_float() < 1.0):
+            return False
+        return True
+
 
     def _set_dependencies(self):
         dependency_manager = DependencyManager()
@@ -578,6 +613,7 @@ class MainWindow(QMainWindow):
             )
 
         register_param_dependencies(self.param_registry, dependency_manager)
+
 
     def update_nb_gas(self, target: ParamInput, source: ParamComponentSelector):
         target.set_last_line_edit(int(source.get_value()))
@@ -794,7 +830,38 @@ class MainWindow(QMainWindow):
 
 
 # -----------------------------------------------------------
+class IncoherenceManager:
+    def __init__(self, main_window: MainWindow) -> None:
+        self.params: dict[str, "Param"] = {}
+        self.rules = {}
+        self.main_window: MainWindow = main_window
 
+    def test(self):
+        print("in test function of incoherence mananger")
+
+    def add_param(self, param):
+        self.params[param.name] = param
+        param.manager = self
+
+    def add_incoherence(self, param1, param2, check_fn, message=None):
+        self.rules[(param1.name, param2.name)] = (check_fn, message)
+
+    def check_incoherences(self) -> list[str]:
+        self.main_window.update_pages()
+        errors = []
+        for (param1_name, param2_name), (check_fn, message) in self.rules.items():
+            p1 = self.params.get(param1_name)
+            p2 = self.params.get(param2_name)
+            debug_print(p1, p2)
+            debug_print(check_fn(p1, p2))
+            if p1 is None or p2 is None:
+                continue
+
+            if not check_fn(p1, p2):
+                errors.append(message or f"Incoherence between {param1_name} and {param2_name}")
+        return errors
+
+# -----------------------------------------------------------
 
 class CommandBuilder:
     def __init__(self, param_registry: dict[str, Param]) -> None:
@@ -970,7 +1037,7 @@ class DataBuilder:
         self.validated_params = [
             "set components",
             "param pressure_in",
-            "param pressure_prod",
+            # "param pressure_prod",
             "param ub_perc_waste",
             "param lb_perc_prod",
             "param normalized_product_qt",
@@ -1008,6 +1075,8 @@ class DataBuilder:
             f.write(f"data;\n\n")
             for entry in self.data_args:
                 f.write(f"{entry};\n\n")
+            f.write(f"param ub_feed_tot := 1;\n")
+            f.write(f"param ub_feed := 1;\n")
 
 
 class PermBuilder:
@@ -1041,6 +1110,7 @@ class PermBuilder:
         pass
 
     def write_data(self, filename="test/perm.dat"):
+        debug_print("in write data for perm")
         filename = f"{self.param_registry["file_dir"].get_path()}/perm.dat"
         dir_path = os.path.dirname(filename)
         if dir_path:
@@ -1174,7 +1244,8 @@ class PageParameters(QWidget):
 
         next_button = QPushButton("next")
 
-        command_button = CommandLauncherButton("/home/ash/mind/temp/command.sh")
+        command_button = CommandLauncherButton("/home/ash/mind/temp/command.sh", incoherence_manager=self.main_window.incoherence_manager)
+        self.command_button = command_button
 
         end_button_widget = QWidget()
         end_button_layout = QHBoxLayout(end_button_widget)
@@ -1812,16 +1883,29 @@ def load_coef(filename):
 
 
 class CommandLauncherButton(QPushButton):
-    def __init__(self, script_path, terminal_cmd="alacritty", parent=None):
+    def __init__(self, script_path, incoherence_manager: IncoherenceManager, terminal_cmd="alacritty", parent=None):
         super().__init__("Run Command", parent)
         self.script_path = script_path
         self.terminal_cmd = terminal_cmd
         self.clicked.connect(self.launch_terminal)
+        self.incoherence_manager = incoherence_manager
+
+    def set_incoherence_manager(self, incoherence_manager: IncoherenceManager):
+        self.incoherence_manager = incoherence_manager
 
     def launch_terminal(self):
         # subprocess.Popen([self.terminal_cmd, "-e", f"bash {self.script_path}"])
         # subprocess.Popen([self.terminal_cmd, "-e", "bash", self.script_path])
         # subprocess.Popen(["alacritty", "-e", "bash", "/home/ash/mind/temp/command.sh"])
+        debug_print("in lauch terminal")
+        if self.incoherence_manager is not None:
+            debug_print("in self.incoherence_manage is not None")
+            errors = self.incoherence_manager.check_incoherences()
+            if errors:
+                QMessageBox.critical(self, "Incoherences Detected", "\n".join(errors))
+                return
+            
+        
         subprocess.Popen(
             [
                 "alacritty",
@@ -1831,3 +1915,4 @@ class CommandLauncherButton(QPushButton):
                 f"{self.script_path}; read -p 'Done. Press enter...'",
             ]
         )
+        # TODO: change the terminal

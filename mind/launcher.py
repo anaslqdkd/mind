@@ -421,7 +421,7 @@ def load_configuration():
                       ]
     config = configparser.ConfigParser()
     try:
-        config.read('temp/config.ini')
+        config.read('test/config.ini')
         cwd = os.getcwd()
         print(cwd)
         if not ('tuning' in config.sections() and 'instance' in config.sections()):

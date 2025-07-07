@@ -95,6 +95,7 @@ class Param:
         expected_type=str,
         description: str = "",
         manager: Optional[DependencyManager] = None,
+        incoherence_manager: Optional["IncoherenceManager"] = None,
     ) -> None:
         self.name = name  # the exact name in the data files
         self.category: ParamCategory
@@ -274,6 +275,13 @@ class ParamInput(Param):
 
     def get_value(self) -> str:
         return self.last_line_edit
+
+    def get_value_float(self) -> float:
+        debug_print(self.last_line_edit)
+        try:
+            return float(self.last_line_edit)
+        except (ValueError, TypeError):
+           raise ValueError
 
     def hide(self):
         self.hidden = True
@@ -495,31 +503,56 @@ class ParamInputWithUnity(Param):
         optional: bool = False,
         label: str = "",
         expected_type=str,
+        default: Optional[int] = None,
+        min_value: Optional[int] = None,
+        max_value: Optional[int] = None,
+        step: Optional[int] = None,
     ) -> None:
         super().__init__(name, file=file, depends_on=depends_on, description=description, label=label)
         self.question_label = None
         self.line_edit = None
         self.combo_box = None
         self.description = description
+        self.min_value = min_value
+        self.max_value = max_value
+        self.step = step
 
         self.last_line_edit = ""
         self.last_combo_box = ""
 
         self.values = values
         self.optional = optional
+        self.default = default
+        self.expected_type = expected_type
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(header, row, 0)
-        line_edit = QSpinBox()
+        # line_edit = QSpinBox()
+        if self.expected_type == int:
+            line_edit = QSpinBox()
+            if self.min_value is not None:
+                line_edit.setMinimum(int(self.min_value))
+            if self.max_value is not None:
+                line_edit.setMaximum(int(self.max_value))
+            if self.default is not None:
+                line_edit.setValue(int(self.default))
+            if self.step is not None:
+                line_edit.setSingleStep(int(self.step))
+        else:
+            line_edit = QDoubleSpinBox()
+            if self.min_value is not None:
+                line_edit.setMinimum(self.min_value)
+            if self.max_value is not None:
+                line_edit.setMaximum(self.max_value)
+            if self.default is not None:
+                line_edit.setValue(self.default)
+            if self.step is not None:
+                line_edit.setSingleStep(self.step)
+
         combo_box = QComboBox()
         combo_box.addItems(self.values)
-        # grid_layout.addItem(
-        #     QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum),
-        #     row,
-        #     1,
-        # )
         self.line_edit = line_edit
         self.combo_box = combo_box
 
@@ -555,7 +588,7 @@ class ParamInputWithUnity(Param):
     def to_data_entry(self) -> Optional[str]:
         # TODO: convert unity before assignment
         if self.last_line_edit != "" and self.last_line_edit is not None:
-            return f"{self.name} := {self.last_line_edit} #{self.last_combo_box}"
+            return f"{self.name} := {self.last_line_edit}"
 
     def to_command_arg(self):
         return f"--{self.name}"
@@ -1016,7 +1049,7 @@ class ParamFixedWithInput(Param):
         return res
 
     def to_file(self) -> str:
-        return f"{self.name} := {self.last_line_edit} #{self.last_combo_box}"
+        return f"{self.name} := {self.last_line_edit}"
 
 
 # -----------------------------------------------------------
@@ -1194,7 +1227,7 @@ class ParamComponentSelector(Param):
 
     def to_data_entry(self) -> Optional[str]:
         if len(self.selected_components) > 0:
-            values = ', '.join(f'"{str(x)}"' for x in self.selected_components)
+            values = ' '.join(f'"{str(x)}"' for x in self.selected_components)
             return f"{self.name} := {values}"
         else:
             return None
@@ -1703,7 +1736,7 @@ class ParamFixedWithSelect(Param):
         pass
 
     def to_file(self) -> str:
-        return f"{self.name} := {self.last_line_edit} #{self.last_combo_box}"
+        return f"{self.name} := {self.last_line_edit}"
 
 # -----------------------------------------------------------
 
@@ -1880,6 +1913,7 @@ class ParamFixedMembrane(Param):
         max_value: float = 1e6,
         step: float = 1.0,
         decimals: int = 2,
+        default: Optional[int] = None,
     ) -> None:
         super().__init__(name, file, depends_on=depends_on, description=description, label=label)
         self.question_label = None
@@ -1894,6 +1928,7 @@ class ParamFixedMembrane(Param):
         self.max_value = max_value
         self.step = step
         self.decimals = decimals
+        self.default = default
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         if self.hidden:
@@ -1913,6 +1948,8 @@ class ParamFixedMembrane(Param):
             spin.setSingleStep(self.step)
             spin.setDecimals(self.decimals)
             spin.setValue(self.min_value)
+            if self.default is not None:
+                spin.setValue(self.default)
             self.spin_boxes.append(spin)
             grid_layout.addWidget(spin, current_row, 1)
             current_row += 1
@@ -2177,6 +2214,7 @@ class ParamFixedComponent(Param):
         optional: bool = False,
         description: str = "",
         expected_type=str,
+        default: Optional[int] = None,
         min_value: float = 0.0,
         max_value: float = 1e6,
         step: float = 1.0,
@@ -2196,6 +2234,7 @@ class ParamFixedComponent(Param):
         self.step = step
         self.decimals = decimals
         self.expected_type = expected_type
+        self.default = default
 
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
@@ -2213,6 +2252,8 @@ class ParamFixedComponent(Param):
             spin.setSingleStep(self.step)
             spin.setDecimals(self.decimals)
             spin.setValue(self.min_value)
+            if self.default is not None:
+                spin.setValue(self.default)
             self.spin_boxes.append(spin)
             grid_layout.addWidget(spin, current_row, 1)
             current_row += 1
@@ -2682,31 +2723,18 @@ class ParamGrid2(Param):
         self.spin_boxes = []
         self.last_spin_boxes: list[str] = []
         self.hidden = hidden
-        # self.values = ["value 1", "value 2"]
         self.membranes = []
         self.components = []
         self.manager = None
         self.last_check_box = None
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
-        # if hasattr(self, "grid_widgets"):
-        #     for widget in self.grid_widgets:
-        #         grid_layout.removeWidget(widget)
-        #         widget.deleteLater()
         self.checkbox = QCheckBox(label)
         self._build_component_grid(row + 1, grid_layout)
-        # self.checkbox.setChecked(True)
         self._set_grid_visible(True)
 
-        # if self.last_check_box is not None:
-        #     self.checkbox.setChecked(self.last_check_box)
-        #     self._set_grid_visible(self.last_check_box)
-        # else:
-        #     self.checkbox.setChecked(False)
-        #     self._set_grid_visible(False)
-
-        # self.checkbox.stateChanged.connect(self._on_checkbox_changed)
-        grid_layout.addWidget(self.checkbox, row, 0, 1, 2)
+        header = self.build_header(label, self.description, self.optional)
+        grid_layout.addWidget(header, row, 0, 1, 2)
 
     def _build_component_grid(self, row: int, grid_layout: QGridLayout):
         self.grid_widgets = []
