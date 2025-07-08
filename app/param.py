@@ -236,24 +236,51 @@ class ParamInput(Param):
             self.store_value()
             self.manager.notify_change(self)
 
+    # def set_value(self, value):
+    #     # FIXME: redo this function
+    #     if self.line_edit is not None:
+    #         if hasattr(self.line_edit, "setDecimals"):
+    #             if isinstance(value, float):
+    #                 str_val = str(value)
+    #                 if '.' in str_val:
+    #                     decimals = len(str_val.split('.')[-1].rstrip('0'))
+    #                 else:
+    #                     decimals = 2
+    #                 self.line_edit.setDecimals(decimals)
+    #             else:
+    #                 self.line_edit.setDecimals(0)
+    #         self.line_edit.setMaximum(1e10)
+    #         if self.expected_type == int:
+    #             self.line_edit.setValue(int(value))
+    #         else:
+    #             self.line_edit.setValue(float(value))
     def set_value(self, value):
-        # FIXME: redo this function
+        """
+        Set the value in the line_edit widget, handling int/float types and decimals.
+        """
         if self.line_edit is not None:
-            if hasattr(self.line_edit, "setDecimals"):
-                if isinstance(value, float):
-                    str_val = str(value)
+            # Handle QSpinBox (int) and QDoubleSpinBox (float)
+            if isinstance(self.line_edit, QSpinBox):
+                try:
+                    self.line_edit.setValue(int(float(value)))
+                except (ValueError, TypeError):
+                    pass
+            elif isinstance(self.line_edit, QDoubleSpinBox):
+                try:
+                    float_val = float(value)
+                    # Set decimals based on value if needed
+                    str_val = str(float_val)
                     if '.' in str_val:
                         decimals = len(str_val.split('.')[-1].rstrip('0'))
                     else:
                         decimals = 2
                     self.line_edit.setDecimals(decimals)
-                else:
-                    self.line_edit.setDecimals(0)
-            self.line_edit.setMaximum(1e10)
-            if self.expected_type == int:
-                self.line_edit.setValue(int(value))
-            else:
-                self.line_edit.setValue(float(value))
+                    self.line_edit.setMaximum(1e10)
+                    self.line_edit.setValue(float_val)
+                except (ValueError, TypeError):
+                    pass
+        # Always update last_line_edit for consistency
+        self.last_line_edit = str(value)
 
     def set_value_from_import(self, value):
         self.set_value(value)
@@ -2760,6 +2787,11 @@ class ParamGrid2(Param):
         self.step = step
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        self.combo_boxes.clear()
+        self.combo_boxes2.clear()
+        self.spin_boxes.clear()
+        if self.hidden:
+            return
         self.checkbox = QCheckBox(label)
         self._build_component_grid(row + 1, grid_layout)
         self._set_grid_visible(True)
@@ -2956,6 +2988,12 @@ class ParamGrid2(Param):
 
     def row_span(self) -> int:
         return 3 + self.extra_rows
+    
+    def hide(self):
+        self.hidden = True
+
+    def show(self):
+        self.hidden = False
 
     def to_data_entry(self) -> Optional[str]:
         if self.checkbox and self.checkbox.isChecked():

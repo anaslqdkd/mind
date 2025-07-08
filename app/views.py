@@ -168,10 +168,10 @@ class MainWindow(QMainWindow):
         tuning, instance = load_configuration()
         for el, value in tuning.items():
             if el in self.param_registry.keys():
-                debug_print(el, self.param_registry[el])
                 if isinstance(self.param_registry[el], ParamInput):
-                    debug_print(el)
-                    self.param_registry[el].set_value(value)
+                    debug_print(el, self.param_registry[el])
+                    self.param_registry[el].set_value_from_import(value)
+                    # TODO: continue, add debugging prints
                 # self.param_registry[el].set_value(int(value))
 
         # for el, value in instance.items():
@@ -187,9 +187,12 @@ class MainWindow(QMainWindow):
 
     def load_perm(self):
         res = {}
-        filepath = "data/example_perm.dat"
+        filepath = "/home/ash/mind/temp/perm.dat"
         with open(filepath, "r") as file:
+            perm_data = {}
+            perm_param = parser_variable_permeability_data(file, perm_data)
             perm_param = parser_fixed_permeability_data_simple(file)
+            debug_print(perm_param)
             # perm_param = parser_fixed_permeability_data(file, res)
         # for key, value in perm_param.items():
         #     debug_print(f"the key is {key}, and the value is {value}")
