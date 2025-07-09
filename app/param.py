@@ -1010,6 +1010,7 @@ class ParamFixedWithInput(Param):
         self.last_line_edits = []
         self.line_edits = []
         self.hidden = hidden
+        self.manager: Optional[DependencyManager] = None
         pass
 
     def set_rows_nb(self, rows: int, source: Param):
@@ -1038,12 +1039,11 @@ class ParamFixedWithInput(Param):
         grid_layout.addWidget(header, row, 0)
         row += 1
 
-        # group_box = QGroupBox()
-        # group_layout = QGridLayout(group_box)
-        # group_box.setLayout(group_layout)
-        # group_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.line_edits = []
-        for r in range(self.row_nb):
+
+        self.elements = dict(zip([i for i in range(1, self.row_nb+1)], [{k: None for k in ("min_value", "max_value")}]*self.row_nb))
+
+        for r in self.elements.keys():
             grid_layout.addWidget(QLabel(f"{r+1}"), row + r, 0)
             for c in range(1, 2):
                 if type(self.default) == int:
@@ -1051,19 +1051,42 @@ class ParamFixedWithInput(Param):
                 else:
                     line_edit = QDoubleSpinBox()
 
+                component = self.elements[r]
+
                 if self.min_value is not None:
-                    line_edit.setMinimum(self.min_value)
+                    if self.elements[r]["min_value"] is None:
+                        component["min_value"] = self.min_value
                 if self.max_value is not None:
-                    line_edit.setMaximum(self.max_value)
+                    if self.elements[r]["max_value"] is None:
+                        component["max_value"] = self.max_value
+
+                if component["min_value"] is not None:
+                    line_edit.setMinimum(component["min_value"])
+                if component["max_value"] is not None:
+                    line_edit.setMaximum(component["max_value"])
+
                 if self.default is not None:
-                    line_edit.setValue(self.default)
+                    if isinstance(line_edit, QSpinBox):
+                        line_edit.setValue(int(self.default))
+                    else:
+                        line_edit.setValue(float(self.default))
+
                 if self.step is not None:
                     line_edit.setSingleStep(self.step)
                 grid_layout.addWidget(
                     line_edit, row + r, c, alignment=Qt.AlignmentFlag.AlignCenter
                 )
+                if line_edit is not None:
+                    # line_edit.valueChanged.connect(self._on_value_changed)
+                    line_edit.valueChanged.connect(lambda _, le=line_edit: self._on_value_changed(le))
                 self.line_edits.append(line_edit)
         self.restore_value()
+
+    def _on_value_changed(self, sender=None):
+        # FIXME: move this to the param class to avoid repeating it in all the param classses
+        if self.manager is not None:
+            self.store_value()
+            self.manager.notify_change(self, sender)
 
     def row_span(self) -> int:
         return self.row_nb + 2

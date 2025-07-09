@@ -754,18 +754,30 @@ class MainWindow(QMainWindow):
                 self.update_press_lb_down_sup_ub_down,
                 # TODO: use lamdba to switch orders instead of defining two separate functions
             )
+            dependency_manager.add_dependency(
+                # lb_press_down < ub_press_down
+                param_registry["ub_area"],
+                param_registry["lb_area"],
+                self.update_lb_area_bounds,
+            )
 
         register_param_dependencies(self.param_registry, dependency_manager)
+    def update_lb_area_bounds(self, lb_area: ParamFixedWithInput, ub_area: ParamFixedWithInput, sender):
+        if sender in ub_area.line_edits:
+            index = ub_area.line_edits.index(sender)
+            # TODO: continue
+            debug_print(index)
+        debug_print("in update area")
 
-    def update_press_lb_down_inf_ub_down(self, ub_press_down: ParamInput, lb_press_down: ParamInput):
+    def update_press_lb_down_inf_ub_down(self, ub_press_down: ParamInput, lb_press_down: ParamInput, sender):
         ub_press_down.min_value = lb_press_down.get_value_float()
         ub_press_down.category.update_category()
 
-    def update_press_lb_down_sup_ub_down(self, lb_press_down: ParamInput, ub_press_down: ParamInput):
+    def update_press_lb_down_sup_ub_down(self, lb_press_down: ParamInput, ub_press_down: ParamInput, sender):
         lb_press_down.max_value = ub_press_down.get_value_float()
         lb_press_down.category.update_category()
 
-    def update_ub_press_down_vp(self, ub_press_down: ParamInput, vp: ParamBoolean):
+    def update_ub_press_down_vp(self, ub_press_down: ParamInput, vp: ParamBoolean, sender):
         lb_press_down = cast(ParamInput, self.param_registry["param lb_press_down"])
         if vp.get_value():
             debug_print("vp is true")
@@ -783,7 +795,7 @@ class MainWindow(QMainWindow):
         ub_press_down.category.update_category()
 
 
-    def set_bi_components(self, components_selector: ParamComponentSelector, variable_perm: ParamBoolean):
+    def set_bi_components(self, components_selector: ParamComponentSelector, variable_perm: ParamBoolean, sender):
         # if variable perm is checked:
         if variable_perm.get_value():
             components_selector.max_selected = 2
@@ -793,22 +805,22 @@ class MainWindow(QMainWindow):
             components_selector.max_selected = None
         components_selector.category.update_category()
 
-    def update_pressure_lb_sup_ub(self, lb_press_up: ParamInput, ub_press_up: ParamInput):
+    def update_pressure_lb_sup_ub(self, lb_press_up: ParamInput, ub_press_up: ParamInput, sender):
         lb_press_up.max_value = ub_press_up.get_value_float()
         lb_press_up.category.update_category()
 
-    def update_pressure_ub_inf_lb(self, ub_press_up: ParamInput, lb_press_up: ParamInput):
+    def update_pressure_ub_inf_lb(self, ub_press_up: ParamInput, lb_press_up: ParamInput, sender):
         ub_press_up.min_value = lb_press_up.get_value_float()
         ub_press_up.category.update_category()
 
-    def update_pressure_lower_bound(self, pressure_in: ParamInput, lb_press_up: ParamInput):
+    def update_pressure_lower_bound(self, pressure_in: ParamInput, lb_press_up: ParamInput, sender):
         debug_print("in update pressure lower bound")
         lower_bound = lb_press_up.get_value_float()
         pressure_in.min_value = lower_bound
         pressure_in.category.update_category()
         # NOTE: or update param?
 
-    def update_pressure_upper_bound(self, pressure_in: ParamInput, up_press_up: ParamInput):
+    def update_pressure_upper_bound(self, pressure_in: ParamInput, up_press_up: ParamInput, sender):
         debug_print("in update pressure lower bound")
         upper_bound = up_press_up.get_value_float()
         pressure_in.max_value = upper_bound
@@ -816,7 +828,7 @@ class MainWindow(QMainWindow):
         # NOTE: or update param?
 
 
-    def update_pressure_prod(self, target: ParamInput, source: ParamBoolean):
+    def update_pressure_prod(self, target: ParamInput, source: ParamBoolean, sender):
         # for pressure prod pressure must be uniform and permeability must be fixed
         variable_perm = self.param_registry["variable_perm"].get_value()
         uniform_pressure = self.param_registry["uniform_pup"].get_value()
@@ -826,46 +838,46 @@ class MainWindow(QMainWindow):
             target.show()
         target.category.update_category()
 
-    def update_nb_gas(self, target: ParamInput, source: ParamComponentSelector):
+    def update_nb_gas(self, target: ParamInput, source: ParamComponentSelector, sender):
         target.set_last_line_edit(int(source.get_value()))
 
-    def update_mem_product(self, target: ParamMembraneSelect, source: ParamComponent):
+    def update_mem_product(self, target: ParamMembraneSelect, source: ParamComponent, sender):
         target.set_membranes(source.get_items())
         target.category.update_category()
 
     def update_mem_type_membranes(
-        self, target: ParamMembraneSelect, source: ParamComponent
+        self, target: ParamMembraneSelect, source: ParamComponent, sender
     ):
         target.set_membranes(source.get_items())
         target.category.update_category()
 
-    def update_mem_type(self, target: ParamMemType, source: ParamInput):
+    def update_mem_type(self, target: ParamMemType, source: ParamInput, sender):
         target.set_floors(int(float(source.get_value())))
         target.category.update_category()
 
-    def update_final_product(self, target: ParamSelect, source: ParamComponentSelector):
+    def update_final_product(self, target: ParamSelect, source: ParamComponentSelector, sender):
         target.set_values(source.selected_components)
         target.category.update_category()
 
-    def update_permeability(self, target: ParamFixedWithInput, source: ParamComponent):
+    def update_permeability(self, target: ParamFixedWithInput, source: ParamComponent, sender):
         target.set_rows(int(source.get_value()), source)
         target.category.update_category()
 
     def update_permeability2(
-        self, target: ParamFixedWithInput, source: ParamComponentSelector
+        self, target: ParamFixedWithInput, source: ParamComponentSelector, sender
     ):
         target.set_rows_nb(int(source.get_value()), source)
         target.category.update_category()
 
-    def update_components(self, target: ParamFixedPerm, source: ParamComponentSelector):
+    def update_components(self, target: ParamFixedPerm, source: ParamComponentSelector, sender):
         target.set_components(source.get_selected_items())
         target.category.update_category()
 
-    def update_xin(self, target: ParamFixedComponent, source: ParamComponentSelector):
+    def update_xin(self, target: ParamFixedComponent, source: ParamComponentSelector, sender):
         target.set_components(source.get_selected_items())
         target.category.update_category()
 
-    def update_membranes(self, target: ParamFixedPerm, source: ParamComponent):
+    def update_membranes(self, target: ParamFixedPerm, source: ParamComponent, sender):
         target.set_membranes(source.get_items())
         target.category.update_category()
 
@@ -874,7 +886,7 @@ class MainWindow(QMainWindow):
     #     target.set_membranes(source.get_items())
     #     target.category.update_category()
 
-    def update_fn(self, target: ParamFixedWithInput, source: ParamInput):
+    def update_fn(self, target: ParamFixedWithInput, source: ParamInput, sender):
         target.set_row(int(float(source.get_value())))
         # target.set_row(int(source.get_value()))
         target.category.update_category()
@@ -883,14 +895,14 @@ class MainWindow(QMainWindow):
         for page in self.pages.values():
             page.update_param_page()
 
-    def update_generations(self, target: Param, source: Param):
+    def update_generations(self, target: Param, source: Param, sender):
         if source.last_combo_box != "genetic":
             target.hide()
         else:
             target.show()
         target.category.update_category()
 
-    def update_fixing(self, target: ParamFileChooser, source: ParamBoolean):
+    def update_fixing(self, target: ParamFileChooser, source: ParamBoolean, sender):
         if source.last_check_box:
             target.show()
             target.category.update_category()
@@ -902,28 +914,28 @@ class MainWindow(QMainWindow):
     #     target.set_components([str(i) for i in range(1, int(source.get_value()) + 1)])
     #     target.category.update_category()
     def update_fix_area(
-        self, target: ParamFixedComponentWithCheckbox, source: ParamInput
+        self, target: ParamFixedComponentWithCheckbox, source: ParamInput, sender
     ):
         target.set_values([str(i) for i in range(1, int(source.get_value()) + 1)])
         target.category.update_category()
 
-    def update_fix_matrix(self, target: ParamGrid, source: ParamInput):
+    def update_fix_matrix(self, target: ParamGrid, source: ParamInput, sender):
         target.set_values([str(i) for i in range(1, int(source.get_value()) + 1)])
         target.category.update_category()
 
     def store_value(self):
         pass
 
-    def update_membranes_grid(self, target: ParamGrid2, source: ParamComponent):
+    def update_membranes_grid(self, target: ParamGrid2, source: ParamComponent, sender):
         target.set_membranes(source.get_items())
         target.category.update_category()
 
     def update_components_grid(
-        self, target: ParamGrid2, source: ParamComponentSelector
+        self, target: ParamGrid2, source: ParamComponentSelector, sender
     ):
         target.set_components(source.get_selected_items())
 
-    def update_config_algo_params(self, target: ParamInput, source: ParamSelect):
+    def update_config_algo_params(self, target: ParamInput, source: ParamSelect, sender):
         var_params = [
             "iteration",
             "seed1",
@@ -985,7 +997,7 @@ class MainWindow(QMainWindow):
                     param.hide()
                     param.category.update_category()
 
-    def update_variable_perm(self, target: Param, source: ParamBoolean):
+    def update_variable_perm(self, target: Param, source: ParamBoolean, sender):
         variable_perm_params = [
             "param Robeson_multi",
             "param Robeson_power",

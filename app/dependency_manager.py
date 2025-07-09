@@ -14,7 +14,7 @@ class DependencyManager:
             (target_param, update_fn)
         )
 
-    def notify_change(self, source_param):
+    def notify_change(self, source_param, sender=None):
         for target_param, update_fn in self.dependencies.get(source_param.name, []):
-            update_fn(target_param, source_param)
+            update_fn(target_param, source_param, sender)
 
