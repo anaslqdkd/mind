@@ -1011,6 +1011,8 @@ class ParamFixedWithInput(Param):
         self.line_edits = []
         self.hidden = hidden
         self.manager: Optional[DependencyManager] = None
+        self.expected_type = expected_type
+        self.elements = dict(zip([i for i in range(1, self.row_nb+1)], [{k: None for k in ("min_value", "max_value")}]*self.row_nb))
         pass
 
     def set_rows_nb(self, rows: int, source: Param):
@@ -1041,12 +1043,11 @@ class ParamFixedWithInput(Param):
 
         self.line_edits = []
 
-        self.elements = dict(zip([i for i in range(1, self.row_nb+1)], [{k: None for k in ("min_value", "max_value")}]*self.row_nb))
 
         for r in self.elements.keys():
             grid_layout.addWidget(QLabel(f"{r+1}"), row + r, 0)
             for c in range(1, 2):
-                if type(self.default) == int:
+                if self.expected_type == int:
                     line_edit = QSpinBox()
                 else:
                     line_edit = QDoubleSpinBox()

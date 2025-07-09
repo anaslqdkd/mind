@@ -755,19 +755,30 @@ class MainWindow(QMainWindow):
                 # TODO: use lamdba to switch orders instead of defining two separate functions
             )
             dependency_manager.add_dependency(
-                # lb_press_down < ub_press_down
+                # lb_area < ub_area
                 param_registry["ub_area"],
                 param_registry["lb_area"],
                 self.update_lb_area_bounds,
             )
+            dependency_manager.add_dependency(
+                # lb_area < ub_area
+                param_registry["lb_area"],
+                param_registry["ub_area"],
+                self.update_lb_area_bounds2,
+            )
 
         register_param_dependencies(self.param_registry, dependency_manager)
+    def update_lb_area_bounds2(self, ub_area: ParamFixedWithInput, lb_area: ParamFixedWithInput, sender):
+        if sender in lb_area.line_edits:
+            index = lb_area.line_edits.index(sender)
+            ub_area.elements[index+1]["min_value"] = sender.value()
+        lb_area.category.update_category()
+
     def update_lb_area_bounds(self, lb_area: ParamFixedWithInput, ub_area: ParamFixedWithInput, sender):
         if sender in ub_area.line_edits:
             index = ub_area.line_edits.index(sender)
-            # TODO: continue
-            debug_print(index)
-        debug_print("in update area")
+            lb_area.elements[index+1]["max_value"] = sender.value()
+        lb_area.category.update_category()
 
     def update_press_lb_down_inf_ub_down(self, ub_press_down: ParamInput, lb_press_down: ParamInput, sender):
         ub_press_down.min_value = lb_press_down.get_value_float()
