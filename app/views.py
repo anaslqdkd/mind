@@ -1,6 +1,6 @@
 import os
 import subprocess
-from typing import Optional
+from typing import Optional, cast
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
@@ -27,7 +27,7 @@ import configparser
 
 from numpy import fix
 
-from app import dependency_manager,  param_dict
+from app import dependency_manager, param_dict
 from app.param import (
     Param,
     ParamBoolean,
@@ -54,7 +54,6 @@ from app.param_dict import params_dict
 from app.dependency_manager import DependencyManager
 
 # TODO: close button verification before quitting, to abort modifs
-
 
 
 class MainWindow(QMainWindow):
@@ -174,12 +173,12 @@ class MainWindow(QMainWindow):
                     # TODO: continue, add debugging prints
                 # self.param_registry[el].set_value(int(value))
 
-        # for el, value in instance.items():
-        #     if el in self.param_registry.keys():
-        #         if isinstance(self.param_registry[el], ParamBoolean):
-        #             self.param_registry[el].set_value(bool(value))
-        #         if isinstance(self.param_registry[el], ParamInput):
-        #             self.param_registry[el].set_value(int(value))
+                # for el, value in instance.items():
+                #     if el in self.param_registry.keys():
+                #         if isinstance(self.param_registry[el], ParamBoolean):
+                #             self.param_registry[el].set_value(bool(value))
+                #         if isinstance(self.param_registry[el], ParamInput):
+                #             self.param_registry[el].set_value(int(value))
 
                 pass
 
@@ -204,7 +203,9 @@ class MainWindow(QMainWindow):
         #             debug_print("component item", value_)
 
     def load_eco(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, "Open Eco File", "", "Data files (*.dat);;All Files (*)")
+        file_path, _ = QFileDialog.getOpenFileName(
+            self, "Open Eco File", "", "Data files (*.dat);;All Files (*)"
+        )
         if file_path:
             res = load_coef(file_path)
             for el, value in res.items():
@@ -246,7 +247,7 @@ class MainWindow(QMainWindow):
                 "fname",
                 "fname_perm",
                 "fname_eco",
-                ],
+            ],
             "Tuning settings": [
                 "pressure_ratio",
                 "seed1",
@@ -271,12 +272,12 @@ class MainWindow(QMainWindow):
                 "param ub_perc_waste",
             ],
             "Process constraints": [
-                "param pressure_in",
-                "param pressure_prod",
-                "param ub_press_down",
-                "param lb_press_down",
                 "param lb_press_up",
                 "param ub_press_up",
+                "param ub_press_down",
+                "param lb_press_down",
+                "param pressure_in",
+                "param pressure_prod",
                 "param FEED",
             ],
             "Membrane Types": [
@@ -383,11 +384,11 @@ class MainWindow(QMainWindow):
                 self.category_instances["Vacuum Pump/Expander Efficiency"],
             ],
             "Fixing": [self.category_instances["Fixing"]],
-            "Files": [self.category_instances["File paths"]]
+            "Files": [self.category_instances["File paths"]],
         }
         self.fixing_page_added = False
         self.page_names = {
-            "Program options": ["Basic", "Advanced", "Files"],
+            "Program options": ["Basic", "Advanced"],
             "Configuration": ["Instance", "Tuning"],
             "General Data": ["Components", "Product", "Process"],
             "Permeability": ["Membrane", "Options"],
@@ -438,7 +439,6 @@ class MainWindow(QMainWindow):
         pass
 
     def _set_incoherences(self):
-        debug_print("in set incoherences")
         self.incoherence_manager = IncoherenceManager(self)
         self.incoherence_manager.params = self.param_registry
         self.incoherence_manager.test()
@@ -448,20 +448,40 @@ class MainWindow(QMainWindow):
 
         # TODO: add all incoherences
         self.incoherence_manager.add_incoherence(
-                # param1, param2, check_fn, message
-                param_registry["vp"],
-                param_registry["param lb_press_down"],
-                self.check_vp_lb_press_down,
-                "Incoherence between pressure down and Vacuum pump"
-                )
+            # param1, param2, check_fn, message
+            param_registry["vp"],
+            param_registry["param lb_press_down"],
+            self.check_vp_lb_press_down,
+            "Incoherence between pressure down and Vacuum pump",
+        )
+        self.incoherence_manager.add_incoherence(
+            # param1, param2, check_fn, message
+            param_registry["param lb_press_down"],
+            param_registry["param pressure_prod"],
+            self.check_pressure_prod_bounds,
+            "Pressure_prod value is misconfigured with pressure boundsd",
+        )
 
         pass
-    def check_vp_lb_press_down(self, vp: ParamBoolean, lb_press_down: ParamInput) -> bool:
+
+    def check_vp_lb_press_down(
+        self, vp: ParamBoolean, lb_press_down: ParamInput
+    ) -> bool:
         debug_print(vp.get_value(), lb_press_down.get_value_float)
-        if (vp.get_value() and lb_press_down.get_value_float() > 1.0) or (not vp.get_value() and lb_press_down.get_value_float() < 1.0):
+        if (vp.get_value() and lb_press_down.get_value_float() > 1.0) or (
+            not vp.get_value() and lb_press_down.get_value_float() < 1.0
+        ):
             return False
         return True
 
+    def check_pressure_prod_bounds(
+        self, lb_press_up: ParamInput, pressure_prod: ParamInput
+    ) -> bool:
+        ub_press_up = self.param_registry["param ub_press_up"]
+        return not (
+            ub_press_up.get_value_float() <= pressure_prod.get_value_float()
+            or lb_press_up.get_value_float() >= pressure_prod.get_value_float()
+        )
 
     def _set_dependencies(self):
         dependency_manager = DependencyManager()
@@ -675,9 +695,136 @@ class MainWindow(QMainWindow):
                 param_registry["fix splitOutRET_frac"],
                 self.update_fix_area,
             )
+            dependency_manager.add_dependency(
+                param_registry["variable_perm"],
+                param_registry["param pressure_prod"],
+                self.update_pressure_prod,
+            )
+            dependency_manager.add_dependency(
+                param_registry["uniform_pup"],
+                param_registry["param pressure_prod"],
+                self.update_pressure_prod,
+            )
+            dependency_manager.add_dependency(
+                # pressure_in > lb_press_up
+                param_registry["param lb_press_up"],
+                param_registry["param pressure_in"],
+                self.update_pressure_lower_bound,
+            )
+            dependency_manager.add_dependency(
+                # pressure_in < up_press_up
+                param_registry["param ub_press_up"],
+                param_registry["param pressure_in"],
+                self.update_pressure_upper_bound,
+            )
+            dependency_manager.add_dependency(
+                # lb_press_up < up_press_up
+                param_registry["param lb_press_up"],
+                param_registry["param ub_press_up"],
+                self.update_pressure_ub_inf_lb,
+            )
+            dependency_manager.add_dependency(
+                # lb_press_up < up_press_up
+                param_registry["param ub_press_up"],
+                param_registry["param lb_press_up"],
+                self.update_pressure_lb_sup_ub,
+            )
+            dependency_manager.add_dependency(
+                # permeability variable is authorised only for bi-components
+                param_registry["variable_perm"],
+                param_registry["set components"],
+                self.set_bi_components,
+            )
+            dependency_manager.add_dependency(
+                # if vp ub_press_down < 1.0, if not vp lb_press_down > 1.0
+                param_registry["vp"],
+                param_registry["param ub_press_down"],
+                self.update_ub_press_down_vp,
+            )
+            dependency_manager.add_dependency(
+                # lb_press_down < ub_press_down
+                param_registry["param lb_press_down"],
+                param_registry["param ub_press_down"],
+                self.update_press_lb_down_inf_ub_down,
+            )
+            dependency_manager.add_dependency(
+                # lb_press_down < ub_press_down
+                param_registry["param ub_press_down"],
+                param_registry["param lb_press_down"],
+                self.update_press_lb_down_sup_ub_down,
+                # TODO: use lamdba to switch orders instead of defining two separate functions
+            )
 
         register_param_dependencies(self.param_registry, dependency_manager)
 
+    def update_press_lb_down_inf_ub_down(self, ub_press_down: ParamInput, lb_press_down: ParamInput):
+        ub_press_down.min_value = lb_press_down.get_value_float()
+        ub_press_down.category.update_category()
+
+    def update_press_lb_down_sup_ub_down(self, lb_press_down: ParamInput, ub_press_down: ParamInput):
+        lb_press_down.max_value = ub_press_down.get_value_float()
+        lb_press_down.category.update_category()
+
+    def update_ub_press_down_vp(self, ub_press_down: ParamInput, vp: ParamBoolean):
+        lb_press_down = cast(ParamInput, self.param_registry["param lb_press_down"])
+        if vp.get_value():
+            debug_print("vp is true")
+            # if vp then ub_press_down < 1.0
+            ub_press_down.max_value = 1.0
+            ub_press_down.min_value = 0.0
+            lb_press_down.max_value = ub_press_down.min_value
+            lb_press_down.min_value = 0.0
+        else:
+            # if not vp then lb_press_down > 1.0
+            lb_press_down.min_value = 1.0
+            lb_press_down.max_value = 10
+            ub_press_down.min_value = 1.0
+            ub_press_down.max_value = 10
+        ub_press_down.category.update_category()
+
+
+    def set_bi_components(self, components_selector: ParamComponentSelector, variable_perm: ParamBoolean):
+        # if variable perm is checked:
+        if variable_perm.get_value():
+            components_selector.max_selected = 2
+            # in case the components were already set and the variable perm was checked afterwards
+            components_selector.selected_components = components_selector.selected_components[:2]
+        else:
+            components_selector.max_selected = None
+        components_selector.category.update_category()
+
+    def update_pressure_lb_sup_ub(self, lb_press_up: ParamInput, ub_press_up: ParamInput):
+        lb_press_up.max_value = ub_press_up.get_value_float()
+        lb_press_up.category.update_category()
+
+    def update_pressure_ub_inf_lb(self, ub_press_up: ParamInput, lb_press_up: ParamInput):
+        ub_press_up.min_value = lb_press_up.get_value_float()
+        ub_press_up.category.update_category()
+
+    def update_pressure_lower_bound(self, pressure_in: ParamInput, lb_press_up: ParamInput):
+        debug_print("in update pressure lower bound")
+        lower_bound = lb_press_up.get_value_float()
+        pressure_in.min_value = lower_bound
+        pressure_in.category.update_category()
+        # NOTE: or update param?
+
+    def update_pressure_upper_bound(self, pressure_in: ParamInput, up_press_up: ParamInput):
+        debug_print("in update pressure lower bound")
+        upper_bound = up_press_up.get_value_float()
+        pressure_in.max_value = upper_bound
+        pressure_in.category.update_category()
+        # NOTE: or update param?
+
+
+    def update_pressure_prod(self, target: ParamInput, source: ParamBoolean):
+        # for pressure prod pressure must be uniform and permeability must be fixed
+        variable_perm = self.param_registry["variable_perm"].get_value()
+        uniform_pressure = self.param_registry["uniform_pup"].get_value()
+        if source.get_value():
+            target.hide()
+        elif not uniform_pressure or not variable_perm:
+            target.show()
+        target.category.update_category()
 
     def update_nb_gas(self, target: ParamInput, source: ParamComponentSelector):
         target.set_last_line_edit(int(source.get_value()))
@@ -754,7 +901,9 @@ class MainWindow(QMainWindow):
     # def update_fix_area(self, target: ParamFixedComponentWithCheckbox, source: ParamInput):
     #     target.set_components([str(i) for i in range(1, int(source.get_value()) + 1)])
     #     target.category.update_category()
-    def update_fix_area(self, target: ParamFixedComponentWithCheckbox, source: ParamInput):
+    def update_fix_area(
+        self, target: ParamFixedComponentWithCheckbox, source: ParamInput
+    ):
         target.set_values([str(i) for i in range(1, int(source.get_value()) + 1)])
         target.category.update_category()
 
@@ -764,12 +913,14 @@ class MainWindow(QMainWindow):
 
     def store_value(self):
         pass
-    
+
     def update_membranes_grid(self, target: ParamGrid2, source: ParamComponent):
         target.set_membranes(source.get_items())
         target.category.update_category()
 
-    def update_components_grid(self, target: ParamGrid2, source: ParamComponentSelector):
+    def update_components_grid(
+        self, target: ParamGrid2, source: ParamComponentSelector
+    ):
         target.set_components(source.get_selected_items())
 
     def update_config_algo_params(self, target: ParamInput, source: ParamSelect):
@@ -922,10 +1073,14 @@ class IncoherenceManager:
                 continue
 
             if not check_fn(p1, p2):
-                errors.append(message or f"Incoherence between {param1_name} and {param2_name}")
+                errors.append(
+                    message or f"Incoherence between {param1_name} and {param2_name}"
+                )
         return errors
 
+
 # -----------------------------------------------------------
+
 
 class CommandBuilder:
     def __init__(self, param_registry: dict[str, Param]) -> None:
@@ -1062,9 +1217,9 @@ class ConfigBuilder:
             if "fname_mask" not in config["instance"]:
                 config["instance"]["fname_mask"] = f"{dir}/mask.dat"
 
-
         with open(filename, "w") as configfile:
             config.write(configfile)
+
 
 # -----------------------------------------------------------
 class MaskBuilder:
@@ -1102,6 +1257,7 @@ class MaskBuilder:
         with open(filename, "w") as f:
             for entry in self.mask_args:
                 f.write(f"{entry}\n\n")
+
 
 # -----------------------------------------------------------
 class DataBuilder:
@@ -1153,10 +1309,8 @@ class DataBuilder:
 
 
 class PermBuilder:
-    # TODO: add to_data_entry for param fixed with input
     def __init__(self, params) -> None:
         self.param_registry = params
-        # FIXME: do not build nb_gas for variable perm
         self.validated_params = [
             "set mem_types_set",
             "param nb_gas",
@@ -1180,9 +1334,13 @@ class PermBuilder:
                 param = self.param_registry[param_name]
                 if param.file == FILE.PERM:
                     arg = param.to_perm_entry()
-                    if arg is not None:
+                    if arg is not None and (
+                        param_name != "nb_gas"
+                        or not self.param_registry["variable_perm"].get_value()
+                    ):
                         self.perm_args.append(arg)
         self.write_data()
+        debug_print(self.perm_args)
         pass
 
     def write_data(self, filename="test/perm.dat"):
@@ -1267,7 +1425,13 @@ class EcoBuilder:
 
 class PageParameters(QWidget):
     def __init__(
-            self, main_window, stack, sidebar, name: str, tabs_for_page=None, tab_categories=None
+        self,
+        main_window,
+        stack,
+        sidebar,
+        name: str,
+        tabs_for_page=None,
+        tab_categories=None,
     ):
         super().__init__()
         self.main_window = main_window
@@ -1323,7 +1487,9 @@ class PageParameters(QWidget):
 
         # command_path = ""
         print(os.getcwd())
-        command_button = CommandLauncherButton("test/command.sh", incoherence_manager=self.main_window.incoherence_manager)
+        command_button = CommandLauncherButton(
+            "test/command.sh", incoherence_manager=self.main_window.incoherence_manager
+        )
         self.command_button = command_button
 
         end_button_widget = QWidget()
@@ -1967,7 +2133,13 @@ def load_coef(filename):
 
 
 class CommandLauncherButton(QPushButton):
-    def __init__(self, script_path, incoherence_manager: IncoherenceManager, terminal_cmd="alacritty", parent=None):
+    def __init__(
+        self,
+        script_path,
+        incoherence_manager: IncoherenceManager,
+        terminal_cmd="alacritty",
+        parent=None,
+    ):
         super().__init__("Run Command", parent)
         self.script_path = script_path
         self.terminal_cmd = terminal_cmd
@@ -1985,11 +2157,10 @@ class CommandLauncherButton(QPushButton):
         if self.incoherence_manager is not None:
             debug_print("in self.incoherence_manage is not None")
             errors = self.incoherence_manager.check_incoherences()
-            if errors:
-                QMessageBox.critical(self, "Incoherences Detected", "\n".join(errors))
-                return
-            
-        
+            # if errors:
+            #     QMessageBox.critical(self, "Incoherences Detected", "\n".join(errors))
+            #     return
+
         subprocess.Popen(
             [
                 "alacritty",

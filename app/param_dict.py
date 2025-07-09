@@ -359,7 +359,6 @@ params_dict = {
         "default": "./test",
         "select_dir": True,
     },
-    # TODO: add input types for the spin box
     # -----------------------------------------------------------
     #               data.dat
     "param XIN": {
@@ -457,7 +456,7 @@ params_dict = {
         "default": 1,
         "min_value": 0,
         "max_value": 10,
-        "step": 1,
+        "step": 0.1,
         "optional": False,
     },
     "param lb_press_down": {
@@ -466,10 +465,10 @@ params_dict = {
         "param_type": ParamType.INPUT,
         "file": FILE.DATA,
         "optional": False,
-        "default": 1.01,
-        "min_value": 0,
-        "max_value": 1,
-        "step": 0.05,
+        "default": 1.0,
+        "min_value": 1,
+        "max_value": 10,
+        "step": 0.1,
     },
     "param lb_press_up": {
         "name": "param lb_press_up",
@@ -496,7 +495,7 @@ params_dict = {
     "param pressure_prod": {
         "name": "param pressure_prod",
         "label": "Pressure prod",
-        "param_type": ParamType.INPUT_WITH_UNITY,
+        "param_type": ParamType.INPUT,
         "values": ["Bar", "Pa", "kPa"],
         "file": FILE.DATA,
         "optional": False,
@@ -1051,5 +1050,4 @@ params_dict = {
     },
     # ----------fixing var --------------------------------------
     # TODO: add descritions everywhere, especially the eco params
-    # TODO: add proper labels for the eco params
 }

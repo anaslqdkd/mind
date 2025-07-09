@@ -45,12 +45,13 @@ def debug_print(*args, **kwargs):
 
 # -----------------------------------------------------------
 class SquareCheckboxSelector(QDialog):
-    def __init__(self, components, selected=None, parent=None):
+    def __init__(self, components, selected=None, parent=None, max_selected=None):
         super().__init__(parent)
         self.setWindowTitle("Select Components")
         self.setFixedSize(300, 400)
 
         self.selected = selected or []
+        self.max_selected = max_selected
 
         layout = QVBoxLayout()
         self.checkboxes = []
@@ -58,6 +59,7 @@ class SquareCheckboxSelector(QDialog):
         for comp in components:
             checkbox = QCheckBox(comp)
             checkbox.setChecked(comp in self.selected)
+            checkbox.stateChanged.connect(self.handle_checkbox)
             self.checkboxes.append(checkbox)
             layout.addWidget(checkbox)
 
@@ -79,6 +81,18 @@ class SquareCheckboxSelector(QDialog):
                 self.selected.append(cb.text())
 
         return [cb.text() for cb in self.checkboxes if cb.isChecked()]
+
+    def handle_checkbox(self):
+        if self.max_selected is not None:
+            checked_count = sum(cb.isChecked() for cb in self.checkboxes)
+            if checked_count > self.max_selected:
+                sender = self.sender()
+                if isinstance(sender, QCheckBox):
+                    sender.setChecked(False)
+            for cb in self.checkboxes:
+                if not cb.isChecked():
+                    cb.setEnabled(checked_count < self.max_selected)
+
 
 
 # -----------------------------------------------------------
@@ -153,9 +167,23 @@ class Param:
         header_layout.addWidget(icon_label)
         return header_container
 
+    def update_param(self):
+        if getattr(self, "_updating", False):
+            return
+        self._updating = True
+        self.store_value()
+        # Clear the widget before rebuilding
+        if hasattr(self, "widget") and self.widget is not None:
+            parent = self.widget.parentWidget()
+            if parent is not None:
+                parent.layout().removeWidget(self.widget)
+            self.widget.deleteLater()
+            self.widget = None
+        # Assign params in build_widget
+        self.widget = self.build_widget(self.row, self.label, self.grid_layout)
+        self._updating = False
 
-    # def trigger_update(self) -> None:
-    #     self.category.update_category()
+
 
 
 # -----------------------------------------------------------
@@ -172,8 +200,8 @@ class ParamInput(Param):
         description: str = "",
         label: str = "",
         default: Optional[int] = None,
-        min_value: Optional[int] = None,
-        max_value: Optional[int] = None,
+        min_value: Optional[float] = None,
+        max_value: Optional[float] = None,
         step: Optional[int] = None,
         hidden: bool = False,
     ) -> None:
@@ -198,6 +226,10 @@ class ParamInput(Param):
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         if self.hidden:
             return
+        # TODO: add this everywhere
+        self.row = row
+        self.grid_layout = grid_layout
+
         # line_edit = QDoubleSpinBox()
         if self.expected_type == int:
             line_edit = QSpinBox()
@@ -236,24 +268,6 @@ class ParamInput(Param):
             self.store_value()
             self.manager.notify_change(self)
 
-    # def set_value(self, value):
-    #     # FIXME: redo this function
-    #     if self.line_edit is not None:
-    #         if hasattr(self.line_edit, "setDecimals"):
-    #             if isinstance(value, float):
-    #                 str_val = str(value)
-    #                 if '.' in str_val:
-    #                     decimals = len(str_val.split('.')[-1].rstrip('0'))
-    #                 else:
-    #                     decimals = 2
-    #                 self.line_edit.setDecimals(decimals)
-    #             else:
-    #                 self.line_edit.setDecimals(0)
-    #         self.line_edit.setMaximum(1e10)
-    #         if self.expected_type == int:
-    #             self.line_edit.setValue(int(value))
-    #         else:
-    #             self.line_edit.setValue(float(value))
     def set_value(self, value):
         """
         Set the value in the line_edit widget, handling int/float types and decimals.
@@ -308,7 +322,7 @@ class ParamInput(Param):
         return self.last_line_edit
 
     def get_value_float(self) -> float:
-        debug_print(self.last_line_edit)
+        self.store_value()
         try:
             return float(self.last_line_edit)
         except (ValueError, TypeError):
@@ -592,8 +606,6 @@ class ParamInputWithUnity(Param):
         grid_layout.addWidget(self.line_edit, row, 1)
         grid_layout.addWidget(self.combo_box, row, 2)
 
-    # TODO: add float/int separation here
-    # TODO: add default values everywhere
 
     def restore_value(self):
         if self.last_combo_box:
@@ -1084,7 +1096,6 @@ class ParamFixedWithInput(Param):
 
 
 # -----------------------------------------------------------
-# TODO: add default value
 class ParamRadio(Param):
     def __init__(
         self,
@@ -1141,9 +1152,6 @@ class ParamRadio(Param):
         if checked_id != -1:
             self.last_radio_button = checked_id
 
-    def to_file(self) -> str:
-        # TODO:
-        return f""
 
 
 # -----------------------------------------------------------
@@ -1172,6 +1180,7 @@ class ParamComponentSelector(Param):
         self.components = ["compo1", "compo2", "compo3"]
         self.selected_components = []
         self.manager: Optional[DependencyManager] = None
+        self.max_selected: Optional[int] = None
         pass
 
     def get_value(self):
@@ -1205,7 +1214,7 @@ class ParamComponentSelector(Param):
             row += 1
 
     def open_selector(self):
-        dialog = SquareCheckboxSelector(self.values, self.selected_components)
+        dialog = SquareCheckboxSelector(self.values, self.selected_components, max_selected=self.max_selected)
         if dialog.exec():
             self.selected_components = dialog.get_selected()
             self.button.setText(f"Selected: {len(self.selected_components)}")
@@ -1251,10 +1260,6 @@ class ParamComponentSelector(Param):
 
     def store_value(self):
         return
-
-    def to_file(self) -> str:
-        # TODO:
-        return f""
 
     def to_data_entry(self) -> Optional[str]:
         if len(self.selected_components) > 0:
@@ -1925,7 +1930,6 @@ class ParamFixedPerm(Param):
 
 
 # TODO: search filter
-# TODO: restore the size after the collapsable menu were disabled
 
 # -----------------------------------------------------------
 class ParamFixedMembrane(Param):
@@ -3007,6 +3011,8 @@ class ParamGrid2(Param):
         return "\n".join(lines)
 
     def to_perm_entry(self) -> Optional[str]:
+        if self.hidden:
+            return None
         lines = [f"param {self.name} :="]
         for i in range(len(self.last_spin_boxes)):
             membrane = self.last_combo_boxes[i] if i < len(self.last_combo_boxes) else None
