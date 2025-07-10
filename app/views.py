@@ -168,7 +168,6 @@ class MainWindow(QMainWindow):
         for el, value in tuning.items():
             if el in self.param_registry.keys():
                 if isinstance(self.param_registry[el], ParamInput):
-                    debug_print(el, self.param_registry[el])
                     self.param_registry[el].set_value_from_import(value)
                     # TODO: continue, add debugging prints
                 # self.param_registry[el].set_value(int(value))
@@ -191,7 +190,6 @@ class MainWindow(QMainWindow):
             perm_data = {}
             perm_param = parser_variable_permeability_data(file, perm_data)
             perm_param = parser_fixed_permeability_data_simple(file)
-            debug_print(perm_param)
             # perm_param = parser_fixed_permeability_data(file, res)
         # for key, value in perm_param.items():
         #     debug_print(f"the key is {key}, and the value is {value}")
@@ -400,7 +398,6 @@ class MainWindow(QMainWindow):
         if fixing_param:
             fixing_param.check_box.stateChanged.connect(self.toggle_fixing_page)
         for page, tab_list in self.page_names.items():
-            debug_print(page, tab_list)
             page_tabs_categories = self.tab_categories
             page_temp = PageParameters(
                 self, self.stack, self.sidebar, page, tab_list, page_tabs_categories
@@ -419,7 +416,6 @@ class MainWindow(QMainWindow):
             self.sidebar.addItem("Fixing")
             self.fixing_page_added = True
         elif not state and self.fixing_page_added:
-            debug_print("in toggle false")
             self.fixing_page_added = False
             for i in range(self.sidebar.count()):
                 if self.sidebar.item(i).text() == "Fixing":
@@ -467,7 +463,6 @@ class MainWindow(QMainWindow):
     def check_vp_lb_press_down(
         self, vp: ParamBoolean, lb_press_down: ParamInput
     ) -> bool:
-        debug_print(vp.get_value(), lb_press_down.get_value_float)
         if (vp.get_value() and lb_press_down.get_value_float() > 1.0) or (
             not vp.get_value() and lb_press_down.get_value_float() < 1.0
         ):
@@ -772,8 +767,30 @@ class MainWindow(QMainWindow):
                 param_registry["param molarmass"],
                 self.update_molarmass,
             )
+            dependency_manager.add_dependency(
+                # lb_alpha < ub_alpha
+                param_registry["param lb_alpha"],
+                param_registry["param ub_alpha"],
+                self.update_alpha_bounds,
+            )
+            dependency_manager.add_dependency(
+                # lb_alpha < ub_alpha
+                param_registry["param ub_alpha"],
+                param_registry["param lb_alpha"],
+                self.update_alpha_bounds2,
+            )
+            dependency_manager.add_dependency(
+                # lb_alpha < ub_alpha
+                param_registry["param lb_permeability"],
+                param_registry["param ub_permeability"],
+                self.update_permeability_bounds,
+            )
 
         register_param_dependencies(self.param_registry, dependency_manager)
+
+    def update_permeability_bounds(self, ub_permeabiliy: ParamGrid2, lb_permeability: ParamGrid2 , sender):
+        pass
+
 
     def update_molarmass(self, molarmass: ParamFixedComponent, components_selector: ParamComponentSelector, sender):
         molar_masses = {
@@ -787,8 +804,19 @@ class MainWindow(QMainWindow):
             if components[i] in molar_masses.keys():
                 spin_box.setValue(molar_masses[components[i]])
 
+    def update_alpha_bounds(self, ub_alpha: ParamFixedMembrane, lb_alpha: ParamFixedMembrane, sender):
+        if sender in lb_alpha.spin_boxes:
+            index = lb_alpha.spin_boxes.index(sender)
+            if index in range(len(ub_alpha.elements)):
+                ub_alpha.elements[index]["min_value"] = sender.value()
+        lb_alpha.category.update_category()
 
-
+    def update_alpha_bounds2(self, lb_alpha: ParamFixedMembrane, ub_alpha: ParamFixedMembrane, sender):
+        if sender in ub_alpha.spin_boxes:
+            index = ub_alpha.spin_boxes.index(sender)
+            if index in range(len(lb_alpha.elements)):
+                lb_alpha.elements[index]["max_value"] = sender.value()
+        ub_alpha.category.update_category()
 
     def update_lb_area_bounds2(self, ub_area: ParamFixedWithInput, lb_area: ParamFixedWithInput, sender):
         if sender in lb_area.line_edits:
@@ -815,7 +843,6 @@ class MainWindow(QMainWindow):
     def update_ub_press_down_vp(self, ub_press_down: ParamInput, vp: ParamBoolean, sender):
         lb_press_down = cast(ParamInput, self.param_registry["param lb_press_down"])
         if vp.get_value():
-            debug_print("vp is true")
             # if vp then ub_press_down < 1.0
             ub_press_down.max_value = 1.0
             ub_press_down.min_value = 0.0
@@ -849,14 +876,12 @@ class MainWindow(QMainWindow):
         ub_press_up.category.update_category()
 
     def update_pressure_lower_bound(self, pressure_in: ParamInput, lb_press_up: ParamInput, sender):
-        debug_print("in update pressure lower bound")
         lower_bound = lb_press_up.get_value_float()
         pressure_in.min_value = lower_bound
         pressure_in.category.update_category()
         # NOTE: or update param?
 
     def update_pressure_upper_bound(self, pressure_in: ParamInput, up_press_up: ParamInput, sender):
-        debug_print("in update pressure lower bound")
         upper_bound = up_press_up.get_value_float()
         pressure_in.max_value = upper_bound
         pressure_in.category.update_category()
@@ -1114,8 +1139,6 @@ class IncoherenceManager:
         for (param1_name, param2_name), (check_fn, message) in self.rules.items():
             p1 = self.params.get(param1_name)
             p2 = self.params.get(param2_name)
-            debug_print(p1, p2)
-            debug_print(check_fn(p1, p2))
             if p1 is None or p2 is None:
                 continue
 
@@ -1167,7 +1190,7 @@ class CommandBuilder:
         self.write_command_script()
 
     def write_command_script(self, filename="run_command.sh"):
-        filename = f"{self.param_registry["file_dir"].get_path()}/command.sh"
+        filename = f"{self.param_registry['file_dir'].get_path()}/command.sh"
         dir_path = os.path.dirname(filename)
         if dir_path:
             os.makedirs(dir_path, exist_ok=True)
@@ -1235,8 +1258,9 @@ class ConfigBuilder:
         self.write_config_ini()
 
     def write_config_ini(self, filename="test/config.ini"):
-        dir = self.param_registry["file_dir"].get_path()
-        filename = f"{self.param_registry["file_dir"].get_path()}/config.ini"
+        dir = self.param_registry['file_dir'].get_path()
+
+        filename = f"{self.param_registry['file_dir'].get_path()}/config.ini"
         dir_path = os.path.dirname(filename)
         if dir_path:
             os.makedirs(dir_path, exist_ok=True)
@@ -1297,7 +1321,7 @@ class MaskBuilder:
         pass
 
     def write_data(self, filename="test/perm.dat"):
-        filename = f"{self.param_registry["file_dir"].get_path()}/mask.dat"
+        filename = f"{self.param_registry['file_dir'].get_path()}/mask.dat"
         dir_path = os.path.dirname(filename)
         if dir_path:
             os.makedirs(dir_path, exist_ok=True)
@@ -1343,7 +1367,7 @@ class DataBuilder:
         pass
 
     def write_data(self, filename="test/data.dat"):
-        filename = f"{self.param_registry["file_dir"].get_path()}/data.dat"
+        filename = f"{self.param_registry['file_dir'].get_path()}/data.dat"
         dir_path = os.path.dirname(filename)
         if dir_path:
             os.makedirs(dir_path, exist_ok=True)
@@ -1396,7 +1420,6 @@ class PermBuilder:
     def build_perm(self):
         self.perm_args = []
         params_list = self.variable_params if self.param_registry["variable_perm"].get_value() else self.fixed_params
-        debug_print(params_list)
         for param_name in params_list:
             if param_name in self.param_registry.keys():
                 param = self.param_registry[param_name]
@@ -1408,12 +1431,10 @@ class PermBuilder:
                     ):
                         self.perm_args.append(arg)
         self.write_data()
-        debug_print(self.perm_args)
         pass
 
     def write_data(self, filename="test/perm.dat"):
-        debug_print("in write data for perm")
-        filename = f"{self.param_registry["file_dir"].get_path()}/perm.dat"
+        filename = f"{self.param_registry['file_dir'].get_path()}/perm.dat"
         dir_path = os.path.dirname(filename)
         if dir_path:
             os.makedirs(dir_path, exist_ok=True)
@@ -1468,7 +1489,7 @@ class EcoBuilder:
         return self.args
 
     def write_eco(self, filename="test/eco.dat"):
-        filename = f"{self.param_registry["file_dir"].get_path()}/eco.dat"
+        filename = f"{self.param_registry['file_dir'].get_path()}/eco.dat"
         dir_path = os.path.dirname(filename)
         if dir_path:
             os.makedirs(dir_path, exist_ok=True)
@@ -2218,9 +2239,7 @@ class CommandLauncherButton(QPushButton):
         self.incoherence_manager = incoherence_manager
 
     def launch_terminal(self):
-        debug_print("in lauch terminal")
-        if self.incoherence_manager is not None:
-            debug_print("in self.incoherence_manage is not None")
+        # if self.incoherence_manager is not None:
             # errors = self.incoherence_manager.check_incoherences()
             # if errors:
             #     QMessageBox.critical(self, "Incoherences Detected", "\n".join(errors))

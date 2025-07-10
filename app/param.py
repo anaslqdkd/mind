@@ -1989,11 +1989,13 @@ class ParamFixedMembrane(Param):
         self.step = step
         self.decimals = decimals
         self.default = default
+        self.step = step
         self.expected_type = expected_type
+        self.elements = dict(zip([i for i in range(1, len(self.membranes))], [{k: None for k in ("min_value", "max_value")}]*(len(self.membranes))))
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        self.spin_boxes.clear()
         if self.hidden:
-            self.spin_boxes.clear()
             return
         header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(header, row, 0)
@@ -2001,34 +2003,64 @@ class ParamFixedMembrane(Param):
         grid_layout.addWidget(QLabel("Membrane"), row + 1, 0)
         grid_layout.addWidget(QLabel("Value"), row + 1, 1)
         current_row = row + 2
-        for membrane in self.membranes:
+        old_elements = getattr(self, "elements", {})
+        self.elements = {
+            i: {
+                "min_value": old_elements.get(i, {}).get("min_value"),
+                "max_value": old_elements.get(i, {}).get("max_value"),
+            }
+            for i in range(len(self.membranes))
+        }
+        for i, membrane in enumerate(self.membranes):
             grid_layout.addWidget(QLabel(str(membrane)), current_row, 0)
             if self.expected_type == int:
                 spin = QSpinBox()
-                if self.min_value is not None:
-                    spin.setMinimum(int(self.min_value))
-                if self.max_value is not None:
-                    spin.setMaximum(int(self.max_value))
-                if self.step is not None:
-                    spin.setSingleStep(int(self.step))
-                if self.default is not None:
-                    spin.setValue(int(self.default))
             else:
                 spin = QDoubleSpinBox()
-                if self.min_value is not None:
-                    spin.setMinimum(float(self.min_value))
-                if self.max_value is not None:
-                    spin.setMaximum(float(self.max_value))
-                if self.step is not None:
-                    spin.setSingleStep(float(self.step))
-                if hasattr(spin, "setDecimals") and self.decimals is not None:
-                    spin.setDecimals(self.decimals)
-                if self.default is not None:
+
+            component = self.elements[i]
+            if self.min_value is not None:
+                if self.elements[i]["min_value"] is None:
+                    component["min_value"] = self.min_value
+            if self.max_value is not None:
+                if self.elements[i]["max_value"] is None:
+                    component["max_value"] = self.max_value
+            if component["min_value"] is not None:
+                spin.setMinimum(component["min_value"])
+            if component["max_value"] is not None:
+                spin.setMaximum(component["max_value"])
+
+            if self.min_value is not None:
+                spin.setMinimum(self.min_value)
+            if self.max_value is not None:
+                spin.setMinimum(self.max_value)
+
+            if self.default is not None:
+                if isinstance(spin, QSpinBox):
+                    spin.setValue(int(self.default))
+                else:
                     spin.setValue(float(self.default))
-            self.spin_boxes.append(spin)
+            if self.step is not None:
+                spin.setSingleStep(int(self.step))
             grid_layout.addWidget(spin, current_row, 1)
             current_row += 1
+            if spin is not None:
+                spin.valueChanged.connect(lambda _, le=spin: self._on_value_changed(le))
+            self.spin_boxes.append(spin)
         self.restore_value()
+
+    # def _on_value_changed(self, sender=None):
+    #     if self.manager is not None:
+    #         self.store_value()
+    #         self.manager.notify_change(self, sender)
+    def _on_value_changed(self, sender=None):
+        if getattr(self, "_updating", False):
+            return
+        self._updating = True
+        if self.manager is not None:
+            self.store_value()
+            self.manager.notify_change(self, sender)
+        self._updating = False
 
     def set_membranes(self, membranes: list[str]):
         self.membranes = membranes
@@ -2048,19 +2080,24 @@ class ParamFixedMembrane(Param):
         self.last_spin_boxes.clear()
         if not self.hidden:
             for el in self.spin_boxes:
-                self.last_spin_boxes.append(str(el.value()))
+                self.last_spin_boxes.append(el.value())
 
     def restore_value(self):
-        for idx, value in enumerate(self.last_spin_boxes):
-            if idx < len(self.spin_boxes):
-                try:
-                    if self.expected_type == int:
-                        val = int(value)
-                    else:
-                        val = float(value)
-                    self.spin_boxes[idx].setValue(val)
-                except ValueError:
-                    continue
+        for index, value in enumerate(self.last_spin_boxes):
+            if index < len(self.spin_boxes):
+                self.spin_boxes[index].setValue(value)
+
+    # def restore_value(self):
+    #     for idx, value in enumerate(self.last_spin_boxes):
+    #         if idx < len(self.spin_boxes):
+    #             try:
+    #                 if self.expected_type == int:
+    #                     val = int(value)
+    #                 else:
+    #                     val = float(value)
+    #                 self.spin_boxes[idx].setValue(val)
+    #             except ValueError:
+    #                 continue
 
     def hide(self):
         self.hidden = True
@@ -2811,6 +2848,7 @@ class ParamGrid2(Param):
         self.default = default
         self.min_value = min_value
         self.max_value = max_value
+        self.elements = dict(zip([i for i in range(1, self.extra_rows)], [{k: None for k in ("min_value", "max_value")}]*self.extra_rows))
         self.step = step
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
@@ -2825,12 +2863,22 @@ class ParamGrid2(Param):
 
         header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(header, row, 0, 1, 2)
+    # TODO: in the dict add proper types for the min and max values
 
     def _build_component_grid(self, row: int, grid_layout: QGridLayout):
         self.grid_widgets = []
         self.combo_boxes = []
         self.combo_boxes2 = []
         self.spin_boxes = []
+
+        old_elements = getattr(self, "elements", {})
+        self.elements = {
+            i: {
+                "min_value": old_elements.get(i, {}).get("min_value"),
+                "max_value": old_elements.get(i, {}).get("max_value"),
+            }
+            for i in range(self.extra_rows)
+        }
 
         if self.extra_rows > 0:
             for i in range(self.extra_rows):
@@ -2839,24 +2887,10 @@ class ParamGrid2(Param):
                 # spin_box = QSpinBox()
                 if self.expected_type == int:
                     spin_box = QSpinBox()
-                    if self.min_value is not None:
-                        spin_box.setMinimum(int(self.min_value))
-                    if self.max_value is not None:
-                        spin_box.setMaximum(int(self.max_value))
-                    if self.default is not None:
-                        spin_box.setValue(int(self.default))
-                    if self.step is not None:
-                        spin_box.setSingleStep(int(self.step))
                 else:
                     spin_box = QDoubleSpinBox()
-                    if self.min_value is not None:
-                        spin_box.setMinimum(float(self.min_value))
-                    if self.max_value is not None:
-                        spin_box.setMaximum(float(self.max_value))
-                    if self.default is not None:
-                        spin_box.setValue(float(self.default))
-                    if self.step is not None:
-                        spin_box.setSingleStep(float(self.step))
+                component = self.elements[i]
+
                 combo.setPlaceholderText("Extra input 1")
                 combo.addItems(self.membranes)
                 combo2.addItems(self.components)
