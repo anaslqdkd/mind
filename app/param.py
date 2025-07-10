@@ -1012,7 +1012,7 @@ class ParamFixedWithInput(Param):
         self.hidden = hidden
         self.manager: Optional[DependencyManager] = None
         self.expected_type = expected_type
-        self.elements = dict(zip([i for i in range(1, self.row_nb+1)], [{k: None for k in ("min_value", "max_value")}]*self.row_nb))
+        self.elements = dict(zip([i for i in range(1, self.row_nb)], [{k: None for k in ("min_value", "max_value")}]*self.row_nb))
         pass
 
     def set_rows_nb(self, rows: int, source: Param):
@@ -1043,8 +1043,16 @@ class ParamFixedWithInput(Param):
 
         self.line_edits = []
 
+        old_elements = getattr(self, "elements", {})
+        self.elements = {
+            i: {
+                "min_value": old_elements.get(i, {}).get("min_value"),
+                "max_value": old_elements.get(i, {}).get("max_value"),
+            }
+            for i in range(self.row_nb)
+        }
 
-        for r in self.elements.keys():
+        for r in range(self.row_nb):
             grid_layout.addWidget(QLabel(f"{r+1}"), row + r, 0)
             for c in range(1, 2):
                 if self.expected_type == int:
@@ -2321,8 +2329,8 @@ class ParamFixedComponent(Param):
         grid_layout.addWidget(QLabel("Component"), row + 1, 0)
         grid_layout.addWidget(QLabel("Value"), row + 1, 1)
         current_row = row + 2
-        for membrane in self.components:
-            grid_layout.addWidget(QLabel(str(membrane)), current_row, 0)
+        for component in self.components:
+            grid_layout.addWidget(QLabel(str(component)), current_row, 0)
             spin = QDoubleSpinBox()
             spin.setMinimum(self.min_value)
             spin.setMaximum(self.max_value)
@@ -2334,6 +2342,7 @@ class ParamFixedComponent(Param):
             self.spin_boxes.append(spin)
             grid_layout.addWidget(spin, current_row, 1)
             current_row += 1
+        self.grid_layout = grid_layout
         self.restore_value()
 
     def set_components(self, components: list[str]):

@@ -394,7 +394,7 @@ params_dict = {
         "label": "Set components",
         "param_type": ParamType.COMPONENT_SELECTOR,
         "file": FILE.DATA,
-        "values": ["H20", "O2", "H2", "CO2", "N2"],
+        "values": ["O2", "H2", "CO2", "N2"],
         "optional": False,
     },
     "param lb_perc_prod": {

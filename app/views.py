@@ -766,18 +766,42 @@ class MainWindow(QMainWindow):
                 param_registry["ub_area"],
                 self.update_lb_area_bounds2,
             )
+            dependency_manager.add_dependency(
+                # molar mass update
+                param_registry["set components"],
+                param_registry["param molarmass"],
+                self.update_molarmass,
+            )
 
         register_param_dependencies(self.param_registry, dependency_manager)
+
+    def update_molarmass(self, molarmass: ParamFixedComponent, components_selector: ParamComponentSelector, sender):
+        molar_masses = {
+            "O2": 31.998,
+            "H2": 2.016,
+            "CO2": 44.009,
+            "N2": 28.014,
+        }
+        components = components_selector.selected_components
+        for i, spin_box in enumerate(molarmass.spin_boxes):
+            if components[i] in molar_masses.keys():
+                spin_box.setValue(molar_masses[components[i]])
+
+
+
+
     def update_lb_area_bounds2(self, ub_area: ParamFixedWithInput, lb_area: ParamFixedWithInput, sender):
         if sender in lb_area.line_edits:
             index = lb_area.line_edits.index(sender)
-            ub_area.elements[index+1]["min_value"] = sender.value()
+            if index in ub_area.elements:
+                ub_area.elements[index]["min_value"] = sender.value()
         lb_area.category.update_category()
 
     def update_lb_area_bounds(self, lb_area: ParamFixedWithInput, ub_area: ParamFixedWithInput, sender):
         if sender in ub_area.line_edits:
             index = ub_area.line_edits.index(sender)
-            lb_area.elements[index+1]["max_value"] = sender.value()
+            if index in lb_area.elements:
+                lb_area.elements[index]["max_value"] = sender.value()
         lb_area.category.update_category()
 
     def update_press_lb_down_inf_ub_down(self, ub_press_down: ParamInput, lb_press_down: ParamInput, sender):
@@ -2173,9 +2197,6 @@ class CommandLauncherButton(QPushButton):
         self.incoherence_manager = incoherence_manager
 
     def launch_terminal(self):
-        # subprocess.Popen([self.terminal_cmd, "-e", f"bash {self.script_path}"])
-        # subprocess.Popen([self.terminal_cmd, "-e", "bash", self.script_path])
-        # subprocess.Popen(["alacritty", "-e", "bash", "/home/ash/mind/temp/command.sh"])
         debug_print("in lauch terminal")
         if self.incoherence_manager is not None:
             debug_print("in self.incoherence_manage is not None")
@@ -2193,4 +2214,13 @@ class CommandLauncherButton(QPushButton):
                 f"{self.script_path}; read -p 'Done. Press enter...'",
             ]
         )
-        # TODO: change the terminal
+        # NOTE: uncomment for the gnome terminal
+        # subprocess.Popen(
+        #     [
+        #         "gnome-terminal",
+        #         "--",
+        #         "bash",
+        #         "-c",
+        #         f"{self.script_path}; read -p 'Done. Press enter...'",
+        #     ]
+        # )
