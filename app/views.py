@@ -1372,11 +1372,32 @@ class PermBuilder:
             "param mem_product",
             "param mem_type",
         ]
+        self.fixed_params = [
+                "set mem_types_set",
+                "param nb_gas",
+                "param Permeability",
+                "param thickness",
+                "param mem_product",
+                "param mem_type"
+                ]
+        self.variable_params = [
+                "set mem_types_set",
+                "param Robeson_multi",
+                "param Robeson_power",
+                "param ub_alpha",
+                "param lb_alpha",
+                "param lb_permeability",
+                "param ub_permeability",
+                "param thickness",
+                "param mem_product"
+                ]
         self.perm_args = []
 
     def build_perm(self):
         self.perm_args = []
-        for param_name in self.validated_params:
+        params_list = self.variable_params if self.param_registry["variable_perm"].get_value() else self.fixed_params
+        debug_print(params_list)
+        for param_name in params_list:
             if param_name in self.param_registry.keys():
                 param = self.param_registry[param_name]
                 if param.file == FILE.PERM:
@@ -2200,7 +2221,7 @@ class CommandLauncherButton(QPushButton):
         debug_print("in lauch terminal")
         if self.incoherence_manager is not None:
             debug_print("in self.incoherence_manage is not None")
-            errors = self.incoherence_manager.check_incoherences()
+            # errors = self.incoherence_manager.check_incoherences()
             # if errors:
             #     QMessageBox.critical(self, "Incoherences Detected", "\n".join(errors))
             #     return
