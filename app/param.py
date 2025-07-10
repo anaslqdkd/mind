@@ -872,7 +872,7 @@ class ParamComponent(Param):
                 combo = QComboBox()
                 combo.setPlaceholderText("Extra input")
                 available_values = [v for v in self.values if v not in used_values or v == self.last_combo_boxes[i]]
-                combo.addItems(available_values)
+                combo.addItems(available_values[:1])
                 if self.last_combo_boxes and i < len(self.last_combo_boxes):
                     combo.setCurrentText(self.last_combo_boxes[i])
                 remove_button = QPushButton("✕")
@@ -890,7 +890,7 @@ class ParamComponent(Param):
         extra_combo = QComboBox()
         extra_combo.setPlaceholderText("Extra input")
         available_values = [v for v in self.values if v not in used_values]
-        extra_combo.addItems(available_values)
+        extra_combo.addItems(available_values[:1])
         self.combo_boxes.append(extra_combo)
         grid_layout.addWidget(extra_combo, row, 1)
         extra_combo.currentIndexChanged.connect(
@@ -925,7 +925,7 @@ class ParamComponent(Param):
             lambda: self.add_component_row(row + 1, grid_layout)
         )
 
-        self.category.update_category()
+        # self.category.update_category()
 
     def get_value(self):
         return len(self.last_combo_boxes)
@@ -1382,7 +1382,6 @@ class ParamSpinBoxWithBool(Param):
                 self.check_box.setChecked(True)
         if self.last_time_spin_box is not None and self.last_unity is not None:
             if self.time_spin_box:
-                print(f"the self.last_unity was {self.last_unity}")
                 self.time_spin_box.set_value(self.last_time_spin_box, self.last_unity)
 
     def to_command_arg(self) -> str:
@@ -1611,18 +1610,14 @@ class ParamCategory(QWidget):
         #     open(file_name, "w").close()
 
         for _, param in self.param.items():
-            print("the self.params is", self.param)
             file_name = file_map.get(param.file)
-            print("the file name is", {file_name})
             lines = []
             if not file_name:
                 print(f"Unknown file type for param {param.name}")
             else:
                 value = param.to_file()
-                print("the value is", value)
                 if value != "":
                     lines.append(value)
-            print(lines)
 
             with open(file_name, "a") as f:
                 f.writelines(lines)
@@ -1639,10 +1634,8 @@ class ParamCategory(QWidget):
         res = ""
         for _, param in self.param.items():
             if param.file == FILE.COMMAND:
-                print("AAAA", param.name)
                 res += f"--{param.name}"
             file_name = file_map.get(param.file)
-        print("SDQFSDGHJFHKGDSFQ", res)
         # if fi
 
 
@@ -2146,12 +2139,9 @@ class ParamMembraneSelect(Param):
             self.manager.notify_change(self)
 
     def restore_value(self):
-        for idx, combo in enumerate(self.combo_boxes):
-            print(f"Combo {idx} items:", [combo.itemText(i) for i in range(combo.count())])
         for idx, value in enumerate(self.last_combo_boxes):
             if idx < len(self.combo_boxes):
                 combo = self.combo_boxes[idx]
-                print(f"Restoring combo {idx}: looking for '{value}' in {[combo.itemText(i) for i in range(combo.count())]}")
                 index = combo.findText(value)
                 if index != -1:
                     combo.setCurrentIndex(index)

@@ -597,7 +597,7 @@ params_dict = {
     #      perm file
     "set mem_types_set": {
         "name": "set mem_types_set",
-        "label": "Mem types set",
+        "label": "Set membranes",
         "param_type": ParamType.COMPONENT,
         "file": FILE.PERM,
         "values": ["A", "B", "C"],
