@@ -222,6 +222,7 @@ params_dict = {
         "step": 5,
         "hidden": True,
         "description": "Population size for evolutionary algorithms. Used in genetic algorithm",
+        "expected_type": int,
     },
     "generations": {
         "name": "generations",
@@ -668,9 +669,9 @@ params_dict = {
         "file": FILE.PERM,
         "optional": False,
         "hidden": True,
-        "default": 1396000,
         "min_value": 0,
         "max_value": 2000000,
+        "default": 1396000,
         "expected_type": int,
     },
     "param Robeson_power": {

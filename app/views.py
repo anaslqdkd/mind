@@ -913,33 +913,40 @@ class MainWindow(QMainWindow):
 
     def update_mem_type(self, target: ParamMemType, source: ParamInput, sender):
         target.set_floors(int(float(source.get_value())))
-        target.category.update_category()
+        # target.category.update_category()
+        target.update_param()
 
     def update_final_product(self, target: ParamSelect, source: ParamComponentSelector, sender):
         target.set_values(source.selected_components)
-        target.category.update_category()
+        # target.category.update_category()
+        target.update_param()
 
     def update_permeability(self, target: ParamFixedWithInput, source: ParamComponent, sender):
         target.set_rows(int(source.get_value()), source)
-        target.category.update_category()
+        # target.category.update_category()
+        target.update_param()
 
     def update_permeability2(
         self, target: ParamFixedWithInput, source: ParamComponentSelector, sender
     ):
         target.set_rows_nb(int(source.get_value()), source)
-        target.category.update_category()
+        # target.category.update_category()
+        target.update_param()
 
     def update_components(self, target: ParamFixedPerm, source: ParamComponentSelector, sender):
         target.set_components(source.get_selected_items())
-        target.category.update_category()
+        # target.category.update_category()
+        target.update_param()
 
     def update_xin(self, target: ParamFixedComponent, source: ParamComponentSelector, sender):
         target.set_components(source.get_selected_items())
-        target.category.update_category()
+        # target.category.update_category()
+        target.update_param()
 
     def update_membranes(self, target: ParamFixedPerm, source: ParamComponent, sender):
         target.set_membranes(source.get_items())
-        target.category.update_category()
+        debug_print(source.get_items())
+        target.update_param()
 
     # def update_permeability(self, target: ParamFixedMembrane, source: ParamComponent):
     #     debug_print("the target name is:", target.name)
@@ -949,7 +956,8 @@ class MainWindow(QMainWindow):
     def update_fn(self, target: ParamFixedWithInput, source: ParamInput, sender):
         target.set_row(int(float(source.get_value())))
         # target.set_row(int(source.get_value()))
-        target.category.update_category()
+        # target.category.update_category()
+        target.update_param()
 
     def update_pages(self):
         for page in self.pages.values():
@@ -965,10 +973,9 @@ class MainWindow(QMainWindow):
     def update_fixing(self, target: ParamFileChooser, source: ParamBoolean, sender):
         if source.last_check_box:
             target.show()
-            target.category.update_category()
         else:
             target.hide()
-            target.category.update_category()
+        target.category.update_category()
 
     # def update_fix_area(self, target: ParamFixedComponentWithCheckbox, source: ParamInput):
     #     target.set_components([str(i) for i in range(1, int(source.get_value()) + 1)])
@@ -988,7 +995,8 @@ class MainWindow(QMainWindow):
 
     def update_membranes_grid(self, target: ParamGrid2, source: ParamComponent, sender):
         target.set_membranes(source.get_items())
-        target.category.update_category()
+        # target.category.update_category()
+        target.update_param()
 
     def update_components_grid(
         self, target: ParamGrid2, source: ParamComponentSelector, sender
@@ -1479,7 +1487,6 @@ class EcoBuilder:
         self.args = []
         for param_name in self.validated_params:
             if param_name in self.param_registry.keys():
-                self.print_list_diff(self.validated_params, self.param_registry)
                 param = self.param_registry[param_name]
                 if param.file == FILE.ECO:
                     arg = param.to_eco_entry()

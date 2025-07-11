@@ -32,6 +32,8 @@ from PyQt6.QtWidgets import (
 )
 import inspect
 
+from matplotlib.pyplot import grid
+
 from app.dependency_manager import DependencyManager
 from app.param_enums import FILE, DependencyType
 
@@ -167,21 +169,24 @@ class Param:
         header_layout.addWidget(icon_label)
         return header_container
 
+    # def update_param(self):
+    #     if getattr(self, "_updating", False):
+    #         return
+    #     self._updating = True
+    #     self.store_value()
+    #     # Clear the widget before rebuilding
+    #     if hasattr(self, "widget") and self.widget is not None:
+    #         parent = self.widget.parentWidget()
+    #         if parent is not None:
+    #             parent.layout().removeWidget(self.widget)
+    #         self.widget.deleteLater()
+    #         self.widget = None
+    #     # Assign params in build_widget
+    #     self.widget = self.build_widget(self.row, self.label, self.grid_layout)
+    #     self._updating = False
+
     def update_param(self):
-        if getattr(self, "_updating", False):
-            return
-        self._updating = True
-        self.store_value()
-        # Clear the widget before rebuilding
-        if hasattr(self, "widget") and self.widget is not None:
-            parent = self.widget.parentWidget()
-            if parent is not None:
-                parent.layout().removeWidget(self.widget)
-            self.widget.deleteLater()
-            self.widget = None
-        # Assign params in build_widget
-        self.widget = self.build_widget(self.row, self.label, self.grid_layout)
-        self._updating = False
+        raise NotImplementedError(self.name, "Update param not implemented")
 
 
 
@@ -226,7 +231,6 @@ class ParamInput(Param):
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         if self.hidden:
             return
-        # TODO: add this everywhere
         self.row = row
         self.grid_layout = grid_layout
 
@@ -392,6 +396,9 @@ class ParamSelect(Param):
             return
         question_label = QLabel(label)
         combo_box = QComboBox()
+        self.row = row
+        self.grid_layout = grid_layout
+        self.label = label
         # combo_box.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
 
         combo_box.addItems(self.values)
@@ -432,6 +439,14 @@ class ParamSelect(Param):
         if self.combo_box is not None:
             self.last_combo_box = self.combo_box.currentText()
         pass
+
+    def update_param(self):
+        if getattr(self, "_updating", False):
+            return
+        self._updating = True
+        self.store_value()  
+        self.build_widget(self.row, self.label, self.grid_layout)
+        self._updating = False
 
     def to_command_arg(self) -> str:
         return f"--{self.name} {self.last_combo_box}"
@@ -896,7 +911,7 @@ class ParamComponent(Param):
         extra_combo.currentIndexChanged.connect(
             lambda: self.add_component_row(row, grid_layout)
         )
-        extra_combo.currentIndexChanged.connect(self._on_value_changed)
+        # extra_combo.currentIndexChanged.connect(self._on_value_changed)
 
 
     def _on_value_changed(self):
@@ -924,6 +939,7 @@ class ParamComponent(Param):
         combo.currentIndexChanged.connect(
             lambda: self.add_component_row(row + 1, grid_layout)
         )
+        self._on_value_changed()
 
         # self.category.update_category()
 
@@ -1013,6 +1029,7 @@ class ParamFixedWithInput(Param):
         self.manager: Optional[DependencyManager] = None
         self.expected_type = expected_type
         self.elements = dict(zip([i for i in range(1, self.row_nb)], [{k: None for k in ("min_value", "max_value")}]*self.row_nb))
+        self.widgets = []
         pass
 
     def set_rows_nb(self, rows: int, source: Param):
@@ -1032,11 +1049,13 @@ class ParamFixedWithInput(Param):
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         self.line_edits.clear()
+        self.widgets.clear()
         if self.hidden:
             return
         self.row = row
         # self.label = label
         self.grid_layout = grid_layout
+        self.label = label
         header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(header, row, 0)
         row += 1
@@ -1053,7 +1072,8 @@ class ParamFixedWithInput(Param):
         }
 
         for r in range(self.row_nb):
-            grid_layout.addWidget(QLabel(f"{r+1}"), row + r, 0)
+            label_widget = QLabel(f"{r+1}")
+            grid_layout.addWidget(label_widget, row + r, 0)
             for c in range(1, 2):
                 if self.expected_type == int:
                     line_edit = QSpinBox()
@@ -1088,6 +1108,7 @@ class ParamFixedWithInput(Param):
                 if line_edit is not None:
                     # line_edit.valueChanged.connect(self._on_value_changed)
                     line_edit.valueChanged.connect(lambda _, le=line_edit: self._on_value_changed(le))
+                self.widgets.extend([line_edit, label_widget])
                 self.line_edits.append(line_edit)
         self.restore_value()
 
@@ -1096,6 +1117,20 @@ class ParamFixedWithInput(Param):
         if self.manager is not None:
             self.store_value()
             self.manager.notify_change(self, sender)
+    # TODO: add a widget list everywhere
+
+    def update_param(self):
+        if getattr(self, "_updating", False):
+            return
+        self._updating = True
+        self.store_value()
+        if hasattr(self, "widgets"):
+            for widget in self.widgets:
+                self.grid_layout.removeWidget(widget)
+                widget.deleteLater()
+            self.widgets.clear()
+        self.build_widget(self.row, self.label, self.grid_layout)
+        self._updating = False
 
     def row_span(self) -> int:
         return self.row_nb + 2
@@ -1420,8 +1455,14 @@ class ParamFileChooser(Param):
         self.hidden = hidden
         self.select_dir = select_dir
         self.default = default
+        self.widgets = []
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        self.widgets.clear()
+        self.row = row
+        self.label = label
+        self.grid_layout = grid_layout
+
         if self.hidden:
             return
         header = self.build_header(label, self.description, self.optional)
@@ -1442,6 +1483,7 @@ class ParamFileChooser(Param):
         grid_layout.addWidget(self.line_edit, row, 1)
         grid_layout.addWidget(self.button, row, 2)
 
+        self.widgets.extend([self.line_edit, self.button])
         self.restore_value()
 
     def open_file_dialog(self):
@@ -1467,6 +1509,20 @@ class ParamFileChooser(Param):
     def hide(self):
         self.hidden = True
 
+    def update_param(self):
+        # NOTE: does not work
+        if getattr(self, "_updating", False):
+            return
+        self._updating = True
+        self.store_value()
+        if hasattr(self, "widgets"):
+            for widget in self.widgets:
+                self.grid_layout.removeWidget(widget)
+                widget.deleteLater()
+            self.widgets.clear()
+        self.build_widget(self.row, self.label, self.grid_layout)
+        self._updating = False
+
     def show(self):
         self.hidden = False
 
@@ -1474,8 +1530,9 @@ class ParamFileChooser(Param):
         return self.last_path
 
     def store_value(self):
-        if self.line_edit is not None:
-            self.last_path = self.line_edit.text()
+        if not self.hidden:
+            if self.line_edit is not None:
+                self.last_path = self.line_edit.text()
 
     def to_file(self) -> str:
         return f"{self.name} := {self.last_path}"
@@ -1836,9 +1893,14 @@ class ParamFixedPerm(Param):
         self.manager: Optional[DependencyManager] = None
         self.membranes = membranes
         self.components = components
+        self.widgets = []
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         self.line_edits.clear()
+        self.row = row
+        self.grid_layout = grid_layout
+        self.label = label
+        self.widgets.clear()
         if self.hidden:
             return
         header = self.build_header(label, self.description, self.optional)
@@ -1851,8 +1913,10 @@ class ParamFixedPerm(Param):
         current_row = row + 2
         for membrane in self.membranes:
             for component in self.components:
-                grid_layout.addWidget(QLabel(str(membrane)), current_row, 0)
-                grid_layout.addWidget(QLabel(str(component)), current_row, 1)
+                label_membranes = QLabel(str(membrane))
+                grid_layout.addWidget(label_membranes, current_row, 0)
+                label_component = QLabel(str(component))
+                grid_layout.addWidget(label_component, current_row, 1)
                 line_edit = QDoubleSpinBox()
                 if self.min_value is not None:
                     line_edit.setMinimum(self.min_value)
@@ -1868,11 +1932,26 @@ class ParamFixedPerm(Param):
                 grid_layout.addWidget(line_edit, current_row, 2)
                 line_edit.valueChanged.connect(lambda _, k=key: self._on_value_changed())
                 current_row += 1
+                self.widgets.extend([label_component, label_membranes, line_edit])
 
     def _on_value_changed(self):
         if self.manager is not None:
             self.store_value()
             self.manager.notify_change(self)
+
+    def update_param(self):
+        if getattr(self, "_updating", False):
+            debug_print("updating")
+            return
+        self._updating = True
+        self.store_value()
+        if hasattr(self, "widgets"):
+            for widget in self.widgets:
+                self.grid_layout.removeWidget(widget)
+                widget.deleteLater()
+            self.widgets.clear()
+        self.build_widget(self.row, self.label, self.grid_layout)
+        self._updating = False
 
     def set_value(self, membranes: list[str], components: list[str]):
         self.membranes = membranes
@@ -1912,6 +1991,7 @@ class ParamFixedPerm(Param):
             self.line_edits[key].setValue(value)
 
     def store_value(self):
+        self.last_line_edits.clear()
         if not self.hidden:
             for key, line_edit in self.line_edits.items():
                 self.last_line_edits[key] = str(line_edit.value())
@@ -1940,6 +2020,7 @@ class ParamFixedPerm(Param):
             return f"{self.name} := {self.last_line_edits}"
 
     def to_perm_entry(self) -> Optional[str]:
+        debug_print(self.last_line_edits)
         if self.last_line_edits:
             lines = []
             for (membrane, component), value in self.last_line_edits.items():
@@ -1994,6 +2075,9 @@ class ParamFixedMembrane(Param):
         self.elements = dict(zip([i for i in range(1, len(self.membranes))], [{k: None for k in ("min_value", "max_value")}]*(len(self.membranes))))
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        self.row = row
+        self.grid_layout = grid_layout
+        self.label = label
         self.spin_boxes.clear()
         if self.hidden:
             return
@@ -2030,11 +2114,6 @@ class ParamFixedMembrane(Param):
             if component["max_value"] is not None:
                 spin.setMaximum(component["max_value"])
 
-            if self.min_value is not None:
-                spin.setMinimum(self.min_value)
-            if self.max_value is not None:
-                spin.setMinimum(self.max_value)
-
             if self.default is not None:
                 if isinstance(spin, QSpinBox):
                     spin.setValue(int(self.default))
@@ -2049,10 +2128,6 @@ class ParamFixedMembrane(Param):
             self.spin_boxes.append(spin)
         self.restore_value()
 
-    # def _on_value_changed(self, sender=None):
-    #     if self.manager is not None:
-    #         self.store_value()
-    #         self.manager.notify_change(self, sender)
     def _on_value_changed(self, sender=None):
         if getattr(self, "_updating", False):
             return
@@ -2065,11 +2140,6 @@ class ParamFixedMembrane(Param):
     def set_membranes(self, membranes: list[str]):
         self.membranes = membranes
 
-    # def _on_value_changed(self):
-    #     if self.manager is not None:
-    #         self.store_value()
-    #         self.manager.notify_change(self)
-
     def get_value(self):
         return len(self.last_spin_boxes)
 
@@ -2080,24 +2150,23 @@ class ParamFixedMembrane(Param):
         self.last_spin_boxes.clear()
         if not self.hidden:
             for el in self.spin_boxes:
-                self.last_spin_boxes.append(el.value())
+                if isinstance(el, QSpinBox):
+                    self.last_spin_boxes.append(int(el.value()))
+                else:
+                    self.last_spin_boxes.append(float(el.value()))
 
     def restore_value(self):
         for index, value in enumerate(self.last_spin_boxes):
             if index < len(self.spin_boxes):
                 self.spin_boxes[index].setValue(value)
 
-    # def restore_value(self):
-    #     for idx, value in enumerate(self.last_spin_boxes):
-    #         if idx < len(self.spin_boxes):
-    #             try:
-    #                 if self.expected_type == int:
-    #                     val = int(value)
-    #                 else:
-    #                     val = float(value)
-    #                 self.spin_boxes[idx].setValue(val)
-    #             except ValueError:
-    #                 continue
+    def update_param(self):
+        if getattr(self, "_updating", False):
+            return
+        self._updating = True
+        self.store_value()  
+        self.build_widget(self.row, self.label, self.grid_layout)
+        self._updating = False
 
     def hide(self):
         self.hidden = True
@@ -2243,6 +2312,9 @@ class ParamMemType(Param):
         self.hidden = hidden
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        self.row = row
+        self.label = label
+        self.grid_layout = grid_layout
         header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(header, row, 0)
         self.combo_boxes = []
@@ -2265,6 +2337,14 @@ class ParamMemType(Param):
                 index = combo.findText(value)
                 if index != -1:
                     combo.setCurrentIndex(index)
+
+    def update_param(self):
+        if getattr(self, "_updating", False):
+            return
+        self._updating = True
+        self.store_value()  
+        self.build_widget(self.row, self.label, self.grid_layout)
+        self._updating = False
 
 
     def set_num_components(self, num_components: int):
@@ -2351,6 +2431,8 @@ class ParamFixedComponent(Param):
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         header = self.build_header(label, self.description, self.optional)
+        self.row = row
+        self.label = label
         grid_layout.addWidget(header, row, 0)
         self.spin_boxes = []
         grid_layout.addWidget(QLabel("Component"), row + 1, 0)
@@ -2388,6 +2470,14 @@ class ParamFixedComponent(Param):
         if self.manager is not None:
             self.store_value()
             self.manager.notify_change(self)
+
+    def update_param(self):
+        if getattr(self, "_updating", False):
+            return
+        self._updating = True
+        self.store_value()  
+        self.build_widget(self.row, self.label, self.grid_layout)
+        self._updating = False
 
     def get_value(self):
         return len(self.last_spin_boxes)
@@ -2852,6 +2942,8 @@ class ParamGrid2(Param):
         self.step = step
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        self.grid_layout = grid_layout
+        self.row = row
         self.combo_boxes.clear()
         self.combo_boxes2.clear()
         self.spin_boxes.clear()
@@ -2933,6 +3025,19 @@ class ParamGrid2(Param):
             lambda: self.add_component_row(row, grid_layout)
         )
         self.grid_widgets.append(extra_combo)
+
+    def update_param(self):
+        if getattr(self, "_updating", False):
+            return
+        self._updating = True
+        self.store_value()
+        if hasattr(self, "widgets"):
+            for widget in self.grid_widgets:
+                self.grid_layout.removeWidget(widget)
+                widget.deleteLater()
+            self.grid_widgets.clear()
+        self.build_widget(self.row, self.label, self.grid_layout)
+        self._updating = False
 
     def remove_widget_pair(
             self, widget1: QWidget, widget2: QWidget, widget3: QWidget, layout: QGridLayout, widget4: Optional[QWidget] = None, 
