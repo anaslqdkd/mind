@@ -1,5 +1,5 @@
 import enum
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 from PyQt6.QtCore import QEvent, QPoint, Qt
 from PyQt6.QtGui import QAction, QTabletEvent
 from PyQt6.QtWidgets import (
@@ -105,7 +105,6 @@ class Param:
         self,
         name: str,
         file: FILE,
-        depends_on: Optional[dict[str, DependencyType]] = None,
         optional: bool = False,
         label: str = "",
         expected_type=str,
@@ -117,9 +116,6 @@ class Param:
         self.category: ParamCategory
         self.file = file
         self.optional = optional
-        self.depends_on_names: dict[str, DependencyType] = depends_on or {}
-        self.depends_on_params: dict[Param, DependencyType] = {}
-        self.dependants: dict[Param, DependencyType] = {}
         self.expected_type = expected_type
         self.description = description
         self.label = label
@@ -141,18 +137,12 @@ class Param:
         pass
         self.hidden = False
 
-    def to_file(self) -> str:
-        raise NotImplementedError("Subclasses must implement to_file")
 
     def to_command_arg(self) -> str:
         return ""
 
-    def to_file_entry(self):
-        return None
-
-    to_config_entry = to_file_entry
-    to_data_entry = to_file_entry
-    to_perm_entry = to_data_entry
+    def update_param(self):
+        raise NotImplementedError(self.name, "Update param not implemented")
 
 
     def build_header(self, label: str, description: str, optional: bool) -> QWidget:
@@ -169,24 +159,30 @@ class Param:
         header_layout.addWidget(icon_label)
         return header_container
 
-    # def update_param(self):
-    #     if getattr(self, "_updating", False):
-    #         return
-    #     self._updating = True
-    #     self.store_value()
-    #     # Clear the widget before rebuilding
-    #     if hasattr(self, "widget") and self.widget is not None:
-    #         parent = self.widget.parentWidget()
-    #         if parent is not None:
-    #             parent.layout().removeWidget(self.widget)
-    #         self.widget.deleteLater()
-    #         self.widget = None
-    #     # Assign params in build_widget
-    #     self.widget = self.build_widget(self.row, self.label, self.grid_layout)
-    #     self._updating = False
 
-    def update_param(self):
-        raise NotImplementedError(self.name, "Update param not implemented")
+
+    def create_spinbox( self, min_value: Optional[Union[int, float]] = None, max_value: Optional[Union[int, float]] = None, step: Optional[Union[int, float]] = None, default: Optional[Union[int, float]] = None) -> Union[QSpinBox, QDoubleSpinBox]:
+        if self.expected_type == int:
+            spin = QSpinBox()
+            if min_value is not None:
+                spin.setMinimum(int(min_value))
+            if max_value is not None:
+                spin.setMaximum(int(max_value))
+            if step is not None:
+                spin.setSingleStep(int(step))
+            if default is not None:
+                spin.setValue(int(default))
+        else:
+            spin = QDoubleSpinBox()
+            if min_value is not None:
+                spin.setMinimum(float(min_value))
+            if max_value is not None:
+                spin.setMaximum(float(max_value))
+            if step is not None:
+                spin.setSingleStep(float(step))
+            if default is not None:
+                spin.setValue(float(default))
+        return spin
 
 
 
@@ -199,7 +195,6 @@ class ParamInput(Param):
         self,
         name: str,
         file: FILE,
-        depends_on: Optional[dict[str, DependencyType]],
         optional: bool = False,
         expected_type=str,
         description: str = "",
@@ -210,9 +205,9 @@ class ParamInput(Param):
         step: Optional[int] = None,
         hidden: bool = False,
     ) -> None:
-        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
+        super().__init__(name, file,  description=description, label=label)
         self.question_label = None
-        self.line_edit = None
+        self.spin_box = None
         self.last_line_edit = ""
         self.file = file
         self.optional = optional
@@ -229,43 +224,18 @@ class ParamInput(Param):
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        self.spin_box = None
         if self.hidden:
             return
         self.row = row
         self.grid_layout = grid_layout
-
-        # line_edit = QDoubleSpinBox()
-        if self.expected_type == int:
-            line_edit = QSpinBox()
-            if self.min_value is not None:
-                line_edit.setMinimum(int(self.min_value))
-            if self.max_value is not None:
-                line_edit.setMaximum(int(self.max_value))
-            if self.default is not None:
-                line_edit.setValue(int(self.default))
-            if self.step is not None:
-                line_edit.setSingleStep(int(self.step))
-        else:
-            line_edit = QDoubleSpinBox()
-            if self.min_value is not None:
-                line_edit.setMinimum(self.min_value)
-            if self.max_value is not None:
-                line_edit.setMaximum(self.max_value)
-            if self.default is not None:
-                line_edit.setValue(self.default)
-            if self.step is not None:
-                line_edit.setSingleStep(self.step)
-
-        header = self.build_header(label, self.description, self.optional)
-        self.header = header
+        self.spin_box = self.create_spinbox(self.min_value, self.max_value, self.step, self.default)
+        self.header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(self.header, row, 0)
-        self.line_edit = line_edit
-        self.restore_values()
-        grid_layout.addWidget(self.line_edit, row, 1)
+        grid_layout.addWidget(self.spin_box, row, 1)
+        self.spin_box.valueChanged.connect(self._on_value_changed)
 
-        if self.line_edit is not None:
-            line_edit = self.line_edit
-            line_edit.valueChanged.connect(self._on_value_changed)
+        self.restore_values()
 
     def _on_value_changed(self):
         if self.manager is not None:
@@ -276,14 +246,14 @@ class ParamInput(Param):
         """
         Set the value in the line_edit widget, handling int/float types and decimals.
         """
-        if self.line_edit is not None:
+        if self.spin_box is not None:
             # Handle QSpinBox (int) and QDoubleSpinBox (float)
-            if isinstance(self.line_edit, QSpinBox):
+            if isinstance(self.spin_box, QSpinBox):
                 try:
-                    self.line_edit.setValue(int(float(value)))
+                    self.spin_box.setValue(int(float(value)))
                 except (ValueError, TypeError):
                     pass
-            elif isinstance(self.line_edit, QDoubleSpinBox):
+            elif isinstance(self.spin_box, QDoubleSpinBox):
                 try:
                     float_val = float(value)
                     # Set decimals based on value if needed
@@ -292,9 +262,9 @@ class ParamInput(Param):
                         decimals = len(str_val.split('.')[-1].rstrip('0'))
                     else:
                         decimals = 2
-                    self.line_edit.setDecimals(decimals)
-                    self.line_edit.setMaximum(1e10)
-                    self.line_edit.setValue(float_val)
+                    self.spin_box.setDecimals(decimals)
+                    self.spin_box.setMaximum(1e10)
+                    self.spin_box.setValue(float_val)
                 except (ValueError, TypeError):
                     pass
         # Always update last_line_edit for consistency
@@ -307,7 +277,7 @@ class ParamInput(Param):
         self.last_line_edit = value
 
     def restore_values(self):
-        if self.line_edit is not None and self.last_line_edit != "":
+        if self.spin_box is not None and self.last_line_edit != "":
             try:
                 if self.expected_type == int:
                     value = int(float(self.last_line_edit))
@@ -315,12 +285,12 @@ class ParamInput(Param):
                     value = float(self.last_line_edit)
             except ValueError:
                 return
-            self.line_edit.setValue(value)
+            self.spin_box.setValue(value)
 
     def store_value(self):
         if not self.hidden:
-            if self.line_edit is not None:
-                self.last_line_edit = str(self.line_edit.value())
+            if self.spin_box is not None:
+                self.last_line_edit = str(self.spin_box.value())
 
     def get_value(self) -> str:
         return self.last_line_edit
@@ -338,8 +308,6 @@ class ParamInput(Param):
     def show(self):
         self.hidden = False
 
-    def to_file(self) -> str:
-        return f"{self.name} := {self.last_line_edit}"
 
     def to_config_entry(self) -> Optional[str]:
         if self.last_line_edit != "" and self.last_line_edit != None:
@@ -370,13 +338,12 @@ class ParamSelect(Param):
         file: FILE,
         values: list[str],
         label: str,
-        depends_on: Optional[dict[str, DependencyType]],
         hidden: bool = False,
         optional: bool = False,
         description: str = "",
         expected_type=str,
     ) -> None:
-        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
+        super().__init__(name, file, description=description, label=label)
         self.question_label = None
         self.combo_box = None
         self.last_combo_box = ""
@@ -462,8 +429,6 @@ class ParamSelect(Param):
             return f"{self.name} := \"{self.last_combo_box}\""
 
 
-    def to_file(self) -> str:
-        return f"{self.name} := {self.last_combo_box}"
 
     def get_value(self) -> str:
         return self.last_combo_box
@@ -478,12 +443,11 @@ class ParamBoolean(Param):
         name: str,
         file: FILE,
         label: str,
-        depends_on: Optional[dict[str, DependencyType]],
         optional: bool = False,
         description: str = "",
         expected_type=str,
     ) -> None:
-        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
+        super().__init__(name, file, description=description, label=label)
         self.question_label = None
         self.check_box = None
         self.last_check_box = False
@@ -502,8 +466,6 @@ class ParamBoolean(Param):
 
         self.check_box = check_box
         self.question_label = question_label
-
-        self.check_box = check_box
 
         self.restore_values()
         h_layout.addWidget(self.check_box)
@@ -534,8 +496,6 @@ class ParamBoolean(Param):
         if self.check_box is not None:
             self.check_box.setChecked(value)
 
-    def to_file(self) -> str:
-        return f"{self.name} := {self.last_check_box}"
 
     def to_command_arg(self) -> str:
         if self.last_check_box == True:
@@ -550,6 +510,7 @@ class ParamBoolean(Param):
     def get_value(self) -> bool:
         return self.last_check_box
 
+# TODO: remove the file enum
 
 # -----------------------------------------------------------
 class ParamInputWithUnity(Param):
@@ -558,7 +519,6 @@ class ParamInputWithUnity(Param):
         name: str,
         file: FILE,
         values: list[str],
-        depends_on: Optional[dict[str, DependencyType]],
         description: str = "",
         optional: bool = False,
         label: str = "",
@@ -568,9 +528,9 @@ class ParamInputWithUnity(Param):
         max_value: Optional[int] = None,
         step: Optional[int] = None,
     ) -> None:
-        super().__init__(name, file=file, depends_on=depends_on, description=description, label=label)
+        super().__init__(name, file=file, description=description, label=label)
         self.question_label = None
-        self.line_edit = None
+        self.spin_box = None
         self.combo_box = None
         self.description = description
         self.min_value = min_value
@@ -589,37 +549,13 @@ class ParamInputWithUnity(Param):
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(header, row, 0)
-        # line_edit = QSpinBox()
-        if self.expected_type == int:
-            line_edit = QSpinBox()
-            if self.min_value is not None:
-                line_edit.setMinimum(int(self.min_value))
-            if self.max_value is not None:
-                line_edit.setMaximum(int(self.max_value))
-            if self.default is not None:
-                line_edit.setValue(int(self.default))
-            if self.step is not None:
-                line_edit.setSingleStep(int(self.step))
-        else:
-            line_edit = QDoubleSpinBox()
-            if self.min_value is not None:
-                line_edit.setMinimum(self.min_value)
-            if self.max_value is not None:
-                line_edit.setMaximum(self.max_value)
-            if self.default is not None:
-                line_edit.setValue(self.default)
-            if self.step is not None:
-                line_edit.setSingleStep(self.step)
-
+        self.spin_box = self.create_spinbox(self.min_value, self.max_value, self.step, self.default)
         combo_box = QComboBox()
         combo_box.addItems(self.values)
-        self.line_edit = line_edit
         self.combo_box = combo_box
-
-        self.restore_value()
-
-        grid_layout.addWidget(self.line_edit, row, 1)
+        grid_layout.addWidget(self.spin_box, row, 1)
         grid_layout.addWidget(self.combo_box, row, 2)
+        self.restore_value()
 
 
     def restore_value(self):
@@ -629,19 +565,17 @@ class ParamInputWithUnity(Param):
                 if index != -1:
                     self.combo_box.setCurrentIndex(index)
         if self.last_line_edit:
-            if self.line_edit:
-                self.line_edit.setValue(int(self.last_line_edit))
+            if self.spin_box:
+                self.spin_box.setValue(int(self.last_line_edit))
 
     def store_value(self):
-        if self.line_edit is not None:
-            self.last_line_edit = self.line_edit.value()
+        if self.spin_box is not None:
+            self.last_line_edit = self.spin_box.value()
             pass
         if self.combo_box is not None:
             self.last_combo_box = self.combo_box.currentText()
         pass
 
-    def to_file(self) -> str:
-        return f"{self.name} := {self.last_line_edit} #{self.last_combo_box}"
 
     def to_data_entry(self) -> Optional[str]:
         # TODO: convert unity before assignment
@@ -658,25 +592,37 @@ class ParamBooleanWithInput(Param):
         self,
         name: str,
         file: FILE,
-        depends_on: Optional[dict[str, DependencyType]],
         label: str,
         optional: bool = False,
         description: str = "",
+        default: Optional[int] = None,
+        min_value: Optional[float] = None,
+        max_value: Optional[float] = None,
+        step: Optional[int] = None,
         expected_type=str,
     ) -> None:
-        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
+        super().__init__(name, file, description=description, label=label)
         self.question_label = None
-        self.line_edit = None
+        self.spin_box = None
         self.check_box = None
         self.description = description
 
         self.last_check_box = False
-        self.last_line_edit = ""
+        self.last_spin_value = 0
 
+        self.expected_type = expected_type
         self.optional = optional
+        self.default = default
+        self.min_value = min_value
+        self.max_value = max_value
+        self.step = step
+        self.widgets = []
         pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        self.widgets.clear()
+        self.grid_layout = grid_layout
+        self.row = row
         header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(header, row, 0)
 
@@ -685,17 +631,14 @@ class ParamBooleanWithInput(Param):
         checkbox_layout.setContentsMargins(0, 0, 0, 0)
         checkbox_layout.setSpacing(5)
 
-        check_box = QCheckBox()
+        self.check_box = QCheckBox()
+        self.spin_box = self.create_spinbox(self.min_value, self.max_value, self.step, self.default)
 
-        line_edit = QLineEdit()
-        line_edit.setEnabled(False)
+        self.spin_box.setEnabled(False)
 
-        checkbox_layout.addWidget(check_box)
+        checkbox_layout.addWidget(self.check_box)
         checkbox_layout.addWidget(header)
         checkbox_layout.addStretch()
-
-        self.line_edit = line_edit
-        self.check_box = check_box
 
         self.restore_values()
 
@@ -703,31 +646,43 @@ class ParamBooleanWithInput(Param):
 
         t_label = QLabel(label)
 
-        check_box.toggled.connect(line_edit.setEnabled)
-        check_box.toggled.connect(self.trigger_update)
+        self.check_box.toggled.connect(self.spin_box.setEnabled)
+        self.check_box.toggled.connect(self.update_param)
 
         t_label.setVisible(self.last_check_box)
-        line_edit.setVisible(self.last_check_box)
+        self.spin_box.setVisible(self.last_check_box)
 
         grid_layout.addWidget(t_label, row + 1, 0)
-        grid_layout.addWidget(line_edit, row + 1, 2)
+        grid_layout.addWidget(self.spin_box, row + 1, 1)
+        self.widgets.extend([self.spin_box, self.check_box])
 
-    def trigger_update(self):
-        self.category.update_category()
+    def update_param(self):
+        if getattr(self, "_updating", False):
+            return
+        self._updating = True
+        self.store_value()
+        if hasattr(self, "widgets"):
+            for widget in self.widgets:
+                self.grid_layout.removeWidget(widget)
+                widget.deleteLater()
+            self.widgets.clear()
+        self.build_widget(self.row, self.label, self.grid_layout)
+        self._updating = False
+    
 
     def restore_values(self):
         if self.last_check_box:
             if self.check_box:
                 self.check_box.setChecked(True)
-            if self.line_edit:
-                self.line_edit.setEnabled(True)
-        if self.last_line_edit:
-            if self.line_edit:
-                self.line_edit.setText(self.last_line_edit)
+            if self.spin_box:
+                self.spin_box.setEnabled(True)
+        if self.last_spin_value:
+            if self.spin_box:
+                self.spin_box.setValue(self.last_spin_value)
 
     def store_value(self):
-        if self.line_edit is not None:
-            self.last_line_edit = self.line_edit.text()
+        if self.spin_box is not None:
+            self.last_spin_value = self.spin_box.value()
         if self.check_box is not None:
             self.last_check_box = self.check_box.isChecked()
 
@@ -736,12 +691,10 @@ class ParamBooleanWithInput(Param):
 
     def to_command_arg(self) -> str:
         if self.last_check_box == True:
-            return f"--{self.name} {self.last_line_edit}"
+            return f"--{self.name} {self.last_spin_value}"
         else:
             return ""
 
-    def to_file(self) -> str:
-        return f"{self.name} := {self.last_check_box}\n{self.name} := {self.last_line_edit}"
 
 
 # -----------------------------------------------------------
@@ -843,12 +796,9 @@ class ParamBooleanWithInputWithUnity(Param):
     def row_span(self) -> int:
         return 2
 
-    def to_file(self) -> str:
-        return f"{self.name} := {self.last_check_box}\n{self.name} := {self.last_line_edit} #{self.last_combo_box}"
 
 
 # -----------------------------------------------------------
-
 
 class ParamComponent(Param):
     def __init__(
@@ -857,12 +807,11 @@ class ParamComponent(Param):
         file: FILE,
         label: str,
         values: list[str],
-        depends_on: Optional[dict[str, DependencyType]],
         optional: bool = False,
         description: str = "",
         expected_type=str,
     ) -> None:
-        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
+        super().__init__(name, file, description=description, label=label)
         self.question_label = None
         self.combo_box = None
         self.extra_rows = 0
@@ -971,12 +920,6 @@ class ParamComponent(Param):
     def row_span(self) -> int:
         return 1 + self.extra_rows
 
-    def to_file(self) -> str:
-        value = ""
-        for el in self.last_combo_boxes:
-            value += f'"{el}" '
-
-        return f"{self.name} := {value}\n"
 
     def to_perm_entry(self) -> Optional[str]:
         if self.last_combo_boxes:
@@ -992,7 +935,6 @@ class ParamFixedWithInput(Param):
         name: str,
         file: FILE,
         label: str,
-        depends_on: Optional[dict[str, DependencyType]],
         optional: bool = False,
         description: str = "",
         expected_type=str,
@@ -1002,7 +944,7 @@ class ParamFixedWithInput(Param):
         step: Optional[int] = None,
         hidden: bool = False,
     ) -> None:
-        super().__init__(name, file=file, depends_on=depends_on, label=label)
+        super().__init__(name, file=file, label=label)
         self.question_label = None
         self.line_edit = None
         self.combo_box = None
@@ -1157,9 +1099,9 @@ class ParamFixedWithInput(Param):
         values_str = ", ".join(str(value) for value in self.last_line_edits)
         res = f"{self.name} = [{values_str}]"
         return res
+    def to_data_entry(self):
+        return self.to_config_entry()
 
-    def to_file(self) -> str:
-        return f"{self.name} := {self.last_line_edit}"
 
 
 # -----------------------------------------------------------
@@ -1223,20 +1165,18 @@ class ParamRadio(Param):
 
 # -----------------------------------------------------------
 
-
 class ParamComponentSelector(Param):
     def __init__(
         self,
         name: str,
         file: FILE,
         label: str,
-        depends_on: Optional[dict[str, DependencyType]],
         values: list[str],
         optional: bool = False,
         description: str = "",
         expected_type=str,
     ) -> None:
-        super().__init__(name, file=file, depends_on=depends_on, label=label)
+        super().__init__(name, file=file, label=label)
         self.question_label = None
         self.description = description
 
@@ -1343,12 +1283,11 @@ class ParamSpinBoxWithBool(Param):
         name: str,
         file: FILE,
         label: str,
-        depends_on: Optional[dict[str, DependencyType]],
         optional: bool = False,
         expected_type=str,
         description: str = "",
     ) -> None:
-        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
+        super().__init__(name, file, description=description, label=label)
         self.question_label = None
         self.time_spin_box = None
         self.last_spin_box = ""
@@ -1364,9 +1303,6 @@ class ParamSpinBoxWithBool(Param):
 
     def trigger_update(self):
         self.category.update_category()
-
-    def to_file(self) -> str:
-        return ""
 
     def row_span(self) -> int:
         return 2
@@ -1438,14 +1374,13 @@ class ParamFileChooser(Param):
         file: FILE,
         label: str,
         hidden: bool = False,
-        depends_on: Optional[dict[str, DependencyType]] = None,
         optional: bool = False,
         description: str = "",
         expected_type=str,
         select_dir: bool = False,
         default: Optional[str] = None
     ) -> None:
-        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
+        super().__init__(name, file, description=description, label=label)
         self.question_label = None
         self.line_edit = None
         self.button = None
@@ -1534,8 +1469,6 @@ class ParamFileChooser(Param):
             if self.line_edit is not None:
                 self.last_path = self.line_edit.text()
 
-    def to_file(self) -> str:
-        return f"{self.name} := {self.last_path}"
 
     def to_command_arg(self) -> str:
         if self.last_path:
@@ -1649,53 +1582,6 @@ class ParamCategory(QWidget):
                         if hasattr(param, "check_box") and param.check_box is widget:
                             param.check_box = None
 
-    def write_to_file(self):
-        file_map = {
-            FILE.DATA: "data.dat",
-            FILE.CONFIG: "config.ini",
-            FILE.PERM: "perm.dat",
-            FILE.ECO: "eco.dat",
-            FILE.COMMAND: "command.sh",
-        }
-        self.build_command()
-        # used_files = {
-        #     file_map[param.file]
-        #     for param in self.param.values()
-        #     if param.file in file_map
-        # }
-        # for file_name in used_files:
-        #     open(file_name, "w").close()
-
-        for _, param in self.param.items():
-            file_name = file_map.get(param.file)
-            lines = []
-            if not file_name:
-                print(f"Unknown file type for param {param.name}")
-            else:
-                value = param.to_file()
-                if value != "":
-                    lines.append(value)
-
-            with open(file_name, "a") as f:
-                f.writelines(lines)
-        # f.write(f"{value}\n")
-
-    def build_command(self):
-        file_map = {
-            FILE.DATA: "data.dat",
-            FILE.CONFIG: "config.ini",
-            FILE.PERM: "perm.dat",
-            FILE.ECO: "eco.dat",
-            FILE.COMMAND: "command.sh",
-        }
-        res = ""
-        for _, param in self.param.items():
-            if param.file == FILE.COMMAND:
-                res += f"--{param.name}"
-            file_name = file_map.get(param.file)
-        # if fi
-
-
 # -----------------------------------------------------------
 
 
@@ -1748,7 +1634,6 @@ class ParamFixedWithSelect(Param):
         self,
         name: str,
         file: FILE,
-        depends_on: Optional[dict[str, DependencyType]],
         values: list[str],
         optional: bool = False,
         description: str = "",
@@ -1760,7 +1645,7 @@ class ParamFixedWithSelect(Param):
         step: Optional[int] = None,
         hidden: bool = False,
     ) -> None:
-        super().__init__(name, file=file, depends_on=depends_on, description=description, label=label)
+        super().__init__(name, file=file, description=description, label=label)
         self.question_label = None
         self.line_edit = None
         self.combo_box = None
@@ -1853,8 +1738,6 @@ class ParamFixedWithSelect(Param):
             self.last_combo_box = self.combo_box.currentText()
         pass
 
-    def to_file(self) -> str:
-        return f"{self.name} := {self.last_line_edit}"
 
 # -----------------------------------------------------------
 
@@ -1863,7 +1746,6 @@ class ParamFixedPerm(Param):
         self,
         name: str,
         file: FILE,
-        depends_on: Optional[dict[str, DependencyType]],
         membranes: list[str] = [],
         components: list[str] = [],
         optional: bool = False,
@@ -1876,7 +1758,7 @@ class ParamFixedPerm(Param):
         step: Optional[float] = None,
         hidden: bool = False,
     ) -> None:
-        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
+        super().__init__(name, file, description=description, label=label)
         self.question_label = None
         self.line_edits = {}  # {(membrane, component): QDoubleSpinBox}
         self.last_line_edits = {}  # {(membrane, component): str}
@@ -2005,11 +1887,6 @@ class ParamFixedPerm(Param):
     def show(self):
         self.hidden = False
 
-    def to_file(self) -> str:
-        lines = []
-        for (membrane, component), value in self.last_line_edits.items():
-            lines.append(f"{membrane}\t{component}\t{value}")
-        return f"param {self.name} :=\n" + "\n".join(lines)
 
     def to_config_entry(self) -> Optional[str]:
         if self.last_line_edits:
@@ -2044,7 +1921,6 @@ class ParamFixedMembrane(Param):
         name: str,
         file: FILE,
         label: str,
-        depends_on: Optional[dict[str, DependencyType]],
         hidden: bool = False,
         membranes: list[str] = [],
         optional: bool = False,
@@ -2056,7 +1932,7 @@ class ParamFixedMembrane(Param):
         decimals: int = 2,
         default: Optional[int] = None,
     ) -> None:
-        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
+        super().__init__(name, file, description=description, label=label)
         self.question_label = None
         self.spin_boxes = []
         self.last_spin_boxes = []
@@ -2189,11 +2065,6 @@ class ParamFixedMembrane(Param):
             return f"{self.name} :=\n{content}\n"
         return None
 
-    def to_file(self) -> str:
-        value = ""
-        for el in self.last_spin_boxes:
-            value += f'"{el}" '
-        return f"{self.name} := {value}\n"
 
 # -----------------------------------------------------------
 class ParamMembraneSelect(Param):
@@ -2202,14 +2073,13 @@ class ParamMembraneSelect(Param):
         name: str,
         file: FILE,
         label: str,
-        depends_on: Optional[dict[str, DependencyType]],
         hidden: bool = False,
         membranes: list[str] = [],
         values: Optional[dict[str, list[str]]] = None,
         optional: bool = False,
         description: str = "",
     ) -> None:
-        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
+        super().__init__(name, file, description=description, label=label)
         self.question_label = None
         self.combo_boxes = []
         self.last_combo_boxes = []
@@ -2279,11 +2149,6 @@ class ParamMembraneSelect(Param):
             return f"{self.name} :=\n{content}\n"
         return None
 
-    def to_file(self) -> str:
-        value = ""
-        for el in self.last_combo_boxes:
-            value += f'"{el}" '
-        return f"{self.name} := {value}\n"
 
 # -----------------------------------------------------------
 
@@ -2293,14 +2158,13 @@ class ParamMemType(Param):
         name: str,
         file: FILE,
         label: str,
-        depends_on: Optional[dict[str, DependencyType]],
         hidden: bool = False,
         num_membrane_floors: int = 1,
         membranes: list[str] = [],
         optional: bool = False,
         description: str = "",
     ) -> None:
-        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
+        super().__init__(name, file, description=description, label=label)
         self.question_label = None
         self.combo_boxes = []
         self.last_combo_boxes = []
@@ -2387,11 +2251,6 @@ class ParamMemType(Param):
             return f"{self.name} :=\n{content}\n"
         return None
 
-    def to_file(self) -> str:
-        value = ""
-        for el in self.last_combo_boxes:
-            value += f'"{el}" '
-        return f"{self.name} := {value}\n"
 
 # -----------------------------------------------------------
 class ParamFixedComponent(Param):
@@ -2400,7 +2259,6 @@ class ParamFixedComponent(Param):
         name: str,
         file: FILE,
         label: str,
-        depends_on: Optional[dict[str, DependencyType]],
         hidden: bool = False,
         components: list[str] = [],
         optional: bool = False,
@@ -2412,7 +2270,7 @@ class ParamFixedComponent(Param):
         step: float = 1.0,
         decimals: int = 2,
     ) -> None:
-        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
+        super().__init__(name, file, description=description, label=label)
         self.question_label = None
         self.spin_boxes = []
         self.last_spin_boxes = []
@@ -2505,11 +2363,6 @@ class ParamFixedComponent(Param):
             return f"{self.name} :=\n{content}\n"
         return None
 
-    def to_file(self) -> str:
-        value = ""
-        for el in self.last_spin_boxes:
-            value += f'"{el}" '
-        return f"{self.name} := {value}\n"
 
 # -----------------------------------------------------------
 class ParamFixedComponentWithCheckbox(Param):
@@ -2519,13 +2372,12 @@ class ParamFixedComponentWithCheckbox(Param):
         file: FILE,
         label: str,
         # values: list[str],
-        depends_on: Optional[dict[str, DependencyType]],
         optional: bool = False,
         description: str = "",
         expected_type=str,
         hidden: bool = False,
     ) -> None:
-        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
+        super().__init__(name, file, description=description, label=label)
         self.checkbox = None
         self.combo_boxes = []
         self.extra_rows = 0
@@ -2695,10 +2547,6 @@ class ParamFixedComponentWithCheckbox(Param):
             lines.append(f"{self.name}:#{i+1} {value}")
         return "\n".join(lines)
 
-    def to_file(self) -> str:
-        if self.checkbox and self.checkbox.isChecked():
-            return super().to_file()
-        return ""
     
 # -----------------------------------------------------------
 class ParamGrid(Param):
@@ -2707,13 +2555,12 @@ class ParamGrid(Param):
         name: str,
         file: FILE,
         label: str,
-        depends_on: Optional[dict[str, DependencyType]],
         optional: bool = False,
         description: str = "",
         expected_type=str,
         hidden: bool = False,
     ) -> None:
-        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
+        super().__init__(name, file, description=description, label=label)
         self.checkbox = None
         self.combo_boxes = []
         self.combo_boxes2 = []
@@ -2898,10 +2745,6 @@ class ParamGrid(Param):
             lines.append(f"{self.name}:#{self.last_combo_boxes[i]},#{self.last_combo_boxes2[i]} {value}")
         return "\n".join(lines)
 
-    def to_file(self) -> str:
-        if self.checkbox and self.checkbox.isChecked():
-            return super().to_file()
-        return ""
     
 # -----------------------------------------------------------
 class ParamGrid2(Param):
@@ -2910,7 +2753,6 @@ class ParamGrid2(Param):
         name: str,
         file: FILE,
         label: str,
-        depends_on: Optional[dict[str, DependencyType]],
         optional: bool = False,
         description: str = "",
         expected_type=str,
@@ -2920,7 +2762,7 @@ class ParamGrid2(Param):
         max_value: Optional[int] = None,
         step: Optional[int] = None,
     ) -> None:
-        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
+        super().__init__(name, file, description=description, label=label)
         self.checkbox = None
         self.combo_boxes = []
         self.combo_boxes2 = []
@@ -3183,10 +3025,6 @@ class ParamGrid2(Param):
             lines.append(f"{membrane} {component} {value}")
         return "\n".join(lines)
 
-    def to_file(self) -> str:
-        if self.checkbox and self.checkbox.isChecked():
-            return super().to_file()
-        return ""
     
     
     

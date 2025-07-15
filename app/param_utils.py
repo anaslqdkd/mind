@@ -4,7 +4,6 @@ from app.param import (
     Param,
     ParamBoolean,
     ParamBooleanWithInput,
-    ParamBooleanWithInputWithUnity,
     ParamComponent,
     ParamComponentSelector,
     ParamFileChooser,
@@ -19,7 +18,6 @@ from app.param import (
     ParamInputWithUnity,
     ParamMemType,
     ParamMembraneSelect,
-    ParamRadio,
     ParamSelect,
     ParamSpinBoxWithBool,
     ParamFixedWithSelect,
@@ -34,7 +32,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
     optional = kwargs.get("optional", False)
     label = kwargs.get("label", "")
     values = kwargs.get("values", [])
-    depends_on = kwargs.get("depends_on", {})
     expected_type = kwargs.get("expected_type", str)
     description = kwargs.get("description", "")
     default = kwargs.get("default")
@@ -50,7 +47,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 optional=optional,
                 label=label,
                 file=file,
-                depends_on=depends_on,
                 expected_type=expected_type,
                 description=description,
                 default=default,
@@ -66,7 +62,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 values=values,
                 label=label,
                 hidden=hidden,
-                depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,
                 description=description,
@@ -76,7 +71,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 name,
                 file,
                 label=label,
-                depends_on=depends_on,
                 expected_type=expected_type,
                 optional=optional,
                 description=description,
@@ -87,7 +81,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 file=file,
                 label=label,
                 values=values,
-                depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,
                 default=default,
@@ -98,21 +91,9 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 name,
                 file,
                 label=label,
-                depends_on=depends_on,
                 expected_type=expected_type,
                 optional=optional,
                 description=description,
-            )
-        case ParamType.BOOLEAN_WITH_INPUT_WITH_UNITY:
-            return ParamBooleanWithInputWithUnity(
-                name,
-                file=file,
-                label=label,
-                values=values,
-                optional=optional,
-                depends_on=depends_on,
-                expected_type=expected_type,
-                # description=description,
             )
         case ParamType.COMPONENT:
             return ParamComponent(
@@ -120,7 +101,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 file,
                 label=label,
                 values=values,
-                depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,
                 description=description,
@@ -130,7 +110,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 name,
                 file,
                 label=label,
-                depends_on=depends_on,
                 expected_type=expected_type,
                 optional=optional,
                 description=description,
@@ -139,22 +118,11 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 max_value=max_value,
                 step=step,
             )
-        case ParamType.RADIO:
-            return ParamRadio(
-                name,
-                file,
-                depends_on=depends_on,
-                values=values,
-                optional=optional,
-                expected_type=expected_type,
-                # description=description,
-            )
         case ParamType.COMPONENT_SELECTOR:
             return ParamComponentSelector(
                 name,
                 file,
                 label=label,
-                depends_on=depends_on,
                 values=values,
                 optional=optional,
                 expected_type=expected_type,
@@ -165,7 +133,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 name,
                 file,
                 label=label,
-                depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,
                 # description=description,
@@ -176,7 +143,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 file,
                 label=label,
                 values=values,
-                depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,
                 # description=description,
@@ -187,7 +153,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 file,
                 label=label,
                 hidden=hidden,
-                depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,
                 select_dir = select_dir,
@@ -200,7 +165,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 file,
                 label=label,
                 hidden=hidden,
-                depends_on=depends_on,
                 # membranes=["M1", "M2"],
                 # components=["O2", "H2"],
                 optional=optional,
@@ -214,7 +178,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 file,
                 label=label,
                 hidden=hidden,
-                depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,
                 default=default,
@@ -228,7 +191,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 file,
                 label=label,
                 hidden=hidden,
-                depends_on=depends_on,
                 optional=optional,
                 expected_type=expected_type,
                 default=default
@@ -241,7 +203,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 values=values,
                 label=label,
                 hidden=hidden,
-                depends_on=depends_on,
                 optional=optional,
                 # description=description,
             )
@@ -249,10 +210,8 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
             return ParamMemType(
                 name,
                 file,
-                # values=values,
                 label=label,
                 hidden=hidden,
-                depends_on=depends_on,
                 optional=optional,
                 # description=description,
             )
@@ -260,12 +219,8 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
             return ParamFixedComponentWithCheckbox(
                 name,
                 file,
-                # values=values,
-                # components=["buu", "gaga"],
-                # values = ["value 1", "value 2"],
                 label=label,
                 hidden=hidden,
-                depends_on=depends_on,
                 optional=optional,
                 # description=description,
             )
@@ -273,12 +228,8 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
             return ParamGrid(
                 name,
                 file,
-                # nb_components=3,
-                # values=values,
-                # components=["buu", "gaga"],
                 label=label,
                 hidden=hidden,
-                depends_on=depends_on,
                 optional=optional,
                 # description=description,
             )
@@ -286,12 +237,8 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
             return ParamGrid2(
                 name,
                 file,
-                # nb_components=3,
-                # values=values,
-                # components=["buu", "gaga"],
                 label=label,
                 hidden=hidden,
-                depends_on=depends_on,
                 optional=optional,
                 max_value = max_value,
                 min_value = min_value,

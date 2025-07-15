@@ -267,7 +267,7 @@ class MainWindow(QMainWindow):
                 "param final_product",
                 "param normalized_product_qt",
                 "param lb_perc_prod",
-                "param ub_perc_waste",
+                # "param ub_perc_waste",
             ],
             "Process constraints": [
                 "param lb_press_up",
@@ -922,6 +922,7 @@ class MainWindow(QMainWindow):
         target.update_param()
 
     def update_permeability(self, target: ParamFixedWithInput, source: ParamComponent, sender):
+        debug_print(target.name, source.name)
         target.set_rows(int(source.get_value()), source)
         # target.category.update_category()
         target.update_param()
@@ -1346,8 +1347,8 @@ class DataBuilder:
             "set components",
             "param pressure_in",
             # "param pressure_prod",
-            "param ub_perc_waste",
-            "param lb_perc_prod",
+            # "param ub_perc_waste",
+            # "param lb_perc_prod",
             "param normalized_product_qt",
             "param final_product",
             "param FEED",
