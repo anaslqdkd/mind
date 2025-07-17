@@ -50,5 +50,4 @@ source env/bin/activate
 pip install -r requirements.txt
 deactivate
 chmod u+x test/command.sh
-```
-```
+

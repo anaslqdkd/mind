@@ -861,8 +861,6 @@ class MembranesDesignModel(ABC):
 
         def noIsolated_rule(model, s):
             # TODO: Ask bernerdetta to # REVIEW:  this constraint
-            if len(model.states) == 1:
-                return pe.Constraint.Skip
             outflow = sum(model.splitRET[s, s1] + model.splitPERM[s, s1]
                           for s1 in model.states
                           if s1 != s)

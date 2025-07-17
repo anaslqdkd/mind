@@ -2,9 +2,12 @@ import os
 import subprocess
 from typing import Optional, cast
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QIcon
+from PyQt6.QtGui import QIcon, QPixmap
 from PyQt6.QtWidgets import (
     QAbstractScrollArea,
+    QApplication,
+    QDial,
+    QDialog,
     QFileDialog,
     QFrame,
     QGroupBox,
@@ -118,13 +121,17 @@ class MainWindow(QMainWindow):
         layout.addWidget(header)
         layout.addWidget(self.tabs)
 
-        button = QPushButton("A propos")
+        about_button = QPushButton("A propos")
+        # about_button.clicked.connect(self.show_about)
+        about_window = AboutDialog()
+        about_button.clicked.connect(lambda: AboutDialog(self).exec())
         quit_button = QPushButton("Fermer")
+        quit_button.clicked.connect(self.quit_app)
         self.apply_button = QPushButton("Appliquer")
 
         end_buttons = QWidget()
         end_buttons_layout = QHBoxLayout(end_buttons)
-        end_buttons_layout.addWidget(button)
+        end_buttons_layout.addWidget(about_button)
         spacer = QSpacerItem(
             0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
         )
@@ -161,6 +168,12 @@ class MainWindow(QMainWindow):
         central_widget = QWidget()
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
+
+    def quit_app(self):
+        QApplication.quit()
+
+    def show_about(self):
+        QMessageBox.about(self, "A propos", "A voir quoi mettre dedans")
 
     def load_config(self):
         # file_path, _ = QFileDialog.getOpenFileName(self, "Open Configuration File", "", "INI files (*.ini);;All Files (*)")
@@ -1379,8 +1392,6 @@ class DataBuilder:
             f.write(f"data;\n\n")
             for entry in self.data_args:
                 f.write(f"{entry};\n\n")
-            f.write(f"param ub_feed_tot := 1;\n")
-            f.write(f"param ub_feed := 1;\n")
 
 
 class PermBuilder:
@@ -2261,3 +2272,101 @@ class CommandLauncherButton(QPushButton):
         #         f"{self.script_path}; read -p 'Done. Press enter...'",
         #     ]
         # )
+
+class AboutDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("À propos de Mind")
+        self.setFixedSize(230, 150)
+        self.setStyleSheet("""
+            QDialog {
+                background-color: #ffffff;
+            }
+            QLabel#TitleLabel {
+                color: #222;
+                font-weight: bold;
+                font-size: 15px;
+            }
+            QLabel#SubtitleLabel, QLabel#CopyrightLabel {
+                color: #444;
+                font-size: 10px;
+            }
+            QLabel#LinkLabel {
+                color: #0066cc;
+            }
+            QPushButton {
+                background-color: #f5f5f5;
+                color: #222;
+            }
+            QPushButton:hover {
+                background-color: #e0e0e0;
+            }
+        """)
+        layout = QVBoxLayout()
+        # layout.setSpacing(10)
+        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        # Top Icon
+        icon_label = QLabel()
+        pixmap = QPixmap(48, 48)
+        pixmap.fill(Qt.GlobalColor.transparent)
+        icon_label.setPixmap(pixmap)
+        icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        # layout.addWidget(icon_label)
+
+        # Main Title
+        title = QLabel("Mind 1.0.0")
+        title.setObjectName("TitleLabel")
+        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(title)
+
+        # Subtitle
+        subtitle = QLabel("Python Optimization Software for Process Design Membranes")
+        subtitle.setWordWrap(True)
+        subtitle.setObjectName("SubtitleLabel")
+        subtitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(subtitle)
+
+        # Copyright
+        copyright = QLabel("Copyright (C) 2025 Mind Project")
+        copyright.setObjectName("CopyrightLabel")
+        copyright.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(copyright)
+
+        # Hyperlink
+        link = QLabel('<a href="https://github.com/anaslqdkd/mind">mind site</a>')
+        link.setObjectName("LinkLabel")
+        link.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        link.setTextInteractionFlags(Qt.TextInteractionFlag.TextBrowserInteraction)
+        link.setOpenExternalLinks(True)
+        layout.addWidget(link)
+
+        # Buttons
+        buttons_layout = QHBoxLayout()
+        # buttons_layout.setSpacing(15)
+        # Crédit Button
+        credit_button = QPushButton("🛈 Crédits")
+        credit_button.setIcon(QIcon()) # Add your icon if desired
+        credit_button.clicked.connect(self.show_credits)
+        buttons_layout.addWidget(credit_button)
+
+        # Licence Button
+        licence_button = QPushButton("Licence")
+        licence_button.setIcon(QIcon())
+        licence_button.clicked.connect(self.show_licence)
+        buttons_layout.addWidget(licence_button)
+
+        # Fermer Button
+        fermer_button = QPushButton("✖ Fermer")
+        fermer_button.setIcon(QIcon())
+        fermer_button.clicked.connect(self.close)
+        buttons_layout.addWidget(fermer_button)
+
+        layout.addLayout(buttons_layout)
+        self.setLayout(layout)
+
+    def show_credits(self):
+        QMessageBox.information(self, "Crédits", "Développé par ...")
+
+    def show_licence(self):
+        QMessageBox.information(self, "Licence", "Licence MIT © 2025")

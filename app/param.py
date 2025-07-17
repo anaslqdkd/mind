@@ -283,9 +283,8 @@ class Param:
         header_layout = QHBoxLayout(header_container)
         header_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
         header_layout.setContentsMargins(0, 0, 0, 0)
-        label_text = (
-            f'{label}{" " if optional else " <span style=\"color:red;\">*</span>"}'
-        )
+        required_mark = ' ' if optional else ' <span style="color:red;">*</span>'
+        label_text = f"{label}{required_mark}"
         question_label = QLabel(label_text)
         icon_label = HelpButtonDemo(description)
         header_layout.addWidget(question_label)
