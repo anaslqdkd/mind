@@ -161,6 +161,7 @@ class Configuration():
             try:
                 assert n >= 20
             except Exception:
+                print(n)
                 logger.exception("Error : number of discretisation too low"
                                  "(n[{}] = {})".format(mem + 1, n))
                 raise

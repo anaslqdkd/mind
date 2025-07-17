@@ -1191,10 +1191,9 @@ class CommandBuilder:
         for param_name in self.validated_params:
             if param_name in self.param_registry:
                 param = self.param_registry[param_name]
-                if param.file == FILE.COMMAND:
-                    arg = param.to_command_arg()
-                    if arg is not None and arg != "":
-                        self.args.append(arg)
+                arg = param.to_command_arg()
+                if arg is not None and arg != "":
+                    self.args.append(arg)
         self.command = " ".join(self.args)
         self.write_command_script()
 
@@ -1206,7 +1205,7 @@ class CommandBuilder:
         with open(filename, "w") as f:
             f.write("#!/bin/bash\n")
             f.write("source mind/env/bin/activate\n")
-            f.write(f"python3.11 -m mind.launcher {self.command} --exec\n")
+            f.write(f"python3.10 -m mind.launcher {self.command} --exec\n")
 
 
 # TODO: assert lb pressure <= ub pressure etc
@@ -1253,17 +1252,15 @@ class ConfigBuilder:
         for param_name in self.tuning_params:
             if param_name in self.param_registry.keys():
                 param = self.param_registry[param_name]
-                if param.file == FILE.CONFIG:
-                    arg = param.to_config_entry()
-                    if arg is not None:
-                        self.config_args["tuning"].append(arg)
+                arg = param.to_config_entry()
+                if arg is not None:
+                    self.config_args["tuning"].append(arg)
         for param_name in self.instance_params:
             if param_name in self.param_registry.keys():
                 param = self.param_registry[param_name]
-                if param.file == FILE.CONFIG:
-                    arg = param.to_config_entry()
-                    if arg is not None:
-                        self.config_args["instance"].append(arg)
+                arg = param.to_config_entry()
+                if arg is not None:
+                    self.config_args["instance"].append(arg)
         self.write_config_ini()
 
     def write_config_ini(self, filename="test/config.ini"):
@@ -1322,10 +1319,9 @@ class MaskBuilder:
         for param_name in self.validated_params:
             if param_name in self.param_registry.keys():
                 param = self.param_registry[param_name]
-                if param.file == FILE.MASK:
-                    arg = param.to_mask_entry()
-                    if arg is not None and arg != "":
-                        self.mask_args.append(arg)
+                arg = param.to_mask_entry()
+                if arg is not None and arg != "":
+                    self.mask_args.append(arg)
         self.write_data()
         pass
 
@@ -1368,10 +1364,9 @@ class DataBuilder:
         for param_name in self.validated_params:
             if param_name in self.param_registry.keys():
                 param = self.param_registry[param_name]
-                if param.file == FILE.DATA:
-                    arg = param.to_data_entry()
-                    if arg is not None:
-                        self.data_args.append(arg)
+                arg = param.to_data_entry()
+                if arg is not None:
+                    self.data_args.append(arg)
         self.write_data()
         pass
 
@@ -1432,13 +1427,12 @@ class PermBuilder:
         for param_name in params_list:
             if param_name in self.param_registry.keys():
                 param = self.param_registry[param_name]
-                if param.file == FILE.PERM:
-                    arg = param.to_perm_entry()
-                    if arg is not None and (
-                        param_name != "nb_gas"
-                        or not self.param_registry["variable_perm"].get_value()
-                    ):
-                        self.perm_args.append(arg)
+                arg = param.to_perm_entry()
+                if arg is not None and (
+                    param_name != "nb_gas"
+                    or not self.param_registry["variable_perm"].get_value()
+                ):
+                    self.perm_args.append(arg)
         self.write_data()
         pass
 
@@ -1489,10 +1483,9 @@ class EcoBuilder:
         for param_name in self.validated_params:
             if param_name in self.param_registry.keys():
                 param = self.param_registry[param_name]
-                if param.file == FILE.ECO:
-                    arg = param.to_eco_entry()
-                    if arg:
-                        self.args.append(arg)
+                arg = param.to_eco_entry()
+                if arg:
+                    self.args.append(arg)
         self.write_eco()
         return self.args
 
@@ -2247,11 +2240,6 @@ class CommandLauncherButton(QPushButton):
         self.incoherence_manager = incoherence_manager
 
     def launch_terminal(self):
-        # if self.incoherence_manager is not None:
-            # errors = self.incoherence_manager.check_incoherences()
-            # if errors:
-            #     QMessageBox.critical(self, "Incoherences Detected", "\n".join(errors))
-            #     return
 
         subprocess.Popen(
             [
@@ -2259,7 +2247,8 @@ class CommandLauncherButton(QPushButton):
                 "-e",
                 "bash",
                 "-c",
-                f"{self.script_path}; read -p 'Done. Press enter...'",
+                # f"{self.script_path}; read -p 'Done. Press enter...'",
+                f"{self.script_path}; exec bash"
             ]
         )
         # NOTE: uncomment for the gnome terminal

@@ -9,22 +9,17 @@ from PyQt6.QtWidgets import (
     QDialog,
     QDialogButtonBox,
     QDoubleSpinBox,
-    QFrame,
     QGridLayout,
     QGroupBox,
     QHBoxLayout,
     QLabel,
     QLineEdit,
-    QListWidget,
-    QMessageBox,
     QPushButton,
     QRadioButton,
     QScrollArea,
     QSizePolicy,
     QSpacerItem,
     QSpinBox,
-    QTableWidget,
-    QTableWidgetItem,
     QToolButton,
     QToolTip,
     QVBoxLayout,
@@ -32,11 +27,10 @@ from PyQt6.QtWidgets import (
 )
 import inspect
 
-from matplotlib.pyplot import grid
-
 from app.dependency_manager import DependencyManager
 from app.param_enums import FILE, DependencyType
 
+# -----------------------------------------------------------
 
 def debug_print(*args, **kwargs):
     frame = inspect.currentframe().f_back
@@ -44,9 +38,22 @@ def debug_print(*args, **kwargs):
     line_no = frame.f_lineno
     print(f"[{func_name}:{line_no}]", *args, **kwargs)
 
-
 # -----------------------------------------------------------
-class SquareCheckboxSelector(QDialog):
+class ComponentWindow(QDialog):
+    """
+    Dialog window for selecting components with an optional maximum selection limit.
+
+    Args:
+        components (list): List of component names to display as checkboxes.
+        selected (list, optional): List of initially selected components.
+        parent (QWidget, optional): Parent widget.
+        max_selected (int, optional): Maximum number of components that can be selected.
+
+    Features:
+        - Displays a list of components as checkboxes.
+        - Enforces a maximum selection limit if specified.
+        - Returns the selected components.
+    """
     def __init__(self, components, selected=None, parent=None, max_selected=None):
         super().__init__(parent)
         self.setWindowTitle("Select Components")
@@ -76,8 +83,12 @@ class SquareCheckboxSelector(QDialog):
         layout.addWidget(buttons)
         self.setLayout(layout)
 
-    def get_selected(self):
-        # print(selected)
+    def get_selected(self) -> list[str]:
+        """Returns a list of selected components
+
+        Returns:
+            list: List of selected components
+        """
         for cb in self.checkboxes:
             if cb.isChecked():
                 self.selected.append(cb.text())
@@ -85,6 +96,14 @@ class SquareCheckboxSelector(QDialog):
         return [cb.text() for cb in self.checkboxes if cb.isChecked()]
 
     def handle_checkbox(self):
+        """
+        Handles checkbox state changes to enforce a maximum selection limit.
+
+        - If the number of checked boxes exceeds `max_selected`, the last toggled box is unchecked.
+        - Disables unchecked boxes when the maximum is reached, re-enables them otherwise.
+
+        Used to enforce bi-components for variable permeability
+        """
         if self.max_selected is not None:
             checked_count = sum(cb.isChecked() for cb in self.checkboxes)
             if checked_count > self.max_selected:
@@ -95,57 +114,171 @@ class SquareCheckboxSelector(QDialog):
                 if not cb.isChecked():
                     cb.setEnabled(checked_count < self.max_selected)
 
-
-
 # -----------------------------------------------------------
 
 
 class Param:
+    """
+    Base class representing a parameter in the application.
+
+    Args:
+        name (str): The exact name of the parameter in the data files.
+        optional (bool, optional): Whether the parameter is optional. Defaults to False.
+        label (str, optional): The label shown in the interface. Defaults to "".
+        expected_type (type, optional): The expected type of the parameter value. Defaults to str.
+        description (str, optional): Description of the parameter. Defaults to "".
+        manager (Optional[DependencyManager], optional): Dependency manager for the parameter. Defaults to None.
+
+    Attributes:
+        name (str): Parameter name.
+        category (ParamCategory): Category of the parameter.
+        optional (bool): Whether the parameter is optional.
+        expected_type (type): Expected type of the parameter value.
+        description (str): Description of the parameter.
+        label (str): Label shown in the interface.
+        manager (Optional[DependencyManager]): Dependency manager.
+    """
     def __init__(
         self,
         name: str,
-        file: FILE,
         optional: bool = False,
         label: str = "",
         expected_type=str,
         description: str = "",
         manager: Optional[DependencyManager] = None,
-        incoherence_manager: Optional["IncoherenceManager"] = None,
     ) -> None:
-        self.name = name  # the exact name in the data files
+        self.name = name  
         self.category: ParamCategory
-        self.file = file
         self.optional = optional
         self.expected_type = expected_type
         self.description = description
         self.label = label
+        self.manager = manager
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        """
+        Abstract method to build the parameter's widget in the UI.
+
+        Args:
+            row (int): Row position in the layout.
+            label (str): Label for the widget.
+            grid_layout (QGridLayout): Layout to add the widget to.
+
+        Raises:
+            NotImplementedError: Must be implemented by subclasses.
+        """
         raise NotImplementedError("Subclasses must implement build_widgets")
 
     def store_value(self):
+        """
+        Abstract method to store the parameter's value. Called before rebuilding the ui to re-populate the ui with the right values during the update.
+
+        Raises:
+            NotImplementedError: Must be implemented by subclasses.
+        """
         raise NotImplementedError("Subclasses must implement store_values")
 
+    def restore_value(self):
+        """
+        Abstract method to restore the parameter's value. Called after rebuilding the ui during the update.
+        """
+
     def row_span(self) -> int:
+        """
+        Returns the number of rows the widget should span in the layout.
+
+        Returns:
+            int: Number of rows to span.
+        """
         return 1
 
     def hide(self) -> None:
+        """
+        Hides the parameter widget in the UI.
+        """
         pass
         # self.hidden = True
 
     def show(self) -> None:
+        """
+        Shows the parameter widget in the UI.
+        """
         pass
         self.hidden = False
 
 
-    def to_command_arg(self) -> str:
-        return ""
+    def to_command_arg(self) -> Optional[str]:
+        """
+        Converts the parameter value to a command-line argument string.
+        Used to build the command.sh file.
+
+        Returns:
+            Optional[str]: Command-line argument representation or None.
+        """
+        return None
+
+    def to_config_entry(self) -> Optional[str]:
+        """
+        Converts the parameter value to a config file entry.
+        Used to build the config.ini file.
+
+        Returns:
+            Optional[str]: Config entry string or None.
+        """
+        return None
+
+    def to_data_entry(self) -> Optional[str]:
+        """
+        Converts the parameter value to a eco file entry.
+        Used to build the data.dat file.
+
+        Returns:
+            Optional[str]: Eco entry string or None 
+        """
+        return None
+
+    def to_perm_entry(self) -> Optional[str]:
+        """
+        Converts the parameter value to a perm file entry.
+        Used to build the perm.dat file.
+
+        Returns:
+            Optional[str]: Perm entry string or None 
+        """
+        return None
+
+    def to_mask_entry(self) -> Optional[str]:
+        """
+        Converts the parameter value to a (optionnal) mask file entry.
+        Used to build the mask.dat file.
+
+        Returns:
+            Optional[str]: Mask entry string or None 
+        """
+        return None
 
     def update_param(self):
+        """
+        Abstract method to update the parameter value.
+
+        Raises:
+            NotImplementedError: Must be implemented by subclasses.
+        """
         raise NotImplementedError(self.name, "Update param not implemented")
 
 
     def build_header(self, label: str, description: str, optional: bool) -> QWidget:
+        """
+        Builds a header widget for the parameter, including label and help icon.
+
+        Args:
+            label (str): Label for the parameter.
+            description (str): Description for the help tooltip.
+            optional (bool): Whether the parameter is optional.
+
+        Returns:
+            QWidget: The constructed header widget.
+        """
         header_container = QWidget()
         header_layout = QHBoxLayout(header_container)
         header_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
@@ -162,6 +295,18 @@ class Param:
 
 
     def create_spinbox( self, min_value: Optional[Union[int, float]] = None, max_value: Optional[Union[int, float]] = None, step: Optional[Union[int, float]] = None, default: Optional[Union[int, float]] = None) -> Union[QSpinBox, QDoubleSpinBox]:
+        """
+        Creates and configures a spinbox widget for integer or float input.
+
+        Args:
+            min_value (Optional[int|float], optional): Minimum value.
+            max_value (Optional[int|float], optional): Maximum value.
+            step (Optional[int|float], optional): Step size.
+            default (Optional[int|float], optional): Default value.
+
+        Returns:
+            QSpinBox or QDoubleSpinBox: Configured spinbox widget.
+        """
         if self.expected_type == int:
             spin = QSpinBox()
             if min_value is not None:
@@ -184,17 +329,40 @@ class Param:
                 spin.setValue(float(default))
         return spin
 
-
-
-
 # -----------------------------------------------------------
 
-
 class ParamInput(Param):
+    """Represents a numeric input parameter with optional constraints.
+    Args:
+        name (str): Parameter name.
+        optional (bool, optional): Whether the parameter is optional. Defaults to False.
+        expected_type (type, optional): Expected type of the parameter value (int or float). Defaults to str.
+        description (str, optional): Description of the parameter. Defaults to "".
+        label (str, optional): Label for the parameter. Defaults to "".
+        default (Optional[int], optional): Default value. Defaults to None.
+        min_value (Optional[float], optional): Minimum allowed value. Defaults to None.
+        max_value (Optional[float], optional): Maximum allowed value. Defaults to None.
+        step (Optional[int], optional): Step size for the spinbox. Defaults to None.
+        hidden (bool, optional): Whether the parameter is hidden. Defaults to False.
+
+    Attributes:
+        spin_box: Spinbox widget for input.
+        last_line_edit: Last entered value as string.
+        optional: Whether the parameter is optional.
+        expected_type: Expected type of the value.
+        default: Default value.
+        min_value: Minimum allowed value.
+        max_value: Maximum allowed value.
+        step: Step size for spinbox.
+        expected_value: List of expected value types.
+        header: Header widget for UI.
+        hidden: Whether the parameter is hidden.
+        manager: Dependency manager.
+    """
+
     def __init__(
         self,
         name: str,
-        file: FILE,
         optional: bool = False,
         expected_type=str,
         description: str = "",
@@ -205,23 +373,18 @@ class ParamInput(Param):
         step: Optional[int] = None,
         hidden: bool = False,
     ) -> None:
-        super().__init__(name, file,  description=description, label=label)
-        self.question_label = None
+        super().__init__(name, description=description, label=label)
         self.spin_box = None
         self.last_line_edit = ""
-        self.file = file
         self.optional = optional
         self.expected_type = expected_type
         self.default = default
         self.min_value = min_value
         self.max_value = max_value
         self.step = step
-        self.expected_value = ["population", "genetic"]
         self.header = None
         self.hidden = hidden
         self.manager: Optional[DependencyManager] = None
-        # self.label = label or name
-        pass
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
         self.spin_box = None
@@ -238,6 +401,9 @@ class ParamInput(Param):
         self.restore_values()
 
     def _on_value_changed(self):
+        """
+        Handles spinbox value changes, stores the value and notifies dependencies.
+        """
         if self.manager is not None:
             self.store_value()
             self.manager.notify_change(self)
@@ -245,9 +411,11 @@ class ParamInput(Param):
     def set_value(self, value):
         """
         Set the value in the line_edit widget, handling int/float types and decimals.
+
+        Args: 
+            value: Value to set in the spinbox (int/float).
         """
         if self.spin_box is not None:
-            # Handle QSpinBox (int) and QDoubleSpinBox (float)
             if isinstance(self.spin_box, QSpinBox):
                 try:
                     self.spin_box.setValue(int(float(value)))
@@ -256,7 +424,6 @@ class ParamInput(Param):
             elif isinstance(self.spin_box, QDoubleSpinBox):
                 try:
                     float_val = float(value)
-                    # Set decimals based on value if needed
                     str_val = str(float_val)
                     if '.' in str_val:
                         decimals = len(str_val.split('.')[-1].rstrip('0'))
@@ -267,13 +434,24 @@ class ParamInput(Param):
                     self.spin_box.setValue(float_val)
                 except (ValueError, TypeError):
                     pass
-        # Always update last_line_edit for consistency
         self.last_line_edit = str(value)
 
     def set_value_from_import(self, value):
+        """
+        Sets the value from imported data.
+
+        Args:
+            value: Value to set.
+        """
         self.set_value(value)
 
     def set_last_line_edit(self, value):
+        """
+        Sets the last entered value as a string.
+
+        Args:
+            value: Value to store.
+        """
         self.last_line_edit = value
 
     def restore_values(self):
@@ -293,9 +471,24 @@ class ParamInput(Param):
                 self.last_line_edit = str(self.spin_box.value())
 
     def get_value(self) -> str:
+        """
+        Returns the last entered value as a string.
+
+        Returns:
+            str: Last entered value.
+        """
         return self.last_line_edit
 
     def get_value_float(self) -> float:
+        """
+        Returns the last entered value as a float.
+
+        Returns:
+            float: Last entered value.
+
+        Raises:
+            ValueError: If conversion fails.
+        """
         self.store_value()
         try:
             return float(self.last_line_edit)
@@ -307,7 +500,6 @@ class ParamInput(Param):
 
     def show(self):
         self.hidden = False
-
 
     def to_config_entry(self) -> Optional[str]:
         if self.last_line_edit != "" and self.last_line_edit != None:
@@ -330,20 +522,39 @@ class ParamInput(Param):
 
 # -----------------------------------------------------------
 
-
 class ParamSelect(Param):
+    """
+    Represents a parameter with a selectable value from a predefined list, integrated with UI.
+
+    Args:
+        name (str): Parameter name.
+        values (list[str]): List of selectable values.
+        label (str): Label for the parameter.
+        hidden (bool, optional): Whether the parameter is hidden. Defaults to False.
+        optional (bool, optional): Whether the parameter is optional. Defaults to False.
+        description (str, optional): Description of the parameter. Defaults to "".
+
+    Attributes:
+        question_label: Label for help/question icon.
+        combo_box: ComboBox widget for selection.
+        last_combo_box: Last selected value.
+        values: List of selectable values.
+        optional: Whether the parameter is optional.
+        description: Description of the parameter.
+        manager: Dependency manager.
+        label: Label for the parameter.
+        hidden: Whether the parameter is hidden.
+    """
     def __init__(
         self,
         name: str,
-        file: FILE,
         values: list[str],
         label: str,
         hidden: bool = False,
         optional: bool = False,
         description: str = "",
-        expected_type=str,
     ) -> None:
-        super().__init__(name, file, description=description, label=label)
+        super().__init__(name, description=description, label=label)
         self.question_label = None
         self.combo_box = None
         self.last_combo_box = ""
@@ -366,7 +577,6 @@ class ParamSelect(Param):
         self.row = row
         self.grid_layout = grid_layout
         self.label = label
-        # combo_box.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
 
         combo_box.addItems(self.values)
 
@@ -377,11 +587,6 @@ class ParamSelect(Param):
 
         header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(header, row, 0)
-
-        spacer = QSpacerItem(
-            0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
-        )
-        # grid_layout.addItem(spacer, row, 1)
 
         grid_layout.addWidget(self.combo_box, row, 1)
 
@@ -428,11 +633,8 @@ class ParamSelect(Param):
         if self.last_combo_box:
             return f"{self.name} := \"{self.last_combo_box}\""
 
-
-
     def get_value(self) -> str:
         return self.last_combo_box
-
 
 # -----------------------------------------------------------
 
@@ -441,13 +643,12 @@ class ParamBoolean(Param):
     def __init__(
         self,
         name: str,
-        file: FILE,
         label: str,
         optional: bool = False,
         description: str = "",
         expected_type=str,
     ) -> None:
-        super().__init__(name, file, description=description, label=label)
+        super().__init__(name, description=description, label=label)
         self.question_label = None
         self.check_box = None
         self.last_check_box = False
@@ -517,7 +718,6 @@ class ParamInputWithUnity(Param):
     def __init__(
         self,
         name: str,
-        file: FILE,
         values: list[str],
         description: str = "",
         optional: bool = False,
@@ -528,7 +728,7 @@ class ParamInputWithUnity(Param):
         max_value: Optional[int] = None,
         step: Optional[int] = None,
     ) -> None:
-        super().__init__(name, file=file, description=description, label=label)
+        super().__init__(name, description=description, label=label)
         self.question_label = None
         self.spin_box = None
         self.combo_box = None
@@ -591,7 +791,6 @@ class ParamBooleanWithInput(Param):
     def __init__(
         self,
         name: str,
-        file: FILE,
         label: str,
         optional: bool = False,
         description: str = "",
@@ -601,7 +800,7 @@ class ParamBooleanWithInput(Param):
         step: Optional[int] = None,
         expected_type=str,
     ) -> None:
-        super().__init__(name, file, description=description, label=label)
+        super().__init__(name, description=description, label=label)
         self.question_label = None
         self.spin_box = None
         self.check_box = None
@@ -704,15 +903,13 @@ class ParamBooleanWithInputWithUnity(Param):
     def __init__(
         self,
         name: str,
-        file: FILE,
         label: str,
         values: list[str],
-        depends_on: Optional[dict[str, DependencyType]],
         optional: bool = False,
         description: str = "",
         expected_type=str,
     ) -> None:
-        super().__init__(name, file, depends_on=depends_on, description=description, label=label)
+        super().__init__(name, description=description, label=label)
         self.question_label = None
         self.check_box = None
         self.combo_box = None
@@ -804,14 +1001,13 @@ class ParamComponent(Param):
     def __init__(
         self,
         name: str,
-        file: FILE,
         label: str,
         values: list[str],
         optional: bool = False,
         description: str = "",
         expected_type=str,
     ) -> None:
-        super().__init__(name, file, description=description, label=label)
+        super().__init__(name, description=description, label=label)
         self.question_label = None
         self.combo_box = None
         self.extra_rows = 0
@@ -933,7 +1129,6 @@ class ParamFixedWithInput(Param):
     def __init__(
         self,
         name: str,
-        file: FILE,
         label: str,
         optional: bool = False,
         description: str = "",
@@ -944,7 +1139,7 @@ class ParamFixedWithInput(Param):
         step: Optional[int] = None,
         hidden: bool = False,
     ) -> None:
-        super().__init__(name, file=file, label=label)
+        super().__init__(name, label=label)
         self.question_label = None
         self.line_edit = None
         self.combo_box = None
@@ -1109,14 +1304,13 @@ class ParamRadio(Param):
     def __init__(
         self,
         name: str,
-        file: FILE,
         depends_on: Optional[dict[str, DependencyType]],
         values: list[str],
         optional: bool = False,
         expected_type=str,
         description: str = "",
     ) -> None:
-        super().__init__(name, file=file, depends_on=depends_on)
+        super().__init__(name)
         self.question_label = None
         self.description = description
 
@@ -1169,14 +1363,13 @@ class ParamComponentSelector(Param):
     def __init__(
         self,
         name: str,
-        file: FILE,
         label: str,
         values: list[str],
         optional: bool = False,
         description: str = "",
         expected_type=str,
     ) -> None:
-        super().__init__(name, file=file, label=label)
+        super().__init__(name, label=label)
         self.question_label = None
         self.description = description
 
@@ -1221,7 +1414,7 @@ class ParamComponentSelector(Param):
             row += 1
 
     def open_selector(self):
-        dialog = SquareCheckboxSelector(self.values, self.selected_components, max_selected=self.max_selected)
+        dialog = ComponentWindow(self.values, self.selected_components, max_selected=self.max_selected)
         if dialog.exec():
             self.selected_components = dialog.get_selected()
             self.button.setText(f"Selected: {len(self.selected_components)}")
@@ -1281,17 +1474,15 @@ class ParamSpinBoxWithBool(Param):
     def __init__(
         self,
         name: str,
-        file: FILE,
         label: str,
         optional: bool = False,
         expected_type=str,
         description: str = "",
     ) -> None:
-        super().__init__(name, file, description=description, label=label)
+        super().__init__(name, description=description, label=label)
         self.question_label = None
         self.time_spin_box = None
         self.last_spin_box = ""
-        self.file = file
         self.optional = optional
         self.expected_type = expected_type
         self.last_check_box = False
@@ -1371,7 +1562,6 @@ class ParamFileChooser(Param):
     def __init__(
         self,
         name: str,
-        file: FILE,
         label: str,
         hidden: bool = False,
         optional: bool = False,
@@ -1380,7 +1570,7 @@ class ParamFileChooser(Param):
         select_dir: bool = False,
         default: Optional[str] = None
     ) -> None:
-        super().__init__(name, file, description=description, label=label)
+        super().__init__(name, description=description, label=label)
         self.question_label = None
         self.line_edit = None
         self.button = None
@@ -1633,7 +1823,6 @@ class ParamFixedWithSelect(Param):
     def __init__(
         self,
         name: str,
-        file: FILE,
         values: list[str],
         optional: bool = False,
         description: str = "",
@@ -1645,7 +1834,7 @@ class ParamFixedWithSelect(Param):
         step: Optional[int] = None,
         hidden: bool = False,
     ) -> None:
-        super().__init__(name, file=file, description=description, label=label)
+        super().__init__(name, description=description, label=label)
         self.question_label = None
         self.line_edit = None
         self.combo_box = None
@@ -1745,7 +1934,6 @@ class ParamFixedPerm(Param):
     def __init__(
         self,
         name: str,
-        file: FILE,
         membranes: list[str] = [],
         components: list[str] = [],
         optional: bool = False,
@@ -1758,11 +1946,10 @@ class ParamFixedPerm(Param):
         step: Optional[float] = None,
         hidden: bool = False,
     ) -> None:
-        super().__init__(name, file, description=description, label=label)
+        super().__init__(name, description=description, label=label)
         self.question_label = None
         self.line_edits = {}  # {(membrane, component): QDoubleSpinBox}
         self.last_line_edits = {}  # {(membrane, component): str}
-        self.file = file
         self.optional = optional
         self.expected_type = expected_type
         self.default = default
@@ -1919,7 +2106,6 @@ class ParamFixedMembrane(Param):
     def __init__(
         self,
         name: str,
-        file: FILE,
         label: str,
         hidden: bool = False,
         membranes: list[str] = [],
@@ -1932,7 +2118,7 @@ class ParamFixedMembrane(Param):
         decimals: int = 2,
         default: Optional[int] = None,
     ) -> None:
-        super().__init__(name, file, description=description, label=label)
+        super().__init__(name, description=description, label=label)
         self.question_label = None
         self.spin_boxes = []
         self.last_spin_boxes = []
@@ -2071,7 +2257,6 @@ class ParamMembraneSelect(Param):
     def __init__(
         self,
         name: str,
-        file: FILE,
         label: str,
         hidden: bool = False,
         membranes: list[str] = [],
@@ -2079,7 +2264,7 @@ class ParamMembraneSelect(Param):
         optional: bool = False,
         description: str = "",
     ) -> None:
-        super().__init__(name, file, description=description, label=label)
+        super().__init__(name, description=description, label=label)
         self.question_label = None
         self.combo_boxes = []
         self.last_combo_boxes = []
@@ -2156,7 +2341,6 @@ class ParamMemType(Param):
     def __init__(
         self,
         name: str,
-        file: FILE,
         label: str,
         hidden: bool = False,
         num_membrane_floors: int = 1,
@@ -2164,7 +2348,7 @@ class ParamMemType(Param):
         optional: bool = False,
         description: str = "",
     ) -> None:
-        super().__init__(name, file, description=description, label=label)
+        super().__init__(name, description=description, label=label)
         self.question_label = None
         self.combo_boxes = []
         self.last_combo_boxes = []
@@ -2257,7 +2441,6 @@ class ParamFixedComponent(Param):
     def __init__(
         self,
         name: str,
-        file: FILE,
         label: str,
         hidden: bool = False,
         components: list[str] = [],
@@ -2270,7 +2453,7 @@ class ParamFixedComponent(Param):
         step: float = 1.0,
         decimals: int = 2,
     ) -> None:
-        super().__init__(name, file, description=description, label=label)
+        super().__init__(name, description=description, label=label)
         self.question_label = None
         self.spin_boxes = []
         self.last_spin_boxes = []
@@ -2369,7 +2552,6 @@ class ParamFixedComponentWithCheckbox(Param):
     def __init__(
         self,
         name: str,
-        file: FILE,
         label: str,
         # values: list[str],
         optional: bool = False,
@@ -2377,7 +2559,7 @@ class ParamFixedComponentWithCheckbox(Param):
         expected_type=str,
         hidden: bool = False,
     ) -> None:
-        super().__init__(name, file, description=description, label=label)
+        super().__init__(name, description=description, label=label)
         self.checkbox = None
         self.combo_boxes = []
         self.extra_rows = 0
@@ -2553,14 +2735,13 @@ class ParamGrid(Param):
     def __init__(
         self,
         name: str,
-        file: FILE,
         label: str,
         optional: bool = False,
         description: str = "",
         expected_type=str,
         hidden: bool = False,
     ) -> None:
-        super().__init__(name, file, description=description, label=label)
+        super().__init__(name, description=description, label=label)
         self.checkbox = None
         self.combo_boxes = []
         self.combo_boxes2 = []
@@ -2751,7 +2932,6 @@ class ParamGrid2(Param):
     def __init__(
         self,
         name: str,
-        file: FILE,
         label: str,
         optional: bool = False,
         description: str = "",
@@ -2762,7 +2942,7 @@ class ParamGrid2(Param):
         max_value: Optional[int] = None,
         step: Optional[int] = None,
     ) -> None:
-        super().__init__(name, file, description=description, label=label)
+        super().__init__(name, description=description, label=label)
         self.checkbox = None
         self.combo_boxes = []
         self.combo_boxes2 = []

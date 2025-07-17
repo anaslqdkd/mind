@@ -46,7 +46,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 name,
                 optional=optional,
                 label=label,
-                file=file,
                 expected_type=expected_type,
                 description=description,
                 default=default,
@@ -58,19 +57,16 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
         case ParamType.SELECT:
             return ParamSelect(
                 name,
-                file=file,
                 values=values,
                 label=label,
                 hidden=hidden,
                 optional=optional,
-                expected_type=expected_type,
                 description=description,
             )
         case ParamType.BOOLEAN:
             return ParamBoolean(
                 name,
-                file,
-                label=label,
+                label = label,
                 expected_type=expected_type,
                 optional=optional,
                 description=description,
@@ -78,7 +74,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
         case ParamType.INPUT_WITH_UNITY:
             return ParamInputWithUnity(
                 name,
-                file=file,
                 label=label,
                 values=values,
                 optional=optional,
@@ -89,8 +84,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
         case ParamType.BOOLEAN_WITH_INPUT:
             return ParamBooleanWithInput(
                 name,
-                file,
-                label=label,
+                label = label,
                 expected_type=expected_type,
                 optional=optional,
                 description=description,
@@ -98,7 +92,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
         case ParamType.COMPONENT:
             return ParamComponent(
                 name,
-                file,
                 label=label,
                 values=values,
                 optional=optional,
@@ -108,7 +101,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
         case ParamType.FIXED_WITH_INPUT:
             return ParamFixedWithInput(
                 name,
-                file,
                 label=label,
                 expected_type=expected_type,
                 optional=optional,
@@ -121,7 +113,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
         case ParamType.COMPONENT_SELECTOR:
             return ParamComponentSelector(
                 name,
-                file,
                 label=label,
                 values=values,
                 optional=optional,
@@ -131,7 +122,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
         case ParamType.SPIN_BOX:
             return ParamSpinBoxWithBool(
                 name,
-                file,
                 label=label,
                 optional=optional,
                 expected_type=expected_type,
@@ -140,7 +130,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
         case ParamType.FIXED_WITH_SELECT:
             return ParamFixedWithSelect(
                 name,
-                file,
                 label=label,
                 values=values,
                 optional=optional,
@@ -150,7 +139,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
         case ParamType.FILECHOOSER:
             return ParamFileChooser(
                 name,
-                file,
                 label=label,
                 hidden=hidden,
                 optional=optional,
@@ -162,7 +150,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
         case ParamType.FIXED_PERM:
             return ParamFixedPerm(
                 name,
-                file,
                 label=label,
                 hidden=hidden,
                 # membranes=["M1", "M2"],
@@ -175,7 +162,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
         case ParamType.FIXED_MEMBRANE:
             return ParamFixedMembrane(
                 name,
-                file,
                 label=label,
                 hidden=hidden,
                 optional=optional,
@@ -188,7 +174,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
         case ParamType.FIXED_COMPONENT:
             return ParamFixedComponent(
                 name,
-                file,
                 label=label,
                 hidden=hidden,
                 optional=optional,
@@ -199,7 +184,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
         case ParamType.FIXED_MEMBRANE_SELECT:
             return ParamMembraneSelect(
                 name,
-                file,
                 values=values,
                 label=label,
                 hidden=hidden,
@@ -209,7 +193,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
         case ParamType.FIXED_MEM_TYPE:
             return ParamMemType(
                 name,
-                file,
                 label=label,
                 hidden=hidden,
                 optional=optional,
@@ -218,7 +201,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
         case ParamType.FIXED_COMPONENT_WITH_CHECKBOX:
             return ParamFixedComponentWithCheckbox(
                 name,
-                file,
                 label=label,
                 hidden=hidden,
                 optional=optional,
@@ -227,7 +209,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
         case ParamType.FIXED_COMPONENT_WITH_CHECKBOX_MATRIX:
             return ParamGrid(
                 name,
-                file,
                 label=label,
                 hidden=hidden,
                 optional=optional,
@@ -236,7 +217,6 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
         case ParamType.FIXED_MATRIX:
             return ParamGrid2(
                 name,
-                file,
                 label=label,
                 hidden=hidden,
                 optional=optional,

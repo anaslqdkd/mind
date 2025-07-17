@@ -102,12 +102,12 @@ class MembranesDesignModel(ABC):
         self.abstractModel.lb_press_down = pe.Param(mutable=True)
         self.abstractModel.lb_press_up = pe.Param(mutable=True)
         self.abstractModel.ub_press_up = pe.Param(mutable=True)
-        self.abstractModel.ub_feed = pe.Param(mutable=True)
+        self.abstractModel.ub_feed = pe.Param(mutable=True, default=0.0)
         self.abstractModel.ub_out_prod = pe.Param(
             mutable=True, default=self.abstractModel.ub_feed)
         self.abstractModel.ub_out_waste = pe.Param(
             mutable=True, default=self.abstractModel.ub_feed)
-        self.abstractModel.ub_feed_tot = pe.Param(mutable=True)
+        self.abstractModel.ub_feed_tot = pe.Param(mutable=True, default=0.0)
 
         def init_ub_acell(model, mem):
             return self.parameter.ub_acell[mem - 1]
@@ -588,7 +588,7 @@ class MembranesDesignModel(ABC):
 
             self.instance.ub_feed = self.instance.FEED.value
             self.instance.ub_feed_tot = 2 * self.instance.FEED.value
-            #print('ub_feed_tot =',self.instance.ub_feed_tot)
+            # print(self.instance.ub_feed_tot)
             logger.info('alors gros ca getz ?')
 
             # self.instance.ub_out_prod = self.instance.FEED.value
@@ -861,6 +861,8 @@ class MembranesDesignModel(ABC):
 
         def noIsolated_rule(model, s):
             # TODO: Ask bernerdetta to # REVIEW:  this constraint
+            if len(model.states) == 1:
+                return pe.Constraint.Skip
             outflow = sum(model.splitRET[s, s1] + model.splitPERM[s, s1]
                           for s1 in model.states
                           if s1 != s)
