@@ -602,6 +602,7 @@ class ParamSelect(Param):
                 self.combo_box.setCurrentIndex(index)
 
     def _on_value_changed(self):
+        debug_print("the value was changed")
         if self.manager is not None:
             self.store_value()
             self.manager.notify_change(self)
@@ -610,6 +611,11 @@ class ParamSelect(Param):
         if self.combo_box is not None:
             self.last_combo_box = self.combo_box.currentText()
         pass
+
+    def get_value_select(self) -> Optional[str]:
+        if self.combo_box is not None:
+            return self.combo_box.currentText()
+        return None
 
     def update_param(self):
         if getattr(self, "_updating", False):
@@ -1390,6 +1396,7 @@ class ParamComponentSelector(Param):
 
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        # TODO: fix the appearance
         self.button = QPushButton("Select Components")
         self.button.clicked.connect(self.open_selector)
         header = self.build_header(label, self.description, self.optional)
@@ -2531,7 +2538,7 @@ class ParamFixedComponent(Param):
             self.last_spin_boxes.append(str(el.value()))
 
     def row_span(self) -> int:
-        return 2 + len(self.components)
+        return 3 + len(self.components)
 
     def to_data_entry(self) -> Optional[str]:
         if self.hidden:
@@ -2718,9 +2725,12 @@ class ParamFixedComponentWithCheckbox(Param):
         return []
 
     def to_data_entry(self) -> Optional[str]:
-        if self.checkbox and self.checkbox.isChecked():
-            return super().to_data_entry()
-        return None
+        if self.checkbox:
+            if self.checkbox.isChecked():
+                if not self.last_spin_boxes or not self.last_combo_boxes:
+                    return None
+                lines = [f'"{self.last_combo_boxes[i]}" {self.last_spin_boxes[i]}' for i in range(min(len(self.last_combo_boxes), len(self.last_spin_boxes)))]
+                return f'{self.name}:=\n' + "\n".join(lines) + "\n"
 
     def to_mask_entry(self) -> str:
         lines = []

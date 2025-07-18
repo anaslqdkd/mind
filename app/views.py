@@ -280,7 +280,7 @@ class MainWindow(QMainWindow):
                 "param final_product",
                 "param normalized_product_qt",
                 "param lb_perc_prod",
-                # "param ub_perc_waste",
+                "param ub_perc_waste",
             ],
             "Process constraints": [
                 "param lb_press_up",
@@ -609,14 +609,14 @@ class MainWindow(QMainWindow):
                 self.update_xin,
             )
             dependency_manager.add_dependency(
-                param_registry["set components"],
+                param_registry["param final_product"],
                 param_registry["param lb_perc_prod"],
-                self.update_permeability,
+                self.update_lb_perc_prod,
             )
             dependency_manager.add_dependency(
                 param_registry["set components"],
                 param_registry["param lb_perc_prod"],
-                self.update_permeability,
+                self.update_lb_perc_prod_after_components,
             )
             dependency_manager.add_dependency(
                 param_registry["algorithm"],
@@ -798,11 +798,27 @@ class MainWindow(QMainWindow):
                 param_registry["param ub_permeability"],
                 self.update_permeability_bounds,
             )
+            dependency_manager.add_dependency(
+                param_registry["set components"],
+                param_registry["param ub_perc_waste"],
+                self.update_ub_perc_waste,
+            )
 
         register_param_dependencies(self.param_registry, dependency_manager)
 
+    def update_ub_perc_waste(self, ub_perc_waste: ParamFixedComponentWithCheckbox, param_set_components: ParamComponentSelector, sender):
+        ub_perc_waste.set_values(param_set_components.get_selected_items())
+        ub_perc_waste.category.update_category()
+
     def update_permeability_bounds(self, ub_permeabiliy: ParamGrid2, lb_permeability: ParamGrid2 , sender):
         pass
+
+    def update_lb_perc_prod(self, lb_perc_prod: ParamFixedComponent, final_product: ParamSelect, sender):
+        debug_print("in update lb_perc prod")
+        final_component = final_product.get_value_select()
+        if final_component is not None:
+            lb_perc_prod.set_components([final_component])
+        lb_perc_prod.update_param()
 
 
     def update_molarmass(self, molarmass: ParamFixedComponent, components_selector: ParamComponentSelector, sender):
@@ -933,6 +949,11 @@ class MainWindow(QMainWindow):
         target.set_values(source.selected_components)
         # target.category.update_category()
         target.update_param()
+
+    def update_lb_perc_prod_after_components(self, lb_perc_prod: ParamFixedComponent, param_set_components: ParamComponentSelector, sender):
+        lb_perc_prod.set_components([param_set_components.selected_components[0]])
+        lb_perc_prod.update_param()
+
 
     def update_permeability(self, target: ParamFixedWithInput, source: ParamComponent, sender):
         debug_print(target.name, source.name)
@@ -1080,6 +1101,7 @@ class MainWindow(QMainWindow):
                     param.category.update_category()
 
     def update_variable_perm(self, target: Param, source: ParamBoolean, sender):
+        # TODO: optimize
         variable_perm_params = [
             "param Robeson_multi",
             "param Robeson_power",
@@ -1353,11 +1375,12 @@ class DataBuilder:
     def __init__(self, params) -> None:
         self.param_registry = params
         self.validated_params = [
-            "set components",
             "param pressure_in",
+            "set components",
+            # TODO: uncomment
             # "param pressure_prod",
-            # "param ub_perc_waste",
-            # "param lb_perc_prod",
+            "param ub_perc_waste",
+            "param lb_perc_prod",
             "param normalized_product_qt",
             "param final_product",
             "param FEED",

@@ -401,24 +401,24 @@ params_dict = {
     "param lb_perc_prod": {
         "name": "param lb_perc_prod",
         "label": "Lower bound perc prod",
-        "param_type": ParamType.FIXED_WITH_INPUT,
+        "param_type": ParamType.FIXED_COMPONENT,
         "file": FILE.DATA,
         "optional": False,
     },
     "param ub_perc_waste": {
         "name": "param ub_perc_waste",
         "label": "Upper bound perc waste",
-        "param_type": ParamType.FIXED_WITH_INPUT,
+        "param_type": ParamType.FIXED_COMPONENT_WITH_CHECKBOX,
         "file": FILE.DATA,
         "optional": False,
     },
-    "param lb_perc_waste": {
-        "name": "param lb_perc_waste",
-        "label": "Lower bound perc waste",
-        "param_type": ParamType.FIXED_WITH_INPUT,
-        "file": FILE.DATA,
-        "optional": False,
-    },
+    # "param lb_perc_waste": {
+    #     "name": "param lb_perc_waste",
+    #     "label": "Lower bound perc waste",
+    #     "param_type": ParamType.FIXED_WITH_INPUT,
+    #     "file": FILE.DATA,
+    #     "optional": False,
+    # },
     "param FEED": {
         "name": "param FEED",
         "label": "FEED",
