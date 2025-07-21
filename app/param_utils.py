@@ -40,6 +40,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
     step = kwargs.get("step")
     hidden = kwargs.get("hidden", False)
     select_dir = kwargs.get("select_dir", False)
+    with_checkbox = kwargs.get("with_checkbox", False)
     match param_type:
         case ParamType.INPUT:
             return ParamInput(
@@ -53,6 +54,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 max_value=max_value,
                 step=step,
                 hidden=hidden,
+                with_checkbox=with_checkbox
             )
         case ParamType.SELECT:
             return ParamSelect(
@@ -204,6 +206,7 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
                 label=label,
                 hidden=hidden,
                 optional=optional,
+                values=values,
                 # description=description,
             )
         case ParamType.FIXED_COMPONENT_WITH_CHECKBOX_MATRIX:

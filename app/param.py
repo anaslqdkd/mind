@@ -1,5 +1,5 @@
 import enum
-from typing import Optional, Tuple, Union
+from typing import Optional, OrderedDict, Tuple, Union
 from PyQt6.QtCore import QEvent, QPoint, Qt
 from PyQt6.QtGui import QAction, QTabletEvent
 from PyQt6.QtWidgets import (
@@ -328,6 +328,33 @@ class Param:
                 spin.setValue(float(default))
         return spin
 
+    def set_spin_value(self, spin, value: Union[int, float]):
+            """
+            Set the value in the line_edit widget, handling int/float types and decimals.
+
+            Args: 
+                value: Value to set in the spinbox (int/float).
+            """
+            if spin is not None:
+                if isinstance(spin, QSpinBox):
+                    try:
+                        spin.setValue(int(float(value)))
+                    except (ValueError, TypeError):
+                        pass
+                elif isinstance(spin, QDoubleSpinBox):
+                    try:
+                        float_val = float(value)
+                        str_val = str(float_val)
+                        if '.' in str_val:
+                            decimals = len(str_val.split('.')[-1].rstrip('0'))
+                        else:
+                            decimals = 2
+                        spin.setDecimals(decimals)
+                        spin.setMaximum(1e10)
+                        spin.setValue(float_val)
+                    except (ValueError, TypeError):
+                        debug_print("Error")
+                        pass
 # -----------------------------------------------------------
 
 class ParamInput(Param):
@@ -371,6 +398,7 @@ class ParamInput(Param):
         max_value: Optional[float] = None,
         step: Optional[int] = None,
         hidden: bool = False,
+        with_checkbox: bool = False,
     ) -> None:
         super().__init__(name, description=description, label=label)
         self.spin_box = None
@@ -384,20 +412,36 @@ class ParamInput(Param):
         self.header = None
         self.hidden = hidden
         self.manager: Optional[DependencyManager] = None
+        self.checkbox: Optional[QCheckBox] = None
+        self.with_checkbox = with_checkbox
+        self.last_checkbox = False
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
+        if self.name == "param pressure_prod":
+            debug_print("the name is param pressure prod")
         self.spin_box = None
         if self.hidden:
             return
         self.row = row
-        self.grid_layout = grid_layout
         self.spin_box = self.create_spinbox(self.min_value, self.max_value, self.step, self.default)
+        self.grid_layout = grid_layout
         self.header = self.build_header(label, self.description, self.optional)
         grid_layout.addWidget(self.header, row, 0)
         grid_layout.addWidget(self.spin_box, row, 1)
         self.spin_box.valueChanged.connect(self._on_value_changed)
-
+        if self.with_checkbox:
+            self.checkbox = QCheckBox(f"Set {self.name}")
+            self.checkbox.setChecked(False)
+            self.checkbox.stateChanged.connect(self._on_checkbox_changed)
+            self.spin_box.setVisible(False)
+            grid_layout.addWidget(self.checkbox, row, 0)
         self.restore_values()
+
+    def _on_checkbox_changed(self, state):
+        if self.spin_box is not None:
+            self.spin_box.setVisible(bool(state))
+        if not state:
+            self.last_line_edit = ""
 
     def _on_value_changed(self):
         """
@@ -414,25 +458,7 @@ class ParamInput(Param):
         Args: 
             value: Value to set in the spinbox (int/float).
         """
-        if self.spin_box is not None:
-            if isinstance(self.spin_box, QSpinBox):
-                try:
-                    self.spin_box.setValue(int(float(value)))
-                except (ValueError, TypeError):
-                    pass
-            elif isinstance(self.spin_box, QDoubleSpinBox):
-                try:
-                    float_val = float(value)
-                    str_val = str(float_val)
-                    if '.' in str_val:
-                        decimals = len(str_val.split('.')[-1].rstrip('0'))
-                    else:
-                        decimals = 2
-                    self.spin_box.setDecimals(decimals)
-                    self.spin_box.setMaximum(1e10)
-                    self.spin_box.setValue(float_val)
-                except (ValueError, TypeError):
-                    pass
+        self.set_spin_value(self.spin_box, value)
         self.last_line_edit = str(value)
 
     def set_value_from_import(self, value):
@@ -454,6 +480,10 @@ class ParamInput(Param):
         self.last_line_edit = value
 
     def restore_values(self):
+        if self.with_checkbox:
+            if self.last_checkbox:
+                if self.checkbox:
+                    self.checkbox.setChecked(True)
         if self.spin_box is not None and self.last_line_edit != "":
             try:
                 if self.expected_type == int:
@@ -461,6 +491,7 @@ class ParamInput(Param):
                 else:
                     value = float(self.last_line_edit)
             except ValueError:
+                debug_print("value error")
                 return
             self.spin_box.setValue(value)
 
@@ -468,6 +499,9 @@ class ParamInput(Param):
         if not self.hidden:
             if self.spin_box is not None:
                 self.last_line_edit = str(self.spin_box.value())
+        if self.with_checkbox:
+            if self.checkbox is not None:
+                self.last_checkbox = self.checkbox.isChecked()
 
     def get_value(self) -> str:
         """
@@ -506,16 +540,21 @@ class ParamInput(Param):
         if self.hidden and self.default is not None:
             return f"{self.name} = {self.default}"
 
-
     def to_data_entry(self) -> Optional[str]:
+        if self.with_checkbox and self.checkbox is not None and not self.checkbox.isChecked():
+            return None
         if self.last_line_edit != "" and self.last_line_edit != None:
             return f"{self.name} := {self.last_line_edit}"
 
     def to_eco_entry(self) -> Optional[str]:
+        if self.with_checkbox and self.checkbox is not None and not self.checkbox.isChecked():
+            return None
         if self.last_line_edit != "" and self.last_line_edit != None:
             return f"{self.name} := {self.last_line_edit}"
 
     def to_perm_entry(self) -> Optional[str]:
+        if self.with_checkbox and self.checkbox is not None and not self.checkbox.isChecked():
+            return None
         if self.last_line_edit != "" and self.last_line_edit != None:
             return f"{self.name} := {self.last_line_edit}"
 
@@ -1025,21 +1064,23 @@ class ParamComponent(Param):
         self.manager: Optional[DependencyManager] = None
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
-        header = self.build_header(label, self.description, self.optional)
-        grid_layout.addWidget(header, row, 0)
-        self.combo_boxes = []
+            debug_print("in build widget")
+            header = self.build_header(label, self.description, self.optional)
+            grid_layout.addWidget(header, row, 0)
+            self.combo_boxes = []
 
-        used_values = set(self.last_combo_boxes)
-
-        # update method
-        if self.extra_rows > 0:
+            # Build existing combos for extra_rows
             for i in range(self.extra_rows):
+                used_values = [cb.currentText() for cb in self.combo_boxes]
+                available_values = [v for v in self.values if v not in used_values]
                 combo = QComboBox()
                 combo.setPlaceholderText("Extra input")
-                available_values = [v for v in self.values if v not in used_values or v == self.last_combo_boxes[i]]
-                combo.addItems(available_values[:1])
+                combo.addItem(available_values[0])
+                # Set current text to last_combo_boxes[i] if exists, else next available
                 if self.last_combo_boxes and i < len(self.last_combo_boxes):
                     combo.setCurrentText(self.last_combo_boxes[i])
+                elif available_values:
+                    combo.setCurrentText(available_values[0])
                 remove_button = QPushButton("✕")
                 remove_button.setFixedWidth(30)
                 remove_button.clicked.connect(
@@ -1052,49 +1093,50 @@ class ParamComponent(Param):
                 self.combo_boxes.append(combo)
                 row += 1
 
-        extra_combo = QComboBox()
-        extra_combo.setPlaceholderText("Extra input")
-        available_values = [v for v in self.values if v not in used_values]
-        extra_combo.addItems(available_values[:1])
-        self.combo_boxes.append(extra_combo)
-        grid_layout.addWidget(extra_combo, row, 1)
-        extra_combo.currentIndexChanged.connect(
-            lambda: self.add_component_row(row, grid_layout)
-        )
-        # extra_combo.currentIndexChanged.connect(self._on_value_changed)
-
-
+            add_button = QPushButton("Add membrane")
+            grid_layout.addWidget(add_button, row, 1)
+            add_button.clicked.connect(lambda: self.add_component_row(row, grid_layout))
+    
     def _on_value_changed(self):
         if self.manager is not None:
             self.store_value()
             self.manager.notify_change(self)
 
     def add_component_row(self, row: int, grid_layout: QGridLayout):
-        # self._on_value_changed()
-        self.component_base_row = row
-        self.extra_rows += 1
+            debug_print("in add component row")
+            self.component_base_row = row
+            self.extra_rows += 1
 
-        combo = QComboBox()
-        combo.setPlaceholderText("Extra input")
-        combo.addItems(["Item 1", "Item 2", "Item 3"])
-        combo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        self.combo_boxes.append(combo)
+            used_values = [cb.currentText() for cb in self.combo_boxes]
+            available_values = [v for v in self.values if v not in used_values]
+            combo = QComboBox()
+            combo.setPlaceholderText("Extra input")
+            combo.addItems(self.values)
+            # Set to next available value if any
+            if available_values:
+                combo.setCurrentText(available_values[0])
+            self.combo_boxes.append(combo)
 
-        remove_button = QPushButton("✕")
-        remove_button.setFixedWidth(30)
+            remove_button = QPushButton("✕")
+            remove_button.setFixedWidth(30)
 
-        grid_layout.addWidget(combo, row + 1, 2)
-        grid_layout.addWidget(remove_button, row + 1, 3)
+            grid_layout.addWidget(combo, row + 1, 1)
+            grid_layout.addWidget(remove_button, row + 1, 2)
 
-        combo.currentIndexChanged.connect(
-            lambda: self.add_component_row(row + 1, grid_layout)
-        )
-        self._on_value_changed()
-
-        # self.category.update_category()
+            combo.currentIndexChanged.connect(self._on_value_changed)
+            remove_button.clicked.connect(
+                lambda _, c=combo, b=remove_button: self.remove_widget_pair(c, b, grid_layout)
+            )
+            self._on_value_changed()
+    
 
     def get_value(self):
         return len(self.last_combo_boxes)
+
+    def set_value_from_import(self, values:list[str]):
+        self.extra_rows = len(values)
+        self.category.update_category()
+        debug_print(f"The param {self.name} was imported")
 
     def get_items(self):
         return self.last_combo_boxes
@@ -1962,7 +2004,6 @@ class ParamFixedPerm(Param):
         self.min_value = min_value
         self.max_value = max_value
         self.step = step
-        self.expected_value = ["population", "genetic"]
         self.header = None
         self.hidden = hidden
         self.manager: Optional[DependencyManager] = None
@@ -1992,15 +2033,17 @@ class ParamFixedPerm(Param):
                 grid_layout.addWidget(label_membranes, current_row, 0)
                 label_component = QLabel(str(component))
                 grid_layout.addWidget(label_component, current_row, 1)
+                # FIXME: use create spin box for this
                 line_edit = QDoubleSpinBox()
-                if self.min_value is not None:
-                    line_edit.setMinimum(self.min_value)
-                if self.max_value is not None:
-                    line_edit.setMaximum(self.max_value)
-                if self.default is not None:
-                    line_edit.setValue(self.default)
-                if self.step is not None:
-                    line_edit.setSingleStep(self.step)
+                line_edit = self.create_spinbox(self.max_value, self.min_value, self.step, self.default)
+                # if self.min_value is not None:
+                #     line_edit.setMinimum(self.min_value)
+                # if self.max_value is not None:
+                #     line_edit.setMaximum(self.max_value)
+                # if self.default is not None:
+                #     line_edit.setValue(self.default)
+                # if self.step is not None:
+                #     line_edit.setSingleStep(self.step)
                 key = (membrane, component)
                 self.line_edits[key] = line_edit
                 self.restore_value(key)
@@ -2053,8 +2096,23 @@ class ParamFixedPerm(Param):
     #                 line_edit.setDecimals(0)
     #         line_edit.setMaximum(1e10)
     #         line_edit.setValue(value)
+    def set_value_from_import(self, values: dict[str, dict[str, Union[int, float]]]):
+        self.membranes = values.keys()
+        components = set()
+        for subdict in values.values():
+            components.update(subdict.keys())
+        for membrane, comp_values in values.items():
+            for el, spin_value in comp_values.items():
+                spin = self.create_spinbox(self.max_value, self.min_value, self.step, self.default)
+                self.set_spin_value(spin, spin_value)
+                key = (membrane, el)
+                self.line_edits[key] = spin
+        self.components = list(components)
+        debug_print(f"The param {self.name}")
 
     def restore_value(self, key):
+        debug_print(self.last_line_edits)
+        debug_print(self.line_edits)
         if key in self.line_edits and key in self.last_line_edits and self.last_line_edits[key] != "":
             try:
                 value = int(self.last_line_edits[key])
@@ -2205,6 +2263,18 @@ class ParamFixedMembrane(Param):
             self.manager.notify_change(self, sender)
         self._updating = False
 
+    def set_value_from_import(self, values: dict[str, Union[int, float]]):
+        self.membranes = values.keys() 
+        self.spin_boxes = []
+        for i, value in enumerate(values.values()):
+            spin = self.create_spinbox(self.min_value, self.max_value, self.step, self.default) 
+            self.set_spin_value(spin, value)
+            self.spin_boxes.append(spin)
+        self.update_param()
+        debug_print(f"The param {self.name} was imported")
+
+        pass
+
     def set_membranes(self, membranes: list[str]):
         self.membranes = membranes
 
@@ -2313,6 +2383,20 @@ class ParamMembraneSelect(Param):
                 if index != -1:
                     combo.setCurrentIndex(index)
 
+    def set_value_from_import(self, values: dict[str, str]):
+        self.membranes = values.keys()
+        self.combo_boxes = []
+        for el in values.values():
+            combo = QComboBox()
+            combo.addItems(self.values)
+            index = combo.findText(el)
+            debug_print("the index is", index)
+            if index != -1:
+                combo.setCurrentIndex(index)
+                debug_print(combo.currentText())
+            self.combo_boxes.append(combo)
+        debug_print(f"The param {self.name} was imported")
+
     def get_value(self):
         return len(self.last_combo_boxes)
 
@@ -2409,6 +2493,23 @@ class ParamMemType(Param):
 
     def set_floors(self, floors: int):
         self.num_membrane_floors = floors
+
+    def set_value_from_import(self, values: dict[int, list[int]]):
+        self.membranes = values.keys()
+        self.num_membrane_floors = max(max(lst) for lst in values.values() if lst)
+        self.combo_boxes = []
+        res = {num: key for key, nums in values.items() for num in nums}
+        res_ord = OrderedDict(sorted(res.items()))
+        debug_print(res)
+        for key, el in res_ord.items():
+            combo = QComboBox()
+            combo.addItems(self.membranes)
+            index = combo.findText(el)
+            if index != -1:
+                combo.setCurrentIndex(index)
+            self.combo_boxes.append(combo)
+        debug_print(f"The param {self.name} was imported")
+        pass
 
     def _on_value_changed(self):
         if self.manager is not None:
@@ -2564,6 +2665,7 @@ class ParamFixedComponentWithCheckbox(Param):
         description: str = "",
         expected_type=str,
         hidden: bool = False,
+        values: Optional[list[str]] = []
     ) -> None:
         super().__init__(name, description=description, label=label)
         self.checkbox = None
@@ -2573,12 +2675,14 @@ class ParamFixedComponentWithCheckbox(Param):
         self.spin_boxes = []
         self.last_spin_boxes: list[str] = []
         self.hidden = hidden
-        self.values = ["1"]
+        self.values = values
         self.manager = None
         self.last_check_box = None
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
-
+        debug_print(self.name)
+        if (self.name == "fix area"):
+            debug_print(self.values)
         self.checkbox = QCheckBox(label)
         self._build_component_grid(row + 1, grid_layout)
         if self.last_check_box is not None:
@@ -2604,8 +2708,9 @@ class ParamFixedComponentWithCheckbox(Param):
                 combo = QComboBox()
                 spin_box = QSpinBox()
                 combo.setPlaceholderText("Extra input")
-                available_values = [v for v in self.values if v not in used_values or v == self.last_combo_boxes[i]]
-                combo.addItems(available_values)
+                if self.values is not None:
+                    available_values = [v for v in self.values if v not in used_values or v == self.last_combo_boxes[i]]
+                    combo.addItems(available_values)
                 if self.last_combo_boxes and i < len(self.last_combo_boxes):
                     combo.setCurrentText(self.last_combo_boxes[i])
                 if self.last_spin_boxes and i < len(self.last_spin_boxes):
@@ -2629,8 +2734,9 @@ class ParamFixedComponentWithCheckbox(Param):
 
         extra_combo = QComboBox()
         extra_combo.setPlaceholderText("Extra input")
-        available_values = [v for v in self.values if v not in used_values]
-        extra_combo.addItems(available_values)
+        if self.values is not None:
+            available_values = [v for v in self.values if v not in used_values]
+            extra_combo.addItems(available_values)
         self.combo_boxes.append(extra_combo)
         grid_layout.addWidget(extra_combo, row, 2)
         extra_combo.currentIndexChanged.connect(

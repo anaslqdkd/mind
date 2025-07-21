@@ -376,7 +376,7 @@ params_dict = {
         "param_type": ParamType.FIXED_COMPONENT,
         "file": FILE.DATA,
         "optional": False,
-        "default": 2
+        "default": 2,
     },
     "param pressure_in": {
         "name": "param pressure_in",
@@ -411,6 +411,7 @@ params_dict = {
         "param_type": ParamType.FIXED_COMPONENT_WITH_CHECKBOX,
         "file": FILE.DATA,
         "optional": False,
+        "values": None,
     },
     # "param lb_perc_waste": {
     #     "name": "param lb_perc_waste",
@@ -422,7 +423,7 @@ params_dict = {
     "param FEED": {
         "name": "param FEED",
         "label": "FEED",
-        "param_type": ParamType.INPUT_WITH_UNITY,
+        "param_type": ParamType.INPUT,
         "values": ["mol/s"],
         "default": 0.02,
         "min_value": 0,
@@ -504,6 +505,7 @@ params_dict = {
         "min_value": 0,
         "max_value": 100,
         "step": 10,
+        "with_checkbox": True,
     },
     "param ub_feed": {
         "name": "param ub_feed",
@@ -643,7 +645,6 @@ params_dict = {
     "param mem_product": {
         "name": "param mem_product",
         "label": "Mem product",
-        # FIXME: fixed with select
         "param_type": ParamType.FIXED_MEMBRANE_SELECT,
         "file": FILE.PERM,
         "optional": False,
@@ -682,7 +683,7 @@ params_dict = {
         "optional": False,
         "hidden": True,
         "min_value": -10,
-        "default": -5.666
+        "default": -5.666,
     },
     "param ub_alpha": {
         "name": "param ub_alpha",
@@ -722,7 +723,7 @@ params_dict = {
         "optional": False,
         "hidden": True,
         "default": 10000,
-        "max_value": 20000, 
+        "max_value": 20000,
         "step": 1000,
     },
     # -----------------------------------------------------------
@@ -998,6 +999,7 @@ params_dict = {
         "param_type": ParamType.FIXED_COMPONENT_WITH_CHECKBOX,
         "file": FILE.MASK,
         "optional": False,
+        "values": ["1"],
     },
     "fix splitFEED_frac": {
         "name": "fix splitFEED_frac ",
@@ -1005,6 +1007,7 @@ params_dict = {
         "param_type": ParamType.FIXED_COMPONENT_WITH_CHECKBOX,
         "file": FILE.MASK,
         "optional": False,
+        "values": ["1"],
     },
     "fix pressure_up": {
         "name": "fix pressure_up",
@@ -1019,6 +1022,7 @@ params_dict = {
         "param_type": ParamType.FIXED_COMPONENT_WITH_CHECKBOX,
         "file": FILE.MASK,
         "optional": False,
+        "values": ["1"],
     },
     "fix splitRET_frac": {
         "name": "fix splitRET_frac",
@@ -1033,7 +1037,7 @@ params_dict = {
         "param_type": ParamType.FIXED_COMPONENT_WITH_CHECKBOX_MATRIX,
         "file": FILE.MASK,
         "optional": False,
-        "description": "Set the fraction of retentate/permeate from stage i entering stage j"
+        "description": "Set the fraction of retentate/permeate from stage i entering stage j",
     },
     "fix splitOutPERM_frac": {
         "name": "fix splitOutPERM_frac",
@@ -1048,6 +1052,7 @@ params_dict = {
         "param_type": ParamType.FIXED_COMPONENT_WITH_CHECKBOX,
         "file": FILE.MASK,
         "optional": False,
+        "values": ["1"],
     },
     # ----------fixing var --------------------------------------
     # TODO: add descritions everywhere, especially the eco params

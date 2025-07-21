@@ -6,6 +6,7 @@ from PyQt6.QtGui import QIcon, QPixmap
 from PyQt6.QtWidgets import (
     QAbstractScrollArea,
     QApplication,
+    QComboBox,
     QDial,
     QDialog,
     QFileDialog,
@@ -199,19 +200,33 @@ class MainWindow(QMainWindow):
     def load_perm(self):
         res = {}
         filepath = "/home/ash/mind/temp/perm.dat"
+        dialog = ImportParamDialog(self)
+        # if dialog.exec():
+        #     parser_type = dialog.get_parser_type()
+        parser_type = "fixed"
         with open(filepath, "r") as file:
             perm_data = {}
-            perm_param = parser_variable_permeability_data(file, perm_data)
-            perm_param = parser_fixed_permeability_data_simple(file)
-            # perm_param = parser_fixed_permeability_data(file, res)
-        # for key, value in perm_param.items():
-        #     debug_print(f"the key is {key}, and the value is {value}")
-        #     for attr_, value_ in vars(value).items():
-        #         if type(value_) == list:
-        #             for el in value_:
-        #                 if isinstance(el, GasItemPerm):
-        #                     debug_print(f"component item {attr_}", el)
-        #             debug_print("component item", value_)
+            if parser_type == "variable":
+                perm_param = parser_variable_permeability_data(file, perm_data)
+            else:
+                perm_param = parser_fixed_permeability_data_simple(file)
+                debug_print(perm_param)
+        for param, value in perm_param.items():
+            param_name = f"{param}"
+            param_instance = self.param_registry[param_name]
+            if param_instance:
+                if isinstance(param_instance, ParamFixedMembrane):
+                    param_instance.set_value_from_import(perm_param[param])
+                    debug_print(perm_param[param])
+                if isinstance(param_instance, ParamComponent):
+                    param_instance.set_value_from_import(perm_param["set mem_types_set"])
+                if isinstance(param_instance, ParamMembraneSelect):
+                    param_instance.set_value_from_import(perm_param[param])
+                if isinstance(param_instance, ParamFixedPerm):
+                    param_instance.set_value_from_import(perm_param[param])
+                if isinstance(param_instance, ParamMemType):
+                    param_instance.set_value_from_import(perm_param[param])
+                param_instance.category.update_category()
 
     def load_eco(self):
         file_path, _ = QFileDialog.getOpenFileName(
@@ -2121,10 +2136,7 @@ class GasItemPerm:
         return "index = {} \t lb = {} value = {} \t ub = {}".format(
             self.index, self.lb, self.value, self.ub
         )
-
-
 def parser_fixed_permeability_data_simple(file):
-    # TODO: finir
     contents = file.readlines()
     # Remove comments and empty lines
     contents = [
@@ -2132,7 +2144,6 @@ def parser_fixed_permeability_data_simple(file):
         for line in contents
         if line.strip() and not line.strip().startswith("#")
     ]
-
     # set mem_type_set := A B
     mem_type_line = contents.pop(0)
     mem_type = mem_type_line.split("=")[-1].split()
@@ -2142,20 +2153,23 @@ def parser_fixed_permeability_data_simple(file):
     # param permeability
     contents.pop(0)
 
-    permeability_dict = {}
+    # Collect parameters by type
+    params = {
+        "set mem_types_set": mem_type,
+        "param Permeability": {},
+        "param thickness": {},
+        "param mem_product": {},
+        "param mem_type": {},
+    }
+
     for _ in range(nb_gas * len(mem_type)):
         permeance = contents.pop(0).split()
         type_membrane = permeance[0]
         element = permeance[1]
         value = float(permeance[2])
-        if type_membrane not in permeability_dict:
-            permeability_dict[type_membrane] = {
-                "Permeability": {},
-                "thickness": None,
-                "mem_out_prod": None,
-                "which_mem": [],
-            }
-        permeability_dict[type_membrane]["Permeability"][element] = value
+        if type_membrane not in params["param Permeability"]:
+            params["param Permeability"][type_membrane] = {}
+        params["param Permeability"][type_membrane][element] = value
 
     # param thickness
     contents.pop(0)
@@ -2163,7 +2177,7 @@ def parser_fixed_permeability_data_simple(file):
         thickness_line = contents.pop(0).split()
         index = thickness_line[0]
         thick = float(thickness_line[-1])
-        permeability_dict[index]["thickness"] = thick
+        params["param thickness"][index] = thick
 
     # param mem_product
     contents.pop(0)
@@ -2171,19 +2185,28 @@ def parser_fixed_permeability_data_simple(file):
         mem_product_line = contents.pop(0).split()
         index = mem_product_line[0]
         mem_out_prod = mem_product_line[1]
-        permeability_dict[index]["mem_out_prod"] = mem_out_prod
+        params["param mem_product"][index] = mem_out_prod
 
     # param mem_type (optional)
-    # if contents:
-    #     contents.pop(0)
-    # while contents:
-    #     mem_list = contents.pop(0).split()
-    #     mem = int(mem_list[0])
-    #     index = mem_list[-1]
-    #     permeability_dict[index]["which_mem"].append(mem)
+    if contents:
+        contents.pop(0)
+    debug_print(contents)
+    while contents:
+        mem_list = contents.pop(0).split()
+        debug_print(mem_list)
+        mem = int(mem_list[0])
+        index = mem_list[-1]
+        debug_print(index)
+        if index not in params["param mem_type"]:
+            params["param mem_type"][index] = []
+        params["param mem_type"][index].append(mem)
+    debug_print("++++++++++++==", params["param mem_type"])
+    debug_print("°°°°°", params)
 
     # The rest of the file is ignored for this simple dictionary output
-    return permeability_dict
+    return params
+
+
 
 
 def load_coef(filename):
@@ -2393,3 +2416,21 @@ class AboutDialog(QDialog):
 
     def show_licence(self):
         QMessageBox.information(self, "Licence", "Licence MIT © 2025")
+# -----------------------------------------------------------
+
+class ImportParamDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Select Import Parameters")
+        layout = QVBoxLayout(self)
+        layout.addWidget(QLabel("Select parser type:"))
+        self.combo = QComboBox(self)
+        self.combo.addItems(["variable", "fixed"])
+        layout.addWidget(self.combo)
+        self.ok_button = QPushButton("OK", self)
+        self.ok_button.clicked.connect(self.accept)
+        layout.addWidget(self.ok_button)
+
+    def get_parser_type(self):
+        return self.combo.currentText()
+
