@@ -335,6 +335,7 @@ class Param:
             Args: 
                 value: Value to set in the spinbox (int/float).
             """
+            # debug_print(spin.value())
             if spin is not None:
                 if isinstance(spin, QSpinBox):
                     try:
@@ -346,7 +347,8 @@ class Param:
                         float_val = float(value)
                         str_val = str(float_val)
                         if '.' in str_val:
-                            decimals = len(str_val.split('.')[-1].rstrip('0'))
+                            decimals = len(str_val.split('.')[-1])
+                            debug_print(decimals, str_val)
                         else:
                             decimals = 2
                         spin.setDecimals(decimals)
@@ -355,6 +357,7 @@ class Param:
                     except (ValueError, TypeError):
                         debug_print("Error")
                         pass
+            # debug_print(spin.value())
 # -----------------------------------------------------------
 
 class ParamInput(Param):
@@ -417,8 +420,6 @@ class ParamInput(Param):
         self.last_checkbox = False
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
-        if self.name == "param pressure_prod":
-            debug_print("the name is param pressure prod")
         self.spin_box = None
         if self.hidden:
             return
@@ -469,6 +470,7 @@ class ParamInput(Param):
             value: Value to set.
         """
         self.set_value(value)
+        debug_print(f"The param {self.name} was imported")
 
     def set_last_line_edit(self, value):
         """
@@ -628,6 +630,10 @@ class ParamSelect(Param):
 
         grid_layout.addWidget(self.combo_box, row, 1)
 
+    def set_value_from_import(self, values: str):
+        pass
+        # self
+
     def hide(self):
         self.hidden = True
 
@@ -641,7 +647,6 @@ class ParamSelect(Param):
                 self.combo_box.setCurrentIndex(index)
 
     def _on_value_changed(self):
-        debug_print("the value was changed")
         if self.manager is not None:
             self.store_value()
             self.manager.notify_change(self)
@@ -1064,7 +1069,6 @@ class ParamComponent(Param):
         self.manager: Optional[DependencyManager] = None
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
-            debug_print("in build widget")
             header = self.build_header(label, self.description, self.optional)
             grid_layout.addWidget(header, row, 0)
             self.combo_boxes = []
@@ -1103,7 +1107,6 @@ class ParamComponent(Param):
             self.manager.notify_change(self)
 
     def add_component_row(self, row: int, grid_layout: QGridLayout):
-            debug_print("in add component row")
             self.component_base_row = row
             self.extra_rows += 1
 
@@ -1469,6 +1472,10 @@ class ParamComponentSelector(Param):
             # self.notify_dependants()
             self._on_value_changed()
             self.category.update_category()
+
+    def set_value_from_import(self, values: list[str]):
+        self.selected_components = values
+
 
     def _on_value_changed(self):
         if self.manager is not None:
@@ -2108,11 +2115,9 @@ class ParamFixedPerm(Param):
                 key = (membrane, el)
                 self.line_edits[key] = spin
         self.components = list(components)
-        debug_print(f"The param {self.name}")
+        debug_print(f"The param {self.name} was imported")
 
     def restore_value(self, key):
-        debug_print(self.last_line_edits)
-        debug_print(self.line_edits)
         if key in self.line_edits and key in self.last_line_edits and self.last_line_edits[key] != "":
             try:
                 value = int(self.last_line_edits[key])
@@ -2148,7 +2153,6 @@ class ParamFixedPerm(Param):
             return f"{self.name} := {self.last_line_edits}"
 
     def to_perm_entry(self) -> Optional[str]:
-        debug_print(self.last_line_edits)
         if self.last_line_edits:
             lines = []
             for (membrane, component), value in self.last_line_edits.items():
@@ -2390,10 +2394,8 @@ class ParamMembraneSelect(Param):
             combo = QComboBox()
             combo.addItems(self.values)
             index = combo.findText(el)
-            debug_print("the index is", index)
             if index != -1:
                 combo.setCurrentIndex(index)
-                debug_print(combo.currentText())
             self.combo_boxes.append(combo)
         debug_print(f"The param {self.name} was imported")
 
@@ -2500,7 +2502,6 @@ class ParamMemType(Param):
         self.combo_boxes = []
         res = {num: key for key, nums in values.items() for num in nums}
         res_ord = OrderedDict(sorted(res.items()))
-        debug_print(res)
         for key, el in res_ord.items():
             combo = QComboBox()
             combo.addItems(self.membranes)
@@ -2614,6 +2615,14 @@ class ParamFixedComponent(Param):
                 except ValueError:
                     continue
 
+    def set_value_from_import(self, values: dict[str, Union[float, int]]):
+        self.components = values.keys()
+        self.spin_boxes = []
+        for component, value in values.items():
+            spin = self.create_spinbox(self.min_value, self.max_value, self.step, self.default)
+            self.set_spin_value(spin, value)
+            self.spin_boxes.append(spin)
+
     def _on_value_changed(self):
         if self.manager is not None:
             self.store_value()
@@ -2680,9 +2689,6 @@ class ParamFixedComponentWithCheckbox(Param):
         self.last_check_box = None
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
-        debug_print(self.name)
-        if (self.name == "fix area"):
-            debug_print(self.values)
         self.checkbox = QCheckBox(label)
         self._build_component_grid(row + 1, grid_layout)
         if self.last_check_box is not None:

@@ -1,4 +1,5 @@
 import os
+import re
 import subprocess
 from typing import Optional, cast
 from PyQt6.QtCore import Qt
@@ -102,12 +103,16 @@ class MainWindow(QMainWindow):
         import_perm_button.setFixedSize(100, 30)
         import_eco_button = QPushButton("Import eco")
         import_eco_button.setFixedSize(100, 30)
+        import_data_button = QPushButton("Import data")
+        import_data_button.setFixedSize(100, 30)
         tab_buttons_layout.addWidget(import_config_button)
         tab_buttons_layout.addWidget(import_perm_button)
         tab_buttons_layout.addWidget(import_eco_button)
+        tab_buttons_layout.addWidget(import_data_button)
         import_config_button.clicked.connect(self.load_config)
         import_perm_button.clicked.connect(self.load_perm)
         import_eco_button.clicked.connect(self.load_eco)
+        import_data_button.clicked.connect(self.load_data)
         self.tab_buttons.setLayout(tab_buttons_layout)
 
         self.all_params: list[Param] = []
@@ -178,6 +183,7 @@ class MainWindow(QMainWindow):
 
     def load_config(self):
         # file_path, _ = QFileDialog.getOpenFileName(self, "Open Configuration File", "", "INI files (*.ini);;All Files (*)")
+        # TODO: dialog window to chose the algorithm
         tuning, instance = load_configuration()
         for el, value in tuning.items():
             if el in self.param_registry.keys():
@@ -210,14 +216,12 @@ class MainWindow(QMainWindow):
                 perm_param = parser_variable_permeability_data(file, perm_data)
             else:
                 perm_param = parser_fixed_permeability_data_simple(file)
-                debug_print(perm_param)
         for param, value in perm_param.items():
             param_name = f"{param}"
             param_instance = self.param_registry[param_name]
             if param_instance:
                 if isinstance(param_instance, ParamFixedMembrane):
                     param_instance.set_value_from_import(perm_param[param])
-                    debug_print(perm_param[param])
                 if isinstance(param_instance, ParamComponent):
                     param_instance.set_value_from_import(perm_param["set mem_types_set"])
                 if isinstance(param_instance, ParamMembraneSelect):
@@ -237,6 +241,18 @@ class MainWindow(QMainWindow):
             for el, value in res.items():
                 if f"param {el}" in self.param_registry.keys():
                     self.param_registry[f"param {el}"].set_value(value)
+
+    def load_data(self):
+        filepath = "/home/ash/mind/test/data.dat"
+        data_params = parser_data(filepath)
+        for param_name, value in data_params.items():
+            param_instance = self.param_registry[param_name]
+            if param_instance:
+                if hasattr(param_instance, "set_value_from_import"):
+                    param_instance.set_value_from_import(data_params[param_name])
+            param_instance.category.update_category()
+
+        debug_print(data_params)
 
     def _define_pages(self):
         self.categories_names = {
@@ -829,7 +845,6 @@ class MainWindow(QMainWindow):
         pass
 
     def update_lb_perc_prod(self, lb_perc_prod: ParamFixedComponent, final_product: ParamSelect, sender):
-        debug_print("in update lb_perc prod")
         final_component = final_product.get_value_select()
         if final_component is not None:
             lb_perc_prod.set_components([final_component])
@@ -971,7 +986,6 @@ class MainWindow(QMainWindow):
 
 
     def update_permeability(self, target: ParamFixedWithInput, source: ParamComponent, sender):
-        debug_print(target.name, source.name)
         target.set_rows(int(source.get_value()), source)
         # target.category.update_category()
         target.update_param()
@@ -995,7 +1009,6 @@ class MainWindow(QMainWindow):
 
     def update_membranes(self, target: ParamFixedPerm, source: ParamComponent, sender):
         target.set_membranes(source.get_items())
-        debug_print(source.get_items())
         target.update_param()
 
     # def update_permeability(self, target: ParamFixedMembrane, source: ParamComponent):
@@ -2136,6 +2149,7 @@ class GasItemPerm:
         return "index = {} \t lb = {} value = {} \t ub = {}".format(
             self.index, self.lb, self.value, self.ub
         )
+
 def parser_fixed_permeability_data_simple(file):
     contents = file.readlines()
     # Remove comments and empty lines
@@ -2190,23 +2204,148 @@ def parser_fixed_permeability_data_simple(file):
     # param mem_type (optional)
     if contents:
         contents.pop(0)
-    debug_print(contents)
     while contents:
         mem_list = contents.pop(0).split()
-        debug_print(mem_list)
         mem = int(mem_list[0])
         index = mem_list[-1]
-        debug_print(index)
         if index not in params["param mem_type"]:
             params["param mem_type"][index] = []
         params["param mem_type"][index].append(mem)
-    debug_print("++++++++++++==", params["param mem_type"])
-    debug_print("°°°°°", params)
 
     # The rest of the file is ignored for this simple dictionary output
     return params
 
+def parser_data(filepath):
+    """
+    Generic parser for param files with single-line and multi-line params.
+    Returns a dict: {"param param_name": value}
+    """
+    params = {}
+    with open(filepath, "r") as f:
+        lines = f.readlines()
 
+    i = 0
+    while i < len(lines):
+        line = lines[i].strip()
+        # Skip empty lines and comments
+        if not line or line.startswith("#"):
+            i += 1
+            continue
+        # Match set: set components := "A" "B" ... ;
+        if line.startswith("set") and ":=" in line:
+            parts = line.split(":=")
+            name = " ".join(parts[0].split()[:2])  # "set set_name"
+            values_str = parts[1].split(";")[0].strip()
+            # Extract quoted items
+            values = re.findall(r'"([^"]+)"', values_str)
+            params[name] = values
+            i += 1
+            continue
+
+        # Match single-line param: param name := value;
+        if line.startswith("param") and ":=" in line and line.endswith(";"):
+            parts = line.split(":=")
+            name = " ".join(parts[0].split()[:2])  # "param param_name"
+            value = parts[1].split(";")[0].strip()
+            value = value.split("#")[0].strip()
+            # Try to convert to float/int if possible
+            try:
+                value = float(value) if "." in value else int(value)
+            except ValueError:
+                value = value.strip('"')
+            params[name] = value
+            i += 1
+            continue
+
+        # Match multi-line param: param name := ... ;
+        if line.startswith("param") and ":=" in line and not line.endswith(";"):
+            name = " ".join(line.split()[:2])  # "param param_name"
+            values = {}
+            i += 1
+            while i < len(lines):
+                l = lines[i].strip()
+                if l == ";" or l.startswith("#"):
+                    i += 1
+                    break
+                if l:
+                    l = l.split("#")[0].strip()
+                    parts = l.split()
+                    if len(parts) == 2:
+                        key, val = parts
+                        try:
+                            val = float(val) if "." in val else int(val)
+                        except ValueError:
+                            val = val.strip('"')
+                        key = key.strip('"')
+                        values[key] = val
+                i += 1
+            params[name] = values
+            continue
+
+        i += 1
+
+    return params
+# def parser_data(filepath):
+#     """
+#     Generic parser for param files with single-line and multi-line params.
+#     Returns a dict: {param_name: value}
+#     """
+#     params = {}
+#     with open(filepath, "r") as f:
+#         lines = f.readlines()
+#
+#     i = 0
+#     while i < len(lines):
+#         line = lines[i].strip()
+#         # Skip empty lines and comments
+#         if not line or line.startswith("#"):
+#             i += 1
+#             continue
+#
+#         # Match single-line param: param name := value;
+#         if line.startswith("param") and ":=" in line and line.endswith(";"):
+#             parts = line.split(":=")
+#             name = parts[0].split()[1]
+#             value = parts[1].split(";")[0].strip()
+#             value = value.split("#")[0].strip()
+#             # Try to convert to float/int if possible
+#             try:
+#                 value = float(value) if "." in value else int(value)
+#             except ValueError:
+#                 value = value.strip('"')
+#             params[name] = value
+#             i += 1
+#             continue
+#
+#         # Match multi-line param: param name := ... ;
+#         if line.startswith("param") and ":=" in line and not line.endswith(";"):
+#             # name = line.split()[1]
+#             name = " ".join(line.split()[:2])  # "param param_name"
+#             values = {}
+#             i += 1
+#             while i < len(lines):
+#                 l = lines[i].strip()
+#                 if l == ";" or l.startswith("#"):
+#                     i += 1
+#                     break
+#                 if l:
+#                     l = l.split("#")[0].strip()
+#                     parts = l.split()
+#                     if len(parts) == 2:
+#                         key, val = parts
+#                         try:
+#                             val = float(val) if "." in val else int(val)
+#                         except ValueError:
+#                             val = val.strip('"')
+#                         key = key.strip('"')
+#                         values[key] = val
+#                 i += 1
+#             params[name] = values
+#             continue
+#
+#         i += 1
+#
+#     return params
 
 
 def load_coef(filename):
