@@ -240,8 +240,9 @@ class MainWindow(QMainWindow):
                     self.param_registry[f"param {el}"].set_value(value)
 
     def load_data(self):
-        filepath = "/home/ash/mind/test/data.dat"
+        filepath = "/home/ash/mind/temp/data.dat"
         data_params = parser_data(filepath)
+        debug_print(data_params)
         for param_name, value in data_params.items():
             param_instance = self.param_registry[param_name]
             if param_instance:
