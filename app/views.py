@@ -204,32 +204,27 @@ class MainWindow(QMainWindow):
     # TODO: in the eco importer put a specific method for params for clarity (not "set value")
 
     def load_perm(self):
+        # TODO: parser for variable perm
         res = {}
         filepath = "/home/ash/mind/temp/perm.dat"
         dialog = ImportParamDialog(self)
         # if dialog.exec():
         #     parser_type = dialog.get_parser_type()
-        parser_type = "fixed"
+        parser_type = "variable"
         with open(filepath, "r") as file:
             perm_data = {}
             if parser_type == "variable":
+                self.param_registry["variable_perm"].check_box.setChecked(True)
                 perm_param = parser_variable_permeability_data(file, perm_data)
             else:
                 perm_param = parser_fixed_permeability_data_simple(file)
+            debug_print(perm_param)
         for param, value in perm_param.items():
             param_name = f"{param}"
             param_instance = self.param_registry[param_name]
             if param_instance:
-                if isinstance(param_instance, ParamFixedMembrane):
-                    param_instance.set_value_from_import(perm_param[param])
-                if isinstance(param_instance, ParamComponent):
-                    param_instance.set_value_from_import(perm_param["set mem_types_set"])
-                if isinstance(param_instance, ParamMembraneSelect):
-                    param_instance.set_value_from_import(perm_param[param])
-                if isinstance(param_instance, ParamFixedPerm):
-                    param_instance.set_value_from_import(perm_param[param])
-                if isinstance(param_instance, ParamMemType):
-                    param_instance.set_value_from_import(perm_param[param])
+                if hasattr(param_instance, "set_value_from_import"):
+                    param_instance.set_value_from_import(perm_param)
                 param_instance.category.update_category()
 
     def load_eco(self):
@@ -245,14 +240,13 @@ class MainWindow(QMainWindow):
     def load_data(self):
         filepath = "/home/ash/mind/test/data.dat"
         data_params = parser_data(filepath)
+        debug_print(data_params)
         for param_name, value in data_params.items():
             param_instance = self.param_registry[param_name]
             if param_instance:
                 if hasattr(param_instance, "set_value_from_import"):
-                    param_instance.set_value_from_import(data_params[param_name])
+                    param_instance.set_value_from_import(data_params)
             param_instance.category.update_category()
-
-        debug_print(data_params)
 
     def _define_pages(self):
         self.categories_names = {
@@ -1871,149 +1865,122 @@ def delete_value_from(list_of_line, value):
             list_of_line.pop(index)
         else:
             index += 1
-
-
-def parser_variable_permeability_data(file, permeability_data):
-    """Permeability's data parser.
-
-    When permeability's variables in model are not fixed.
-
-    Args:
-        file (`_io.TextIOWrapper`) : permeability 's datafile
-
-        permeability_data (dict) : data structure which will finally
-        contain permeability's informations.
-
-    Returns:
-        a dictionary containing permeability's data
-
-    Raises:
-        Exception : if datafile format are not repected during lecture of file
+def parser_variable_permeability_data(file, permeability_data=None):
+    """
+    Permeability's data parser (dict version).
+    Returns a dictionary with param names as keys and values as parsed data.
     """
     contents = file.readlines()
-    delete_value_from(contents, "#")
-    delete_value_from(contents, "\n")
-    txt = []
-    for line in contents:
-        txt.append(line.replace("\n", ""))
+    # Remove comments and empty lines
+    contents = [line.strip() for line in contents if line.strip() and not line.strip().startswith("#")]
 
-    contents = txt
+    result = {}
 
     # set mem_type_set := A B
-    mem_type = contents[0]
-    begining_index = mem_type.find("=")
-    mem_type = mem_type[begining_index + 1 :]
-    mem_type = mem_type.split()
-    contents.remove(contents[0])
-
-    for type_mem in mem_type:
-        robeson_multiplicater = None
-        robeson_power = None
-        ub_alpha = None
-        lb_alpha = None
-        component_item = []
-        thickness = 1
-        mem_out_prod = "RET"
-
-        permeability_data[type_mem] = PermType(
-            robeson_multiplicater,
-            robeson_power,
-            ub_alpha,
-            lb_alpha,
-            component_item,
-            thickness,
-            mem_out_prod,
-            [],
-        )
+    mem_type_line = contents.pop(0)
+    mem_type = mem_type_line.split("=")[-1].split()
+    result["set mem_types_set"] = mem_type
 
     # param Robeson_multi :=
-    contents.remove(contents[0])
-    for type_mem in mem_type:
-        multiplicater = contents[0].split()
+    contents.pop(0)
+    robeson_multi = {}
+    for _ in mem_type:
+        multiplicater = contents.pop(0).split()
         index = multiplicater[0]
-        value = float(multiplicater[-1])
-        contents.remove(contents[0])
-        # convert from barrer to xxx
-        permeability_data[index].robeson_multi = value * 3.347e-05
+        value = float(multiplicater[-1]) 
+        robeson_multi[index] = value
+    result["param Robeson_multi"] = robeson_multi
 
     # param Robeson_power :=
-    contents.remove(contents[0])
-    for type_mem in mem_type:
-        power = contents[0].split()
+    contents.pop(0)
+    robeson_power = {}
+    for _ in mem_type:
+        power = contents.pop(0).split()
         index = power[0]
         value = float(power[-1])
-        contents.remove(contents[0])
-        permeability_data[index].robeson_power = value
+        robeson_power[index] = value
+    result["param Robeson_power"] = robeson_power
 
     # param alpha_ub_bounds :=
-    contents.remove(contents[0])
-    for type_mem in mem_type:
-        alpha_bounds = contents[0].split()
+    contents.pop(0)
+    alpha_ub_bounds = {}
+    for _ in mem_type:
+        alpha_bounds = contents.pop(0).split()
         index = alpha_bounds[0]
         value = float(alpha_bounds[-1])
-        contents.remove(contents[0])
-        permeability_data[index].ub_alpha = value
+        alpha_ub_bounds[index] = value
+    result["param ub_alpha"] = alpha_ub_bounds
 
     # param alpha_lb_bounds :=
-    contents.remove(contents[0])
-    for type_mem in mem_type:
-        alpha_bounds = contents[0].split()
+    contents.pop(0)
+    alpha_lb_bounds = {}
+    for _ in mem_type:
+        alpha_bounds = contents.pop(0).split()
         index = alpha_bounds[0]
         value = float(alpha_bounds[-1])
-        contents.remove(contents[0])
-        permeability_data[index].lb_alpha = value
+        alpha_lb_bounds[index] = value
+    result["param lb_alpha"] = alpha_lb_bounds
 
     # permeability bounds lb
-    contents.remove(contents[0])
-    for type_mem in mem_type:
-        perm_bounds = contents[0].split()
+    contents.pop(0)
+    permeability_lb = {}
+    for _ in mem_type:
+        perm_bounds = contents.pop(0).split()
         index = perm_bounds[0]
         element = perm_bounds[1]
-        value = float(perm_bounds[2]) * 3.347e-05
-        contents.remove(contents[0])
-        item = GasItemPerm(element, value, None, None)
-        permeability_data[index].component_item.append(item)
+        value = float(perm_bounds[2]) 
+        if index not in permeability_lb:
+            permeability_lb[index] = {}
+        permeability_lb[index][element] = value
+    result["param lb_permeability"] = permeability_lb
 
     # permeability bounds ub
-    contents.remove(contents[0])
-    for type_mem in mem_type:
-        perm_bounds = contents[0].split()
+    contents.pop(0)
+    permeability_ub = {}
+    for _ in mem_type:
+        perm_bounds = contents.pop(0).split()
         index = perm_bounds[0]
         element = perm_bounds[1]
-        value = float(perm_bounds[2]) * 3.347e-05
-        contents.remove(contents[0])
-        permeability_data[index].component_item[0].ub = value
+        value = float(perm_bounds[2]) 
+        if index not in permeability_ub:
+            permeability_ub[index] = {}
+        permeability_ub[index][element] = value
+    result["param ub_permeability"] = permeability_ub
 
     # param thickness :=
-    contents.remove(contents[0])
-    for type_mem in mem_type:
-        thickness = contents[0].split()
-        index = thickness[0]
-        value = float(thickness[-1])
-        contents.remove(contents[0])
-        permeability_data[index].thickness = value
+    contents.pop(0)
+    thickness = {}
+    for _ in mem_type:
+        thickness_line = contents.pop(0).split()
+        index = thickness_line[0]
+        value = float(thickness_line[-1])
+        thickness[index] = value
+    result["param thickness"] = thickness
 
     # param mem_product :=
-    contents.remove(contents[0])
-    for type_mem in mem_type:
-        mem_product = contents[0].split()
-        index = mem_product[0]
-        value = mem_product[1]
-        permeability_data[index].mem_out_prod = value
-        contents.remove(contents[0])
+    contents.pop(0)
+    mem_product = {}
+    for _ in mem_type:
+        mem_product_line = contents.pop(0).split()
+        index = mem_product_line[0]
+        value = mem_product_line[1]
+        mem_product[index] = value
+    result["param mem_product"] = mem_product
 
     # param mem_type :=
-    if len(contents) > 0:
-        contents.remove(contents[0])
-    while len(contents) > 0:
-        mem_list = contents[0]
-        mem_list = mem_list.split()
+    if contents:
+        contents.pop(0)
+    mem_type_dict = {}
+    while contents:
+        mem_list = contents.pop(0).split()
         mem = int(mem_list[0])
         index = mem_list[-1]
-        permeability_data[index].which_mem.append(mem)
-        contents.remove(contents[0])
+        if index not in mem_type_dict:
+            mem_type_dict[index] = []
+        mem_type_dict[index].append(mem)
+    result["param mem_type"] = mem_type_dict
 
-    return permeability_data
+    return result
 
 
 def parser_fixed_permeability_data(file, permeability_data):

@@ -381,7 +381,7 @@ params_dict = {
     "param pressure_in": {
         "name": "param pressure_in",
         "label": "Pressure in",
-        "param_type": ParamType.INPUT_WITH_UNITY,
+        "param_type": ParamType.INPUT,
         "values": ["Bar", "Pa", "kPa"],
         "file": FILE.DATA,
         "optional": False,

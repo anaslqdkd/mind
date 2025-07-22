@@ -335,7 +335,6 @@ class Param:
             Args: 
                 value: Value to set in the spinbox (int/float).
             """
-            # debug_print(spin.value())
             if spin is not None:
                 if isinstance(spin, QSpinBox):
                     try:
@@ -348,7 +347,6 @@ class Param:
                         str_val = str(float_val)
                         if '.' in str_val:
                             decimals = len(str_val.split('.')[-1])
-                            debug_print(decimals, str_val)
                         else:
                             decimals = 2
                         spin.setDecimals(decimals)
@@ -462,14 +460,17 @@ class ParamInput(Param):
         self.set_spin_value(self.spin_box, value)
         self.last_line_edit = str(value)
 
-    def set_value_from_import(self, value):
+    def set_value_from_import(self, values: dict):
         """
         Sets the value from imported data.
 
         Args:
             value: Value to set.
         """
+        value = values[self.name]
         self.set_value(value)
+        if self.checkbox is not None:
+            self.checkbox.setChecked(True)
         debug_print(f"The param {self.name} was imported")
 
     def set_last_line_edit(self, value):
@@ -484,7 +485,7 @@ class ParamInput(Param):
     def restore_values(self):
         if self.with_checkbox:
             if self.last_checkbox:
-                if self.checkbox:
+                if self.checkbox is not None:
                     self.checkbox.setChecked(True)
         if self.spin_box is not None and self.last_line_edit != "":
             try:
@@ -501,10 +502,11 @@ class ParamInput(Param):
         if not self.hidden:
             if self.spin_box is not None:
                 self.last_line_edit = str(self.spin_box.value())
-        if self.with_checkbox:
-            if self.checkbox is not None:
-                self.last_checkbox = self.checkbox.isChecked()
+            if self.with_checkbox:
+                if self.checkbox is not None:
+                    self.last_checkbox = self.checkbox.isChecked()
 
+# FIXME: see for ub_permeability and lb_permeability
     def get_value(self) -> str:
         """
         Returns the last entered value as a string.
@@ -630,7 +632,16 @@ class ParamSelect(Param):
 
         grid_layout.addWidget(self.combo_box, row, 1)
 
-    def set_value_from_import(self, values: str):
+    def set_value_from_import(self, values: dict):
+        value = values[self.name]
+        self.combo_box = QComboBox()
+        if value:
+            self.combo_box.setCurrentText(value)
+        if self.name == "param final_product":
+            components = values["set components"]
+            self.values = components
+            self.combo_box.addItems(components)
+        debug_print(f"The param {self.name} was imported")
         pass
         # self
 
@@ -641,7 +652,7 @@ class ParamSelect(Param):
         self.hidden = False
 
     def restore_values(self):
-        if self.combo_box:
+        if self.combo_box is not None:
             index = self.combo_box.findText(self.last_combo_box)
             if index != -1:
                 self.combo_box.setCurrentIndex(index)
@@ -1136,8 +1147,9 @@ class ParamComponent(Param):
     def get_value(self):
         return len(self.last_combo_boxes)
 
-    def set_value_from_import(self, values:list[str]):
-        self.extra_rows = len(values)
+    def set_value_from_import(self, values: dict):
+        value = values[self.name] 
+        self.extra_rows = len(value)
         self.category.update_category()
         debug_print(f"The param {self.name} was imported")
 
@@ -1473,8 +1485,10 @@ class ParamComponentSelector(Param):
             self._on_value_changed()
             self.category.update_category()
 
-    def set_value_from_import(self, values: list[str]):
-        self.selected_components = values
+    def set_value_from_import(self, values: dict):
+        value = values[self.name]
+        self.selected_components = value
+        debug_print(f"The param {self.name} was imported")
 
 
     def _on_value_changed(self):
@@ -2103,12 +2117,13 @@ class ParamFixedPerm(Param):
     #                 line_edit.setDecimals(0)
     #         line_edit.setMaximum(1e10)
     #         line_edit.setValue(value)
-    def set_value_from_import(self, values: dict[str, dict[str, Union[int, float]]]):
-        self.membranes = values.keys()
+    def set_value_from_import(self, values: dict):
+        value: dict[str, dict[str, Union[int, float]]] = values[self.name]
+        self.membranes = value.keys()
         components = set()
-        for subdict in values.values():
+        for subdict in value.values():
             components.update(subdict.keys())
-        for membrane, comp_values in values.items():
+        for membrane, comp_values in value.items():
             for el, spin_value in comp_values.items():
                 spin = self.create_spinbox(self.max_value, self.min_value, self.step, self.default)
                 self.set_spin_value(spin, spin_value)
@@ -2253,8 +2268,8 @@ class ParamFixedMembrane(Param):
                 spin.setSingleStep(int(self.step))
             grid_layout.addWidget(spin, current_row, 1)
             current_row += 1
-            if spin is not None:
-                spin.valueChanged.connect(lambda _, le=spin: self._on_value_changed(le))
+            # if spin is not None:
+            #     spin.valueChanged.connect(lambda _, le=spin: self._on_value_changed(le))
             self.spin_boxes.append(spin)
         self.restore_value()
 
@@ -2267,14 +2282,14 @@ class ParamFixedMembrane(Param):
             self.manager.notify_change(self, sender)
         self._updating = False
 
-    def set_value_from_import(self, values: dict[str, Union[int, float]]):
-        self.membranes = values.keys() 
+    def set_value_from_import(self, values: dict):
+        value: dict[str, Union[int, float]] = values[self.name]
+        self.membranes = value.keys() 
         self.spin_boxes = []
-        for i, value in enumerate(values.values()):
+        for i, value_ in enumerate(value.values()):
             spin = self.create_spinbox(self.min_value, self.max_value, self.step, self.default) 
-            self.set_spin_value(spin, value)
+            self.set_spin_value(spin, value_)
             self.spin_boxes.append(spin)
-        self.update_param()
         debug_print(f"The param {self.name} was imported")
 
         pass
@@ -2387,10 +2402,11 @@ class ParamMembraneSelect(Param):
                 if index != -1:
                     combo.setCurrentIndex(index)
 
-    def set_value_from_import(self, values: dict[str, str]):
-        self.membranes = values.keys()
+    def set_value_from_import(self, values: dict):
         self.combo_boxes = []
-        for el in values.values():
+        value = values[self.name]
+        self.membranes = value.keys()
+        for el in value.values():
             combo = QComboBox()
             combo.addItems(self.values)
             index = combo.findText(el)
@@ -2496,11 +2512,14 @@ class ParamMemType(Param):
     def set_floors(self, floors: int):
         self.num_membrane_floors = floors
 
-    def set_value_from_import(self, values: dict[int, list[int]]):
-        self.membranes = values.keys()
-        self.num_membrane_floors = max(max(lst) for lst in values.values() if lst)
+    def set_value_from_import(self, values: dict):
+        value = values[self.name]
+        if not value:
+            return
+        self.membranes = value.keys()
+        self.num_membrane_floors = max(max(lst) for lst in value.values() if lst)
         self.combo_boxes = []
-        res = {num: key for key, nums in values.items() for num in nums}
+        res = {num: key for key, nums in value.items() for num in nums}
         res_ord = OrderedDict(sorted(res.items()))
         for key, el in res_ord.items():
             combo = QComboBox()
@@ -2615,13 +2634,15 @@ class ParamFixedComponent(Param):
                 except ValueError:
                     continue
 
-    def set_value_from_import(self, values: dict[str, Union[float, int]]):
-        self.components = values.keys()
+    def set_value_from_import(self, values: dict):
         self.spin_boxes = []
-        for component, value in values.items():
+        value = values[self.name].copy()
+        self.components = value.keys()
+        for component, value_ in value.items():
             spin = self.create_spinbox(self.min_value, self.max_value, self.step, self.default)
-            self.set_spin_value(spin, value)
+            self.set_spin_value(spin, value_)
             self.spin_boxes.append(spin)
+        debug_print(f"The param {self.name} was imported")
 
     def _on_value_changed(self):
         if self.manager is not None:
@@ -2823,6 +2844,26 @@ class ParamFixedComponentWithCheckbox(Param):
         else:
             self.store_value()
 
+    def set_value_from_import(self, values: dict):
+        if self.checkbox:
+            self.checkbox.setChecked(True)
+        self.combo_boxes = []
+        self.spin_boxes = []
+        value = values[self.name]
+        self.extra_rows = len(value.keys())
+        self.values = value.keys()
+        for key, value_ in value.items():
+            combo = QComboBox()
+            # FIXME: use create spin_box everywhere
+            spin_box = QSpinBox()
+            combo.addItems(self.values)
+            combo.setCurrentText(key)
+            spin_box.setValue(value_)
+            self.combo_boxes.append(combo)
+            self.spin_boxes.append(spin_box)
+        debug_print(f"The param {self.name} was imported")
+
+
     def get_value(self):
         if self.checkbox and self.checkbox.isChecked():
             return super().get_value()
@@ -2842,7 +2883,7 @@ class ParamFixedComponentWithCheckbox(Param):
                 if not self.last_spin_boxes or not self.last_combo_boxes:
                     return None
                 lines = [f'"{self.last_combo_boxes[i]}" {self.last_spin_boxes[i]}' for i in range(min(len(self.last_combo_boxes), len(self.last_spin_boxes)))]
-                return f'{self.name}:=\n' + "\n".join(lines) + "\n"
+                return f'{self.name} :=\n' + "\n".join(lines) + "\n"
 
     def to_mask_entry(self) -> str:
         lines = []
