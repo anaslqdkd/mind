@@ -206,26 +206,28 @@ class MainWindow(QMainWindow):
     def load_perm(self):
         # TODO: parser for variable perm
         res = {}
+        # FIXME: add a filechose for the filetype
         filepath = "/home/ash/mind/temp/perm.dat"
         dialog = ImportParamDialog(self)
-        # if dialog.exec():
-        #     parser_type = dialog.get_parser_type()
-        parser_type = "variable"
-        with open(filepath, "r") as file:
-            perm_data = {}
-            if parser_type == "variable":
-                self.param_registry["variable_perm"].check_box.setChecked(True)
-                perm_param = parser_variable_permeability_data(file, perm_data)
-            else:
-                perm_param = parser_fixed_permeability_data_simple(file)
-            debug_print(perm_param)
-        for param, value in perm_param.items():
-            param_name = f"{param}"
-            param_instance = self.param_registry[param_name]
-            if param_instance:
-                if hasattr(param_instance, "set_value_from_import"):
-                    param_instance.set_value_from_import(perm_param)
-                param_instance.category.update_category()
+        if dialog.exec():
+            parser_type = dialog.get_parser_type()
+            if parser_type:
+                # parser_type = "variable"
+                with open(filepath, "r") as file:
+                    perm_data = {}
+                    if parser_type == "variable":
+                        self.param_registry["variable_perm"].check_box.setChecked(True)
+                        perm_param = parser_variable_permeability_data(file, perm_data)
+                    else:
+                        perm_param = parser_fixed_permeability_data_simple(file)
+                    debug_print(perm_param)
+                for param, value in perm_param.items():
+                    param_name = f"{param}"
+                    param_instance = self.param_registry[param_name]
+                    if param_instance:
+                        if hasattr(param_instance, "set_value_from_import"):
+                            param_instance.set_value_from_import(perm_param)
+                        param_instance.category.update_category()
 
     def load_eco(self):
         file_path, _ = QFileDialog.getOpenFileName(
@@ -240,7 +242,6 @@ class MainWindow(QMainWindow):
     def load_data(self):
         filepath = "/home/ash/mind/test/data.dat"
         data_params = parser_data(filepath)
-        debug_print(data_params)
         for param_name, value in data_params.items():
             param_instance = self.param_registry[param_name]
             if param_instance:

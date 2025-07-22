@@ -3288,6 +3288,36 @@ class ParamGrid2(Param):
 
         self.category.update_category()
 
+    def set_value_from_import(self, values: dict):
+        value = values[self.name]
+        value2 = values["param lb_permeability"]
+        value3 = values["param ub_permeability"]
+        self.extra_rows = len(value.keys())
+        self.membranes = value.keys()
+        self.combo_boxes = []
+        self.combo_boxes2 = []
+        self.spin_boxes = []
+        self.components = set()
+        for subdict in value2.values():
+            self.components.update(subdict.keys())
+        for subdict in value3.values():
+            self.components.update(subdict.keys())
+        debug_print(self.components)
+        for membrane, comp_values in value.items():
+            for component, value_ in comp_values.items():
+                combo = QComboBox()
+                combo.addItems(self.membranes)
+                combo.setCurrentText(membrane)
+                combo2 = QComboBox()
+                combo2.addItems(self.components)
+                combo2.setCurrentText(component)
+                spin_box = self.create_spinbox(self.min_value, self.max_value, self.step, self.default)
+                self.set_spin_value(spin_box, value_)
+                self.combo_boxes.append(combo)
+                self.combo_boxes2.append(combo2)
+                self.spin_boxes.append(spin_box)
+        debug_print(f"The param {self.name} was imported")
+
     # def set_values(self, values: list[str]):
     #     self.values = values
 
@@ -3359,7 +3389,7 @@ class ParamGrid2(Param):
     def to_perm_entry(self) -> Optional[str]:
         if self.hidden:
             return None
-        lines = [f"param {self.name} :="]
+        lines = [f"{self.name} :="]
         for i in range(len(self.last_spin_boxes)):
             membrane = self.last_combo_boxes[i] if i < len(self.last_combo_boxes) else None
             component = self.last_combo_boxes2[i] if i < len(self.last_combo_boxes2) else None
