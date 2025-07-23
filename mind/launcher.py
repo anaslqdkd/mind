@@ -106,8 +106,11 @@ def parse_args():
                         help="generate configuration file : config.ini")
 
     parser.add_argument("--exec",
-                        action='store_true',
-                        help="execute instance described in configuration file (config.ini)")
+                        type=str,
+                        nargs='?',
+                        const=True,
+                        default=False,
+                        help="execute instance described in configuration file (config.ini), optionally provide config path")
 
     parser.add_argument("--no_starting_point",
                         action='store_true',
@@ -410,7 +413,7 @@ def generate_configuration():
         config.write(config_file)
 
 
-def load_configuration():
+def load_configuration(config_path: str = 'config.ini'):
     tuning_params = ['seed1', 'seed2', 'iteration', 'max_no_improve',
                      'epsilon', 'pressure_ratio', 'max_trials', 'pop_size',
                      'generations', 'n1_element']
@@ -421,7 +424,7 @@ def load_configuration():
                       ]
     config = configparser.ConfigParser()
     try:
-        config.read('test/config.ini')
+        config.read(config_path)
         cwd = os.getcwd()
         print(cwd)
         if not ('tuning' in config.sections() and 'instance' in config.sections()):
@@ -536,9 +539,10 @@ def main():
         if args.exec:
             if args.instance_name:
                 raise ValueError("Instance option must be deactivated when exec are provided")
+            config_path = args.exec if isinstance(args.exec, str) else 'config.ini'
 
             logger.info('Loading config.ini ...')
-            tuning, instance = load_configuration()
+            tuning, instance = load_configuration(config_path)
         else:
             logger.info('Loading use case instance ...')
             instance = data_instance(args.instance_name)
@@ -571,6 +575,7 @@ def main():
             instance['fname'],
             instance['fname_perm'],
             instance['fname_eco'],
+            instance['log_dir'],
             instance.setdefault('fname_mask', ''),
         )
 

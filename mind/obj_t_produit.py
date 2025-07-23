@@ -317,6 +317,7 @@ class ObjFunction():
         """Loading coefficient expression into obj instance.
         """
 
+        #FIXME: change the log here like in obj.py if/then the file is used, if used with the interface
         log_dir = generate_absolute_path() + "log" + os.path.sep
         with open(log_dir + 'coefficient.log', 'r') as file:
             for line in file:

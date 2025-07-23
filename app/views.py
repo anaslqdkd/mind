@@ -5,6 +5,7 @@ from typing import Optional, cast
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon, QPixmap
 from PyQt6.QtWidgets import (
+    QAbstractItemView,
     QAbstractScrollArea,
     QApplication,
     QComboBox,
@@ -16,6 +17,7 @@ from PyQt6.QtWidgets import (
     QHBoxLayout,
     QInputDialog,
     QLabel,
+    QListView,
     QListWidget,
     QMainWindow,
     QMessageBox,
@@ -26,10 +28,12 @@ from PyQt6.QtWidgets import (
     QStackedWidget,
     QTabWidget,
     QToolButton,
+    QTreeView,
     QVBoxLayout,
     QWidget,
 )
 import configparser
+import shutil
 
 from numpy import fix
 
@@ -1194,11 +1198,12 @@ class MainWindow(QMainWindow):
         dialog.resize(50, 80)
         ok = dialog.exec()
         instance_name = dialog.textValue()
+        self.instance_name = instance_name
         if not ok or not instance_name:
             return  # User cancelled or entered nothing
         file_dir = f"{self.param_registry['file_dir'].get_path()}/{instance_name}"
         command = self.command_builder.build_command(file_dir)
-        config = self.config_builder.build_config(file_dir)
+        config = self.config_builder.build_config(file_dir, instance_name)
         data = self.data_builder.build_data(file_dir)
         eco = self.eco_builder.build_eco(file_dir)
         perm = self.perm_builder.build_perm(file_dir)
@@ -1285,7 +1290,7 @@ class CommandBuilder:
         with open(filename, "w") as f:
             f.write("#!/bin/bash\n")
             f.write("source mind/env/bin/activate\n")
-            f.write(f"python3.10 -m mind.launcher {self.command} --exec\n")
+            f.write(f"python3.10 -m mind.launcher {self.command} --exec \'{file_dir}/config.ini\' \n")
 
 
 # TODO: assert lb pressure <= ub pressure etc
@@ -1309,7 +1314,7 @@ class ConfigBuilder:
         ]
         self.instance_params = [
             "data_dir",
-            "log_dir",
+            # "log_dir",
             "num_membranes",
             "ub_area",
             "lb_area",
@@ -1327,7 +1332,7 @@ class ConfigBuilder:
         ]
         self.config_args = {}
 
-    def build_config(self, file_dir: str):
+    def build_config(self, file_dir: str, instance_name: str):
         self.config_args = {"tuning": [], "instance": []}
         for param_name in self.tuning_params:
             if param_name in self.param_registry.keys():
@@ -1341,9 +1346,9 @@ class ConfigBuilder:
                 arg = param.to_config_entry()
                 if arg is not None:
                     self.config_args["instance"].append(arg)
-        self.write_config_ini(file_dir)
+        self.write_config_ini(file_dir, instance_name)
 
-    def write_config_ini(self, file_dir: str):
+    def write_config_ini(self, file_dir: str, instance_name: str):
         dir = self.param_registry['file_dir'].get_path()
 
         # filename = f"{self.param_registry['file_dir'].get_path()}/config.ini"
@@ -1354,6 +1359,7 @@ class ConfigBuilder:
         config = configparser.ConfigParser()
         config["tuning"] = {}
         config["instance"] = {}
+        config["instance"]["log_dir"] = f"../mind/log/{instance_name}/" 
 
         for entry in self.config_args.get("tuning", []):
             key, value = entry.split("=", 1)
@@ -1364,16 +1370,17 @@ class ConfigBuilder:
 
         epsilon = "{'At': 0.3, 'press_up_f': 0.2, 'press_down_f': 0.2, 'feed': 0.3, 'perm_ref': 0.1, 'alpha': 0.1, 'delta': 0.1, 'xout': 0.0001}"
         config["tuning"]["epsilon"] = epsilon
+        debug_print(file_dir)
         if "fname" not in config["instance"]:
-            config["instance"]["fname"] = f"{dir}/data.dat"
+            config["instance"]["fname"] = f"{file_dir}/data.dat"
         if "fname_perm" not in config["instance"]:
-            config["instance"]["fname_perm"] = f"{dir}/perm.dat"
+            config["instance"]["fname_perm"] = f"{file_dir}/perm.dat"
         if "fname_eco" not in config["instance"]:
-            config["instance"]["fname_eco"] = f"{dir}/eco.dat"
+            config["instance"]["fname_eco"] = f"{file_dir}/eco.dat"
 
         if self.param_registry["fixing_var"].get_value():
             if "fname_mask" not in config["instance"]:
-                config["instance"]["fname_mask"] = f"{dir}/mask.dat"
+                config["instance"]["fname_mask"] = f"{file_dir}/mask.dat"
 
         with open(filename, "w") as configfile:
             config.write(configfile)
@@ -2426,30 +2433,75 @@ class CommandLauncherButton(QPushButton):
 
     def set_incoherence_manager(self, incoherence_manager: IncoherenceManager):
         self.incoherence_manager = incoherence_manager
+    
+    def check_terminals(self):
+        installed = []
+        terminals = [
+            "gnome-terminal",
+            "alacritty",
+            "konsole",
+            "xterm",
+            "lxterminal",
+            "terminator",
+            "kitty",
+            "urxvt",
+            "mate-terminal",
+            "tilix",
+            "xfce4-terminal",
+            "cmd",
+            "powershell",
+            "wt",
+        ]
+        for term in terminals:
+            if shutil.which(term):
+                installed.append(term)
+        return installed
 
-    def launch_terminal(self):
 
-        commands = ["test/instance1/command.sh", "test/instance2/command.sh"]
-        for cmd in commands:
-            subprocess.Popen(
-                [
-                    "alacritty",
-                    "-e",
-                    "bash",
-                    "-c",
-                    f"{cmd}; exec bash"
-                ]
-            )
-        # NOTE: uncomment for the gnome terminal
-        # subprocess.Popen(
-        #     [
-        #         "gnome-terminal",
-        #         "--",
-        #         "bash",
-        #         "-c",
-        #         f"{self.script_path}; read -p 'Done. Press enter...'",
-        #     ]
-        # )
+    def launch_terminal(self, terminal_cmd=None):
+        subprocess.run([
+            "find",
+            "test",
+            "-type", "f",
+            "-name", "command.sh",
+            "-exec", "chmod", "u+x", "{}", ";"
+        ])
+        terminal_cmd = self.check_terminals()[0]
+        base_dir = "test"
+        dialog = QFileDialog(self, "Select Instances")
+        dialog.setFileMode(QFileDialog.FileMode.Directory)
+        dialog.setOption(QFileDialog.Option.ShowDirsOnly, True)
+        dialog.setDirectory(base_dir)
+        dialog.setOption(QFileDialog.Option.DontUseNativeDialog, True)
+        list_view = dialog.findChild(QListView)
+        if list_view:
+            list_view.setSelectionMode(QAbstractItemView.SelectionMode.MultiSelection)
+        tree_view = dialog.findChild(QTreeView)
+        if tree_view:
+            tree_view.setSelectionMode(QAbstractItemView.SelectionMode.MultiSelection)
+        if dialog.exec():
+            selected_dirs = dialog.selectedFiles()
+            selected_instances = [
+                os.path.basename(d) for d in selected_dirs
+                if os.path.dirname(d) == os.path.abspath(base_dir)
+            ]
+            debug_print(selected_instances)
+
+            # create log directories if they do not exist
+            for instance_name in selected_instances:
+                os.makedirs(f"../mind/log/{instance_name}", exist_ok=True)
+
+            commands = [f"{base_dir}/{inst}/command.sh" for inst in selected_instances]
+            for cmd in commands:
+                if terminal_cmd == "alacritty":
+                    subprocess.Popen([terminal_cmd, "-e", "bash", "-c", f"{cmd}; exec bash"])
+                elif terminal_cmd == "gnome-terminal":
+                    subprocess.Popen([terminal_cmd, "--", "bash", "-c", f"{cmd}; exec bash"])
+                elif terminal_cmd == "konsole":
+                    subprocess.Popen([terminal_cmd, "-e", f"bash -c '{cmd}; exec bash'"])
+                elif terminal_cmd == "xterm":
+                    subprocess.Popen([terminal_cmd, "-e", f"bash -c '{cmd}; exec bash'"])
+# -----------------------------------------------------------
 
 class AboutDialog(QDialog):
     def __init__(self, parent=None):

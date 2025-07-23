@@ -169,7 +169,7 @@ class Configuration():
                 self.discretisation[mem] = math.ceil(n)
 
 
-def build_model(parameter, fname, perm_filename, fname_eco, fname_mask=''):
+def build_model(parameter, fname, perm_filename, fname_eco, log_dir: str, fname_mask=''):
     """ callback to create the `Pyomo` model (`mind.system.MembranesDesignModel`).
 
     Args:
@@ -207,8 +207,7 @@ def build_model(parameter, fname, perm_filename, fname_eco, fname_mask=''):
 
         # TODO: check if liquid or not
         try:
-            modelisation = MembranesDesignGas(parameter, permeability_data,
-                                              fname_eco)
+            modelisation = MembranesDesignGas(parameter, permeability_data, fname_eco, log_dir)
             assert modelisation.abstractModel is not None
         except Exception:
             logger.exception('Model object creation failed')

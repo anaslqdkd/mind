@@ -37,11 +37,12 @@ class MembranesDesignGas(MembranesDesignModel):
 
     """
 
-    def __init__(self, conf_param, perm_data, eco_file):
+    def __init__(self, conf_param, perm_data, eco_file, log_dir: str):
         self.parameter = conf_param
         self.permeability_data = perm_data
+        self.log_dir = log_dir
         try:
-            self.obj_ = obj.ObjFunction(eco_file, self.parameter)
+            self.obj_ = obj.ObjFunction(eco_file, self.parameter, self.log_dir)
 
         except Exception as e:
             logger.exception("Economic file is not correctly setted : %s",

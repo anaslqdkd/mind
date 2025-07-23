@@ -49,5 +49,7 @@ python3.11 -m venv env
 source env/bin/activate
 pip install -r requirements.txt
 deactivate
-chmod u+x test/command.sh
+# chmod u+x test/command.sh
+find test -type f -name 'command.sh' -exec chmod u+x {} \;
+
 

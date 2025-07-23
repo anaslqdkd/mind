@@ -85,7 +85,7 @@ class ObjFunction():
         <https://www.sciencedirect.com/science/article/abs/pii/S0376738818317824>
     """
 
-    def __init__(self, fname_eco, parameter, loading=False):
+    def __init__(self, fname_eco, parameter, log_dir: str, loading=False):
         """initialization of desing process's thermodynamic data and some
         coefficient expressions needed to formulate objective's function
         expression.
@@ -177,6 +177,7 @@ class ObjFunction():
         self.amm = self.i * ((1 + self.i)**(self.z - 1)) / (
             (1 + self.i)**self.z - 1)
 
+        self.log_dir = log_dir
         self.generate_coef_log()
         if loading:
             self.load_coef_log()
@@ -286,9 +287,9 @@ class ObjFunction():
         """Generate coefficient expression into `coef.log`.
         """
 
-        log_dir = generate_absolute_path() + "log" + os.path.sep
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        log_file = log_dir + f"coefficient_{timestamp}.log"
+        # log_dir = generate_absolute_path() + self.log_dir + os.path.sep
+        # log_file = log_dir + f"coefficient.log"
+        log_file = self.log_dir + "coefficient.log"
         with open(log_file, 'w') as file:
 
             file.write("param km = {} \n".format(self.km))
@@ -321,8 +322,9 @@ class ObjFunction():
         """Loading coefficient expression into obj instance.
         """
 
-        log_dir = generate_absolute_path() + "log" + os.path.sep
-        with open(log_dir + 'coefficient.log', 'r') as file:
+        # log_dir = generate_absolute_path() + self.log_dir + os.path.sep
+        log_file = self.log_dir + 'coefficient.log'
+        with open(log_file, 'r') as file:
             for line in file:
                 if line == "\n":
                     pass

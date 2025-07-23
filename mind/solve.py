@@ -132,13 +132,9 @@ class GlobalOptimisation:
 
         # # TODO: close these files
         self.log_dir = log_dir
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        # self.logfile = open(self.log_dir + 'log.txt', 'w')
-        # self.stationaryfile = open(self.log_dir + 'stationarypoints.txt', 'w')
-        # self.bestfile = open(self.log_dir + 'bestpoints.txt', 'w')
-        self.logfile = open(self.log_dir + f'log_{timestamp}.txt', 'w')
-        self.stationaryfile = open(self.log_dir + f'stationarypoints_{timestamp}.txt', 'w')
-        self.bestfile = open(self.log_dir + f'bestpoints_{timestamp}.txt', 'w')
+        self.logfile = open(self.log_dir + 'log.txt', 'w')
+        self.stationaryfile = open(self.log_dir + 'stationarypoints.txt', 'w')
+        self.bestfile = open(self.log_dir + 'bestpoints.txt', 'w')
 
         # self.active = False
         # indicate if fonded a solution during exploration
