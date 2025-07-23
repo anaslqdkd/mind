@@ -16,6 +16,7 @@ from mind.printing import print_model_solution, plotting_solution
 from mind.population import PopAlgortihm
 from mind.random_initialisation import random_generation, \
     Perturbation_membranes, initCells
+from datetime import datetime
 
 GlobalData.DEFINE_SIGNAL_HANDLERS_DEFAULT = False
 # logging variable
@@ -131,9 +132,13 @@ class GlobalOptimisation:
 
         # # TODO: close these files
         self.log_dir = log_dir
-        self.logfile = open(self.log_dir + 'log.txt', 'w')
-        self.stationaryfile = open(self.log_dir + 'stationarypoints.txt', 'w')
-        self.bestfile = open(self.log_dir + 'bestpoints.txt', 'w')
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        # self.logfile = open(self.log_dir + 'log.txt', 'w')
+        # self.stationaryfile = open(self.log_dir + 'stationarypoints.txt', 'w')
+        # self.bestfile = open(self.log_dir + 'bestpoints.txt', 'w')
+        self.logfile = open(self.log_dir + f'log_{timestamp}.txt', 'w')
+        self.stationaryfile = open(self.log_dir + f'stationarypoints_{timestamp}.txt', 'w')
+        self.bestfile = open(self.log_dir + f'bestpoints_{timestamp}.txt', 'w')
 
         # self.active = False
         # indicate if fonded a solution during exploration

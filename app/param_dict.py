@@ -24,7 +24,7 @@ params_dict = {
         "label": "Select solver",
         "file": FILE.COMMAND,
         "optional": True,
-        "values": ["knitro", "ipopt"],
+        "values": ["knitroampl", "ipopt"],
     },
     "gams": {
         "name": "gams",
@@ -628,6 +628,7 @@ params_dict = {
         "file": FILE.PERM,
         "optional": False,
         "default": 1,
+        "max_value": 10000,
         # "hidden": True
     },
     "param thickness": {

@@ -1,5 +1,6 @@
 """ Describing objective function evaluation [economic formalism]."""
 
+from datetime import datetime
 import logging
 import os
 
@@ -286,7 +287,9 @@ class ObjFunction():
         """
 
         log_dir = generate_absolute_path() + "log" + os.path.sep
-        with open(log_dir + 'coefficient.log', 'w') as file:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        log_file = log_dir + f"coefficient_{timestamp}.log"
+        with open(log_file, 'w') as file:
 
             file.write("param km = {} \n".format(self.km))
             file.write("param t_op = {} \n".format(self.t_op))

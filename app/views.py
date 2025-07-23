@@ -14,6 +14,7 @@ from PyQt6.QtWidgets import (
     QFrame,
     QGroupBox,
     QHBoxLayout,
+    QInputDialog,
     QLabel,
     QListWidget,
     QMainWindow,
@@ -1187,18 +1188,21 @@ class MainWindow(QMainWindow):
 
     def build_command(self):
         self.update_pages()
-        command = self.command_builder.build_command()
-        config = self.config_builder.build_config()
-        data = self.data_builder.build_data()
-        eco = self.eco_builder.build_eco()
-        perm = self.perm_builder.build_perm()
-        mask = self.mask_builder.build_mask()
-        # debug_print("the command is", command)
-        # debug_print("the config is", config)
-        # debug_print("the data is", data)
-        # debug_print("the eco is", eco)
-        # debug_print("the perm is", perm)
-
+        dialog = QInputDialog()
+        dialog.setWindowTitle("Instance Name")
+        dialog.setLabelText("Enter a instance name")
+        dialog.resize(50, 80)
+        ok = dialog.exec()
+        instance_name = dialog.textValue()
+        if not ok or not instance_name:
+            return  # User cancelled or entered nothing
+        file_dir = f"{self.param_registry['file_dir'].get_path()}/{instance_name}"
+        command = self.command_builder.build_command(file_dir)
+        config = self.config_builder.build_config(file_dir)
+        data = self.data_builder.build_data(file_dir)
+        eco = self.eco_builder.build_eco(file_dir)
+        perm = self.perm_builder.build_perm(file_dir)
+        mask = self.mask_builder.build_mask(file_dir)
 
 # -----------------------------------------------------------
 class IncoherenceManager:
@@ -1261,7 +1265,7 @@ class CommandBuilder:
             "version",
         ]
 
-    def build_command(self):
+    def build_command(self, file_dir: str):
         self.args = []
         for param_name in self.validated_params:
             if param_name in self.param_registry:
@@ -1270,10 +1274,11 @@ class CommandBuilder:
                 if arg is not None and arg != "":
                     self.args.append(arg)
         self.command = " ".join(self.args)
-        self.write_command_script()
+        self.write_command_script(file_dir)
 
-    def write_command_script(self, filename="run_command.sh"):
-        filename = f"{self.param_registry['file_dir'].get_path()}/command.sh"
+    def write_command_script(self, file_dir: str):
+        # filename = f"{self.param_registry['file_dir'].get_path()}/command.sh"
+        filename = f"{file_dir}/command.sh"
         dir_path = os.path.dirname(filename)
         if dir_path:
             os.makedirs(dir_path, exist_ok=True)
@@ -1322,7 +1327,7 @@ class ConfigBuilder:
         ]
         self.config_args = {}
 
-    def build_config(self):
+    def build_config(self, file_dir: str):
         self.config_args = {"tuning": [], "instance": []}
         for param_name in self.tuning_params:
             if param_name in self.param_registry.keys():
@@ -1336,12 +1341,13 @@ class ConfigBuilder:
                 arg = param.to_config_entry()
                 if arg is not None:
                     self.config_args["instance"].append(arg)
-        self.write_config_ini()
+        self.write_config_ini(file_dir)
 
-    def write_config_ini(self, filename="test/config.ini"):
+    def write_config_ini(self, file_dir: str):
         dir = self.param_registry['file_dir'].get_path()
 
-        filename = f"{self.param_registry['file_dir'].get_path()}/config.ini"
+        # filename = f"{self.param_registry['file_dir'].get_path()}/config.ini"
+        filename = f"{file_dir}/config.ini"
         dir_path = os.path.dirname(filename)
         if dir_path:
             os.makedirs(dir_path, exist_ok=True)
@@ -1389,7 +1395,7 @@ class MaskBuilder:
         ]
         self.mask_args = {}
 
-    def build_mask(self):
+    def build_mask(self, file_dir: str):
         self.mask_args = []
         for param_name in self.validated_params:
             if param_name in self.param_registry.keys():
@@ -1397,11 +1403,11 @@ class MaskBuilder:
                 arg = param.to_mask_entry()
                 if arg is not None and arg != "":
                     self.mask_args.append(arg)
-        self.write_data()
+        self.write_data(file_dir)
         pass
 
-    def write_data(self, filename="test/perm.dat"):
-        filename = f"{self.param_registry['file_dir'].get_path()}/mask.dat"
+    def write_data(self, file_dir="test/perm.dat"):
+        filename = f"{file_dir}/mask.dat"
         dir_path = os.path.dirname(filename)
         if dir_path:
             os.makedirs(dir_path, exist_ok=True)
@@ -1435,7 +1441,7 @@ class DataBuilder:
 
     # TODO: see for lb_perc_prod, ub_perc prod, what are the components
 
-    def build_data(self):
+    def build_data(self, file_dir: str):
         self.data_args = []
         for param_name in self.validated_params:
             if param_name in self.param_registry.keys():
@@ -1443,11 +1449,12 @@ class DataBuilder:
                 arg = param.to_data_entry()
                 if arg is not None:
                     self.data_args.append(arg)
-        self.write_data()
+        self.write_data(file_dir)
         pass
 
-    def write_data(self, filename="test/data.dat"):
-        filename = f"{self.param_registry['file_dir'].get_path()}/data.dat"
+    def write_data(self, file_dir: str):
+        # filename = f"{self.param_registry['file_dir'].get_path()}/data.dat"
+        filename = f"{file_dir}/data.dat"
         dir_path = os.path.dirname(filename)
         if dir_path:
             os.makedirs(dir_path, exist_ok=True)
@@ -1495,7 +1502,7 @@ class PermBuilder:
                 ]
         self.perm_args = []
 
-    def build_perm(self):
+    def build_perm(self, file_dir: str):
         self.perm_args = []
         params_list = self.variable_params if self.param_registry["variable_perm"].get_value() else self.fixed_params
         for param_name in params_list:
@@ -1507,11 +1514,11 @@ class PermBuilder:
                     or not self.param_registry["variable_perm"].get_value()
                 ):
                     self.perm_args.append(arg)
-        self.write_data()
+        self.write_data(file_dir)
         pass
 
-    def write_data(self, filename="test/perm.dat"):
-        filename = f"{self.param_registry['file_dir'].get_path()}/perm.dat"
+    def write_data(self, file_dir):
+        filename = f"{file_dir}/perm.dat"
         dir_path = os.path.dirname(filename)
         if dir_path:
             os.makedirs(dir_path, exist_ok=True)
@@ -1552,7 +1559,7 @@ class EcoBuilder:
         ]
         self.args = []
 
-    def build_eco(self):
+    def build_eco(self, file_dir: str):
         self.args = []
         for param_name in self.validated_params:
             if param_name in self.param_registry.keys():
@@ -1560,11 +1567,11 @@ class EcoBuilder:
                 arg = param.to_eco_entry()
                 if arg:
                     self.args.append(arg)
-        self.write_eco()
+        self.write_eco(file_dir)
         return self.args
 
-    def write_eco(self, filename="test/eco.dat"):
-        filename = f"{self.param_registry['file_dir'].get_path()}/eco.dat"
+    def write_eco(self, file_dir: str):
+        filename = f"{file_dir}/eco.dat"
         dir_path = os.path.dirname(filename)
         if dir_path:
             os.makedirs(dir_path, exist_ok=True)
@@ -2422,16 +2429,17 @@ class CommandLauncherButton(QPushButton):
 
     def launch_terminal(self):
 
-        subprocess.Popen(
-            [
-                "alacritty",
-                "-e",
-                "bash",
-                "-c",
-                # f"{self.script_path}; read -p 'Done. Press enter...'",
-                f"{self.script_path}; exec bash"
-            ]
-        )
+        commands = ["test/instance1/command.sh", "test/instance2/command.sh"]
+        for cmd in commands:
+            subprocess.Popen(
+                [
+                    "alacritty",
+                    "-e",
+                    "bash",
+                    "-c",
+                    f"{cmd}; exec bash"
+                ]
+            )
         # NOTE: uncomment for the gnome terminal
         # subprocess.Popen(
         #     [
