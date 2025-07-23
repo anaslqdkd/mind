@@ -3,7 +3,6 @@ from PyQt6.QtWidgets import QHBoxLayout, QToolButton, QToolTip
 from app.param import (
     Param,
     ParamBoolean,
-    ParamBooleanWithInput,
     ParamComponent,
     ParamComponentSelector,
     ParamFileChooser,
@@ -15,16 +14,17 @@ from app.param import (
     ParamGrid,
     ParamGrid2,
     ParamInput,
-    ParamInputWithUnity,
     ParamMemType,
     ParamMembraneSelect,
     ParamSelect,
     ParamSpinBoxWithBool,
     ParamFixedWithSelect,
+    ParamBooleanWithInput,
     debug_print,
 )
 from app.param_enums import FILE, ParamType
 import inspect
+
 
 
 # -----------------------------------------------------------
@@ -69,20 +69,19 @@ def create_param(name: str, param_type: ParamType, file: FILE, **kwargs) -> Para
             return ParamBoolean(
                 name,
                 label = label,
-                expected_type=expected_type,
                 optional=optional,
                 description=description,
             )
-        case ParamType.INPUT_WITH_UNITY:
-            return ParamInputWithUnity(
-                name,
-                label=label,
-                values=values,
-                optional=optional,
-                expected_type=expected_type,
-                default=default,
-                # description=description,
-            )
+        # case ParamType.INPUT_WITH_UNITY:
+        #     return ParamInputWithUnity(
+        #         name,
+        #         label=label,
+        #         values=values,
+        #         optional=optional,
+        #         expected_type=expected_type,
+        #         default=default,
+        #         # description=description,
+        #     )
         case ParamType.BOOLEAN_WITH_INPUT:
             return ParamBooleanWithInput(
                 name,

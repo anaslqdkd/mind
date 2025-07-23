@@ -39,6 +39,9 @@ params_dict = {
         "param_type": ParamType.BOOLEAN_WITH_INPUT,
         "file": FILE.COMMAND,
         "optional": False,
+        "with_checkbox": True,
+        "expected_type": int,
+        "max_value": 1000,
     },
     "maxtime": {
         "name": "maxtime",
@@ -497,7 +500,7 @@ params_dict = {
     "param pressure_prod": {
         "name": "param pressure_prod",
         "label": "Pressure prod",
-        "param_type": ParamType.INPUT,
+        "param_type": ParamType.BOOLEAN_WITH_INPUT,
         "values": ["Bar", "Pa", "kPa"],
         "file": FILE.DATA,
         "optional": False,

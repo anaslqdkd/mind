@@ -916,6 +916,7 @@ class MainWindow(QMainWindow):
         # if variable perm is checked:
         if variable_perm.get_value():
             components_selector.max_selected = 2
+            components_selector.min_selected = 2
             # in case the components were already set and the variable perm was checked afterwards
             components_selector.selected_components = components_selector.selected_components[:2]
         else:

@@ -54,13 +54,14 @@ class ComponentWindow(QDialog):
         - Enforces a maximum selection limit if specified.
         - Returns the selected components.
     """
-    def __init__(self, components, selected=None, parent=None, max_selected=None):
+    def __init__(self, components, selected=None, parent=None, max_selected=None, min_selected=None):
         super().__init__(parent)
         self.setWindowTitle("Select Components")
         self.setFixedSize(300, 400)
 
         self.selected = selected or []
         self.max_selected = max_selected
+        self.min_selected = min_selected
 
         layout = QVBoxLayout()
         self.checkboxes = []
@@ -74,14 +75,17 @@ class ComponentWindow(QDialog):
 
         layout.addStretch()
 
+        self.ok_button = None
         buttons = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
         )
+        self.ok_button = buttons.button(QDialogButtonBox.StandardButton.Ok)
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
 
         layout.addWidget(buttons)
         self.setLayout(layout)
+        self.update_ok_button()
 
     def get_selected(self) -> list[str]:
         """Returns a list of selected components
@@ -113,6 +117,13 @@ class ComponentWindow(QDialog):
             for cb in self.checkboxes:
                 if not cb.isChecked():
                     cb.setEnabled(checked_count < self.max_selected)
+        self.update_ok_button()
+
+    def update_ok_button(self):
+        """Enable or disable OK button based on min_selected constraint."""
+        if self.ok_button is not None and self.min_selected is not None:
+            checked_count = sum(cb.isChecked() for cb in self.checkboxes)
+            self.ok_button.setEnabled(checked_count >= self.min_selected)
 
 # -----------------------------------------------------------
 
@@ -207,16 +218,6 @@ class Param:
         self.hidden = False
 
 
-    def to_command_arg(self) -> Optional[str]:
-        """
-        Converts the parameter value to a command-line argument string.
-        Used to build the command.sh file.
-
-        Returns:
-            Optional[str]: Command-line argument representation or None.
-        """
-        return None
-
     def to_config_entry(self) -> Optional[str]:
         """
         Converts the parameter value to a config file entry.
@@ -226,6 +227,13 @@ class Param:
             Optional[str]: Config entry string or None.
         """
         return None
+
+    def to_command_arg(self) -> Optional[str]:
+        """
+        Converts the parameter value to a command entry for the program launcher.
+        Used to build command.sh.
+        """
+        raise NotImplementedError(self.name, "to_command_arg not implemented") 
 
     def to_data_entry(self) -> Optional[str]:
         """
@@ -356,21 +364,31 @@ class Param:
                         debug_print("Error")
                         pass
             # debug_print(spin.value())
+    def set_value_from_import(self, values: dict):
+            """
+            Sets the value from imported data.
+
+            Args:
+                value: Value to set.
+            """
+            raise NotImplementedError("Subclasses must implement set_value_from_import")
+
+    def _on_value_changed(self):
+        """
+        Handles spinbox value changes, stores the value and notifies dependencies.
+        """
+        if self.manager is not None:
+            self.store_value()
+            self.manager.notify_change(self)
+
+
+
 # -----------------------------------------------------------
 
 class ParamInput(Param):
     """Represents a numeric input parameter with optional constraints.
     Args:
-        name (str): Parameter name.
-        optional (bool, optional): Whether the parameter is optional. Defaults to False.
-        expected_type (type, optional): Expected type of the parameter value (int or float). Defaults to str.
-        description (str, optional): Description of the parameter. Defaults to "".
-        label (str, optional): Label for the parameter. Defaults to "".
-        default (Optional[int], optional): Default value. Defaults to None.
-        min_value (Optional[float], optional): Minimum allowed value. Defaults to None.
-        max_value (Optional[float], optional): Maximum allowed value. Defaults to None.
-        step (Optional[int], optional): Step size for the spinbox. Defaults to None.
-        hidden (bool, optional): Whether the parameter is hidden. Defaults to False.
+        See Attributes below for parameter descriptions.
 
     Attributes:
         spin_box: Spinbox widget for input.
@@ -385,6 +403,9 @@ class ParamInput(Param):
         header: Header widget for UI.
         hidden: Whether the parameter is hidden.
         manager: Dependency manager.
+        checkbox: Checkbox for optional input.
+        with_checkbox: Whether to show the checkbox.
+        last_checkbox: Last checkbox state.
     """
 
     def __init__(
@@ -442,14 +463,6 @@ class ParamInput(Param):
         if not state:
             self.last_line_edit = ""
 
-    def _on_value_changed(self):
-        """
-        Handles spinbox value changes, stores the value and notifies dependencies.
-        """
-        if self.manager is not None:
-            self.store_value()
-            self.manager.notify_change(self)
-
     def set_value(self, value):
         """
         Set the value in the line_edit widget, handling int/float types and decimals.
@@ -461,12 +474,6 @@ class ParamInput(Param):
         self.last_line_edit = str(value)
 
     def set_value_from_import(self, values: dict):
-        """
-        Sets the value from imported data.
-
-        Args:
-            value: Value to set.
-        """
         value = values[self.name]
         self.set_value(value)
         if self.checkbox is not None:
@@ -496,6 +503,7 @@ class ParamInput(Param):
             except ValueError:
                 debug_print("value error")
                 return
+            # FIXME: replace with set_spin_box_value
             self.spin_box.setValue(value)
 
     def store_value(self):
@@ -503,10 +511,10 @@ class ParamInput(Param):
             if self.spin_box is not None:
                 self.last_line_edit = str(self.spin_box.value())
             if self.with_checkbox:
+                debug_print(self.name)
                 if self.checkbox is not None:
                     self.last_checkbox = self.checkbox.isChecked()
 
-# FIXME: see for ub_permeability and lb_permeability
     def get_value(self) -> str:
         """
         Returns the last entered value as a string.
@@ -551,17 +559,16 @@ class ParamInput(Param):
             return f"{self.name} := {self.last_line_edit}"
 
     def to_eco_entry(self) -> Optional[str]:
-        if self.with_checkbox and self.checkbox is not None and not self.checkbox.isChecked():
-            return None
-        if self.last_line_edit != "" and self.last_line_edit != None:
-            return f"{self.name} := {self.last_line_edit}"
+        return self.to_data_entry()
 
     def to_perm_entry(self) -> Optional[str]:
-        if self.with_checkbox and self.checkbox is not None and not self.checkbox.isChecked():
-            return None
-        if self.last_line_edit != "" and self.last_line_edit != None:
-            return f"{self.name} := {self.last_line_edit}"
+        return self.to_data_entry()
 
+    def to_command_arg(self) -> Optional[str]:
+        if self.last_line_edit:
+            return f"--{self.name} {self.last_line_edit}"
+        return None
+    
 # -----------------------------------------------------------
 
 class ParamSelect(Param):
@@ -569,13 +576,7 @@ class ParamSelect(Param):
     Represents a parameter with a selectable value from a predefined list, integrated with UI.
 
     Args:
-        name (str): Parameter name.
-        values (list[str]): List of selectable values.
-        label (str): Label for the parameter.
-        hidden (bool, optional): Whether the parameter is hidden. Defaults to False.
-        optional (bool, optional): Whether the parameter is optional. Defaults to False.
-        description (str, optional): Description of the parameter. Defaults to "".
-
+        See Attributes below for parameter descriptions.
     Attributes:
         question_label: Label for help/question icon.
         combo_box: ComboBox widget for selection.
@@ -642,8 +643,6 @@ class ParamSelect(Param):
             self.values = components
             self.combo_box.addItems(components)
         debug_print(f"The param {self.name} was imported")
-        pass
-        # self
 
     def hide(self):
         self.hidden = True
@@ -656,11 +655,6 @@ class ParamSelect(Param):
             index = self.combo_box.findText(self.last_combo_box)
             if index != -1:
                 self.combo_box.setCurrentIndex(index)
-
-    def _on_value_changed(self):
-        if self.manager is not None:
-            self.store_value()
-            self.manager.notify_change(self)
 
     def store_value(self):
         if self.combo_box is not None:
@@ -680,8 +674,10 @@ class ParamSelect(Param):
         self.build_widget(self.row, self.label, self.grid_layout)
         self._updating = False
 
-    def to_command_arg(self) -> str:
-        return f"--{self.name} {self.last_combo_box}"
+    def to_command_arg(self) -> Optional[str]:
+        if self.last_combo_box:
+            return f"--{self.name} {self.last_combo_box}"
+        return None
 
     def to_config_entry(self):
         if self.last_combo_box:
@@ -700,13 +696,27 @@ class ParamSelect(Param):
 
 
 class ParamBoolean(Param):
+    """
+    Represents a boolean parameter with an associated checkbox widget.
+
+    Args:
+        See Attributes below for parameter descriptions.
+
+    Attributes:
+        question_label: label widget for the question.
+        check_box: checkbox widget for boolean input.
+        last_check_box: last checkbox state.
+        optional: whether the parameter is optional.
+        description: description of the parameter.
+        label: label for the parameter.
+        manager: dependency manager.
+    """
     def __init__(
         self,
         name: str,
         label: str,
         optional: bool = False,
         description: str = "",
-        expected_type=str,
     ) -> None:
         super().__init__(name, description=description, label=label)
         self.question_label = None
@@ -739,11 +749,6 @@ class ParamBoolean(Param):
 
         grid_layout.addWidget(container, row, 0, 1, 2)
 
-    def _on_value_changed(self):
-        if self.manager is not None:
-            self.store_value()
-            self.manager.notify_change(self)
-
     def restore_values(self):
         if self.last_check_box:
             if self.check_box:
@@ -757,7 +762,6 @@ class ParamBoolean(Param):
         if self.check_box is not None:
             self.check_box.setChecked(value)
 
-
     def to_command_arg(self) -> str:
         if self.last_check_box == True:
             return f"--{self.name}"
@@ -767,12 +771,10 @@ class ParamBoolean(Param):
     def to_config_entry(self):
         return f"{self.name} = {self.last_check_box}"
 
-
     def get_value(self) -> bool:
         return self.last_check_box
 
-# TODO: remove the file enum
-
+# TODO: modify input class to allow unity also
 # -----------------------------------------------------------
 class ParamInputWithUnity(Param):
     def __init__(
@@ -1055,6 +1057,7 @@ class ParamBooleanWithInputWithUnity(Param):
 
 
 
+# TODO: implement header for input with checkbox
 # -----------------------------------------------------------
 
 class ParamComponent(Param):
@@ -1443,6 +1446,7 @@ class ParamComponentSelector(Param):
         self.selected_components = []
         self.manager: Optional[DependencyManager] = None
         self.max_selected: Optional[int] = None
+        self.min_selected: Optional[int] = None
         pass
 
     def get_value(self):
@@ -1477,11 +1481,10 @@ class ParamComponentSelector(Param):
             row += 1
 
     def open_selector(self):
-        dialog = ComponentWindow(self.values, self.selected_components, max_selected=self.max_selected)
+        dialog = ComponentWindow(self.values, self.selected_components, max_selected=self.max_selected, min_selected=self.min_selected)
         if dialog.exec():
             self.selected_components = dialog.get_selected()
             self.button.setText(f"Selected: {len(self.selected_components)}")
-            # self.notify_dependants()
             self._on_value_changed()
             self.category.update_category()
 
@@ -1496,19 +1499,6 @@ class ParamComponentSelector(Param):
             self.store_value()
             self.manager.notify_change(self)
 
-    def notify_dependants(self) -> None:
-        for dep in self.dependants.keys():
-            dep.on_dependency_updated(self)
-        pass
-
-    def get_dependency_value(
-        self, dependency_type: DependencyType
-    ) -> int | float | str:
-        if dependency_type == DependencyType.COMPONENT_COUNT:
-            return len(self.selected_components)
-        else:
-            return 0
-
     def remove_selected_component(
         self, component, grid_layout, remove_button, line_edit
     ):
@@ -1518,7 +1508,6 @@ class ParamComponentSelector(Param):
         grid_layout.removeWidget(remove_button)
         line_edit.deleteLater()
         remove_button.deleteLater()
-        self.notify_dependants()
         self.category.update_category()
 
     def restore_value(self):
