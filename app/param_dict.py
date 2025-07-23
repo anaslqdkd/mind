@@ -398,7 +398,7 @@ params_dict = {
         "label": "Set components",
         "param_type": ParamType.COMPONENT_SELECTOR,
         "file": FILE.DATA,
-        "values": ["O2", "H2", "CO2", "N2"],
+        "values": ["O2", "H2", "CO2", "N2", "CH4", "H2O", "CO"],
         "optional": False,
     },
     "param lb_perc_prod": {
@@ -430,7 +430,7 @@ params_dict = {
         "values": ["mol/s"],
         "default": 0.02,
         "min_value": 0,
-        "max_value": 10,
+        "max_value": 100,
         "step": 0.1,
         "file": FILE.DATA,
         "optional": False,

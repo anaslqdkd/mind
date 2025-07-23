@@ -2257,8 +2257,8 @@ class ParamFixedMembrane(Param):
                 spin.setSingleStep(int(self.step))
             grid_layout.addWidget(spin, current_row, 1)
             current_row += 1
-            # if spin is not None:
-            #     spin.valueChanged.connect(lambda _, le=spin: self._on_value_changed(le))
+            if spin is not None:
+                spin.valueChanged.connect(lambda _, le=spin: self._on_value_changed(le))
             self.spin_boxes.append(spin)
         self.restore_value()
 

@@ -747,10 +747,16 @@ class MainWindow(QMainWindow):
                 self.update_pressure_lower_bound,
             )
             dependency_manager.add_dependency(
-                # pressure_in < up_press_up
+                # pressure_in > up_press_up
                 param_registry["param ub_press_up"],
                 param_registry["param pressure_in"],
                 self.update_pressure_upper_bound,
+            )
+            dependency_manager.add_dependency(
+                # pressure_in > up_press_up
+                param_registry["param pressure_in"],
+                param_registry["param ub_press_up"],
+                self.update_pressure_upper_bound2,
             )
             dependency_manager.add_dependency(
                 # lb_press_up < up_press_up
@@ -853,6 +859,9 @@ class MainWindow(QMainWindow):
             "H2": 2.016,
             "CO2": 44.009,
             "N2": 28.014,
+            "CH4": 16.043,
+            "H2O": 18.015,
+            "CO": 28.010,
         }
         components = components_selector.selected_components
         for i, spin_box in enumerate(molarmass.spin_boxes):
@@ -860,6 +869,7 @@ class MainWindow(QMainWindow):
                 spin_box.setValue(molar_masses[components[i]])
 
     def update_alpha_bounds(self, ub_alpha: ParamFixedMembrane, lb_alpha: ParamFixedMembrane, sender):
+        debug_print("in update alpha bounds")
         if sender in lb_alpha.spin_boxes:
             index = lb_alpha.spin_boxes.index(sender)
             if index in range(len(ub_alpha.elements)):
@@ -901,7 +911,7 @@ class MainWindow(QMainWindow):
             # if vp then ub_press_down < 1.0
             ub_press_down.max_value = 1.0
             ub_press_down.min_value = 0.0
-            lb_press_down.max_value = ub_press_down.min_value
+            lb_press_down.max_value = 1.0
             lb_press_down.min_value = 0.0
         else:
             # if not vp then lb_press_down > 1.0
@@ -939,10 +949,15 @@ class MainWindow(QMainWindow):
 
     def update_pressure_upper_bound(self, pressure_in: ParamInput, up_press_up: ParamInput, sender):
         upper_bound = up_press_up.get_value_float()
-        pressure_in.max_value = upper_bound
+        pressure_in.min_value = upper_bound
         pressure_in.category.update_category()
         # NOTE: or update param?
 
+    def update_pressure_upper_bound2(self, up_press_up: ParamInput, pressure_in: ParamInput, sender):
+        up_press_up.min_value = pressure_in.get_value_float()
+        up_press_up.max_value = 100
+        up_press_up.category.update_category()
+        # NOTE: or update param?
 
     def update_pressure_prod(self, target: ParamInput, source: ParamBoolean, sender):
         # for pressure prod pressure must be uniform and permeability must be fixed
