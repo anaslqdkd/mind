@@ -445,7 +445,7 @@ class MainWindow(QMainWindow):
         for page, tab_list in self.page_names.items():
             page_tabs_categories = self.tab_categories
             page_temp = PageParameters(
-                self, self.stack, self.sidebar, page, tab_list, page_tabs_categories
+                self, self.stack, self.sidebar, page, self.param_registry, tab_list, page_tabs_categories
             )
             max_width = self.sidebar.sizeHintForColumn(0)
             self.sidebar.setFixedWidth(max_width + 90)
@@ -558,17 +558,6 @@ class MainWindow(QMainWindow):
                 self.update_membranes,
             )
 
-            # dependency_manager.add_dependency(
-            #     param_registry["set mem_types_set"],
-            #     param_registry["param Permeability"],
-            #     self.update_permeability2,
-            # )
-            # dependency_manager.add_dependency(
-            #     param_registry["set components"],
-            #     param_registry["param Permeability"],
-            #     self.update_permeability2,
-            # )
-
             dependency_manager.add_dependency(
                 param_registry["set mem_types_set"],
                 param_registry["param thickness"],
@@ -614,17 +603,6 @@ class MainWindow(QMainWindow):
                 param_registry["param lb_permeability"],
                 self.update_components_grid,
             )
-            # dependency_manager.add_dependency(
-            #     param_registry["set components"],
-            #     param_registry["param mem_type"],
-            #     self.update_components,
-            # )
-
-            # dependency_manager.add_dependency(
-            #     param_registry["set mem_types_set"],
-            #     param_registry["param mem_product"],
-            #     self.update_permeability,
-            # )
             dependency_manager.add_dependency(
                 param_registry["set mem_types_set"],
                 param_registry["param mem_product"],
@@ -751,18 +729,18 @@ class MainWindow(QMainWindow):
                 param_registry["param pressure_in"],
                 self.update_pressure_lower_bound,
             )
-            dependency_manager.add_dependency(
-                # pressure_in > up_press_up
-                param_registry["param ub_press_up"],
-                param_registry["param pressure_in"],
-                self.update_pressure_upper_bound,
-            )
-            dependency_manager.add_dependency(
-                # pressure_in > up_press_up
-                param_registry["param pressure_in"],
-                param_registry["param ub_press_up"],
-                self.update_pressure_upper_bound2,
-            )
+            # dependency_manager.add_dependency(
+            #     # pressure_in > up_press_up
+            #     param_registry["param ub_press_up"],
+            #     param_registry["param pressure_in"],
+            #     self.update_pressure_upper_bound,
+            # )
+            # dependency_manager.add_dependency(
+            #     # pressure_in > up_press_up
+            #     param_registry["param pressure_in"],
+            #     param_registry["param ub_press_up"],
+            #     self.update_pressure_upper_bound2,
+            # )
             dependency_manager.add_dependency(
                 # lb_press_up < up_press_up
                 param_registry["param lb_press_up"],
@@ -1192,6 +1170,19 @@ class MainWindow(QMainWindow):
 
     def build_command(self):
         self.update_pages()
+        errors = self.validate_params()
+        if len(errors) > 0:
+            debug_print(errors)
+            error_dialog = QMessageBox()
+            error_dialog.setWindowTitle("Parameter Errors")
+            error_dialog.setIcon(QMessageBox.Icon.Warning)
+            error_dialog.setText(
+                "Please fix the following errors:\n\n" +
+                "\n".join(f"• {e}" for e in errors) + f"\n"
+            )
+            error_dialog.setStandardButtons(QMessageBox.StandardButton.Ok)
+            error_dialog.exec()
+            return
         dialog = QInputDialog()
         dialog.setWindowTitle("Instance Name")
         dialog.setLabelText("Enter a instance name")
@@ -1208,6 +1199,20 @@ class MainWindow(QMainWindow):
         eco = self.eco_builder.build_eco(file_dir)
         perm = self.perm_builder.build_perm(file_dir)
         mask = self.mask_builder.build_mask(file_dir)
+
+    def validate_params(self) -> list[str]:
+        components_param = self.param_registry["set components"]
+        membranes_param = self.param_registry["set mem_types_set"]
+        errors = []
+        if len(components_param.selected_components) < 1:
+            errors.append("No selected components")
+            # membranes_param.highlight_error(True)
+        if membranes_param.extra_rows < 1:
+            errors.append("No added membranes")
+        return errors
+
+
+        pass
 
 # -----------------------------------------------------------
 class IncoherenceManager:
@@ -1608,6 +1613,7 @@ class PageParameters(QWidget):
         stack,
         sidebar,
         name: str,
+        param_registry: dict[str, Param],
         tabs_for_page=None,
         tab_categories=None,
     ):
@@ -1621,6 +1627,7 @@ class PageParameters(QWidget):
         self.categories: list[ParamCategory] = []
         self.tab_categories = tab_categories
         self.tabs: list[QWidget] = []
+        self.param_registry = param_registry
 
         main_layout = QVBoxLayout()
 
@@ -1666,7 +1673,7 @@ class PageParameters(QWidget):
         # command_path = ""
         print(os.getcwd())
         command_button = CommandLauncherButton(
-            "test/command.sh", incoherence_manager=self.main_window.incoherence_manager
+            "test/command.sh", self.main_window.incoherence_manager, self.param_registry
         )
         self.command_button = command_button
 
@@ -2422,12 +2429,14 @@ class CommandLauncherButton(QPushButton):
         self,
         script_path,
         incoherence_manager: IncoherenceManager,
+        param_registry: dict[str, Param],
         terminal_cmd="alacritty",
         parent=None,
     ):
         super().__init__("Run Command", parent)
         self.script_path = script_path
         self.terminal_cmd = terminal_cmd
+        self.param_registry = param_registry
         self.clicked.connect(self.launch_terminal)
         self.incoherence_manager = incoherence_manager
 
@@ -2459,6 +2468,7 @@ class CommandLauncherButton(QPushButton):
 
 
     def launch_terminal(self, terminal_cmd=None):
+        # errors = self.validate_params()
         subprocess.run([
             "find",
             "test",
@@ -2501,6 +2511,18 @@ class CommandLauncherButton(QPushButton):
                     subprocess.Popen([terminal_cmd, "-e", f"bash -c '{cmd}; exec bash'"])
                 elif terminal_cmd == "xterm":
                     subprocess.Popen([terminal_cmd, "-e", f"bash -c '{cmd}; exec bash'"])
+
+    def validate_params(self) -> list[str]:
+        components_param = self.param_registry["set components"]
+        errors = []
+        if len(components_param.selected_components) < 1:
+            errors.append("No selected components")
+        return errors
+
+
+        pass
+
+
 # -----------------------------------------------------------
 
 class AboutDialog(QDialog):

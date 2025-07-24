@@ -275,7 +275,7 @@ class Param:
         raise NotImplementedError(self.name, "Update param not implemented")
 
 
-    def build_header(self, label: str, description: str, optional: bool) -> QWidget:
+    def build_header(self, label: str, description: str, optional: bool, has_error: bool = False) -> QWidget:
         """
         Builds a header widget for the parameter, including label and help icon.
 
@@ -294,6 +294,8 @@ class Param:
         required_mark = ' ' if optional else ' <span style="color:red;">*</span>'
         label_text = f"{label}{required_mark}"
         question_label = QLabel(label_text)
+        if has_error:
+            question_label.setStyleSheet("color: red;")
         icon_label = HelpButtonDemo(description)
         header_layout.addWidget(question_label)
         header_layout.addWidget(icon_label)
@@ -380,6 +382,9 @@ class Param:
         if self.manager is not None:
             self.store_value()
             self.manager.notify_change(self)
+
+    def highlight_error(self, has_error: bool):
+        return
 
 
 
@@ -819,7 +824,6 @@ class ParamInputWithUnity(Param):
         grid_layout.addWidget(self.combo_box, row, 2)
         self.restore_value()
 
-
     def restore_value(self):
         if self.last_combo_box:
             if self.combo_box:
@@ -1081,10 +1085,11 @@ class ParamComponent(Param):
         self.optional = optional
         self.values = values
         self.manager: Optional[DependencyManager] = None
+        self.header = self.build_header(label, self.description, self.optional)
 
     def build_widget(self, row: int, label: str, grid_layout: QGridLayout):
-            header = self.build_header(label, self.description, self.optional)
-            grid_layout.addWidget(header, row, 0)
+            self.header = self.build_header(label, self.description, self.optional)
+            grid_layout.addWidget(self.header, row, 0)
             self.combo_boxes = []
 
             # Build existing combos for extra_rows
@@ -1180,6 +1185,10 @@ class ParamComponent(Param):
 
     def row_span(self) -> int:
         return 1 + self.extra_rows
+
+    def highlight_error(self, has_error: bool):
+        self.header = self.build_header(self.label, self.description, self.optional, has_error)
+        self.category.update_category()
 
 
     def to_perm_entry(self) -> Optional[str]:
@@ -1803,6 +1812,11 @@ class ParamCategory(QWidget):
     def store_values(self):
         for param in self.param:
             param.store_value()
+
+    def highlight_param(self):
+        for parm in self.param:
+            pass
+            # param.highlight_error()
 
     def update_category(self):
         if getattr(self, "_updating", False):
