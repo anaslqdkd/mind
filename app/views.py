@@ -211,28 +211,30 @@ class MainWindow(QMainWindow):
     def load_perm(self):
         # TODO: parser for variable perm
         res = {}
-        # FIXME: add a filechose for the filetype
-        filepath = "/home/ash/mind/temp/perm.dat"
         dialog = ImportParamDialog(self)
         if dialog.exec():
+            # FIXME: instead of chosing the parser, do a try based on param dict
             parser_type = dialog.get_parser_type()
             if parser_type:
-                # parser_type = "variable"
-                with open(filepath, "r") as file:
-                    perm_data = {}
-                    if parser_type == "variable":
-                        self.param_registry["variable_perm"].check_box.setChecked(True)
-                        perm_param = parser_variable_permeability_data(file, perm_data)
-                    else:
-                        perm_param = parser_fixed_permeability_data_simple(file)
-                    debug_print(perm_param)
-                for param, value in perm_param.items():
-                    param_name = f"{param}"
-                    param_instance = self.param_registry[param_name]
-                    if param_instance:
-                        if hasattr(param_instance, "set_value_from_import"):
-                            param_instance.set_value_from_import(perm_param)
-                        param_instance.category.update_category()
+                filepath, _ = QFileDialog.getOpenFileName(
+                    self, "Open Perm File", "", "Data files (*.dat);;All Files (*)"
+                )
+                if filepath:
+                    with open(filepath, "r") as file:
+                        perm_data = {}
+                        if parser_type == "variable":
+                            self.param_registry["variable_perm"].check_box.setChecked(True)
+                            perm_param = parser_variable_permeability_data(file, perm_data)
+                        else:
+                            perm_param = parser_fixed_permeability_data_simple(file)
+                        debug_print(perm_param)
+                    for param, value in perm_param.items():
+                        param_name = f"{param}"
+                        param_instance = self.param_registry[param_name]
+                        if param_instance:
+                            if hasattr(param_instance, "set_value_from_import"):
+                                param_instance.set_value_from_import(perm_param)
+                            param_instance.category.update_category()
 
     def load_eco(self):
         file_path, _ = QFileDialog.getOpenFileName(
@@ -245,15 +247,19 @@ class MainWindow(QMainWindow):
                     self.param_registry[f"param {el}"].set_value(value)
 
     def load_data(self):
-        filepath = "/home/ash/mind/temp/data.dat"
-        data_params = parser_data(filepath)
-        debug_print(data_params)
-        for param_name, value in data_params.items():
-            param_instance = self.param_registry[param_name]
-            if param_instance:
-                if hasattr(param_instance, "set_value_from_import"):
-                    param_instance.set_value_from_import(data_params)
-            param_instance.category.update_category()
+        # filepath = "/home/ash/mind/temp/data.dat"
+        filepath, _ = QFileDialog.getOpenFileName(
+            self, "Open Data File", "", "Data files (*.dat);;All Files (*)"
+        )
+        if filepath:
+            data_params = parser_data(filepath)
+            debug_print(data_params)
+            for param_name, value in data_params.items():
+                param_instance = self.param_registry[param_name]
+                if param_instance:
+                    if hasattr(param_instance, "set_value_from_import"):
+                        param_instance.set_value_from_import(data_params)
+                param_instance.category.update_category()
 
     def _define_pages(self):
         self.categories_names = {
@@ -765,31 +771,31 @@ class MainWindow(QMainWindow):
                 param_registry["param ub_press_down"],
                 self.update_ub_press_down_vp,
             )
-            dependency_manager.add_dependency(
-                # lb_press_down < ub_press_down
-                param_registry["param lb_press_down"],
-                param_registry["param ub_press_down"],
-                self.update_press_lb_down_inf_ub_down,
-            )
-            dependency_manager.add_dependency(
-                # lb_press_down < ub_press_down
-                param_registry["param ub_press_down"],
-                param_registry["param lb_press_down"],
-                self.update_press_lb_down_sup_ub_down,
+            # dependency_manager.add_dependency(
+            #     # lb_press_down < ub_press_down
+            #     param_registry["param lb_press_down"],
+            #     param_registry["param ub_press_down"],
+            #     self.update_press_lb_down_inf_ub_down,
+            # )
+            # dependency_manager.add_dependency(
+            #     # lb_press_down < ub_press_down
+            #     param_registry["param ub_press_down"],
+            #     param_registry["param lb_press_down"],
+            #     self.update_press_lb_down_sup_ub_down,
                 # TODO: use lamdba to switch orders instead of defining two separate functions
-            )
-            dependency_manager.add_dependency(
-                # lb_area < ub_area
-                param_registry["ub_area"],
-                param_registry["lb_area"],
-                self.update_lb_area_bounds,
-            )
-            dependency_manager.add_dependency(
-                # lb_area < ub_area
-                param_registry["lb_area"],
-                param_registry["ub_area"],
-                self.update_lb_area_bounds2,
-            )
+            # )
+            # dependency_manager.add_dependency(
+            #     # lb_area < ub_area
+            #     param_registry["ub_area"],
+            #     param_registry["lb_area"],
+            #     self.update_lb_area_bounds,
+            # )
+            # dependency_manager.add_dependency(
+            #     # lb_area < ub_area
+            #     param_registry["lb_area"],
+            #     param_registry["ub_area"],
+            #     self.update_lb_area_bounds2,
+            # )
             dependency_manager.add_dependency(
                 # molar mass update
                 param_registry["set components"],
@@ -2251,6 +2257,7 @@ def parser_data(filepath):
         # Match single-line param: param name := value;
         if line.startswith("param") and ":=" in line and line.endswith(";"):
             parts = line.split(":=")
+            # debug_print(parts)
             name = " ".join(parts[0].split()[:2])  # "param param_name"
             value = parts[1].split(";")[0].strip()
             value = value.split("#")[0].strip()

@@ -121,7 +121,7 @@ params_dict = {
         "file": FILE.CONFIG,
         "default": 6,
         "min_value": 0,
-        "max_value": 10,
+        "max_value": 100000,
         "step": 1,
     },
     "lb_area": {
@@ -131,7 +131,7 @@ params_dict = {
         "file": FILE.CONFIG,
         "default": 0.2,
         "min_value": 0,
-        "max_value": 10,
+        "max_value": 10000,
         "step": 0.1,
     },
     "ub_acell": {
@@ -460,7 +460,7 @@ params_dict = {
         "file": FILE.DATA,
         "default": 1,
         "min_value": 0,
-        "max_value": 10,
+        "max_value": 100,
         "step": 0.1,
         "optional": False,
     },
@@ -472,7 +472,7 @@ params_dict = {
         "optional": False,
         "default": 1.0,
         "min_value": 1,
-        "max_value": 10,
+        "max_value": 100,
         "step": 0.1,
     },
     "param lb_press_up": {
@@ -483,7 +483,7 @@ params_dict = {
         "optional": False,
         "default": 1,
         "min_value": 0,
-        "max_value": 10,
+        "max_value": 100,
         "step": 1,
     },
     "param ub_press_up": {
@@ -494,7 +494,7 @@ params_dict = {
         "optional": False,
         "default": 2,
         "min_value": 0,
-        "max_value": 10,
+        "max_value": 1000,
         "step": 1,
     },
     "param pressure_prod": {
