@@ -1,21 +1,18 @@
-# mind
+# MIND: Python Optimization Software for Process Design Membranes
+## Requirements
+
+- Python3.10
 
 ## Installation
-
-### 0. Clone the projet
-
 ```bash
 git clone https://github.com/anaslqdkd/mind.git
+cd mind
+chmod +x setup.sh
+./setup.sh
 ```
+### 2. Install Ipopt Using coinbrew (optional)
 
-### 1. System Dependencies
-
-```bash
-sudo apt update
-sudo apt install build-essential gfortran pkg-config wget git python3.11 python3.11-dev python3.11-venv libblas-dev liblapack-dev
-```
-
-### 2. Install Ipopt with coinbrew
+Ipopt is required for optimization tasks. Install it as follows:
 
 ```bash
 git clone https://github.com/coin-or/coinbrew.git
@@ -26,30 +23,29 @@ git config --global url."https://github.com/".insteadOf git@github.com:
 ./coinbrew install Ipopt
 ```
 
-Add the following to your `.bashrc` or `.zshrc`:
+#### Update Your Shell Configuration
+
+Add these lines to your `.bashrc` or `.zshrc` to ensure your environment can find Ipopt:
 
 ```bash
 export PATH="$HOME/ipopt-install/bin:$PATH"
 export LD_LIBRARY_PATH="$HOME/ipopt-install/lib:$LD_LIBRARY_PATH"
 export PKG_CONFIG_PATH="$HOME/ipopt-install/lib/pkgconfig:$PKG_CONFIG_PATH"
-source ~/.bashrc
 ```
 
-Check Ipopt installation:
+Apply the changes:
+
+```bash
+source ~/.bashrc  # or source ~/.zshrc
+```
+#### Verify Ipopt Installation
 
 ```bash
 ipopt --version
 ```
 
-### 3. Set up the Python environment
-
+## 3. Running the Project
 ```bash
-cd mind/mind
-python3.11 -m venv env
 source env/bin/activate
-pip install -r requirements.txt
-deactivate
-# chmod u+x test/command.sh
-find test -type f -name 'command.sh' -exec chmod u+x {} \;
-
-
+python3 main.py
+```
